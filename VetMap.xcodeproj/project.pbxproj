@@ -1,0 +1,566 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		01A1B1C2D3E4F5A6B7C8D9E0 /* VetMapApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A1B1C2D3E4F5A6B7C8D9E0 /* VetMapApp.swift */; };
+		03A1B1C2D3E4F5A6B7C8D9E0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A1B1C2D3E4F5A6B7C8D9E0 /* ContentView.swift */; };
+		0AA1B1C2D3E4F5A6B7C8D9E0 /* ClinicCoordinate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA1B1C2D3E4F5A6B7C8D9E0 /* ClinicCoordinate.swift */; };
+		0CA1B1C2D3E4F5A6B7C8D9E0 /* VetClinic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA1B1C2D3E4F5A6B7C8D9E0 /* VetClinic.swift */; };
+		0EA1B1C2D3E4F5A6B7C8D9E0 /* Review.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA1B1C2D3E4F5A6B7C8D9E0 /* Review.swift */; };
+		11A1B1C2D3E4F5A6B7C8D9E0 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12A1B1C2D3E4F5A6B7C8D9E0 /* UserProfile.swift */; };
+		13A1B1C2D3E4F5A6B7C8D9E0 /* PetProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A1B1C2D3E4F5A6B7C8D9E0 /* PetProduct.swift */; };
+		15A1B1C2D3E4F5A6B7C8D9E0 /* Quote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A1B1C2D3E4F5A6B7C8D9E0 /* Quote.swift */; };
+		17A1B1C2D3E4F5A6B7C8D9E0 /* Insurance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A1B1C2D3E4F5A6B7C8D9E0 /* Insurance.swift */; };
+		19A1B1C2D3E4F5A6B7C8D9E0 /* VetMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA1B1C2D3E4F5A6B7C8D9E0 /* VetMapTests.swift */; };
+		70A1B1C2D3E4F5A6B7C8D9E0 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71A1B1C2D3E4F5A6B7C8D9E0 /* LocationService.swift */; };
+		72A1B1C2D3E4F5A6B7C8D9E0 /* MockClinicRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A1B1C2D3E4F5A6B7C8D9E0 /* MockClinicRepository.swift */; };
+		74A1B1C2D3E4F5A6B7C8D9E0 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A1B1C2D3E4F5A6B7C8D9E0 /* MapViewModel.swift */; };
+		76A1B1C2D3E4F5A6B7C8D9E0 /* ClinicMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77A1B1C2D3E4F5A6B7C8D9E0 /* ClinicMapView.swift */; };
+		78A1B1C2D3E4F5A6B7C8D9E0 /* ClinicRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79A1B1C2D3E4F5A6B7C8D9E0 /* ClinicRowView.swift */; };
+		7AA1B1C2D3E4F5A6B7C8D9E0 /* ComingSoonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA1B1C2D3E4F5A6B7C8D9E0 /* ComingSoonView.swift */; };
+		7CA1B1C2D3E4F5A6B7C8D9E0 /* HomeTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DA1B1C2D3E4F5A6B7C8D9E0 /* HomeTab.swift */; };
+		7EA1B1C2D3E4F5A6B7C8D9E0 /* ClinicsTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FA1B1C2D3E4F5A6B7C8D9E0 /* ClinicsTab.swift */; };
+		80A1B1C2D3E4F5A6B7C8D9E0 /* ProductsTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81A1B1C2D3E4F5A6B7C8D9E0 /* ProductsTab.swift */; };
+		82A1B1C2D3E4F5A6B7C8D9E0 /* ProfileTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83A1B1C2D3E4F5A6B7C8D9E0 /* ProfileTab.swift */; };
+		8AA1B1C2D3E4F5A6B7C8D9E0 /* ClinicDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BA1B1C2D3E4F5A6B7C8D9E0 /* ClinicDetailView.swift */; };
+		8DA1B1C2D3E4F5A6B7C8D9E0 /* ClinicsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA1B1C2D3E4F5A6B7C8D9E0 /* ClinicsViewModel.swift */; };
+		8FA1B1C2D3E4F5A6B7C8D9E0 /* ClinicListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A1B1C2D3E4F5A6B7C8D9E0 /* ClinicListView.swift */; };
+		91A1B1C2D3E4F5A6B7C8D9E0 /* ClinicListRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92A1B1C2D3E4F5A6B7C8D9E0 /* ClinicListRowView.swift */; };
+		94A1B1C2D3E4F5A6B7C8D9E0 /* AddClinicViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A1B1C2D3E4F5A6B7C8D9E0 /* AddClinicViewModel.swift */; };
+		96A1B1C2D3E4F5A6B7C8D9E0 /* AddClinicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A1B1C2D3E4F5A6B7C8D9E0 /* AddClinicView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		1BA1B1C2D3E4F5A6B7C8D9E0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 50A1B1C2D3E4F5A6B7C8D9E0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 30A1B1C2D3E4F5A6B7C8D9E0;
+			remoteInfo = VetMap;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		02A1B1C2D3E4F5A6B7C8D9E0 /* VetMapApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VetMapApp.swift; sourceTree = "<group>"; };
+		04A1B1C2D3E4F5A6B7C8D9E0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		05A1B1C2D3E4F5A6B7C8D9E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		06A1B1C2D3E4F5A6B7C8D9E0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		07A1B1C2D3E4F5A6B7C8D9E0 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Products.storekit; sourceTree = "<group>"; };
+		08A1B1C2D3E4F5A6B7C8D9E0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		09A1B1C2D3E4F5A6B7C8D9E0 /* VetMap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VetMap.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0BA1B1C2D3E4F5A6B7C8D9E0 /* ClinicCoordinate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClinicCoordinate.swift; sourceTree = "<group>"; };
+		0DA1B1C2D3E4F5A6B7C8D9E0 /* VetClinic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VetClinic.swift; sourceTree = "<group>"; };
+		0FA1B1C2D3E4F5A6B7C8D9E0 /* Review.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Review.swift; sourceTree = "<group>"; };
+		12A1B1C2D3E4F5A6B7C8D9E0 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		14A1B1C2D3E4F5A6B7C8D9E0 /* PetProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetProduct.swift; sourceTree = "<group>"; };
+		16A1B1C2D3E4F5A6B7C8D9E0 /* Quote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quote.swift; sourceTree = "<group>"; };
+		18A1B1C2D3E4F5A6B7C8D9E0 /* Insurance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Insurance.swift; sourceTree = "<group>"; };
+		1AA1B1C2D3E4F5A6B7C8D9E0 /* VetMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VetMapTests.swift; sourceTree = "<group>"; };
+		1DA1B1C2D3E4F5A6B7C8D9E0 /* VetMapTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VetMapTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		71A1B1C2D3E4F5A6B7C8D9E0 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
+		73A1B1C2D3E4F5A6B7C8D9E0 /* MockClinicRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockClinicRepository.swift; sourceTree = "<group>"; };
+		75A1B1C2D3E4F5A6B7C8D9E0 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
+		77A1B1C2D3E4F5A6B7C8D9E0 /* ClinicMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClinicMapView.swift; sourceTree = "<group>"; };
+		79A1B1C2D3E4F5A6B7C8D9E0 /* ClinicRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClinicRowView.swift; sourceTree = "<group>"; };
+		7BA1B1C2D3E4F5A6B7C8D9E0 /* ComingSoonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComingSoonView.swift; sourceTree = "<group>"; };
+		7DA1B1C2D3E4F5A6B7C8D9E0 /* HomeTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTab.swift; sourceTree = "<group>"; };
+		7FA1B1C2D3E4F5A6B7C8D9E0 /* ClinicsTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClinicsTab.swift; sourceTree = "<group>"; };
+		81A1B1C2D3E4F5A6B7C8D9E0 /* ProductsTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsTab.swift; sourceTree = "<group>"; };
+		83A1B1C2D3E4F5A6B7C8D9E0 /* ProfileTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTab.swift; sourceTree = "<group>"; };
+		8BA1B1C2D3E4F5A6B7C8D9E0 /* ClinicDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClinicDetailView.swift; sourceTree = "<group>"; };
+		8EA1B1C2D3E4F5A6B7C8D9E0 /* ClinicsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClinicsViewModel.swift; sourceTree = "<group>"; };
+		90A1B1C2D3E4F5A6B7C8D9E0 /* ClinicListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClinicListView.swift; sourceTree = "<group>"; };
+		92A1B1C2D3E4F5A6B7C8D9E0 /* ClinicListRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClinicListRowView.swift; sourceTree = "<group>"; };
+		95A1B1C2D3E4F5A6B7C8D9E0 /* AddClinicViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddClinicViewModel.swift; sourceTree = "<group>"; };
+		97A1B1C2D3E4F5A6B7C8D9E0 /* AddClinicView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddClinicView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		10A1B1C2D3E4F5A6B7C8D9E0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		33A1B1C2D3E4F5A6B7C8D9E0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		20A1B1C2D3E4F5A6B7C8D9E0 = {
+			isa = PBXGroup;
+			children = (
+				21A1B1C2D3E4F5A6B7C8D9E0 /* VetMap */,
+				24A1B1C2D3E4F5A6B7C8D9E0 /* VetMapTests */,
+				22A1B1C2D3E4F5A6B7C8D9E0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		21A1B1C2D3E4F5A6B7C8D9E0 /* VetMap */ = {
+			isa = PBXGroup;
+			children = (
+				02A1B1C2D3E4F5A6B7C8D9E0 /* VetMapApp.swift */,
+				04A1B1C2D3E4F5A6B7C8D9E0 /* ContentView.swift */,
+				23A1B1C2D3E4F5A6B7C8D9E0 /* Models */,
+				84A1B1C2D3E4F5A6B7C8D9E0 /* Services */,
+				85A1B1C2D3E4F5A6B7C8D9E0 /* ViewModels */,
+				86A1B1C2D3E4F5A6B7C8D9E0 /* Views */,
+				05A1B1C2D3E4F5A6B7C8D9E0 /* Info.plist */,
+				06A1B1C2D3E4F5A6B7C8D9E0 /* Assets.xcassets */,
+				07A1B1C2D3E4F5A6B7C8D9E0 /* Products.storekit */,
+				08A1B1C2D3E4F5A6B7C8D9E0 /* GoogleService-Info.plist */,
+			);
+			path = VetMap;
+			sourceTree = "<group>";
+		};
+		22A1B1C2D3E4F5A6B7C8D9E0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				09A1B1C2D3E4F5A6B7C8D9E0 /* VetMap.app */,
+				1DA1B1C2D3E4F5A6B7C8D9E0 /* VetMapTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		23A1B1C2D3E4F5A6B7C8D9E0 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				0BA1B1C2D3E4F5A6B7C8D9E0 /* ClinicCoordinate.swift */,
+				0DA1B1C2D3E4F5A6B7C8D9E0 /* VetClinic.swift */,
+				0FA1B1C2D3E4F5A6B7C8D9E0 /* Review.swift */,
+				12A1B1C2D3E4F5A6B7C8D9E0 /* UserProfile.swift */,
+				14A1B1C2D3E4F5A6B7C8D9E0 /* PetProduct.swift */,
+				16A1B1C2D3E4F5A6B7C8D9E0 /* Quote.swift */,
+				18A1B1C2D3E4F5A6B7C8D9E0 /* Insurance.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		24A1B1C2D3E4F5A6B7C8D9E0 /* VetMapTests */ = {
+			isa = PBXGroup;
+			children = (
+				1AA1B1C2D3E4F5A6B7C8D9E0 /* VetMapTests.swift */,
+			);
+			path = VetMapTests;
+			sourceTree = "<group>";
+		};
+		84A1B1C2D3E4F5A6B7C8D9E0 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				71A1B1C2D3E4F5A6B7C8D9E0 /* LocationService.swift */,
+				73A1B1C2D3E4F5A6B7C8D9E0 /* MockClinicRepository.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		85A1B1C2D3E4F5A6B7C8D9E0 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				95A1B1C2D3E4F5A6B7C8D9E0 /* AddClinicViewModel.swift */,
+				8EA1B1C2D3E4F5A6B7C8D9E0 /* ClinicsViewModel.swift */,
+				75A1B1C2D3E4F5A6B7C8D9E0 /* MapViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		86A1B1C2D3E4F5A6B7C8D9E0 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				8CA1B1C2D3E4F5A6B7C8D9E0 /* ClinicDetail */,
+				93A1B1C2D3E4F5A6B7C8D9E0 /* Clinics */,
+				98A1B1C2D3E4F5A6B7C8D9E0 /* Community */,
+				87A1B1C2D3E4F5A6B7C8D9E0 /* Map */,
+				88A1B1C2D3E4F5A6B7C8D9E0 /* Shared */,
+				89A1B1C2D3E4F5A6B7C8D9E0 /* TabViews */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		87A1B1C2D3E4F5A6B7C8D9E0 /* Map */ = {
+			isa = PBXGroup;
+			children = (
+				77A1B1C2D3E4F5A6B7C8D9E0 /* ClinicMapView.swift */,
+				79A1B1C2D3E4F5A6B7C8D9E0 /* ClinicRowView.swift */,
+			);
+			path = Map;
+			sourceTree = "<group>";
+		};
+		88A1B1C2D3E4F5A6B7C8D9E0 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				7BA1B1C2D3E4F5A6B7C8D9E0 /* ComingSoonView.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		89A1B1C2D3E4F5A6B7C8D9E0 /* TabViews */ = {
+			isa = PBXGroup;
+			children = (
+				7DA1B1C2D3E4F5A6B7C8D9E0 /* HomeTab.swift */,
+				7FA1B1C2D3E4F5A6B7C8D9E0 /* ClinicsTab.swift */,
+				81A1B1C2D3E4F5A6B7C8D9E0 /* ProductsTab.swift */,
+				83A1B1C2D3E4F5A6B7C8D9E0 /* ProfileTab.swift */,
+			);
+			path = TabViews;
+			sourceTree = "<group>";
+		};
+		8CA1B1C2D3E4F5A6B7C8D9E0 /* ClinicDetail */ = {
+			isa = PBXGroup;
+			children = (
+				8BA1B1C2D3E4F5A6B7C8D9E0 /* ClinicDetailView.swift */,
+			);
+			path = ClinicDetail;
+			sourceTree = "<group>";
+		};
+		93A1B1C2D3E4F5A6B7C8D9E0 /* Clinics */ = {
+			isa = PBXGroup;
+			children = (
+				90A1B1C2D3E4F5A6B7C8D9E0 /* ClinicListView.swift */,
+				92A1B1C2D3E4F5A6B7C8D9E0 /* ClinicListRowView.swift */,
+			);
+			path = Clinics;
+			sourceTree = "<group>";
+		};
+		98A1B1C2D3E4F5A6B7C8D9E0 /* Community */ = {
+			isa = PBXGroup;
+			children = (
+				97A1B1C2D3E4F5A6B7C8D9E0 /* AddClinicView.swift */,
+			);
+			path = Community;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		30A1B1C2D3E4F5A6B7C8D9E0 /* VetMap */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 40A1B1C2D3E4F5A6B7C8D9E0 /* Build configuration list for PBXNativeTarget "VetMap" */;
+			buildPhases = (
+				31A1B1C2D3E4F5A6B7C8D9E0 /* Sources */,
+				10A1B1C2D3E4F5A6B7C8D9E0 /* Frameworks */,
+				32A1B1C2D3E4F5A6B7C8D9E0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = VetMap;
+			productName = VetMap;
+			productReference = 09A1B1C2D3E4F5A6B7C8D9E0 /* VetMap.app */;
+			productType = "com.apple.product-type.application";
+		};
+		34A1B1C2D3E4F5A6B7C8D9E0 /* VetMapTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 41A1B1C2D3E4F5A6B7C8D9E0 /* Build configuration list for PBXNativeTarget "VetMapTests" */;
+			buildPhases = (
+				35A1B1C2D3E4F5A6B7C8D9E0 /* Sources */,
+				33A1B1C2D3E4F5A6B7C8D9E0 /* Frameworks */,
+				36A1B1C2D3E4F5A6B7C8D9E0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1CA1B1C2D3E4F5A6B7C8D9E0 /* PBXTargetDependency */,
+			);
+			name = VetMapTests;
+			productName = VetMapTests;
+			productReference = 1DA1B1C2D3E4F5A6B7C8D9E0 /* VetMapTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		50A1B1C2D3E4F5A6B7C8D9E0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1650;
+				LastUpgradeCheck = 1650;
+			};
+			buildConfigurationList = 51A1B1C2D3E4F5A6B7C8D9E0 /* Build configuration list for PBXProject "VetMap" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = "en-US";
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				"en-US",
+				en,
+				Base,
+				"zh-Hans",
+				"zh-Hant",
+			);
+			mainGroup = 20A1B1C2D3E4F5A6B7C8D9E0;
+			productRefGroup = 22A1B1C2D3E4F5A6B7C8D9E0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				30A1B1C2D3E4F5A6B7C8D9E0 /* VetMap */,
+				34A1B1C2D3E4F5A6B7C8D9E0 /* VetMapTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		32A1B1C2D3E4F5A6B7C8D9E0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		36A1B1C2D3E4F5A6B7C8D9E0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		31A1B1C2D3E4F5A6B7C8D9E0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				01A1B1C2D3E4F5A6B7C8D9E0 /* VetMapApp.swift in Sources */,
+				03A1B1C2D3E4F5A6B7C8D9E0 /* ContentView.swift in Sources */,
+				0AA1B1C2D3E4F5A6B7C8D9E0 /* ClinicCoordinate.swift in Sources */,
+				0CA1B1C2D3E4F5A6B7C8D9E0 /* VetClinic.swift in Sources */,
+				0EA1B1C2D3E4F5A6B7C8D9E0 /* Review.swift in Sources */,
+				11A1B1C2D3E4F5A6B7C8D9E0 /* UserProfile.swift in Sources */,
+				13A1B1C2D3E4F5A6B7C8D9E0 /* PetProduct.swift in Sources */,
+				15A1B1C2D3E4F5A6B7C8D9E0 /* Quote.swift in Sources */,
+				17A1B1C2D3E4F5A6B7C8D9E0 /* Insurance.swift in Sources */,
+				70A1B1C2D3E4F5A6B7C8D9E0 /* LocationService.swift in Sources */,
+				72A1B1C2D3E4F5A6B7C8D9E0 /* MockClinicRepository.swift in Sources */,
+				74A1B1C2D3E4F5A6B7C8D9E0 /* MapViewModel.swift in Sources */,
+				76A1B1C2D3E4F5A6B7C8D9E0 /* ClinicMapView.swift in Sources */,
+				78A1B1C2D3E4F5A6B7C8D9E0 /* ClinicRowView.swift in Sources */,
+				7AA1B1C2D3E4F5A6B7C8D9E0 /* ComingSoonView.swift in Sources */,
+				7CA1B1C2D3E4F5A6B7C8D9E0 /* HomeTab.swift in Sources */,
+				7EA1B1C2D3E4F5A6B7C8D9E0 /* ClinicsTab.swift in Sources */,
+				80A1B1C2D3E4F5A6B7C8D9E0 /* ProductsTab.swift in Sources */,
+				82A1B1C2D3E4F5A6B7C8D9E0 /* ProfileTab.swift in Sources */,
+				8AA1B1C2D3E4F5A6B7C8D9E0 /* ClinicDetailView.swift in Sources */,
+				8DA1B1C2D3E4F5A6B7C8D9E0 /* ClinicsViewModel.swift in Sources */,
+				8FA1B1C2D3E4F5A6B7C8D9E0 /* ClinicListView.swift in Sources */,
+				91A1B1C2D3E4F5A6B7C8D9E0 /* ClinicListRowView.swift in Sources */,
+				94A1B1C2D3E4F5A6B7C8D9E0 /* AddClinicViewModel.swift in Sources */,
+				96A1B1C2D3E4F5A6B7C8D9E0 /* AddClinicView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		35A1B1C2D3E4F5A6B7C8D9E0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				19A1B1C2D3E4F5A6B7C8D9E0 /* VetMapTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1CA1B1C2D3E4F5A6B7C8D9E0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 30A1B1C2D3E4F5A6B7C8D9E0 /* VetMap */;
+			targetProxy = 1BA1B1C2D3E4F5A6B7C8D9E0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		60A1B1C2D3E4F5A6B7C8D9E0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		61A1B1C2D3E4F5A6B7C8D9E0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_OPTIMIZATION_LEVEL = s;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		62A1B1C2D3E4F5A6B7C8D9E0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 637V678N3Q;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = VetMap/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vetmap.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		63A1B1C2D3E4F5A6B7C8D9E0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 637V678N3Q;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = VetMap/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vetmap.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		64A1B1C2D3E4F5A6B7C8D9E0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vetmap.app.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VetMap.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/VetMap";
+			};
+			name = Debug;
+		};
+		65A1B1C2D3E4F5A6B7C8D9E0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.vetmap.app.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VetMap.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/VetMap";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		40A1B1C2D3E4F5A6B7C8D9E0 /* Build configuration list for PBXNativeTarget "VetMap" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				62A1B1C2D3E4F5A6B7C8D9E0 /* Debug */,
+				63A1B1C2D3E4F5A6B7C8D9E0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		41A1B1C2D3E4F5A6B7C8D9E0 /* Build configuration list for PBXNativeTarget "VetMapTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				64A1B1C2D3E4F5A6B7C8D9E0 /* Debug */,
+				65A1B1C2D3E4F5A6B7C8D9E0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		51A1B1C2D3E4F5A6B7C8D9E0 /* Build configuration list for PBXProject "VetMap" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				60A1B1C2D3E4F5A6B7C8D9E0 /* Debug */,
+				61A1B1C2D3E4F5A6B7C8D9E0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 50A1B1C2D3E4F5A6B7C8D9E0 /* Project object */;
+}

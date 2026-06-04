@@ -1,0 +1,85 @@
+import SwiftUI
+
+struct ContentView: View {
+    var body: some View {
+        TabView {
+            HomeTab()
+                .tabItem {
+                    Label("首頁", systemImage: "map.fill")
+                }
+
+            ClinicsTab()
+                .tabItem {
+                    Label("診所", systemImage: "cross.case.fill")
+                }
+
+            ProductsTab()
+                .tabItem {
+                    Label("好物", systemImage: "shippingbox.fill")
+                }
+
+            ProfileTab()
+                .tabItem {
+                    Label("我的", systemImage: "person.fill")
+                }
+        }
+        .tint(AppTheme.primary)
+    }
+}
+
+#Preview {
+    ContentView()
+}
+
+enum AppTheme {
+    static let primary = Color.teal
+    static let accent = Color.indigo
+    static let warning = Color.orange
+    static let screenBackground = Color(.systemGroupedBackground)
+    static let surface = Color(.secondarySystemGroupedBackground)
+    static let cardRadius: CGFloat = 8
+    static let compactRadius: CGFloat = 6
+    static let hairline = Color(.separator).opacity(0.18)
+}
+
+struct AppCardModifier: ViewModifier {
+    var fill: Color = Color(.systemBackground)
+    var stroke: Color = AppTheme.hairline
+
+    func body(content: Content) -> some View {
+        content
+            .background(fill, in: RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous)
+                    .stroke(stroke, lineWidth: 1)
+            )
+    }
+}
+
+struct AppChipModifier: ViewModifier {
+    var tint: Color = AppTheme.primary
+    var isFilled = false
+
+    func body(content: Content) -> some View {
+        content
+            .font(.caption.weight(.medium))
+            .lineLimit(1)
+            .foregroundStyle(isFilled ? .white : tint)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 5)
+            .background(
+                isFilled ? tint : tint.opacity(0.11),
+                in: RoundedRectangle(cornerRadius: AppTheme.compactRadius, style: .continuous)
+            )
+    }
+}
+
+extension View {
+    func appCard(fill: Color = Color(.systemBackground), stroke: Color = AppTheme.hairline) -> some View {
+        modifier(AppCardModifier(fill: fill, stroke: stroke))
+    }
+
+    func appChip(tint: Color = AppTheme.primary, isFilled: Bool = false) -> some View {
+        modifier(AppChipModifier(tint: tint, isFilled: isFilled))
+    }
+}
