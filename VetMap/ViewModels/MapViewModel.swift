@@ -14,6 +14,8 @@ final class MapViewModel: ObservableObject {
             syncSelectionWithFilteredClinics(shouldFocus: true)
         }
     }
+    @Published var isLoading = false
+    @Published var networkError: String?
 
     private let repository: MockClinicRepository
     private var cancellables: Set<AnyCancellable> = []
@@ -38,7 +40,13 @@ final class MapViewModel: ObservableObject {
         loadClinics(focusingOn: nil)
     }
 
+    func retryLoad() {
+        loadClinics()
+    }
+
     private func loadClinics(focusingOn clinicID: String?) {
+        isLoading = true
+        networkError = nil
         let previousSelectedClinicID = selectedClinicID
         clinics = repository.fetchClinics()
 
@@ -49,6 +57,7 @@ final class MapViewModel: ObservableObject {
         } else {
             selectedClinicID = filteredClinics.first?.id
         }
+        isLoading = false
     }
 
     func focus(on clinic: VetClinic) {
