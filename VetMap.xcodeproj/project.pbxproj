@@ -25,7 +25,7 @@
 		497643899F2C6383873B140D /* InsuranceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1A47F69DA8225881617EE0 /* InsuranceListView.swift */; };
 		4CE945CB80CDE550173FC160 /* ProductDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E464213889D8EC6D58C0721 /* ProductDetailView.swift */; };
 		655E4741980D9BB70913E09F /* FirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F3468FA62389CFBCA30E85 /* FirebaseService.swift */; };
-		6F2C454189A60F963BD3B543 /* KingfisherImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B136435B81C60F2F76D2ABDD /* KingfisherImage.swift */; };
+				6F2C454189A60F963BD3B543 /* KingfisherImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B136435B81C60F2F76D2ABDD /* KingfisherImage.swift */; };
 		6F8145DAB23A4BEB3B3E3511 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54147BD87315AD622A78B1F /* SignUpView.swift */; };
 		70A1B1C2D3E4F5A6B7C8D9E0 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71A1B1C2D3E4F5A6B7C8D9E0 /* LocationService.swift */; };
 		712A4F6194CF774A7F4DB6B9 /* QuoteListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82F4A8EA14EF69F59941560 /* QuoteListView.swift */; };
@@ -57,6 +57,7 @@
 		B2A1B1C2D3E4F5A6B7C8D9E0 /* ClinicFilterControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A1B1C2D3E4F5A6B7C8D9E0 /* ClinicFilterControls.swift */; };
 		B9E748A38E25D9A365A4C448 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94F24A2CB8399BA89195FEA8 /* AuthViewModel.swift */; };
 		BA2642C4975E683817973F13 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49784B5ABE69AD0F526EA250 /* ErrorView.swift */; };
+		2E68725801FDE84A44B24784 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1261FEB61C93743B3AB5CD1F /* NetworkMonitor.swift */; };
 		C0284768A62037364B4E8473 /* MockInsuranceRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F446A0B36B60108EF1A41C /* MockInsuranceRepository.swift */; };
 		C0A1B1C2D3E4F5A6B7C8D9E0 /* MockCommunityRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A1B1C2D3E4F5A6B7C8D9E0 /* MockCommunityRepository.swift */; };
 		C2A1B1C2D3E4F5A6B7C8D9E0 /* ClinicDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A1B1C2D3E4F5A6B7C8D9E0 /* ClinicDetailViewModel.swift */; };
@@ -145,6 +146,7 @@
 		44804D4AB6A48CB0DC6712B0 /* ReviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReviewViewModel.swift; path = VetMap/ViewModels/ReviewViewModel.swift; sourceTree = SOURCE_ROOT; };
 		45B04EAB9E64AB53921419B9 /* IAPService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = IAPService.swift; path = VetMap/Services/IAPService.swift; sourceTree = SOURCE_ROOT; };
 		49784B5ABE69AD0F526EA250 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ErrorView.swift; path = VetMap/Utilities/ErrorView.swift; sourceTree = SOURCE_ROOT; };
+		1261FEB61C93743B3AB5CD1F /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NetworkMonitor.swift; path = VetMap/Utilities/NetworkMonitor.swift; sourceTree = SOURCE_ROOT; };
 		4C374418B1CD8FD71EF37BD9 /* PremiumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PremiumView.swift; path = VetMap/Views/Profile/PremiumView.swift; sourceTree = SOURCE_ROOT; };
 		4F364081A8589D712031CD7B /* AddQuoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AddQuoteView.swift; path = VetMap/Views/Community/AddQuoteView.swift; sourceTree = SOURCE_ROOT; };
 		5DA34F75A118C4A8F78DD8A3 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LoginView.swift; path = VetMap/Views/Profile/LoginView.swift; sourceTree = SOURCE_ROOT; };
@@ -478,6 +480,7 @@
 				00534FDABECEC47FFBB7F277 /* EmptyStateView.swift */,
 				387A4EEC83D190FCAA87F293 /* LoadingView.swift */,
 				49784B5ABE69AD0F526EA250 /* ErrorView.swift */,
+				1261FEB61C93743B3AB5CD1F /* NetworkMonitor.swift */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -665,6 +668,7 @@
 				2333436A812FC13D26F01472 /* EmptyStateView.swift in Sources */,
 				E64F4C3D9C6229DF3F6A46C1 /* LoadingView.swift in Sources */,
 				BA2642C4975E683817973F13 /* ErrorView.swift in Sources */,
+				2E68725801FDE84A44B24784 /* NetworkMonitor.swift in Sources */,
 				4CE945CB80CDE550173FC160 /* ProductDetailView.swift in Sources */,
 				96AB43539F9D7172E7DE3999 /* ProductListView.swift in Sources */,
 				92AF4BF0BF6F768F4C0E3CE2 /* ClinicRepository.swift in Sources */,
