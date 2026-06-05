@@ -4,49 +4,98 @@ struct ClinicListView: View {
     @StateObject private var viewModel = ClinicsViewModel()
     @State private var clinicForDetail: VetClinic?
     @State private var isAddingClinic = false
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
+        if horizontalSizeClass == .regular {
+            ipadLayout
+        } else {
+            iphoneLayout
+        }
+    }
+
+    private var iphoneLayout: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    header
-                    filterBar
-                    storageErrorBanner
-                    resultsSummary
-                    clinicRows
-                }
-                .padding(.horizontal, 16)
-                .padding(.top, 12)
-                .padding(.bottom, 24)
-            }
-            .refreshable {
-                viewModel.loadClinics()
-            }
-            .background(AppTheme.screenBackground)
-            .navigationTitle("獸醫診所")
-            .navigationBarTitleDisplayMode(.large)
-            .searchable(text: $viewModel.filter.query, prompt: "搜尋診所、地區、服務")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        isAddingClinic = true
-                    } label: {
-                        Image(systemName: "plus")
+            clinicListContent
+                .navigationTitle("獸醫診所")
+                .navigationBarTitleDisplayMode(.large)
+                .searchable(text: $viewModel.filter.query, prompt: "搜尋診所、地區、服務")
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            isAddingClinic = true
+                        } label: {
+                            Image(systemName: "plus")
+                        }
+                        .accessibilityLabel("新增診所")
                     }
-                    .accessibilityLabel("新增診所")
                 }
-            }
-            .sheet(item: $clinicForDetail) { clinic in
-                ClinicDetailView(clinic: clinic)
-            }
-            .sheet(isPresented: $isAddingClinic) {
-                AddClinicView { clinic in
-                    viewModel.addClinic(clinic)
+                .sheet(item: $clinicForDetail) { clinic in
+                    ClinicDetailView(clinic: clinic)
                 }
+                .sheet(isPresented: $isAddingClinic) {
+                    AddClinicView { clinic in
+                        viewModel.addClinic(clinic)
+                    }
+                }
+        }
+    }
+
+    private var ipadLayout: some View {
+        NavigationSplitView {
+            clinicListContent
+                .navigationTitle("獸醫診所")
+                .navigationBarTitleDisplayMode(.large)
+                .searchable(text: $viewModel.filter.query, prompt: "搜尋診所、地區、服務")
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            isAddingClinic = true
+                        } label: {
+                            Image(systemName: "plus")
+                        }
+                        .accessibilityLabel("新增診所")
+                    }
+                }
+                .sheet(isPresented: $isAddingClinic) {
+                    AddClinicView { clinic in
+                        viewModel.addClinic(clinic)
+                    }
+                }
+        } detail: {
+            if let clinic = clinicForDetail {
+                NavigationStack {
+                    ClinicDetailView(clinic: clinic)
+                }
+            } else {
+                ContentUnavailableView(
+                    "選擇診所",
+                    systemImage: "cross.case",
+                    description: Text("從列表中選擇一間診所以查看詳情")
+                )
             }
-            .onAppear {
-                viewModel.loadClinics()
+        }
+    }
+
+    private var clinicListContent: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                header
+                filterBar
+                storageErrorBanner
+                resultsSummary
+                clinicRows
             }
+            .padding(.horizontal, 16)
+            .padding(.top, 12)
+            .padding(.bottom, 24)
+        }
+        .refreshable {
+            viewModel.loadClinics()
+        }
+        .background(AppTheme.screenBackground)
+        .onAppear {
+            viewModel.loadClinics()
         }
     }
 

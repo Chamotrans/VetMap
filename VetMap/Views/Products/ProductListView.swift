@@ -2,11 +2,13 @@ import SwiftUI
 
 struct ProductListView: View {
     @ObservedObject var viewModel: ProductViewModel
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @State private var productForSheet: PetProduct?
 
-    private let columns = [
-        GridItem(.flexible(), spacing: 12),
-        GridItem(.flexible(), spacing: 12)
-    ]
+    private var columns: [GridItem] {
+        let count = horizontalSizeClass == .regular ? 3 : 2
+        return Array(repeating: GridItem(.flexible(), spacing: 12), count: count)
+    }
 
     var body: some View {
         ScrollView {
@@ -14,18 +16,37 @@ struct ProductListView: View {
 
             LazyVGrid(columns: columns, spacing: 12) {
                 ForEach(viewModel.filteredProducts) { product in
-                    NavigationLink {
-                        ProductDetailView(product: product)
-                    } label: {
-                        ProductCardView(product: product)
-                    }
-                    .buttonStyle(.plain)
+                    productButton(for: product)
                 }
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 24)
         }
         .background(AppTheme.screenBackground)
+        .sheet(item: $productForSheet) { product in
+            NavigationStack {
+                ProductDetailView(product: product)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func productButton(for product: PetProduct) -> some View {
+        if horizontalSizeClass == .regular {
+            Button {
+                productForSheet = product
+            } label: {
+                ProductCardView(product: product)
+            }
+            .buttonStyle(.plain)
+        } else {
+            NavigationLink {
+                ProductDetailView(product: product)
+            } label: {
+                ProductCardView(product: product)
+            }
+            .buttonStyle(.plain)
+        }
     }
 }
 

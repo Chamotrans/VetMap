@@ -2,35 +2,32 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var networkMonitor = NetworkMonitor()
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @State private var selectedTab: SidebarTab? = .home
+
+    enum SidebarTab: String, CaseIterable {
+        case home = "首頁"
+        case clinics = "診所"
+        case products = "好物"
+        case profile = "我的"
+
+        var systemImage: String {
+            switch self {
+            case .home: "map.fill"
+            case .clinics: "cross.case.fill"
+            case .products: "shippingbox.fill"
+            case .profile: "person.fill"
+            }
+        }
+    }
 
     var body: some View {
         ZStack(alignment: .top) {
-            TabView {
-                HomeTab()
-                    .tabItem {
-                        Label("首頁", systemImage: "map.fill")
-                    }
-                    .accessibilityLabel("首頁")
-
-                ClinicsTab()
-                    .tabItem {
-                        Label("診所", systemImage: "cross.case.fill")
-                    }
-                    .accessibilityLabel("診所")
-
-                ProductsTab()
-                    .tabItem {
-                        Label("好物", systemImage: "shippingbox.fill")
-                    }
-                    .accessibilityLabel("好物")
-
-                ProfileTab()
-                    .tabItem {
-                        Label("我的", systemImage: "person.fill")
-                    }
-                    .accessibilityLabel("我的")
+            if horizontalSizeClass == .regular {
+                ipadLayout
+            } else {
+                iphoneLayout
             }
-            .tint(AppTheme.primary)
 
             if !networkMonitor.isConnected {
                 Text("離線模式 — 顯示本機資料")
@@ -39,6 +36,69 @@ struct ContentView: View {
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 8)
                     .background(AppTheme.warning)
+            }
+        }
+    }
+
+    private var iphoneLayout: some View {
+        TabView {
+            HomeTab()
+                .tabItem {
+                    Label("首頁", systemImage: "map.fill")
+                }
+                .accessibilityLabel("首頁")
+
+            ClinicsTab()
+                .tabItem {
+                    Label("診所", systemImage: "cross.case.fill")
+                }
+                .accessibilityLabel("診所")
+
+            ProductsTab()
+                .tabItem {
+                    Label("好物", systemImage: "shippingbox.fill")
+                }
+                .accessibilityLabel("好物")
+
+            ProfileTab()
+                .tabItem {
+                    Label("我的", systemImage: "person.fill")
+                }
+                .accessibilityLabel("我的")
+        }
+        .tint(AppTheme.primary)
+    }
+
+    private var ipadLayout: some View {
+        NavigationSplitView {
+            List(selection: $selectedTab) {
+                ForEach(SidebarTab.allCases, id: \.self) { tab in
+                    Label(tab.rawValue, systemImage: tab.systemImage)
+                        .tag(tab)
+                }
+            }
+            .navigationTitle("VetMap")
+            .listStyle(.sidebar)
+        } detail: {
+            Group {
+                if let selectedTab {
+                    switch selectedTab {
+                    case .home:
+                        HomeTab()
+                    case .clinics:
+                        ClinicsTab()
+                    case .products:
+                        ProductsTab()
+                    case .profile:
+                        ProfileTab()
+                    }
+                } else {
+                    ContentUnavailableView(
+                        "選擇分頁",
+                        systemImage: "sidebar.left",
+                        description: Text("從側邊欄選擇一個分頁")
+                    )
+                }
             }
         }
     }
