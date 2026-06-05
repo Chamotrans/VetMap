@@ -44,6 +44,29 @@ struct AddClinicView: View {
                 }
 
                 Section {
+                    Button {
+                        focusedField = nil
+                        Task {
+                            await viewModel.lookupAddressLocation()
+                        }
+                    } label: {
+                        HStack {
+                            if viewModel.isResolvingLocation {
+                                ProgressView()
+                            } else {
+                                Image(systemName: "magnifyingglass")
+                                    .accessibilityHidden(true)
+                            }
+
+                            Text(viewModel.isResolvingLocation ? "查找中" : "查找位置")
+                                .fontWeight(.semibold)
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
+                    .buttonBorderShape(.roundedRectangle(radius: AppTheme.cardRadius))
+                    .disabled(!viewModel.canLookupAddress)
+
                     Picker("地區", selection: $viewModel.selectedRegion) {
                         ForEach(AddClinicViewModel.RegionPreset.allCases) { region in
                             Text(region.rawValue).tag(region)
@@ -59,6 +82,8 @@ struct AddClinicView: View {
                             .keyboardType(.decimalPad)
                             .focused($focusedField, equals: .longitude)
                     }
+
+                    locationLookupFeedback
                 } header: {
                     Label("位置", systemImage: "mappin.and.ellipse")
                 }
@@ -138,6 +163,24 @@ struct AddClinicView: View {
         guard let clinic = viewModel.makeClinic() else { return }
         onSubmit(clinic)
         dismiss()
+    }
+
+    @ViewBuilder
+    private var locationLookupFeedback: some View {
+        switch viewModel.locationLookupState {
+        case .idle, .resolving:
+            EmptyView()
+        case .resolved(let message):
+            Label(message, systemImage: "checkmark.circle.fill")
+                .font(.footnote.weight(.medium))
+                .foregroundStyle(AppTheme.primary)
+                .fixedSize(horizontal: false, vertical: true)
+        case .failed(let message):
+            Label(message, systemImage: "exclamationmark.triangle.fill")
+                .font(.footnote.weight(.medium))
+                .foregroundStyle(AppTheme.warning)
+                .fixedSize(horizontal: false, vertical: true)
+        }
     }
 }
 

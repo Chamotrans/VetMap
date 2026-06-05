@@ -103,6 +103,65 @@ final class VetMapModelTests: XCTestCase {
         XCTAssertNil(viewModel.makeClinic())
     }
 
+    @MainActor
+    func testAddClinicViewModelLookupAddressPopulatesCustomCoordinate() async throws {
+        let viewModel = makeValidAddClinicViewModel(
+            geocodingService: StubGeocodingService(
+                result: .success(
+                    GeocodingResult(
+                        coordinate: ClinicCoordinate(latitude: 22.2811234, longitude: 114.1589876),
+                        displayName: "中環動物醫院"
+                    )
+                )
+            )
+        )
+        viewModel.selectedRegion = .taipei
+
+        await viewModel.lookupAddressLocation()
+
+        XCTAssertEqual(viewModel.selectedRegion, .custom)
+        XCTAssertEqual(viewModel.latitude, "22.281123")
+        XCTAssertEqual(viewModel.longitude, "114.158988")
+        XCTAssertEqual(viewModel.locationLookupState, .resolved("已找到：中環動物醫院"))
+
+        let clinic = try XCTUnwrap(viewModel.makeClinic())
+        XCTAssertEqual(clinic.coordinate.latitude, 22.281123, accuracy: 0.000001)
+        XCTAssertEqual(clinic.coordinate.longitude, 114.158988, accuracy: 0.000001)
+    }
+
+    @MainActor
+    func testAddClinicViewModelLookupAddressFailureKeepsRegionFallback() async {
+        let viewModel = makeValidAddClinicViewModel(
+            geocodingService: StubGeocodingService(result: .failure(StubGeocodingError.notFound))
+        )
+        viewModel.selectedRegion = .hongKong
+
+        await viewModel.lookupAddressLocation()
+
+        XCTAssertEqual(viewModel.selectedRegion, .hongKong)
+        XCTAssertEqual(viewModel.locationLookupState, .failed("找不到位置，請手動輸入經緯度。"))
+        XCTAssertTrue(viewModel.canSubmit)
+    }
+
+    @MainActor
+    func testAddClinicViewModelEditingAddressClearsLookupState() async {
+        let viewModel = makeValidAddClinicViewModel(
+            geocodingService: StubGeocodingService(
+                result: .success(
+                    GeocodingResult(
+                        coordinate: ClinicCoordinate(latitude: 22.2811234, longitude: 114.1589876),
+                        displayName: "中環動物醫院"
+                    )
+                )
+            )
+        )
+
+        await viewModel.lookupAddressLocation()
+        viewModel.address = "香港灣仔皇后大道東"
+
+        XCTAssertEqual(viewModel.locationLookupState, .idle)
+    }
+
     private func assertRoundTrip<T: Codable & Equatable>(_ value: T) throws {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
@@ -142,8 +201,10 @@ final class VetMapModelTests: XCTestCase {
     }
 
     @MainActor
-    private func makeValidAddClinicViewModel() -> AddClinicViewModel {
-        let viewModel = AddClinicViewModel()
+    private func makeValidAddClinicViewModel(
+        geocodingService: GeocodingServicing = GeocodingService()
+    ) -> AddClinicViewModel {
+        let viewModel = AddClinicViewModel(geocodingService: geocodingService)
         viewModel.name = "座標測試診所"
         viewModel.address = "測試地址"
         viewModel.phone = "+886-2-0000-0000"
@@ -226,4 +287,16 @@ final class VetMapModelTests: XCTestCase {
             contactPhone: "+886-2-2222-3333"
         )
     }
+}
+
+private struct StubGeocodingService: GeocodingServicing {
+    let result: Result<GeocodingResult, Error>
+
+    func resolve(address: String) async throws -> GeocodingResult {
+        try result.get()
+    }
+}
+
+private enum StubGeocodingError: Error {
+    case notFound
 }

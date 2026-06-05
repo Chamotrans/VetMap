@@ -18,6 +18,7 @@
 		17A1B1C2D3E4F5A6B7C8D9E0 /* Insurance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A1B1C2D3E4F5A6B7C8D9E0 /* Insurance.swift */; };
 		19A1B1C2D3E4F5A6B7C8D9E0 /* VetMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA1B1C2D3E4F5A6B7C8D9E0 /* VetMapTests.swift */; };
 		70A1B1C2D3E4F5A6B7C8D9E0 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71A1B1C2D3E4F5A6B7C8D9E0 /* LocationService.swift */; };
+		A0A1B1C2D3E4F5A6B7C8D9E0 /* GeocodingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A1B1C2D3E4F5A6B7C8D9E0 /* GeocodingService.swift */; };
 		72A1B1C2D3E4F5A6B7C8D9E0 /* MockClinicRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A1B1C2D3E4F5A6B7C8D9E0 /* MockClinicRepository.swift */; };
 		74A1B1C2D3E4F5A6B7C8D9E0 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A1B1C2D3E4F5A6B7C8D9E0 /* MapViewModel.swift */; };
 		76A1B1C2D3E4F5A6B7C8D9E0 /* ClinicMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77A1B1C2D3E4F5A6B7C8D9E0 /* ClinicMapView.swift */; };
@@ -63,6 +64,7 @@
 		1AA1B1C2D3E4F5A6B7C8D9E0 /* VetMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VetMapTests.swift; sourceTree = "<group>"; };
 		1DA1B1C2D3E4F5A6B7C8D9E0 /* VetMapTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VetMapTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		71A1B1C2D3E4F5A6B7C8D9E0 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
+		A1A1B1C2D3E4F5A6B7C8D9E0 /* GeocodingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeocodingService.swift; sourceTree = "<group>"; };
 		73A1B1C2D3E4F5A6B7C8D9E0 /* MockClinicRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockClinicRepository.swift; sourceTree = "<group>"; };
 		75A1B1C2D3E4F5A6B7C8D9E0 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		77A1B1C2D3E4F5A6B7C8D9E0 /* ClinicMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClinicMapView.swift; sourceTree = "<group>"; };
@@ -159,6 +161,7 @@
 			isa = PBXGroup;
 			children = (
 				71A1B1C2D3E4F5A6B7C8D9E0 /* LocationService.swift */,
+				A1A1B1C2D3E4F5A6B7C8D9E0 /* GeocodingService.swift */,
 				73A1B1C2D3E4F5A6B7C8D9E0 /* MockClinicRepository.swift */,
 			);
 			path = Services;
@@ -342,6 +345,7 @@
 				15A1B1C2D3E4F5A6B7C8D9E0 /* Quote.swift in Sources */,
 				17A1B1C2D3E4F5A6B7C8D9E0 /* Insurance.swift in Sources */,
 				70A1B1C2D3E4F5A6B7C8D9E0 /* LocationService.swift in Sources */,
+				A0A1B1C2D3E4F5A6B7C8D9E0 /* GeocodingService.swift in Sources */,
 				72A1B1C2D3E4F5A6B7C8D9E0 /* MockClinicRepository.swift in Sources */,
 				74A1B1C2D3E4F5A6B7C8D9E0 /* MapViewModel.swift in Sources */,
 				76A1B1C2D3E4F5A6B7C8D9E0 /* ClinicMapView.swift in Sources */,

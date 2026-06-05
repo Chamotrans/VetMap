@@ -2,6 +2,13 @@ import Foundation
 
 @MainActor
 final class AddClinicViewModel: ObservableObject {
+    enum LocationLookupState: Equatable {
+        case idle
+        case resolving
+        case resolved(String)
+        case failed(String)
+    }
+
     enum RegionPreset: String, CaseIterable, Identifiable {
         case taipei = "台北"
         case hongKong = "香港"
@@ -22,10 +29,22 @@ final class AddClinicViewModel: ObservableObject {
     }
 
     @Published var name = ""
-    @Published var address = ""
+    @Published var address = "" {
+        didSet {
+            if oldValue != address {
+                locationLookupState = .idle
+            }
+        }
+    }
     @Published var phone = ""
     @Published var website = ""
-    @Published var selectedRegion: RegionPreset = .taipei
+    @Published var selectedRegion: RegionPreset = .taipei {
+        didSet {
+            if selectedRegion != .custom {
+                locationLookupState = .idle
+            }
+        }
+    }
     @Published var latitude = ""
     @Published var longitude = ""
     @Published var services = "一般診療, 疫苗"
@@ -34,12 +53,52 @@ final class AddClinicViewModel: ObservableObject {
     @Published var priceLevel = 2
     @Published var verified = false
     @Published var validationMessage: String?
+    @Published private(set) var locationLookupState: LocationLookupState = .idle
+
+    private let geocodingService: GeocodingServicing
+
+    init(geocodingService: GeocodingServicing = GeocodingService()) {
+        self.geocodingService = geocodingService
+    }
 
     var canSubmit: Bool {
         !trimmed(name).isEmpty
             && !trimmed(address).isEmpty
             && !trimmed(phone).isEmpty
             && resolvedCoordinate != nil
+    }
+
+    var canLookupAddress: Bool {
+        !trimmed(address).isEmpty && locationLookupState != .resolving
+    }
+
+    var isResolvingLocation: Bool {
+        locationLookupState == .resolving
+    }
+
+    func lookupAddressLocation() async {
+        let query = trimmed(address)
+        guard !query.isEmpty else {
+            locationLookupState = .failed("請先填寫地址。")
+            return
+        }
+
+        locationLookupState = .resolving
+
+        do {
+            let result = try await geocodingService.resolve(address: query)
+            guard query == trimmed(address) else { return }
+
+            selectedRegion = .custom
+            latitude = Self.formatCoordinate(result.coordinate.latitude)
+            longitude = Self.formatCoordinate(result.coordinate.longitude)
+            locationLookupState = .resolved("已找到：\(result.displayName)")
+            validationMessage = nil
+        } catch {
+            guard query == trimmed(address) else { return }
+
+            locationLookupState = .failed("找不到位置，請手動輸入經緯度。")
+        }
     }
 
     func makeClinic() -> VetClinic? {
@@ -109,5 +168,9 @@ final class AddClinicViewModel: ObservableObject {
         }
 
         return ClinicCoordinate(latitude: latitude, longitude: longitude)
+    }
+
+    private static func formatCoordinate(_ value: Double) -> String {
+        String(format: "%.6f", value)
     }
 }
