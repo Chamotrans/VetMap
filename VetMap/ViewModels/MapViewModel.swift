@@ -9,6 +9,11 @@ final class MapViewModel: ObservableObject {
     @Published private(set) var clinics: [VetClinic] = []
     @Published var selectedClinicID: String?
     @Published var cameraPosition: MapCameraPosition
+    @Published var filter = ClinicSearchFilter() {
+        didSet {
+            syncSelectionWithFilteredClinics(shouldFocus: true)
+        }
+    }
 
     private let repository: MockClinicRepository
     private var cancellables: Set<AnyCancellable> = []
@@ -21,8 +26,12 @@ final class MapViewModel: ObservableObject {
     }
 
     var selectedClinic: VetClinic? {
-        guard let selectedClinicID else { return clinics.first }
-        return clinics.first { $0.id == selectedClinicID }
+        guard let selectedClinicID else { return filteredClinics.first }
+        return filteredClinics.first { $0.id == selectedClinicID }
+    }
+
+    var filteredClinics: [VetClinic] {
+        filter.results(from: clinics)
     }
 
     func loadClinics() {
@@ -33,12 +42,12 @@ final class MapViewModel: ObservableObject {
         let previousSelectedClinicID = selectedClinicID
         clinics = repository.fetchClinics()
 
-        if let clinicID, let clinic = clinics.first(where: { $0.id == clinicID }) {
+        if let clinicID, let clinic = filteredClinics.first(where: { $0.id == clinicID }) {
             focus(on: clinic)
-        } else if let previousSelectedClinicID, clinics.contains(where: { $0.id == previousSelectedClinicID }) {
+        } else if let previousSelectedClinicID, filteredClinics.contains(where: { $0.id == previousSelectedClinicID }) {
             selectedClinicID = previousSelectedClinicID
         } else {
-            selectedClinicID = clinics.first?.id
+            selectedClinicID = filteredClinics.first?.id
         }
     }
 
@@ -63,6 +72,10 @@ final class MapViewModel: ObservableObject {
         )
     }
 
+    func clearFilters() {
+        filter = ClinicSearchFilter()
+    }
+
     static let defaultRegion = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 25.0381, longitude: 121.5432),
         span: MKCoordinateSpan(latitudeDelta: 0.08, longitudeDelta: 0.08)
@@ -77,6 +90,25 @@ final class MapViewModel: ObservableObject {
                 }
             }
             .store(in: &cancellables)
+    }
+
+    private func syncSelectionWithFilteredClinics(shouldFocus: Bool) {
+        let visibleClinics = filteredClinics
+
+        guard let firstClinic = visibleClinics.first else {
+            selectedClinicID = nil
+            return
+        }
+
+        if let selectedClinicID, visibleClinics.contains(where: { $0.id == selectedClinicID }) {
+            return
+        }
+
+        selectedClinicID = firstClinic.id
+
+        if shouldFocus {
+            focus(on: firstClinic)
+        }
     }
 }
 

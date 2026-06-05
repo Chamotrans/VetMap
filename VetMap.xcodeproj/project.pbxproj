@@ -16,6 +16,7 @@
 		13A1B1C2D3E4F5A6B7C8D9E0 /* PetProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A1B1C2D3E4F5A6B7C8D9E0 /* PetProduct.swift */; };
 		15A1B1C2D3E4F5A6B7C8D9E0 /* Quote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A1B1C2D3E4F5A6B7C8D9E0 /* Quote.swift */; };
 		17A1B1C2D3E4F5A6B7C8D9E0 /* Insurance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A1B1C2D3E4F5A6B7C8D9E0 /* Insurance.swift */; };
+		B0A1B1C2D3E4F5A6B7C8D9E0 /* ClinicSearchFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A1B1C2D3E4F5A6B7C8D9E0 /* ClinicSearchFilter.swift */; };
 		19A1B1C2D3E4F5A6B7C8D9E0 /* VetMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA1B1C2D3E4F5A6B7C8D9E0 /* VetMapTests.swift */; };
 		70A1B1C2D3E4F5A6B7C8D9E0 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71A1B1C2D3E4F5A6B7C8D9E0 /* LocationService.swift */; };
 		A0A1B1C2D3E4F5A6B7C8D9E0 /* GeocodingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A1B1C2D3E4F5A6B7C8D9E0 /* GeocodingService.swift */; };
@@ -24,6 +25,7 @@
 		76A1B1C2D3E4F5A6B7C8D9E0 /* ClinicMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77A1B1C2D3E4F5A6B7C8D9E0 /* ClinicMapView.swift */; };
 		78A1B1C2D3E4F5A6B7C8D9E0 /* ClinicRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79A1B1C2D3E4F5A6B7C8D9E0 /* ClinicRowView.swift */; };
 		7AA1B1C2D3E4F5A6B7C8D9E0 /* ComingSoonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA1B1C2D3E4F5A6B7C8D9E0 /* ComingSoonView.swift */; };
+		B2A1B1C2D3E4F5A6B7C8D9E0 /* ClinicFilterControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A1B1C2D3E4F5A6B7C8D9E0 /* ClinicFilterControls.swift */; };
 		7CA1B1C2D3E4F5A6B7C8D9E0 /* HomeTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DA1B1C2D3E4F5A6B7C8D9E0 /* HomeTab.swift */; };
 		7EA1B1C2D3E4F5A6B7C8D9E0 /* ClinicsTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FA1B1C2D3E4F5A6B7C8D9E0 /* ClinicsTab.swift */; };
 		80A1B1C2D3E4F5A6B7C8D9E0 /* ProductsTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81A1B1C2D3E4F5A6B7C8D9E0 /* ProductsTab.swift */; };
@@ -61,6 +63,7 @@
 		14A1B1C2D3E4F5A6B7C8D9E0 /* PetProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetProduct.swift; sourceTree = "<group>"; };
 		16A1B1C2D3E4F5A6B7C8D9E0 /* Quote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quote.swift; sourceTree = "<group>"; };
 		18A1B1C2D3E4F5A6B7C8D9E0 /* Insurance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Insurance.swift; sourceTree = "<group>"; };
+		B1A1B1C2D3E4F5A6B7C8D9E0 /* ClinicSearchFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClinicSearchFilter.swift; sourceTree = "<group>"; };
 		1AA1B1C2D3E4F5A6B7C8D9E0 /* VetMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VetMapTests.swift; sourceTree = "<group>"; };
 		1DA1B1C2D3E4F5A6B7C8D9E0 /* VetMapTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VetMapTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		71A1B1C2D3E4F5A6B7C8D9E0 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
@@ -70,6 +73,7 @@
 		77A1B1C2D3E4F5A6B7C8D9E0 /* ClinicMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClinicMapView.swift; sourceTree = "<group>"; };
 		79A1B1C2D3E4F5A6B7C8D9E0 /* ClinicRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClinicRowView.swift; sourceTree = "<group>"; };
 		7BA1B1C2D3E4F5A6B7C8D9E0 /* ComingSoonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComingSoonView.swift; sourceTree = "<group>"; };
+		B3A1B1C2D3E4F5A6B7C8D9E0 /* ClinicFilterControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClinicFilterControls.swift; sourceTree = "<group>"; };
 		7DA1B1C2D3E4F5A6B7C8D9E0 /* HomeTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTab.swift; sourceTree = "<group>"; };
 		7FA1B1C2D3E4F5A6B7C8D9E0 /* ClinicsTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClinicsTab.swift; sourceTree = "<group>"; };
 		81A1B1C2D3E4F5A6B7C8D9E0 /* ProductsTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsTab.swift; sourceTree = "<group>"; };
@@ -145,6 +149,7 @@
 				14A1B1C2D3E4F5A6B7C8D9E0 /* PetProduct.swift */,
 				16A1B1C2D3E4F5A6B7C8D9E0 /* Quote.swift */,
 				18A1B1C2D3E4F5A6B7C8D9E0 /* Insurance.swift */,
+				B1A1B1C2D3E4F5A6B7C8D9E0 /* ClinicSearchFilter.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -203,6 +208,7 @@
 			isa = PBXGroup;
 			children = (
 				7BA1B1C2D3E4F5A6B7C8D9E0 /* ComingSoonView.swift */,
+				B3A1B1C2D3E4F5A6B7C8D9E0 /* ClinicFilterControls.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -344,6 +350,7 @@
 				13A1B1C2D3E4F5A6B7C8D9E0 /* PetProduct.swift in Sources */,
 				15A1B1C2D3E4F5A6B7C8D9E0 /* Quote.swift in Sources */,
 				17A1B1C2D3E4F5A6B7C8D9E0 /* Insurance.swift in Sources */,
+				B0A1B1C2D3E4F5A6B7C8D9E0 /* ClinicSearchFilter.swift in Sources */,
 				70A1B1C2D3E4F5A6B7C8D9E0 /* LocationService.swift in Sources */,
 				A0A1B1C2D3E4F5A6B7C8D9E0 /* GeocodingService.swift in Sources */,
 				72A1B1C2D3E4F5A6B7C8D9E0 /* MockClinicRepository.swift in Sources */,
@@ -351,6 +358,7 @@
 				76A1B1C2D3E4F5A6B7C8D9E0 /* ClinicMapView.swift in Sources */,
 				78A1B1C2D3E4F5A6B7C8D9E0 /* ClinicRowView.swift in Sources */,
 				7AA1B1C2D3E4F5A6B7C8D9E0 /* ComingSoonView.swift in Sources */,
+				B2A1B1C2D3E4F5A6B7C8D9E0 /* ClinicFilterControls.swift in Sources */,
 				7CA1B1C2D3E4F5A6B7C8D9E0 /* HomeTab.swift in Sources */,
 				7EA1B1C2D3E4F5A6B7C8D9E0 /* ClinicsTab.swift in Sources */,
 				80A1B1C2D3E4F5A6B7C8D9E0 /* ProductsTab.swift in Sources */,

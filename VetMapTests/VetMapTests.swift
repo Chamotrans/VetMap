@@ -103,6 +103,40 @@ final class VetMapModelTests: XCTestCase {
         XCTAssertNil(viewModel.makeClinic())
     }
 
+    func testClinicSearchFilterMatchesNameAddressServicesAndTags() {
+        var filter = ClinicSearchFilter()
+        filter.query = "牙科"
+
+        let results = filter.results(from: MockClinicRepository.clinics)
+
+        XCTAssertEqual(results.map(\.id), ["taipei-anxin", "hk-kowloon-care"])
+    }
+
+    func testClinicSearchFilterCombinesRegionVerificationAndPrice() {
+        var filter = ClinicSearchFilter()
+        filter.region = .hongKong
+        filter.verifiedOnly = true
+        filter.price = .premium
+
+        let results = filter.results(from: MockClinicRepository.clinics)
+
+        XCTAssertEqual(results.map(\.id), ["hk-harbour"])
+    }
+
+    @MainActor
+    func testMapViewModelClearsSelectionWhenFiltersHaveNoResults() {
+        let fileURL = FileManager.default.temporaryDirectory
+            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+            .appending(path: "clinics.json")
+        let repository = MockClinicRepository(localFileURL: fileURL)
+        let viewModel = MapViewModel(repository: repository)
+
+        viewModel.filter.query = "完全不存在的診所"
+
+        XCTAssertTrue(viewModel.filteredClinics.isEmpty)
+        XCTAssertNil(viewModel.selectedClinicID)
+    }
+
     @MainActor
     func testAddClinicViewModelLookupAddressPopulatesCustomCoordinate() async throws {
         let viewModel = makeValidAddClinicViewModel(

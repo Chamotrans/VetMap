@@ -22,7 +22,7 @@ struct ClinicListView: View {
             .background(AppTheme.screenBackground)
             .navigationTitle("獸醫診所")
             .navigationBarTitleDisplayMode(.large)
-            .searchable(text: $viewModel.searchText, prompt: "搜尋診所、地區、服務")
+            .searchable(text: $viewModel.filter.query, prompt: "搜尋診所、地區、服務")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -72,30 +72,34 @@ struct ClinicListView: View {
     }
 
     private var filterBar: some View {
-        Picker("篩選", selection: $viewModel.selectedFilter) {
-            ForEach(ClinicsViewModel.Filter.allCases) { filter in
-                Text(filter.rawValue).tag(filter)
-            }
-        }
-        .pickerStyle(.segmented)
-        .padding(2)
-        .background(Color(.systemBackground), in: RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous))
-        .accessibilityLabel("診所篩選")
+        ClinicFilterControls(filter: $viewModel.filter)
+            .padding(10)
+            .appCard()
+            .accessibilityLabel("診所篩選")
     }
 
     private var resultsSummary: some View {
         HStack {
-            Text("\(viewModel.filteredClinics.count) 間診所")
+            Text(resultCountText)
                 .font(.footnote.weight(.semibold))
                 .foregroundStyle(.secondary)
 
             Spacer()
 
-            Text("依驗證與評分排序")
+            Text(viewModel.filter.activeDescription)
                 .font(.footnote)
                 .foregroundStyle(.secondary)
+                .lineLimit(1)
         }
         .padding(.horizontal, 2)
+    }
+
+    private var resultCountText: String {
+        if viewModel.filter.isActive {
+            return "\(viewModel.filteredClinics.count) / \(viewModel.clinics.count) 間診所"
+        }
+
+        return "\(viewModel.filteredClinics.count) 間診所"
     }
 
     @ViewBuilder
@@ -145,6 +149,18 @@ struct ClinicListView: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
+
+            if viewModel.filter.isActive {
+                Button {
+                    viewModel.filter = ClinicSearchFilter()
+                } label: {
+                    Label("清除篩選", systemImage: "xmark")
+                        .font(.subheadline.weight(.semibold))
+                }
+                .buttonStyle(.borderedProminent)
+                .buttonBorderShape(.roundedRectangle(radius: AppTheme.cardRadius))
+                .tint(AppTheme.primary)
+            }
         }
         .padding(24)
         .frame(maxWidth: .infinity)

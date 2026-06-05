@@ -12,7 +12,7 @@ struct ClinicMapView: View {
             Map(position: $viewModel.cameraPosition, selection: $viewModel.selectedClinicID) {
                 UserAnnotation()
 
-                ForEach(viewModel.clinics) { clinic in
+                ForEach(viewModel.filteredClinics) { clinic in
                     Marker(clinic.name, systemImage: "cross.case.fill", coordinate: clinic.mapCoordinate)
                         .tint(clinic.verified ? AppTheme.primary : AppTheme.accent)
                         .tag(clinic.id)
@@ -49,30 +49,35 @@ struct ClinicMapView: View {
     }
 
     private var topOverlay: some View {
-        HStack(spacing: 10) {
-            VStack(alignment: .leading, spacing: 3) {
-                Text("附近獸醫")
-                    .font(.headline.weight(.bold))
-                    .foregroundStyle(.primary)
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 10) {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("附近獸醫")
+                        .font(.headline.weight(.bold))
+                        .foregroundStyle(.primary)
 
-                Text("\(viewModel.clinics.count) 間診所")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    Text(resultCountText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+
+                Button {
+                    focusOnUserLocation()
+                } label: {
+                    Image(systemName: "location.fill")
+                        .font(.headline)
+                        .frame(width: 44, height: 44)
+                }
+                .buttonStyle(.borderedProminent)
+                .buttonBorderShape(.roundedRectangle(radius: AppTheme.cardRadius))
+                .tint(AppTheme.primary)
+                .accessibilityLabel("定位到目前位置")
             }
 
-            Spacer()
-
-            Button {
-                focusOnUserLocation()
-            } label: {
-                Image(systemName: "location.fill")
-                    .font(.headline)
-                    .frame(width: 44, height: 44)
-            }
-            .buttonStyle(.borderedProminent)
-            .buttonBorderShape(.roundedRectangle(radius: AppTheme.cardRadius))
-            .tint(AppTheme.primary)
-            .accessibilityLabel("定位到目前位置")
+            ClinicSearchField(text: $viewModel.filter.query, placeholder: "搜尋診所、地址、服務")
+            ClinicFilterControls(filter: $viewModel.filter)
         }
         .padding(.leading, 14)
         .padding(.trailing, 8)
@@ -84,36 +89,92 @@ struct ClinicMapView: View {
         )
     }
 
-    private var clinicCarousel: some View {
-        GeometryReader { proxy in
-            let cardWidth = min(max(proxy.size.width - 40, 280), 360)
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(spacing: 10) {
-                    ForEach(viewModel.clinics) { clinic in
-                        ClinicRowView(
-                            clinic: clinic,
-                            currentLocation: locationService.currentLocation,
-                            isSelected: viewModel.selectedClinicID == clinic.id,
-                            onOpenDetails: {
-                                clinicForDetail = clinic
-                            }
-                        )
-                        .frame(width: cardWidth)
-                        .onTapGesture {
-                            withAnimation(.spring(response: 0.28, dampingFraction: 0.86)) {
-                                viewModel.focus(on: clinic)
-                            }
-                        }
-                        .accessibilityAddTraits(.isButton)
-                    }
-                }
-                .padding(.horizontal, 16)
-                .scrollTargetLayout()
-            }
-            .scrollTargetBehavior(.viewAligned)
+    private var resultCountText: String {
+        if viewModel.filter.isActive {
+            return "\(viewModel.filteredClinics.count) / \(viewModel.clinics.count) 間診所"
         }
-        .frame(height: 164)
+
+        return "\(viewModel.clinics.count) 間診所"
+    }
+
+    @ViewBuilder
+    private var clinicCarousel: some View {
+        if viewModel.filteredClinics.isEmpty {
+            mapEmptyState
+                .padding(.horizontal, 16)
+                .frame(height: 132)
+        } else {
+            GeometryReader { proxy in
+                let cardWidth = min(max(proxy.size.width - 40, 280), 360)
+
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHStack(spacing: 10) {
+                        ForEach(viewModel.filteredClinics) { clinic in
+                            ClinicRowView(
+                                clinic: clinic,
+                                currentLocation: locationService.currentLocation,
+                                isSelected: viewModel.selectedClinicID == clinic.id,
+                                onOpenDetails: {
+                                    clinicForDetail = clinic
+                                }
+                            )
+                            .frame(width: cardWidth)
+                            .onTapGesture {
+                                withAnimation(.spring(response: 0.28, dampingFraction: 0.86)) {
+                                    viewModel.focus(on: clinic)
+                                }
+                            }
+                            .accessibilityAddTraits(.isButton)
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    .scrollTargetLayout()
+                }
+                .scrollTargetBehavior(.viewAligned)
+            }
+            .frame(height: 164)
+        }
+    }
+
+    private var mapEmptyState: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "magnifyingglass")
+                .font(.headline)
+                .foregroundStyle(AppTheme.primary)
+                .frame(width: 44, height: 44)
+                .background(AppTheme.primary.opacity(0.12), in: RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous))
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("沒有符合條件")
+                    .font(.subheadline.weight(.semibold))
+
+                Text(viewModel.filter.activeDescription)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
+
+            Spacer()
+
+            if viewModel.filter.isActive {
+                Button {
+                    viewModel.clearFilters()
+                } label: {
+                    Text("清除")
+                        .font(.subheadline.weight(.semibold))
+                }
+                .buttonStyle(.bordered)
+                .buttonBorderShape(.roundedRectangle(radius: AppTheme.cardRadius))
+                .tint(AppTheme.primary)
+            }
+        }
+        .padding(14)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous)
+                .stroke(.white.opacity(0.36), lineWidth: 1)
+        )
     }
 
     private func focusOnUserLocation() {
