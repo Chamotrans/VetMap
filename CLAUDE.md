@@ -19,10 +19,11 @@
 - **Target:** iOS 17+
 - **Map:** MapKit (Apple Maps)
 - **Location:** CoreLocation
-- **Backend:** Firebase (Auth, Firestore, Storage) — planned; currently using local JSON persistence
+- **Backend:** Firebase v12.5 — Auth (Email/Password + Apple Sign In), Firestore (asia-east1), Storage (pending bucket creation)
 - **IAP:** StoreKit 2
-- **Image caching:** Kingfisher (planned)
-- **Testing:** XCTest
+- **Image caching:** Kingfisher v8.0 — `#if canImport(Kingfisher)` with AsyncImage fallback
+- **Testing:** XCTest (72 unit tests)
+- **Firebase project:** `vetmap-app` → https://console.firebase.google.com/project/vetmap-app
 
 ## Project Structure
 
@@ -153,13 +154,12 @@ VetMap/
 ### Next Steps (when ready to launch)
 | Priority | Task |
 |----------|------|
-| 🔴 | Add Firebase SPM in Xcode + real GoogleService-Info.plist |
-| 🔴 | Replace Mock*Repository with Firestore-backed repositories |
-| 🔴 | Implement Apple Sign In full flow |
-| 🟡 | Add Kingfisher SPM + migrate existing images to KingfisherImage |
-| 🟡 | Create App Store Connect record + configure IAP products |
-| 🟢 | Privacy manifest (PrivacyInfo.xcprivacy) |
-| 🟢 | Screenshots + TestFlight beta |
+| 🔴 | Firebase Storage: click "Get Started" at https://console.firebase.google.com/project/vetmap-app/storage |
+| 🔴 | Deploy storage rules: `firebase deploy --only storage:rules --project vetmap-app` |
+| 🟡 | App Store Connect: create record + IAP products (see AppStoreSetup.md) |
+| 🟡 | Apple Developer: add Sign In With Apple capability in Xcode |
+| 🟢 | TestFlight: upload first build, distribute to testers |
+| 🟢 | GoogleService-Info.plist: replace placeholder with real config (already done) |
 
 ## Development Commands
 
