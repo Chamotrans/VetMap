@@ -1,4 +1,5 @@
 import SwiftUI
+import AuthenticationServices
 
 struct LoginView: View {
     @ObservedObject var authViewModel: AuthViewModel
@@ -7,7 +8,6 @@ struct LoginView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var isLoading = false
-    @State private var showAppleAlert = false
 
     var body: some View {
         NavigationStack {
@@ -35,11 +35,6 @@ struct LoginView: View {
             }
             .background(AppTheme.screenBackground)
             .navigationBarHidden(true)
-            .alert("即將推出", isPresented: $showAppleAlert) {
-                Button("好", role: .cancel) {}
-            } message: {
-                Text("Apple 登入功能即將推出，敬請期待！")
-            }
         }
     }
 
@@ -146,19 +141,15 @@ struct LoginView: View {
     }
 
     private var appleSignInButton: some View {
-        Button {
-            showAppleAlert = true
-        } label: {
-            HStack(spacing: 8) {
-                Image(systemName: "apple.logo")
-                Text("使用 Apple 登入")
-                    .fontWeight(.medium)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 14)
+        SignInWithAppleButton(.signIn) { request in
+            request.requestedScopes = [.fullName, .email]
+        } onCompletion: { result in
+            authViewModel.processAppleSignIn(result: result)
         }
-        .foregroundStyle(.white)
-        .background(Color.black, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .signInWithAppleButtonStyle(.black)
+        .frame(maxWidth: .infinity)
+        .frame(height: 48)
+        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
         .padding(.horizontal, 16)
     }
 

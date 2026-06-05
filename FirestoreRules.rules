@@ -1,0 +1,98 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper functions ──────────────────────────────────────────
+
+    // True if the request comes from an authenticated user
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // True if the document's authorId field matches the requesting user
+    function isAuthor() {
+      return resource.data.authorId == request.auth.uid;
+    }
+
+    // ── Clinics ───────────────────────────────────────────────────
+    //
+    // Anyone can read clinic listings.
+    // Only authenticated users can create (add) a clinic.
+    // Updates and deletes require the original author.
+    //
+    match /clinics/{clinicId} {
+      allow read: if true;
+      allow create: if isSignedIn()
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() > 0
+                    && request.resource.data.address is string;
+      allow update: if isSignedIn() && isAuthor();
+      allow delete: if isSignedIn() && isAuthor();
+    }
+
+    // ── Reviews ───────────────────────────────────────────────────
+    //
+    // Anyone can read reviews.
+    // Only authenticated users can create reviews.
+    // Users can only update/delete their own reviews.
+    //
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow create: if isSignedIn()
+                    && request.resource.data.authorId == request.auth.uid
+                    && request.resource.data.clinicId is string
+                    && request.resource.data.content is string;
+      allow update: if isSignedIn() && isAuthor();
+      allow delete: if isSignedIn() && isAuthor();
+    }
+
+    // ── Quotes ────────────────────────────────────────────────────
+    //
+    // Anyone can read treatment cost quotes.
+    // Only authenticated users can create quotes.
+    // Users can only update/delete their own quotes.
+    //
+    match /quotes/{quoteId} {
+      allow read: if true;
+      allow create: if isSignedIn()
+                    && request.resource.data.authorId == request.auth.uid
+                    && request.resource.data.clinicId is string
+                    && request.resource.data.procedure is string;
+      allow update: if isSignedIn() && isAuthor();
+      allow delete: if isSignedIn() && isAuthor();
+    }
+
+    // ── Products ──────────────────────────────────────────────────
+    //
+    // Public read. Admin-managed (write via Firebase Console or admin SDK only).
+    //
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // ── Insurances ────────────────────────────────────────────────
+    //
+    // Public read. Admin-managed (write via Firebase Console or admin SDK only).
+    //
+    match /insurances/{insuranceId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // ── User Profiles (for future use) ────────────────────────────
+    //
+    match /users/{userId} {
+      allow read: if true;
+      allow create: if isSignedIn() && request.auth.uid == userId;
+      allow update: if isSignedIn() && request.auth.uid == userId;
+      allow delete: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    // ── Deny everything else by default ───────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

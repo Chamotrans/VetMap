@@ -11,33 +11,34 @@
 		03A1B1C2D3E4F5A6B7C8D9E0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A1B1C2D3E4F5A6B7C8D9E0 /* ContentView.swift */; };
 		0AA1B1C2D3E4F5A6B7C8D9E0 /* ClinicCoordinate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA1B1C2D3E4F5A6B7C8D9E0 /* ClinicCoordinate.swift */; };
 		0CA1B1C2D3E4F5A6B7C8D9E0 /* VetClinic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA1B1C2D3E4F5A6B7C8D9E0 /* VetClinic.swift */; };
-		0E14487786C23DBE0FEA4F0A /* AddQuoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F364081A8589D712031CD7B /* AddQuoteView.swift */; };
+		0E14487786C23DBE0FEA4F0A /* AddQuoteView.swift in None */ = {isa = PBXBuildFile; fileRef = 4F364081A8589D712031CD7B /* AddQuoteView.swift */; };
 		0EA1B1C2D3E4F5A6B7C8D9E0 /* Review.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA1B1C2D3E4F5A6B7C8D9E0 /* Review.swift */; };
-		113841F79208D9A7031FE879 /* InsuranceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED340DDBB79449968B0BFCD /* InsuranceListView.swift */; };
+		113841F79208D9A7031FE879 /* InsuranceListView.swift in None */ = {isa = PBXBuildFile; fileRef = FED340DDBB79449968B0BFCD /* InsuranceListView.swift */; };
 		11A1B1C2D3E4F5A6B7C8D9E0 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12A1B1C2D3E4F5A6B7C8D9E0 /* UserProfile.swift */; };
 		13A1B1C2D3E4F5A6B7C8D9E0 /* PetProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14A1B1C2D3E4F5A6B7C8D9E0 /* PetProduct.swift */; };
 		15A1B1C2D3E4F5A6B7C8D9E0 /* Quote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A1B1C2D3E4F5A6B7C8D9E0 /* Quote.swift */; };
-		15A64718ACB34D510810B76C /* InsuranceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C2843B1ACD5E5B96EB8C292 /* InsuranceDetailView.swift */; };
-		15E14439972DFCDDFD687ED9 /* MockInsuranceRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E518486389D48C9428EA76DD /* MockInsuranceRepository.swift */; };
+		15A64718ACB34D510810B76C /* InsuranceDetailView.swift in None */ = {isa = PBXBuildFile; fileRef = 3C2843B1ACD5E5B96EB8C292 /* InsuranceDetailView.swift */; };
+		15E14439972DFCDDFD687ED9 /* MockInsuranceRepository.swift in None */ = {isa = PBXBuildFile; fileRef = E518486389D48C9428EA76DD /* MockInsuranceRepository.swift */; };
 		17A1B1C2D3E4F5A6B7C8D9E0 /* Insurance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A1B1C2D3E4F5A6B7C8D9E0 /* Insurance.swift */; };
 		19A1B1C2D3E4F5A6B7C8D9E0 /* VetMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA1B1C2D3E4F5A6B7C8D9E0 /* VetMapTests.swift */; };
-		1D134B42B53AD3E5A6FBE80F /* ProductViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2661467A8AD35EE0F31439D0 /* ProductViewModel.swift */; };
-		1DF44DA68CCAD1DD6091C74D /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160443F885B5E5F9177E8F48 /* Haptics.swift */; };
-		20C74238915D6E2B142281BE /* QuoteListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E37542D7AA89C5120CB0038C /* QuoteListView.swift */; };
+		1D134B42B53AD3E5A6FBE80F /* ProductViewModel.swift in None */ = {isa = PBXBuildFile; fileRef = 2661467A8AD35EE0F31439D0 /* ProductViewModel.swift */; };
+		1DF44DA68CCAD1DD6091C74D /* Haptics.swift in None */ = {isa = PBXBuildFile; fileRef = 160443F885B5E5F9177E8F48 /* Haptics.swift */; };
+		20C74238915D6E2B142281BE /* QuoteListView.swift in None */ = {isa = PBXBuildFile; fileRef = E37542D7AA89C5120CB0038C /* QuoteListView.swift */; };
 		2333436A812FC13D26F01472 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00534FDABECEC47FFBB7F277 /* EmptyStateView.swift */; };
-		27CD491F8305CA3D33D7B0D0 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E790464C8D995855791EEBA9 /* ErrorView.swift */; };
+		27CD491F8305CA3D33D7B0D0 /* ErrorView.swift in None */ = {isa = PBXBuildFile; fileRef = E790464C8D995855791EEBA9 /* ErrorView.swift */; };
 		2AD745EB82CB561C6447195E /* IAPService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0067472989BAC4C8FC1C2C11 /* IAPService.swift */; };
-		30604F63BA5F665BE22192D9 /* ReviewListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD5F4C27A7CC5E17D1371A9E /* ReviewListView.swift */; };
-		3F674717861262DD5651853D /* MockProductRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833C4D2A90BEEDC09E4BB2DB /* MockProductRepository.swift */; };
+		30604F63BA5F665BE22192D9 /* ReviewListView.swift in None */ = {isa = PBXBuildFile; fileRef = DD5F4C27A7CC5E17D1371A9E /* ReviewListView.swift */; };
+		3F674717861262DD5651853D /* MockProductRepository.swift in None */ = {isa = PBXBuildFile; fileRef = 833C4D2A90BEEDC09E4BB2DB /* MockProductRepository.swift */; };
 		425147DBB22A9941B7AB4A7A /* MockProductRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE684415A1FEA6E7E36F8FF1 /* MockProductRepository.swift */; };
 		42864274B13C0B8C560B0DF2 /* ProductViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F54304842ACB4D544CFA01 /* ProductViewModel.swift */; };
 		47DA41DFB43BE6CDAFE7F403 /* QuoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9549D0A2EDFCF637CA70B9 /* QuoteViewModel.swift */; };
 		497643899F2C6383873B140D /* InsuranceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1A47F69DA8225881617EE0 /* InsuranceListView.swift */; };
-		4CE74463B089B1C8F65FFE9C /* IAPService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B04EAB9E64AB53921419B9 /* IAPService.swift */; };
+		4CE74463B089B1C8F65FFE9C /* IAPService.swift in None */ = {isa = PBXBuildFile; fileRef = 45B04EAB9E64AB53921419B9 /* IAPService.swift */; };
 		4CE945CB80CDE550173FC160 /* ProductDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E464213889D8EC6D58C0721 /* ProductDetailView.swift */; };
-		525A45D5B1CA09CD0F569DBE /* QuoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22834D9985568C8B6F4B3B6D /* QuoteViewModel.swift */; };
-		6118424A84E87C7038FEA594 /* ClinicRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C34BB89B993D36FE655908 /* ClinicRepository.swift */; };
+		525A45D5B1CA09CD0F569DBE /* QuoteViewModel.swift in None */ = {isa = PBXBuildFile; fileRef = 22834D9985568C8B6F4B3B6D /* QuoteViewModel.swift */; };
+		6118424A84E87C7038FEA594 /* ClinicRepository.swift in None */ = {isa = PBXBuildFile; fileRef = 43C34BB89B993D36FE655908 /* ClinicRepository.swift */; };
 		655E4741980D9BB70913E09F /* FirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F3468FA62389CFBCA30E85 /* FirebaseService.swift */; };
+		6F2C454189A60F963BD3B543 /* KingfisherImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B136435B81C60F2F76D2ABDD /* KingfisherImage.swift */; };
 		6F8145DAB23A4BEB3B3E3511 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54147BD87315AD622A78B1F /* SignUpView.swift */; };
 		70A1B1C2D3E4F5A6B7C8D9E0 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71A1B1C2D3E4F5A6B7C8D9E0 /* LocationService.swift */; };
 		712A4F6194CF774A7F4DB6B9 /* QuoteListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82F4A8EA14EF69F59941560 /* QuoteListView.swift */; };
@@ -45,20 +46,21 @@
 		74A1B1C2D3E4F5A6B7C8D9E0 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A1B1C2D3E4F5A6B7C8D9E0 /* MapViewModel.swift */; };
 		76A1B1C2D3E4F5A6B7C8D9E0 /* ClinicMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77A1B1C2D3E4F5A6B7C8D9E0 /* ClinicMapView.swift */; };
 		78A1B1C2D3E4F5A6B7C8D9E0 /* ClinicRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79A1B1C2D3E4F5A6B7C8D9E0 /* ClinicRowView.swift */; };
-		7A03443781277EC8C101CE0E /* ProductListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DD473BB07660598AEA988C /* ProductListView.swift */; };
+		7A03443781277EC8C101CE0E /* ProductListView.swift in None */ = {isa = PBXBuildFile; fileRef = D5DD473BB07660598AEA988C /* ProductListView.swift */; };
 		7AA1B1C2D3E4F5A6B7C8D9E0 /* ComingSoonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BA1B1C2D3E4F5A6B7C8D9E0 /* ComingSoonView.swift */; };
-		7B0749FC9A92B251A2BE728D /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958B486D91CF653805C3B89F /* LoadingView.swift */; };
+		7B0749FC9A92B251A2BE728D /* LoadingView.swift in None */ = {isa = PBXBuildFile; fileRef = 958B486D91CF653805C3B89F /* LoadingView.swift */; };
 		7CA1B1C2D3E4F5A6B7C8D9E0 /* HomeTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DA1B1C2D3E4F5A6B7C8D9E0 /* HomeTab.swift */; };
 		7EA1B1C2D3E4F5A6B7C8D9E0 /* ClinicsTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FA1B1C2D3E4F5A6B7C8D9E0 /* ClinicsTab.swift */; };
 		80A1B1C2D3E4F5A6B7C8D9E0 /* ProductsTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81A1B1C2D3E4F5A6B7C8D9E0 /* ProductsTab.swift */; };
 		82A1B1C2D3E4F5A6B7C8D9E0 /* ProfileTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83A1B1C2D3E4F5A6B7C8D9E0 /* ProfileTab.swift */; };
-		88994D8A8734BDDBA5628752 /* PremiumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB740518F45AF782B56BA99 /* PremiumView.swift */; };
+		88994D8A8734BDDBA5628752 /* PremiumView.swift in None */ = {isa = PBXBuildFile; fileRef = EFB740518F45AF782B56BA99 /* PremiumView.swift */; };
 		8AA1B1C2D3E4F5A6B7C8D9E0 /* ClinicDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BA1B1C2D3E4F5A6B7C8D9E0 /* ClinicDetailView.swift */; };
-		8B614831AAD52456ED41265D /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA34F75A118C4A8F78DD8A3 /* LoginView.swift */; };
+		8B614831AAD52456ED41265D /* LoginView.swift in None */ = {isa = PBXBuildFile; fileRef = 5DA34F75A118C4A8F78DD8A3 /* LoginView.swift */; };
 		8C954FF58802592AD3332E76 /* ReviewRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34494C799908722C1757617F /* ReviewRowView.swift */; };
+		8DA0477E91D38A78CF29346C /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9C4E74B1AA5A72DBAB5762 /* KeychainService.swift */; };
 		8DA1B1C2D3E4F5A6B7C8D9E0 /* ClinicsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA1B1C2D3E4F5A6B7C8D9E0 /* ClinicsViewModel.swift */; };
-		8F4B4A1B86AED6EF246511B9 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E14FEAAAEA33E7B20AF413 /* EmptyStateView.swift */; };
-		8F81401CB3A82625286DA4CB /* CommunityRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8843DBB25F0CDC6A05AC8E /* CommunityRepository.swift */; };
+		8F4B4A1B86AED6EF246511B9 /* EmptyStateView.swift in None */ = {isa = PBXBuildFile; fileRef = 89E14FEAAAEA33E7B20AF413 /* EmptyStateView.swift */; };
+		8F81401CB3A82625286DA4CB /* CommunityRepository.swift in None */ = {isa = PBXBuildFile; fileRef = FA8843DBB25F0CDC6A05AC8E /* CommunityRepository.swift */; };
 		8FA1B1C2D3E4F5A6B7C8D9E0 /* ClinicListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90A1B1C2D3E4F5A6B7C8D9E0 /* ClinicListView.swift */; };
 		90A6491F836BAFBD19FAA62C /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = C675427DB511E7814F67BB7B /* Haptics.swift */; };
 		91A1B1C2D3E4F5A6B7C8D9E0 /* ClinicListRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92A1B1C2D3E4F5A6B7C8D9E0 /* ClinicListRowView.swift */; };
@@ -68,31 +70,32 @@
 		96A1B1C2D3E4F5A6B7C8D9E0 /* AddClinicView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A1B1C2D3E4F5A6B7C8D9E0 /* AddClinicView.swift */; };
 		96A842F88920031E74E72134 /* PremiumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C374418B1CD8FD71EF37BD9 /* PremiumView.swift */; };
 		96AB43539F9D7172E7DE3999 /* ProductListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB9E4E23A299B338E285D03C /* ProductListView.swift */; };
-		9F9C4A49AA6173821F04B26D /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDB4EADA6B95A83BD97C16A /* SignUpView.swift */; };
+		9F9C4A49AA6173821F04B26D /* SignUpView.swift in None */ = {isa = PBXBuildFile; fileRef = BCDB4EADA6B95A83BD97C16A /* SignUpView.swift */; };
 		A0524179B3934E0883AF474A /* PremiumViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF3C4521B734E5CC2A6F9639 /* PremiumViewModel.swift */; };
 		A0A1B1C2D3E4F5A6B7C8D9E0 /* GeocodingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A1B1C2D3E4F5A6B7C8D9E0 /* GeocodingService.swift */; };
-		A4FB46F7904C9A54D31762DF /* FirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE84471B3DE037336B1B5AF /* FirebaseService.swift */; };
+		A4FB46F7904C9A54D31762DF /* FirebaseService.swift in None */ = {isa = PBXBuildFile; fileRef = 7DE84471B3DE037336B1B5AF /* FirebaseService.swift */; };
 		B0A1B1C2D3E4F5A6B7C8D9E0 /* ClinicSearchFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A1B1C2D3E4F5A6B7C8D9E0 /* ClinicSearchFilter.swift */; };
 		B2A1B1C2D3E4F5A6B7C8D9E0 /* ClinicFilterControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A1B1C2D3E4F5A6B7C8D9E0 /* ClinicFilterControls.swift */; };
-		B2D7448D9280DCAB37036E0E /* ReviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44804D4AB6A48CB0DC6712B0 /* ReviewViewModel.swift */; };
+		B2D7448D9280DCAB37036E0E /* ReviewViewModel.swift in None */ = {isa = PBXBuildFile; fileRef = 44804D4AB6A48CB0DC6712B0 /* ReviewViewModel.swift */; };
 		B9E748A38E25D9A365A4C448 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94F24A2CB8399BA89195FEA8 /* AuthViewModel.swift */; };
 		BA2642C4975E683817973F13 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49784B5ABE69AD0F526EA250 /* ErrorView.swift */; };
-		BBB04343B2EBA3A89582E2A4 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F743DAA74116CE8BC60A40 /* AuthViewModel.swift */; };
+		BBB04343B2EBA3A89582E2A4 /* AuthViewModel.swift in None */ = {isa = PBXBuildFile; fileRef = A3F743DAA74116CE8BC60A40 /* AuthViewModel.swift */; };
 		C0284768A62037364B4E8473 /* MockInsuranceRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F446A0B36B60108EF1A41C /* MockInsuranceRepository.swift */; };
-		C07B4E669247F1F3E2DBC58F /* InsuranceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D774C02ABA52311EDF6B848 /* InsuranceViewModel.swift */; };
+		C07B4E669247F1F3E2DBC58F /* InsuranceViewModel.swift in None */ = {isa = PBXBuildFile; fileRef = 6D774C02ABA52311EDF6B848 /* InsuranceViewModel.swift */; };
 		C0A1B1C2D3E4F5A6B7C8D9E0 /* MockCommunityRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A1B1C2D3E4F5A6B7C8D9E0 /* MockCommunityRepository.swift */; };
 		C2A1B1C2D3E4F5A6B7C8D9E0 /* ClinicDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A1B1C2D3E4F5A6B7C8D9E0 /* ClinicDetailViewModel.swift */; };
 		C4A1B1C2D3E4F5A6B7C8D9E0 /* AddReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5A1B1C2D3E4F5A6B7C8D9E0 /* AddReviewView.swift */; };
 		D6754446904665F8D575A07D /* InsuranceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C846DD91B86E206479EC1E /* InsuranceDetailView.swift */; };
-		DFDA4B1D9BE25B2E2958AFBA /* PremiumViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12B4CDEB21F100CB29E5D91 /* PremiumViewModel.swift */; };
+		DFDA4B1D9BE25B2E2958AFBA /* PremiumViewModel.swift in None */ = {isa = PBXBuildFile; fileRef = E12B4CDEB21F100CB29E5D91 /* PremiumViewModel.swift */; };
 		E20D4A6EB05F3AB0E028D97E /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4F6407283E8485DC459A810 /* LoginView.swift */; };
 		E64F4C3D9C6229DF3F6A46C1 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 387A4EEC83D190FCAA87F293 /* LoadingView.swift */; };
 		EBA74286A9481D0ED196BE51 /* InsuranceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296B440BA22458B5682B1E66 /* InsuranceViewModel.swift */; };
 		EF4F47B3A3453F6D5500C65C /* AddQuoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35B4FB2A153492F527E15CE /* AddQuoteView.swift */; };
-		F2BF491FBB5BF7D5008F4660 /* ProductDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A57D410BA4D47698164AAAF3 /* ProductDetailView.swift */; };
+		F2BF491FBB5BF7D5008F4660 /* ProductDetailView.swift in None */ = {isa = PBXBuildFile; fileRef = A57D410BA4D47698164AAAF3 /* ProductDetailView.swift */; };
 		F2C644D99AE97084E94BE63A /* ReviewListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62841BFAAB6D01481A4B479 /* ReviewListView.swift */; };
-		F366495C8233F65D89464FD6 /* ReviewRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32754E1D85F3505BB5B395B2 /* ReviewRowView.swift */; };
+		F366495C8233F65D89464FD6 /* ReviewRowView.swift in None */ = {isa = PBXBuildFile; fileRef = 32754E1D85F3505BB5B395B2 /* ReviewRowView.swift */; };
 		FD264F4D8C8C51E566D68342 /* CommunityRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42754AA3B039B6ED73462008 /* CommunityRepository.swift */; };
+		FECB489F939152A1BEF485A1 /* Products.storekit.json in Resources */ = {isa = PBXBuildFile; fileRef = B08E4D62AE7E38773B9A1928 /* Products.storekit.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -152,6 +155,7 @@
 		697F48AD8EFC1EB14FC0E34A /* ReviewListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReviewListView.swift; path = VetMap/Views/Review/ReviewListView.swift; sourceTree = SOURCE_ROOT; };
 		6C9549D0A2EDFCF637CA70B9 /* QuoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuoteViewModel.swift; path = VetMap/ViewModels/QuoteViewModel.swift; sourceTree = SOURCE_ROOT; };
 		6D774C02ABA52311EDF6B848 /* InsuranceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = InsuranceViewModel.swift; path = VetMap/ViewModels/InsuranceViewModel.swift; sourceTree = SOURCE_ROOT; };
+		6E9C4E74B1AA5A72DBAB5762 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = KeychainService.swift; path = VetMap/Utilities/KeychainService.swift; sourceTree = SOURCE_ROOT; };
 		71A1B1C2D3E4F5A6B7C8D9E0 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		73A1B1C2D3E4F5A6B7C8D9E0 /* MockClinicRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockClinicRepository.swift; sourceTree = "<group>"; };
 		75A1B1C2D3E4F5A6B7C8D9E0 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
@@ -179,6 +183,8 @@
 		A3F743DAA74116CE8BC60A40 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AuthViewModel.swift; path = VetMap/ViewModels/AuthViewModel.swift; sourceTree = SOURCE_ROOT; };
 		A54147BD87315AD622A78B1F /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SignUpView.swift; path = VetMap/Views/Profile/SignUpView.swift; sourceTree = SOURCE_ROOT; };
 		A57D410BA4D47698164AAAF3 /* ProductDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProductDetailView.swift; path = VetMap/Views/Products/ProductDetailView.swift; sourceTree = SOURCE_ROOT; };
+		B08E4D62AE7E38773B9A1928 /* Products.storekit.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = Products.storekit.json; path = VetMap/Resources/Products.storekit.json; sourceTree = SOURCE_ROOT; };
+		B136435B81C60F2F76D2ABDD /* KingfisherImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = KingfisherImage.swift; path = VetMap/Utilities/KingfisherImage.swift; sourceTree = SOURCE_ROOT; };
 		B1A1B1C2D3E4F5A6B7C8D9E0 /* ClinicSearchFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClinicSearchFilter.swift; sourceTree = "<group>"; };
 		B3A1B1C2D3E4F5A6B7C8D9E0 /* ClinicFilterControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClinicFilterControls.swift; sourceTree = "<group>"; };
 		BCDB4EADA6B95A83BD97C16A /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SignUpView.swift; path = VetMap/Views/Profile/SignUpView.swift; sourceTree = SOURCE_ROOT; };
@@ -241,6 +247,9 @@
 				24A1B1C2D3E4F5A6B7C8D9E0 /* VetMapTests */,
 				22A1B1C2D3E4F5A6B7C8D9E0 /* Products */,
 				A983470DAB9FF20FF1ACB0A6 /* Utilities */,
+				6E9C4E74B1AA5A72DBAB5762 /* KeychainService.swift */,
+				B136435B81C60F2F76D2ABDD /* KingfisherImage.swift */,
+				B08E4D62AE7E38773B9A1928 /* Products.storekit.json */,
 			);
 			sourceTree = "<group>";
 		};
@@ -658,6 +667,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FECB489F939152A1BEF485A1 /* Products.storekit.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -733,6 +743,8 @@
 				6F8145DAB23A4BEB3B3E3511 /* SignUpView.swift in Sources */,
 				F2C644D99AE97084E94BE63A /* ReviewListView.swift in Sources */,
 				8C954FF58802592AD3332E76 /* ReviewRowView.swift in Sources */,
+				8DA0477E91D38A78CF29346C /* KeychainService.swift in Sources */,
+				6F2C454189A60F963BD3B543 /* KingfisherImage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,23 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  ═══════════════════════════════════════════════════════════════════
+  GoogleService-Info.plist — VetMap Firebase Configuration
+  ═══════════════════════════════════════════════════════════════════
+
+  THIS FILE IS A PLACEHOLDER. Replace it with the real file downloaded
+  from Firebase Console.
+
+  HOW TO GET THE REAL FILE:
+  1. Go to https://console.firebase.google.com/
+  2. Open your Firebase project (or create one — see FirebaseSetup.md)
+  3. Project Settings → General → Your apps → iOS app
+  4. If no iOS app exists yet, click "Add app" → iOS
+      - Bundle ID: com.vetmap.app (or your actual bundle ID)
+      - App nickname: VetMap
+      - App Store ID: leave blank for now
+  5. Download GoogleService-Info.plist
+  6. Replace this file with the downloaded one
+  7. Do NOT commit the real file to Git — add it to .gitignore
+
+  Until replaced, the app runs in local-only mode using mock data.
+  Firebase is only activated when both this plist AND the Firebase
+  SPM packages are present.
+  ═══════════════════════════════════════════════════════════════════
+-->
 <plist version="1.0">
 <dict>
-	<!--
-	Replace this placeholder with your real GoogleService-Info.plist
-	downloaded from the Firebase Console.
-
-	Steps:
-	1. Go to https://console.firebase.google.com/
-	2. Select your project → Project Settings → General
-	3. Under "Your apps", add an iOS app with bundle ID matching this project
-	4. Download GoogleService-Info.plist and replace this file
-
-	Required keys (all values below are placeholders):
-	-->
 	<key>API_KEY</key>
-	<string>AIzaSyPLACEHOLDER_API_KEY_REPLACE_ME</string>
+	<string>AIzaSyPLACEHOLDER_REPLACE_WITH_YOUR_API_KEY</string>
 	<key>GCM_SENDER_ID</key>
-	<string>123456789012</string>
+	<string>000000000000</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
@@ -31,12 +44,12 @@
 	<key>IS_ANALYTICS_ENABLED</key>
 	<false/>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true/>
+	<false/>
 	<key>IS_GCM_ENABLED</key>
 	<true/>
 	<key>IS_SIGNIN_ENABLED</key>
 	<true/>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:123456789012:ios:abcdef1234567890abcdef</string>
+	<string>1:000000000000:ios:0000000000000000000000</string>
 </dict>
 </plist>

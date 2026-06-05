@@ -1,4 +1,5 @@
 import Foundation
+import AuthenticationServices
 #if canImport(FirebaseAuth)
 import FirebaseAuth
 #endif
@@ -28,7 +29,7 @@ struct AppUser {
 }
 
 @MainActor
-final class AuthViewModel: ObservableObject {
+final class AuthViewModel: NSObject, ObservableObject {
     @Published var user: AppUser?
     @Published var authState: AuthState = .loading
     @Published var errorMessage: String?
@@ -36,15 +37,15 @@ final class AuthViewModel: ObservableObject {
     #if canImport(FirebaseAuth)
     private var authStateHandle: AuthStateDidChangeListenerHandle?
 
-    init() {
+    override init() {
+        super.init()
         authStateHandle = Auth.auth().addStateDidChangeListener { [weak self] _, user in
             Task { @MainActor in
                 if let user {
                     self?.user = AppUser(from: user)
                     self?.authState = .signedIn
                 } else {
-                    self?.user = nil
-                    self?.authState = .signedOut
+                    self?.checkExistingAppleSignIn()
                 }
             }
         }
@@ -56,9 +57,13 @@ final class AuthViewModel: ObservableObject {
         }
     }
     #else
-    init() {
+    override init() {
+        super.init()
         // Firebase SDK not linked — always signed out (local-only mode)
         authState = .signedOut
+        DispatchQueue.main.async { [weak self] in
+            self?.checkExistingAppleSignIn()
+        }
     }
     #endif
 
@@ -101,21 +106,88 @@ final class AuthViewModel: ObservableObject {
         #if canImport(FirebaseAuth)
         do {
             try Auth.auth().signOut()
-            user = nil
-            authState = .signedOut
-            errorMessage = nil
         } catch {
             errorMessage = "登出失敗，請再試一次。"
+            return
         }
-        #else
+        #endif
+        KeychainService.deleteAppleUserIdentifier()
         user = nil
         authState = .signedOut
         errorMessage = nil
-        #endif
     }
 
     func signInWithApple() {
-        // TODO: Implement Apple Sign In with ASAuthorizationController
+        let provider = ASAuthorizationAppleIDProvider()
+        let request = provider.createRequest()
+        request.requestedScopes = [.fullName, .email]
+
+        let controller = ASAuthorizationController(authorizationRequests: [request])
+        controller.delegate = self
+        controller.presentationContextProvider = self
+        controller.performRequests()
+    }
+
+    func processAppleSignIn(result: Result<ASAuthorization, Error>) {
+        switch result {
+        case .success(let authorization):
+            guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential else {
+                errorMessage = "Apple 登入憑證無效。"
+                return
+            }
+            let userID = credential.user
+            let displayName: String = {
+                if let name = credential.fullName {
+                    let given = name.givenName ?? ""
+                    let family = name.familyName ?? ""
+                    let full = "\(given) \(family)".trimmingCharacters(in: .whitespaces)
+                    if !full.isEmpty { return full }
+                }
+                return "Apple 用戶"
+            }()
+            let email = credential.email
+
+            KeychainService.saveAppleUserIdentifier(userID)
+            user = AppUser(displayName: displayName, email: email)
+            authState = .signedIn
+            errorMessage = nil
+            Haptics.success()
+        case .failure(let error):
+            let nsError = error as NSError
+            switch nsError.code {
+            case ASAuthorizationError.canceled.rawValue:
+                errorMessage = nil
+            case ASAuthorizationError.failed.rawValue:
+                errorMessage = "Apple 登入失敗，請再試一次。"
+            case ASAuthorizationError.invalidResponse.rawValue:
+                errorMessage = "Apple 登入回應無效，請再試一次。"
+            case ASAuthorizationError.notHandled.rawValue:
+                errorMessage = "Apple 登入未處理，請再試一次。"
+            default:
+                errorMessage = error.localizedDescription
+            }
+        }
+    }
+
+    private func checkExistingAppleSignIn() {
+        guard let userID = KeychainService.loadAppleUserIdentifier() else { return }
+        let appleIDProvider = ASAuthorizationAppleIDProvider()
+        appleIDProvider.getCredentialState(forUserID: userID) { [weak self] state, error in
+            Task { @MainActor in
+                guard let self else { return }
+                switch state {
+                case .authorized:
+                    self.user = AppUser(displayName: "Apple 用戶", email: nil)
+                    self.authState = .signedIn
+                case .revoked, .notFound:
+                    KeychainService.deleteAppleUserIdentifier()
+                case .transferred:
+                    KeychainService.deleteAppleUserIdentifier()
+                @unknown default:
+                    break
+                }
+            }
+        }
     }
 
     #if canImport(FirebaseAuth)
@@ -144,4 +216,28 @@ final class AuthViewModel: ObservableObject {
         }
     }
     #endif
+}
+
+// MARK: - ASAuthorizationControllerDelegate
+
+extension AuthViewModel: ASAuthorizationControllerDelegate {
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        processAppleSignIn(result: .success(authorization))
+    }
+
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        processAppleSignIn(result: .failure(error))
+    }
+}
+
+// MARK: - ASAuthorizationControllerPresentationContextProviding
+
+extension AuthViewModel: ASAuthorizationControllerPresentationContextProviding {
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = scene.windows.first(where: { $0.isKeyWindow }) ?? scene.windows.first else {
+            return ASPresentationAnchor()
+        }
+        return window
+    }
 }

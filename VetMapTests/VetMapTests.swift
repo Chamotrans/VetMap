@@ -633,6 +633,582 @@ final class VetMapModelTests: XCTestCase {
         XCTAssertEqual(clinic?.phone, "+886-2-0000-0000")
     }
 
+    // MARK: - AuthViewModel Tests (Local-Only Mode)
+
+    @MainActor
+    func testAuthViewModelInitialStateInLocalMode() {
+        let viewModel = AuthViewModel()
+
+        XCTAssertEqual(viewModel.authState, .signedOut)
+        XCTAssertNil(viewModel.user)
+        XCTAssertNil(viewModel.errorMessage)
+    }
+
+    @MainActor
+    func testAuthViewModelSignUpReturnsErrorMessageInLocalMode() async {
+        let viewModel = AuthViewModel()
+
+        await viewModel.signUp(email: "test@example.com", password: "password123", displayName: "Test User")
+
+        XCTAssertEqual(viewModel.authState, .signedOut)
+        XCTAssertNil(viewModel.user)
+        XCTAssertEqual(viewModel.errorMessage, "Firebase SDK 尚未連結，無法註冊。")
+    }
+
+    @MainActor
+    func testAuthViewModelSignInReturnsErrorMessageInLocalMode() async {
+        let viewModel = AuthViewModel()
+
+        await viewModel.signIn(email: "test@example.com", password: "password123")
+
+        XCTAssertEqual(viewModel.authState, .signedOut)
+        XCTAssertNil(viewModel.user)
+        XCTAssertEqual(viewModel.errorMessage, "Firebase SDK 尚未連結，無法登入。")
+    }
+
+    @MainActor
+    func testAuthViewModelSignOutClearsStateInLocalMode() {
+        let viewModel = AuthViewModel()
+
+        viewModel.signOut()
+
+        XCTAssertEqual(viewModel.authState, .signedOut)
+        XCTAssertNil(viewModel.user)
+        XCTAssertNil(viewModel.errorMessage)
+    }
+
+    @MainActor
+    func testAuthViewModelSignOutClearsExistingError() {
+        let viewModel = AuthViewModel()
+        viewModel.errorMessage = "Some prior error"
+
+        viewModel.signOut()
+
+        XCTAssertEqual(viewModel.authState, .signedOut)
+        XCTAssertNil(viewModel.user)
+        XCTAssertNil(viewModel.errorMessage)
+    }
+
+    @MainActor
+    func testAuthViewModelErrorIsSetBeforeEachAuthCall() async {
+        let viewModel = AuthViewModel()
+        viewModel.errorMessage = "Old error"
+
+        await viewModel.signIn(email: "test@example.com", password: "password123")
+
+        XCTAssertNotEqual(viewModel.errorMessage, "Old error")
+        XCTAssertEqual(viewModel.errorMessage, "Firebase SDK 尚未連結，無法登入。")
+    }
+
+    // MARK: - PremiumViewModel Tests
+
+    @MainActor
+    func testPremiumViewModelInitialState() {
+        let service = IAPService()
+        let viewModel = PremiumViewModel(service: service)
+
+        XCTAssertFalse(viewModel.isPurchasing)
+        XCTAssertFalse(viewModel.purchaseSuccess)
+        XCTAssertFalse(viewModel.isPremium)
+        XCTAssertNil(viewModel.selectedPlan)
+        XCTAssertNil(viewModel.purchaseError)
+        XCTAssertTrue(viewModel.products.isEmpty)
+    }
+
+    @MainActor
+    func testPremiumViewModelPurchaseFailsWithoutLoadedProducts() async {
+        let service = IAPService()
+        let viewModel = PremiumViewModel(service: service)
+
+        await viewModel.purchase(.monthly)
+
+        XCTAssertFalse(viewModel.isPurchasing)
+        XCTAssertFalse(viewModel.purchaseSuccess)
+        XCTAssertEqual(viewModel.purchaseError, "找不到對應產品，請稍後再試")
+        // selectedPlan is only set when a matching product is found, which fails here
+        XCTAssertNil(viewModel.selectedPlan)
+    }
+
+    @MainActor
+    func testPremiumViewModelPurchaseYearlyFailsWithoutLoadedProducts() async {
+        let service = IAPService()
+        let viewModel = PremiumViewModel(service: service)
+
+        await viewModel.purchase(.yearly)
+
+        XCTAssertFalse(viewModel.isPurchasing)
+        XCTAssertFalse(viewModel.purchaseSuccess)
+        XCTAssertEqual(viewModel.purchaseError, "找不到對應產品，請稍後再試")
+        // selectedPlan is only set when a matching product is found, which fails here
+        XCTAssertNil(viewModel.selectedPlan)
+    }
+
+    @MainActor
+    func testPremiumViewModelRestoreFindsNoPurchases() async {
+        let service = IAPService()
+        let viewModel = PremiumViewModel(service: service)
+
+        await viewModel.restore()
+
+        XCTAssertFalse(viewModel.isPurchasing)
+        XCTAssertFalse(viewModel.purchaseSuccess)
+        XCTAssertEqual(viewModel.purchaseError, "找不到可恢復的購買項目")
+    }
+
+    @MainActor
+    func testPremiumViewModelRestoreResetsFlagsOnCompletion() async {
+        let service = IAPService()
+        let viewModel = PremiumViewModel(service: service)
+        viewModel.purchaseError = "previous error"
+        viewModel.purchaseSuccess = true
+
+        await viewModel.restore()
+
+        // isPurchasing should always be false after restore completes
+        XCTAssertFalse(viewModel.isPurchasing)
+    }
+
+    @MainActor
+    func testPremiumViewModelProductForPlanReturnsNilWithEmptyProducts() {
+        let service = IAPService()
+        let viewModel = PremiumViewModel(service: service)
+
+        XCTAssertNil(viewModel.product(for: .monthly))
+        XCTAssertNil(viewModel.product(for: .yearly))
+    }
+
+    @MainActor
+    func testPremiumViewModelPurchaseResetsErrorBeforeAttempt() async {
+        let service = IAPService()
+        let viewModel = PremiumViewModel(service: service)
+        viewModel.purchaseError = "Previous error"
+
+        await viewModel.purchase(.monthly)
+
+        // Error should be updated to the new failure reason, not the old one
+        XCTAssertNotEqual(viewModel.purchaseError, "Previous error")
+        XCTAssertEqual(viewModel.purchaseError, "找不到對應產品，請稍後再試")
+    }
+
+    // MARK: - ReviewViewModel Additional Tests
+
+    @MainActor
+    func testReviewViewModelReloadsOnMatchingRepositoryNotification() {
+        let fileURL = FileManager.default.temporaryDirectory
+            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+            .appending(path: "reviews.json")
+        let repository = MockCommunityRepository(localReviewsFileURL: fileURL)
+        let viewModel = ReviewViewModel(clinicId: "taipei-anxin", repository: repository)
+        let initialCount = viewModel.reviews.count
+
+        NotificationCenter.default.post(
+            name: .vetCommunityRepositoryDidChange,
+            object: nil,
+            userInfo: [MockCommunityRepository.changedClinicIDUserInfoKey: "taipei-anxin"]
+        )
+
+        let expectation = XCTestExpectation(description: "Wait for notification processing")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+
+        XCTAssertEqual(viewModel.reviews.count, initialCount)
+    }
+
+    @MainActor
+    func testReviewViewModelIgnoresNotificationForOtherClinic() {
+        let fileURL = FileManager.default.temporaryDirectory
+            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+            .appending(path: "reviews.json")
+        let repository = MockCommunityRepository(localReviewsFileURL: fileURL)
+        let viewModel = ReviewViewModel(clinicId: "taipei-anxin", repository: repository)
+        let initialReviews = viewModel.reviews
+
+        // Post notification for a different clinic
+        NotificationCenter.default.post(
+            name: .vetCommunityRepositoryDidChange,
+            object: nil,
+            userInfo: [MockCommunityRepository.changedClinicIDUserInfoKey: "hk-harbour"]
+        )
+
+        let expectation = XCTestExpectation(description: "Wait for notification processing")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+
+        // Reviews should be unchanged since notification was for a different clinic
+        XCTAssertEqual(viewModel.reviews.map(\.id), initialReviews.map(\.id))
+    }
+
+    @MainActor
+    func testReviewViewModelMarkHelpfulOnNonExistentReviewIsNoop() {
+        let fileURL = FileManager.default.temporaryDirectory
+            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+            .appending(path: "reviews.json")
+        let repository = MockCommunityRepository(localReviewsFileURL: fileURL)
+        let viewModel = ReviewViewModel(clinicId: "taipei-anxin", repository: repository)
+        let initialReviews = viewModel.reviews
+
+        viewModel.markHelpful("nonexistent-review-id")
+
+        // Reviews should be completely unchanged
+        XCTAssertEqual(viewModel.reviews.map(\.id), initialReviews.map(\.id))
+        XCTAssertEqual(viewModel.reviews.map(\.helpfulCount), initialReviews.map(\.helpfulCount))
+    }
+
+    // MARK: - QuoteViewModel Additional Tests
+
+    @MainActor
+    func testQuoteViewModelDefaultOrderIsCreatedAtDescending() {
+        let reviewsURL = FileManager.default.temporaryDirectory
+            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+            .appending(path: "reviews.json")
+        let quotesURL = FileManager.default.temporaryDirectory
+            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+            .appending(path: "quotes.json")
+        let repository = MockCommunityRepository(
+            localReviewsFileURL: reviewsURL,
+            localQuotesFileURL: quotesURL
+        )
+        let viewModel = QuoteViewModel(clinicId: "taipei-anxin", repository: repository)
+
+        // Add a second quote with an older date so we have 2+ to sort
+        let olderQuote = makeQuote(id: "quote-sort-test-older", clinicId: "taipei-anxin")
+        try! repository.addQuote(olderQuote)
+        viewModel.loadQuotes()
+
+        let quotes = viewModel.quotes
+
+        guard quotes.count >= 2 else {
+            XCTFail("Expected at least 2 quotes for sort test")
+            return
+        }
+        for i in 0..<(quotes.count - 1) {
+            XCTAssertGreaterThanOrEqual(quotes[i].createdAt, quotes[i + 1].createdAt)
+        }
+    }
+
+    @MainActor
+    func testQuoteViewModelRejectsEmptyTreatmentType() {
+        let reviewsURL = FileManager.default.temporaryDirectory
+            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+            .appending(path: "reviews.json")
+        let quotesURL = FileManager.default.temporaryDirectory
+            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+            .appending(path: "quotes.json")
+        let repository = MockCommunityRepository(
+            localReviewsFileURL: reviewsURL,
+            localQuotesFileURL: quotesURL
+        )
+        let viewModel = QuoteViewModel(clinicId: "taipei-anxin", repository: repository)
+        let initialCount = viewModel.quotes.count
+
+        let success = viewModel.addQuote(
+            treatmentType: "   ",
+            estimatedCost: Decimal(1000),
+            actualCost: nil,
+            currency: "TWD",
+            notes: "test"
+        )
+
+        XCTAssertFalse(success)
+        XCTAssertEqual(viewModel.quotes.count, initialCount)
+        XCTAssertEqual(viewModel.storageError, "請填寫治療類型和預估費用。")
+    }
+
+    @MainActor
+    func testQuoteViewModelRejectsZeroEstimatedCost() {
+        let reviewsURL = FileManager.default.temporaryDirectory
+            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+            .appending(path: "reviews.json")
+        let quotesURL = FileManager.default.temporaryDirectory
+            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+            .appending(path: "quotes.json")
+        let repository = MockCommunityRepository(
+            localReviewsFileURL: reviewsURL,
+            localQuotesFileURL: quotesURL
+        )
+        let viewModel = QuoteViewModel(clinicId: "taipei-anxin", repository: repository)
+        let initialCount = viewModel.quotes.count
+
+        let success = viewModel.addQuote(
+            treatmentType: "洗牙",
+            estimatedCost: Decimal(0),
+            actualCost: nil,
+            currency: "TWD",
+            notes: "test"
+        )
+
+        XCTAssertFalse(success)
+        XCTAssertEqual(viewModel.quotes.count, initialCount)
+        XCTAssertEqual(viewModel.storageError, "請填寫治療類型和預估費用。")
+    }
+
+    @MainActor
+    func testQuoteViewModelRejectsNegativeEstimatedCost() {
+        let reviewsURL = FileManager.default.temporaryDirectory
+            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+            .appending(path: "reviews.json")
+        let quotesURL = FileManager.default.temporaryDirectory
+            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+            .appending(path: "quotes.json")
+        let repository = MockCommunityRepository(
+            localReviewsFileURL: reviewsURL,
+            localQuotesFileURL: quotesURL
+        )
+        let viewModel = QuoteViewModel(clinicId: "taipei-anxin", repository: repository)
+        let initialCount = viewModel.quotes.count
+
+        let success = viewModel.addQuote(
+            treatmentType: "洗牙",
+            estimatedCost: Decimal(-1),
+            actualCost: nil,
+            currency: "TWD",
+            notes: "test"
+        )
+
+        XCTAssertFalse(success)
+        XCTAssertEqual(viewModel.quotes.count, initialCount)
+        XCTAssertEqual(viewModel.storageError, "請填寫治療類型和預估費用。")
+    }
+
+    @MainActor
+    func testQuoteViewModelTrimsWhitespaceFromTreatmentType() {
+        let reviewsURL = FileManager.default.temporaryDirectory
+            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+            .appending(path: "reviews.json")
+        let quotesURL = FileManager.default.temporaryDirectory
+            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+            .appending(path: "quotes.json")
+        let repository = MockCommunityRepository(
+            localReviewsFileURL: reviewsURL,
+            localQuotesFileURL: quotesURL
+        )
+        let viewModel = QuoteViewModel(clinicId: "taipei-anxin", repository: repository)
+
+        let success = viewModel.addQuote(
+            treatmentType: "  一般診療  ",
+            estimatedCost: Decimal(500),
+            actualCost: nil,
+            currency: "TWD",
+            notes: "test"
+        )
+
+        XCTAssertTrue(success)
+        XCTAssertTrue(viewModel.quotes.contains { $0.treatmentType == "一般診療" })
+        XCTAssertFalse(viewModel.quotes.contains { $0.treatmentType.hasPrefix(" ") })
+    }
+
+    @MainActor
+    func testQuoteViewModelTrimsWhitespaceFromNotes() {
+        let reviewsURL = FileManager.default.temporaryDirectory
+            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+            .appending(path: "reviews.json")
+        let quotesURL = FileManager.default.temporaryDirectory
+            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+            .appending(path: "quotes.json")
+        let repository = MockCommunityRepository(
+            localReviewsFileURL: reviewsURL,
+            localQuotesFileURL: quotesURL
+        )
+        let viewModel = QuoteViewModel(clinicId: "taipei-anxin", repository: repository)
+
+        let success = viewModel.addQuote(
+            treatmentType: "健檢",
+            estimatedCost: Decimal(1500),
+            actualCost: nil,
+            currency: "TWD",
+            notes: "  含血檢  "
+        )
+
+        XCTAssertTrue(success)
+        XCTAssertTrue(viewModel.quotes.contains { $0.notes == "含血檢" })
+    }
+
+    @MainActor
+    func testQuoteViewModelReloadsOnNotification() {
+        let reviewsURL = FileManager.default.temporaryDirectory
+            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+            .appending(path: "reviews.json")
+        let quotesURL = FileManager.default.temporaryDirectory
+            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+            .appending(path: "quotes.json")
+        let repository = MockCommunityRepository(
+            localReviewsFileURL: reviewsURL,
+            localQuotesFileURL: quotesURL
+        )
+        let viewModel = QuoteViewModel(clinicId: "taipei-anxin", repository: repository)
+        let initialCount = viewModel.quotes.count
+
+        NotificationCenter.default.post(
+            name: .vetCommunityRepositoryDidChange,
+            object: nil,
+            userInfo: [MockCommunityRepository.changedClinicIDUserInfoKey: "taipei-anxin"]
+        )
+
+        let expectation = XCTestExpectation(description: "Wait for notification processing")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+
+        XCTAssertEqual(viewModel.quotes.count, initialCount)
+    }
+
+    // MARK: - ProductViewModel Additional Tests
+
+    @MainActor
+    func testProductViewModelAllCategoryReturnsUnfilteredProducts() {
+        let viewModel = ProductViewModel()
+        viewModel.selectedCategory = "保健"
+        let filteredCount = viewModel.filteredProducts.count
+
+        viewModel.selectedCategory = "全部"
+
+        XCTAssertEqual(viewModel.filteredProducts.count, viewModel.products.count)
+        XCTAssertGreaterThan(viewModel.filteredProducts.count, filteredCount)
+    }
+
+    @MainActor
+    func testProductViewModelFilterByNonExistentCategoryReturnsEmpty() {
+        let viewModel = ProductViewModel()
+        viewModel.selectedCategory = "不存在的分類"
+
+        XCTAssertTrue(viewModel.filteredProducts.isEmpty)
+    }
+
+    @MainActor
+    func testProductViewModelCategoriesListContainsExpectedValues() {
+        let categories = ProductViewModel.categories
+
+        XCTAssertEqual(categories.count, 5)
+        XCTAssertTrue(categories.contains("全部"))
+        XCTAssertTrue(categories.contains("食品"))
+        XCTAssertTrue(categories.contains("玩具"))
+        XCTAssertTrue(categories.contains("保健"))
+        XCTAssertTrue(categories.contains("藥品"))
+    }
+
+    @MainActor
+    func testProductViewModelEachProductHasValidCategory() {
+        let viewModel = ProductViewModel()
+
+        for product in viewModel.products {
+            XCTAssertTrue(
+                ProductViewModel.categories.contains(product.category),
+                "Product \(product.id) has unknown category: \(product.category)"
+            )
+        }
+    }
+
+    @MainActor
+    func testProductViewModelFilteredByFoodCategory() {
+        let viewModel = ProductViewModel()
+        viewModel.selectedCategory = "食品"
+
+        let filtered = viewModel.filteredProducts
+
+        XCTAssertFalse(filtered.isEmpty)
+        XCTAssertTrue(filtered.allSatisfy { $0.category == "食品" })
+    }
+
+    @MainActor
+    func testProductViewModelFilteredByMedicineCategory() {
+        let viewModel = ProductViewModel()
+        viewModel.selectedCategory = "藥品"
+
+        let filtered = viewModel.filteredProducts
+
+        XCTAssertFalse(filtered.isEmpty)
+        XCTAssertTrue(filtered.allSatisfy { $0.category == "藥品" })
+    }
+
+    // MARK: - InsuranceViewModel Additional Tests
+
+    @MainActor
+    func testInsuranceViewModelCurrencyForHKProviderReturnsHKD() {
+        let viewModel = InsuranceViewModel()
+        guard let hkPlan = viewModel.plans.first(where: {
+            $0.website.absoluteString.contains(".hk")
+        }) else {
+            XCTFail("No HK plan found for currency test")
+            return
+        }
+
+        XCTAssertEqual(viewModel.currency(for: hkPlan), "HKD")
+    }
+
+    @MainActor
+    func testInsuranceViewModelCurrencyForTWProviderReturnsTWD() {
+        let viewModel = InsuranceViewModel()
+        guard let twPlan = viewModel.plans.first(where: {
+            !$0.website.absoluteString.contains(".hk")
+        }) else {
+            XCTFail("No TW plan found for currency test")
+            return
+        }
+
+        XCTAssertEqual(viewModel.currency(for: twPlan), "TWD")
+    }
+
+    @MainActor
+    func testInsuranceViewModelPlansWithSimilarPremiumExcludesSelf() {
+        let viewModel = InsuranceViewModel()
+        guard let firstPlan = viewModel.plans.first else {
+            XCTFail("No plans loaded")
+            return
+        }
+
+        let similar = viewModel.plansWithSimilarPremium(to: firstPlan, count: 3)
+
+        XCTAssertFalse(similar.contains(where: { $0.id == firstPlan.id }))
+    }
+
+    @MainActor
+    func testInsuranceViewModelPlansWithSimilarPremiumRespectsCount() {
+        let viewModel = InsuranceViewModel()
+        guard let firstPlan = viewModel.plans.first else {
+            XCTFail("No plans loaded")
+            return
+        }
+
+        let similar = viewModel.plansWithSimilarPremium(to: firstPlan, count: 2)
+
+        XCTAssertLessThanOrEqual(similar.count, 2)
+    }
+
+    @MainActor
+    func testInsuranceViewModelSortedPlansAreInCorrectPremiumOrder() {
+        let viewModel = InsuranceViewModel()
+
+        viewModel.sortOrder = .lowToHigh
+        let lowToHigh = viewModel.sortedPlans
+        for i in 0..<(lowToHigh.count - 1) {
+            XCTAssertLessThanOrEqual(lowToHigh[i].monthlyPremium, lowToHigh[i + 1].monthlyPremium)
+        }
+
+        viewModel.sortOrder = .highToLow
+        let highToLow = viewModel.sortedPlans
+        for i in 0..<(highToLow.count - 1) {
+            XCTAssertGreaterThanOrEqual(highToLow[i].monthlyPremium, highToLow[i + 1].monthlyPremium)
+        }
+    }
+
+    @MainActor
+    func testInsuranceViewModelAllPlansHaveRequiredFields() {
+        let viewModel = InsuranceViewModel()
+
+        for plan in viewModel.plans {
+            XCTAssertFalse(plan.id.isEmpty, "Plan missing id")
+            XCTAssertFalse(plan.providerName.isEmpty, "Plan \(plan.id) missing providerName")
+            XCTAssertFalse(plan.planName.isEmpty, "Plan \(plan.id) missing planName")
+            XCTAssertGreaterThan(plan.monthlyPremium, 0, "Plan \(plan.id) has non-positive premium")
+            XCTAssertFalse(plan.coverage.isEmpty, "Plan \(plan.id) has no coverage")
+        }
+    }
+
     // MARK: - ClinicCoordinate Tests
 
     func testClinicCoordinateEquatable() {

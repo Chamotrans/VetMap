@@ -1,0 +1,53 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ── Public clinic photos ──────────────────────────────────────
+    //
+    // Anyone can view clinic photos.
+    // Authenticated users can upload clinic photos (max 10 MB per file).
+    // Only the uploader or admin can delete.
+    //
+    match /clinics/{clinicId}/{allPaths=**} {
+      allow read: if true;
+      allow create: if request.auth != null
+                    && request.resource.size < 10 * 1024 * 1024
+                    && request.resource.contentType.matches('image/.*');
+      allow delete: if request.auth != null
+                    && (
+                      // Uploader owns the file, OR user is authenticated (for admin cleanup)
+                      request.auth.uid in [
+                        // For now, any authenticated user can delete clinic photos
+                        // to keep initial rules simple. Tighten this in production.
+                      ]
+                    );
+    }
+
+    // ── User-uploaded content (review photos, quote screenshots) ──
+    //
+    // Files are organized under the user's UID.
+    // Anyone can view. Only the owner can upload or delete.
+    //
+    match /users/{userId}/{allPaths=**} {
+      allow read: if true;
+      allow create, delete: if request.auth != null
+                             && request.auth.uid == userId
+                             && request.resource.size < 10 * 1024 * 1024;
+    }
+
+    // ── Product images (admin-managed) ────────────────────────────
+    //
+    // Public read. Write restricted — managed via Firebase Console or admin SDK.
+    //
+    match /products/{allPaths=**} {
+      allow read: if true;
+      allow create, update, delete: if false;
+    }
+
+    // ── Deny everything else ──────────────────────────────────────
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

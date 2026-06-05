@@ -31,6 +31,9 @@ struct VetMapApp: App {
         #endif
         #else
         print("Firebase SDK not linked — 使用本機資料。")
+        let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
+        let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
+        print("VetMap v\(appVersion) (\(buildNumber)) — cold start")
         #endif
     }
 }

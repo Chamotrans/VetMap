@@ -59,13 +59,7 @@ private struct ProductCardView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            RoundedRectangle(cornerRadius: AppTheme.compactRadius, style: .continuous)
-                .fill(AppTheme.surface)
-                .overlay {
-                    Image(systemName: "pawprint.fill")
-                        .font(.title)
-                        .foregroundStyle(AppTheme.primary.opacity(0.35))
-                }
+            productImage
                 .aspectRatio(1, contentMode: .fit)
 
             VStack(alignment: .leading, spacing: 4) {
@@ -94,6 +88,16 @@ private struct ProductCardView: View {
         case "藥品": return .red
         default: return AppTheme.accent
         }
+    }
+
+    private var productImage: some View {
+        KingfisherImage(
+            url: product.imageURL,
+            placeholder: .pawprint,
+            contentMode: .fill,
+            cornerRadius: AppTheme.compactRadius,
+            showsCardBorder: false
+        )
     }
 }
 

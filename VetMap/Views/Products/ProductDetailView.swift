@@ -48,22 +48,16 @@ struct ProductDetailView: View {
     }
 
     private var imagePlaceholder: some View {
-        RoundedRectangle(cornerRadius: 0)
-            .fill(AppTheme.surface)
-            .overlay {
-                VStack(spacing: 8) {
-                    Image(systemName: "pawprint.fill")
-                        .font(.system(size: 48))
-                        .foregroundStyle(AppTheme.primary.opacity(0.3))
-                    Text("寵物商品")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            }
-            .frame(height: 240)
-            .clipShape(RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous))
-            .padding(.horizontal, 16)
-            .padding(.top, 8)
+        KingfisherImage(
+            url: product.imageURL,
+            placeholder: .pawprint,
+            contentMode: .fill,
+            cornerRadius: AppTheme.cardRadius,
+            showsCardBorder: false
+        )
+        .frame(height: 240)
+        .padding(.horizontal, 16)
+        .padding(.top, 8)
     }
 
     private var tagsSection: some View {

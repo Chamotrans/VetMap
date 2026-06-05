@@ -27,6 +27,23 @@ struct ReviewRowView: View {
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
 
+            if let images = review.images, !images.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(images.indices, id: \.self) { index in
+                            KingfisherImage(
+                                url: images[index],
+                                placeholder: .default,
+                                contentMode: .fill,
+                                cornerRadius: AppTheme.compactRadius,
+                                showsCardBorder: true
+                            )
+                            .frame(width: 100, height: 100)
+                        }
+                    }
+                }
+            }
+
             FlowLayout(spacing: 6) {
                 if let treatmentType = review.treatmentType, !treatmentType.isEmpty {
                     Text(treatmentType)
