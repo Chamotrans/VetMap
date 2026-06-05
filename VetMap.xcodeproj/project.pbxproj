@@ -106,6 +106,8 @@
 		WGT006E5A6B7C8D9E0F1A2B3C4 /* MockClinicRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A1B1C2D3E4F5A6B7C8D9E0 /* MockClinicRepository.swift */; };
 		WGT007E5A6B7C8D9E0F1A2B3C4 /* VetClinic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA1B1C2D3E4F5A6B7C8D9E0 /* VetClinic.swift */; };
 		WGT008E5A6B7C8D9E0F1A2B3C4 /* ClinicCoordinate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA1B1C2D3E4F5A6B7C8D9E0 /* ClinicCoordinate.swift */; };
+		06EE4CA45B454052BAD84CCA /* RatingPrompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FED1A632B7249B0A7DC20B7 /* RatingPrompt.swift */; };
+		3CC3E5EDB00D45598CA26C58 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80309AA09F6348BA80C2D37D /* OnboardingView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -242,6 +244,8 @@
 		WGT002E5A6B7C8D9E0F1A2B3C4 /* VetMapWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VetMapWidgetBundle.swift; sourceTree = "<group>"; };
 		WGT003E5A6B7C8D9E0F1A2B3C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		WGT021E5A6B7C8D9E0F1A2B3C4 /* VetMapWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = wrapper.app-extension; includeInIndex = 0; path = VetMapWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		5FED1A632B7249B0A7DC20B7 /* RatingPrompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RatingPrompt.swift; path = VetMap/Utilities/RatingPrompt.swift; sourceTree = SOURCE_ROOT; };
+		80309AA09F6348BA80C2D37D /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -475,6 +479,7 @@
 			children = (
 				7BA1B1C2D3E4F5A6B7C8D9E0 /* ComingSoonView.swift */,
 				B3A1B1C2D3E4F5A6B7C8D9E0 /* ClinicFilterControls.swift */,
+				80309AA09F6348BA80C2D37D /* OnboardingView.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -528,6 +533,7 @@
 				387A4EEC83D190FCAA87F293 /* LoadingView.swift */,
 				49784B5ABE69AD0F526EA250 /* ErrorView.swift */,
 				1261FEB61C93743B3AB5CD1F /* NetworkMonitor.swift */,
+				5FED1A632B7249B0A7DC20B7 /* RatingPrompt.swift */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -780,6 +786,8 @@
 				6F2C454189A60F963BD3B543 /* KingfisherImage.swift in Sources */,
 				C15E0B38C7D14BF595565245 /* CrashReporting.swift in Sources */,
 				3FAC110442AC4406982ADB3D /* Analytics.swift in Sources */,
+			06EE4CA45B454052BAD84CCA /* RatingPrompt.swift in Sources */,
+			3CC3E5EDB00D45598CA26C58 /* OnboardingView.swift in Sources */,
 
 			);
 			runOnlyForDeploymentPostprocessing = 0;

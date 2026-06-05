@@ -4,6 +4,7 @@ struct ContentView: View {
     @StateObject private var networkMonitor = NetworkMonitor()
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var selectedTab: SidebarTab? = .home
+    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
 
     enum SidebarTab: String, CaseIterable {
         case home = "首頁"
@@ -37,6 +38,12 @@ struct ContentView: View {
                     .padding(.vertical, 8)
                     .background(AppTheme.warning)
             }
+        }
+        .fullScreenCover(isPresented: Binding(
+            get: { !hasSeenOnboarding },
+            set: { if !$0 { hasSeenOnboarding = true } }
+        )) {
+            OnboardingView()
         }
     }
 

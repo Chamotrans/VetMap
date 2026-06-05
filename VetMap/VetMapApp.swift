@@ -10,11 +10,15 @@ import FirebaseCrashlytics
 struct VetMapApp: App {
     init() {
         configureFirebase()
+        RatingPrompt.incrementLaunchCount()
     }
 
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .onAppear {
+                    RatingPrompt.requestReviewIfAppropriate()
+                }
         }
     }
 
