@@ -25,10 +25,7 @@ struct ClinicListView: View {
             .background(AppTheme.screenBackground)
             .navigationTitle("獸醫診所")
             .navigationBarTitleDisplayMode(.large)
-            .searchable(text: $viewModel.filter.query,
-                        prompt: Text("搜尋診所、地區、服務")
-                            .accessibilityLabel("搜尋診所")
-                            .accessibilityHint("輸入關鍵字搜尋診所"))
+            .searchable(text: $viewModel.filter.query, prompt: "搜尋診所、地區、服務")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
