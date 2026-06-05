@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <clipPath id="roundedSquare">
+      <rect x="0" y="0" width="1024" height="1024" rx="225" ry="225"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background: teal rounded square -->
+  <rect x="0" y="0" width="1024" height="1024" rx="225" ry="225" fill="#008080"/>
+
+  <g clip-path="url(#roundedSquare)">
+
+    <!-- Pawprint: main pad -->
+    <ellipse cx="512" cy="620" rx="130" ry="115" fill="white"/>
+
+    <!-- Pawprint: leftmost toe -->
+    <ellipse cx="340" cy="380" rx="65" ry="82" fill="white" transform="rotate(-20, 340, 380)"/>
+
+    <!-- Pawprint: second toe from left -->
+    <ellipse cx="430" cy="340" rx="65" ry="82" fill="white" transform="rotate(-8, 430, 340)"/>
+
+    <!-- Pawprint: third toe from left -->
+    <ellipse cx="594" cy="340" rx="65" ry="82" fill="white" transform="rotate(8, 594, 340)"/>
+
+    <!-- Pawprint: rightmost toe -->
+    <ellipse cx="684" cy="380" rx="65" ry="82" fill="white" transform="rotate(20, 684, 380)"/>
+
+    <!-- Medical cross in top-right corner -->
+    <g transform="translate(770, 140)">
+      <!-- Vertical bar -->
+      <rect x="46" y="8" width="36" height="112" rx="10" ry="10" fill="white"/>
+      <!-- Horizontal bar -->
+      <rect x="8" y="46" width="112" height="36" rx="10" ry="10" fill="white"/>
+    </g>
+
+  </g>
+</svg>

@@ -7,21 +7,25 @@ struct ContentView: View {
                 .tabItem {
                     Label("首頁", systemImage: "map.fill")
                 }
+                .accessibilityLabel("首頁")
 
             ClinicsTab()
                 .tabItem {
                     Label("診所", systemImage: "cross.case.fill")
                 }
+                .accessibilityLabel("診所")
 
             ProductsTab()
                 .tabItem {
                     Label("好物", systemImage: "shippingbox.fill")
                 }
+                .accessibilityLabel("好物")
 
             ProfileTab()
                 .tabItem {
                     Label("我的", systemImage: "person.fill")
                 }
+                .accessibilityLabel("我的")
         }
         .tint(AppTheme.primary)
     }

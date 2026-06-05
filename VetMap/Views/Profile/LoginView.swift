@@ -69,6 +69,7 @@ struct LoginView: View {
                 .keyboardType(.emailAddress)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
+                .accessibilityLabel("電子郵件")
         }
         .padding(14)
         .background(Color(.systemBackground), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
@@ -85,6 +86,7 @@ struct LoginView: View {
                 .frame(width: 20)
             SecureField("密碼", text: $password)
                 .textContentType(.password)
+                .accessibilityLabel("密碼")
         }
         .padding(14)
         .background(Color(.systemBackground), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
@@ -138,6 +140,8 @@ struct LoginView: View {
         .background(AppTheme.primary, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
         .disabled(isLoading)
         .padding(.horizontal, 16)
+        .accessibilityLabel("登入")
+        .accessibilityHint("使用電子郵件和密碼登入")
     }
 
     private var appleSignInButton: some View {
@@ -151,6 +155,7 @@ struct LoginView: View {
         .frame(height: 48)
         .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
         .padding(.horizontal, 16)
+        .accessibilityLabel("使用 Apple 登入")
     }
 
     // MARK: - Navigation
@@ -168,6 +173,7 @@ struct LoginView: View {
             }
             .font(.subheadline)
         }
+        .accessibilityLabel("註冊新帳戶")
     }
 }
 

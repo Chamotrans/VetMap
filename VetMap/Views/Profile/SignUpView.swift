@@ -68,6 +68,7 @@ struct SignUpView: View {
                 .frame(width: 20)
             TextField("顯示名稱", text: $displayName)
                 .autocapitalization(.words)
+                .accessibilityLabel("顯示名稱")
         }
         .padding(14)
         .background(Color(.systemBackground), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
@@ -87,6 +88,7 @@ struct SignUpView: View {
                 .keyboardType(.emailAddress)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
+                .accessibilityLabel("電子郵件")
         }
         .padding(14)
         .background(Color(.systemBackground), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
@@ -103,6 +105,8 @@ struct SignUpView: View {
                 .frame(width: 20)
             SecureField("密碼（至少6個字元）", text: $password)
                 .textContentType(.newPassword)
+                .accessibilityLabel("密碼")
+                .accessibilityHint("至少六個字元")
         }
         .padding(14)
         .background(Color(.systemBackground), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
@@ -119,6 +123,7 @@ struct SignUpView: View {
                 .frame(width: 20)
             SecureField("確認密碼", text: $confirmPassword)
                 .textContentType(.newPassword)
+                .accessibilityLabel("確認密碼")
         }
         .padding(14)
         .background(Color(.systemBackground), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
@@ -190,6 +195,8 @@ struct SignUpView: View {
         .background(AppTheme.primary, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
         .disabled(isLoading)
         .padding(.horizontal, 16)
+        .accessibilityLabel("註冊")
+        .accessibilityHint("建立新帳戶")
     }
 
     // MARK: - Navigation

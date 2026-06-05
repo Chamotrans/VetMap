@@ -71,6 +71,8 @@ struct ProfileTab: View {
             .foregroundStyle(.white)
             .background(AppTheme.primary, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
             .padding(.horizontal, 40)
+            .accessibilityLabel("登入或註冊")
+            .accessibilityHint("開啟登入頁面")
 
             Spacer()
         }
@@ -113,6 +115,8 @@ struct ProfileTab: View {
                 } label: {
                     Label("升級 Premium", systemImage: "crown.fill")
                 }
+                .accessibilityLabel("升級 Premium")
+                .accessibilityHint("查看 Premium 會員方案")
 
                 NavigationLink {
                     PremiumView()
@@ -164,6 +168,8 @@ struct ProfileTab: View {
                         Spacer()
                     }
                 }
+                .accessibilityLabel("登出")
+                .accessibilityHint("登出目前帳戶")
             }
         }
         .listStyle(.insetGrouped)
@@ -197,6 +203,7 @@ struct ProfileTab: View {
             Spacer()
         }
         .padding(.vertical, 8)
+        .accessibilityLabel("用戶資料")
     }
 }
 

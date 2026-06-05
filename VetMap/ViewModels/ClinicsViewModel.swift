@@ -6,6 +6,8 @@ final class ClinicsViewModel: ObservableObject {
     @Published var filter = ClinicSearchFilter()
     @Published private(set) var clinics: [VetClinic] = []
     @Published private(set) var storageError: String?
+    @Published var isLoading = false
+    @Published var networkError: String?
 
     private let repository: MockClinicRepository
     private var cancellables: Set<AnyCancellable> = []
@@ -21,7 +23,14 @@ final class ClinicsViewModel: ObservableObject {
     }
 
     func loadClinics() {
+        isLoading = true
+        networkError = nil
         clinics = repository.fetchClinics()
+        isLoading = false
+    }
+
+    func retryLoad() {
+        loadClinics()
     }
 
     func addClinic(_ clinic: VetClinic) {
