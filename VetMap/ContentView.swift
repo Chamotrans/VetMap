@@ -1,33 +1,46 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var networkMonitor = NetworkMonitor()
+
     var body: some View {
-        TabView {
-            HomeTab()
-                .tabItem {
-                    Label("首頁", systemImage: "map.fill")
-                }
-                .accessibilityLabel("首頁")
+        ZStack(alignment: .top) {
+            TabView {
+                HomeTab()
+                    .tabItem {
+                        Label("首頁", systemImage: "map.fill")
+                    }
+                    .accessibilityLabel("首頁")
 
-            ClinicsTab()
-                .tabItem {
-                    Label("診所", systemImage: "cross.case.fill")
-                }
-                .accessibilityLabel("診所")
+                ClinicsTab()
+                    .tabItem {
+                        Label("診所", systemImage: "cross.case.fill")
+                    }
+                    .accessibilityLabel("診所")
 
-            ProductsTab()
-                .tabItem {
-                    Label("好物", systemImage: "shippingbox.fill")
-                }
-                .accessibilityLabel("好物")
+                ProductsTab()
+                    .tabItem {
+                        Label("好物", systemImage: "shippingbox.fill")
+                    }
+                    .accessibilityLabel("好物")
 
-            ProfileTab()
-                .tabItem {
-                    Label("我的", systemImage: "person.fill")
-                }
-                .accessibilityLabel("我的")
+                ProfileTab()
+                    .tabItem {
+                        Label("我的", systemImage: "person.fill")
+                    }
+                    .accessibilityLabel("我的")
+            }
+            .tint(AppTheme.primary)
+
+            if !networkMonitor.isConnected {
+                Text("離線模式 — 顯示本機資料")
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 8)
+                    .background(AppTheme.warning)
+            }
         }
-        .tint(AppTheme.primary)
     }
 }
 
