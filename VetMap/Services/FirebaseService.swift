@@ -16,16 +16,6 @@ final class FirebaseService {
         return Firestore.firestore()
     }
 
-    private var auth: Auth? {
-        guard isAvailable else { return nil }
-        return Auth.auth()
-    }
-
-    private var storage: Storage? {
-        guard isAvailable else { return nil }
-        return Storage.storage()
-    }
-
     private let encoder: Firestore.Encoder = {
         let encoder = Firestore.Encoder()
         encoder.dateEncodingStrategy = .timestamp

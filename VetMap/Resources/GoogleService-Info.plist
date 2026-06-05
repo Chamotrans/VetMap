@@ -1,55 +1,31 @@
+✔ Downloading configuration data of your Firebase IOS app
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<!--
-  ═══════════════════════════════════════════════════════════════════
-  GoogleService-Info.plist — VetMap Firebase Configuration
-  ═══════════════════════════════════════════════════════════════════
-
-  THIS FILE IS A PLACEHOLDER. Replace it with the real file downloaded
-  from Firebase Console.
-
-  HOW TO GET THE REAL FILE:
-  1. Go to https://console.firebase.google.com/
-  2. Open your Firebase project (or create one — see FirebaseSetup.md)
-  3. Project Settings → General → Your apps → iOS app
-  4. If no iOS app exists yet, click "Add app" → iOS
-      - Bundle ID: com.vetmap.app (or your actual bundle ID)
-      - App nickname: VetMap
-      - App Store ID: leave blank for now
-  5. Download GoogleService-Info.plist
-  6. Replace this file with the downloaded one
-  7. Do NOT commit the real file to Git — add it to .gitignore
-
-  Until replaced, the app runs in local-only mode using mock data.
-  Firebase is only activated when both this plist AND the Firebase
-  SPM packages are present.
-  ═══════════════════════════════════════════════════════════════════
--->
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyPLACEHOLDER_REPLACE_WITH_YOUR_API_KEY</string>
+	<string>YOUR_API_KEY</string>
 	<key>GCM_SENDER_ID</key>
-	<string>000000000000</string>
+	<string>987416145540</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.vetmap.app</string>
 	<key>PROJECT_ID</key>
-	<string>vetmap-placeholder</string>
+	<string>vetmap-app</string>
 	<key>STORAGE_BUCKET</key>
-	<string>vetmap-placeholder.appspot.com</string>
+	<string>vetmap-app.firebasestorage.app</string>
 	<key>IS_ADS_ENABLED</key>
-	<false/>
+	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false/>
+	<false></false>
 	<key>IS_APPINVITE_ENABLED</key>
-	<false/>
+	<true></true>
 	<key>IS_GCM_ENABLED</key>
-	<true/>
+	<true></true>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true/>
+	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:000000000000:ios:0000000000000000000000</string>
+	<string>1:987416145540:ios:dc6a2080329038944fdcd1</string>
 </dict>
 </plist>

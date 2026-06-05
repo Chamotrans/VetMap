@@ -193,7 +193,7 @@ final class AuthViewModel: NSObject, ObservableObject {
     #if canImport(FirebaseAuth)
     private func mapAuthError(_ error: Error) -> String {
         let nsError = error as NSError
-        guard let code = AuthErrorCode.Code(rawValue: nsError.code) else {
+        guard let code = AuthErrorCode(rawValue: nsError.code) else {
             return "發生未知錯誤，請再試一次。"
         }
         switch code {
