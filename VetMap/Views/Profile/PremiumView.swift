@@ -121,6 +121,7 @@ struct PremiumView: View {
                 .foregroundStyle(.secondary)
 
             Button {
+                Analytics.premiumPurchaseStarted("monthly")
                 Task { await viewModel.purchase(.monthly) }
             } label: {
                 Group {
@@ -171,6 +172,7 @@ struct PremiumView: View {
                 .foregroundStyle(.secondary)
 
             Button {
+                Analytics.premiumPurchaseStarted("yearly")
                 Task { await viewModel.purchase(.yearly) }
             } label: {
                 Group {

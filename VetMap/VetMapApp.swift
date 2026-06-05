@@ -2,6 +2,9 @@ import SwiftUI
 #if canImport(FirebaseCore)
 import FirebaseCore
 #endif
+#if canImport(FirebaseCrashlytics)
+import FirebaseCrashlytics
+#endif
 
 @main
 struct VetMapApp: App {
@@ -28,6 +31,9 @@ struct VetMapApp: App {
         }
 
         FirebaseApp.configure(options: options)
+        #if canImport(FirebaseCrashlytics)
+        Crashlytics.crashlytics().setCrashlyticsCollectionEnabled(true)
+        #endif
         let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
         let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
         print("VetMap v\(appVersion) (\(buildNumber)) — Firebase configured")

@@ -199,6 +199,7 @@ struct AddClinicView: View {
 
     private func submit() {
         guard let clinic = viewModel.makeClinic() else { return }
+        Analytics.clinicAdded(clinic.name)
         Haptics.success()
         showSuccess = true
         onSubmit(clinic)

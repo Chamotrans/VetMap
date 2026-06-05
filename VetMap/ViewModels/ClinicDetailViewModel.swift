@@ -26,6 +26,7 @@ final class ClinicDetailViewModel: ObservableObject {
     func loadCommunityData() {
         reviews = repository.fetchReviews(for: clinic.id)
         quotes = repository.fetchQuotes(for: clinic.id)
+        Analytics.clinicViewed(clinic.name)
     }
 
     func markHelpful(_ reviewId: String) {

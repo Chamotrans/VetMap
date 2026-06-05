@@ -22,6 +22,8 @@
 - **Backend:** Firebase v12.5 — Auth (Email/Password + Apple Sign In), Firestore (asia-east1), Storage (pending bucket creation)
 - **IAP:** StoreKit 2
 - **Image caching:** Kingfisher v8.0 — `#if canImport(Kingfisher)` with AsyncImage fallback
+- **Crashlytics:** Firebase Crashlytics v12.5 — optional SPM, `#if canImport(FirebaseCrashlytics)` guarded via `VetMap/Utilities/CrashReporting.swift`
+- **Analytics:** Firebase Analytics v12.5 — optional SPM, `#if canImport(FirebaseAnalytics)` guarded via `VetMap/Utilities/Analytics.swift`
 - **Testing:** XCTest (72 unit tests)
 - **Firebase project:** `vetmap-app` → https://console.firebase.google.com/project/vetmap-app
 
@@ -47,6 +49,17 @@ VetMap/
 │   │   ├── MockCommunityRepository.swift # Local reviews/quotes + seed data
 │   │   ├── LocationService.swift         # CLLocationManager wrapper
 │   │   └── GeocodingService.swift        # CLGeocoder address → coordinate
+│   ├── Utilities/
+│   │   ├── CrashReporting.swift          # Crashlytics wrapper (#if canImport guarded)
+│   │   ├── Analytics.swift               # Analytics wrapper (#if canImport guarded)
+│   │   ├── NetworkMonitor.swift          # NWPathMonitor wrapper
+│   │   ├── KeychainService.swift         # Keychain read/write/delete
+│   │   ├── Haptics.swift                 # UIFeedbackGenerator helpers
+│   │   ├── LoadingView.swift             # Loading spinner
+│   │   ├── EmptyStateView.swift          # Empty state UI
+│   │   ├── ErrorView.swift               # Error display UI
+│   │   ├── KingfisherImage.swift         # SPM-optional Kingfisher wrapper
+│   │   └── KingfisherBridge.swift        # Kingfisher bridging utilities
 │   ├── ViewModels/
 │   │   ├── ClinicsViewModel.swift    # Clinic list + search/filter
 │   │   ├── MapViewModel.swift        # Map annotations + camera
