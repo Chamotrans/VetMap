@@ -2,7 +2,8 @@
   "firestore": {
     "rules": "FirestoreRules.rules"
   },
-  "storage": {
+  "storage": [{
+    "target": "default",
     "rules": "StorageRules.rules"
-  }
+  }]
 }
