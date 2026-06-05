@@ -1,84 +1,69 @@
-# VetMap
+# VetMap — 寵物醫院地圖
 
-VetMap is a SwiftUI iOS app for finding and contributing community-reported veterinary clinic information across Taiwan and Hong Kong.
+> **願世間再無誤診毛孩** — Community-driven vet clinic discovery for Taiwan & Hong Kong.
 
-The current MVP focuses on a usable clinic discovery flow: map browsing, clinic list/search/filter, clinic detail actions, and local community submissions.
+## Stack
+
+| Layer | Tech |
+|-------|------|
+| **App** | SwiftUI + Swift 6, iOS 17+ |
+| **Map** | MapKit |
+| **Backend** | Firebase (Auth + Firestore + Storage) |
+| **Image** | Kingfisher v8 (`#if canImport` → AsyncImage fallback) |
+| **IAP** | StoreKit 2 |
+| **Crash** | Firebase Crashlytics + Analytics (`#if canImport` guarded) |
+| **CI** | GitHub Actions |
 
 ## Features
 
-- Map-first clinic discovery with MapKit
-- Clinic list with keyword search, region/verification/price filters, and verification-first sorting
-- Clinic detail pages with call, website, Apple Maps route actions, community reviews, and quote references
-- Add-clinic flow with address geocoding, manual coordinate fallback, and local persistence
-- Add-review flow with local persistence for early community submissions
-- Shared local repository updates so map, list, and detail screens stay in sync
-- SwiftUI visual system with consistent cards, chips, safe-area handling, and iOS-style material overlays
+- **Map-first** discovery with MapKit annotations
+- **Clinic search** — keyword, region, price, verified filters
+- **Clinic detail** — call, website, Apple Maps route, reviews, quotes
+- **Reviews** — star ratings, PhotosPicker, helpful voting
+- **Quotes** — treatment cost transparency, 13 types, TWD/HKD
+- **Add clinic** — address geocoding + manual coordinate fallback
+- **Products** — 2-/3-column grid, 4 categories, 10 seed products
+- **Insurance** — 6 TW/HK plans, premium comparison
+- **Auth** — Email/Password + Apple Sign In (+ Keychain persistence)
+- **Premium** — StoreKit 2 monthly/yearly subscriptions
+- **Widget** — Nearby clinics home screen widget (iOS 17+)
+- **iPad** — NavigationSplitView sidebar, 3-column product grid
+- **Offline** — NWPathMonitor, offline banner, retry
+- **A11y** — 30+ VoiceOver labels (zh-Hant-HK)
+- **i18n** — zh-Hant-HK / zh-Hans / en (30+ keys)
 
-## Tech Stack
+## Project
 
-- SwiftUI
-- MapKit
-- CoreLocation
-- StoreKit configuration placeholder
-- XCTest
-- iOS 17+
-
-## Project Structure
-
-```text
-VetMap/
-├── VetMap.xcodeproj
-├── VetMap/
-│   ├── Models/
-│   ├── Services/
-│   ├── ViewModels/
-│   ├── Views/
-│   ├── Resources/
-│   ├── ContentView.swift
-│   └── VetMapApp.swift
-├── VetMapTests/
-├── VetMapUITests/
-└── PLAN.md
+```
+21 commits • BUILD SUCCEEDED • 0 errors, 0 warnings
+63+ Swift files • 72 tests • Firebase: vetmap-app
 ```
 
-## Getting Started
-
-Open the project in Xcode:
+## Quick Start
 
 ```bash
-open VetMap.xcodeproj
-```
-
-Build from the command line:
-
-```bash
-xcodebuild -project VetMap.xcodeproj \
-  -scheme VetMap \
+# Build
+xcodebuild -project VetMap.xcodeproj -scheme VetMap \
   -destination 'generic/platform=iOS Simulator' \
-  CODE_SIGNING_ALLOWED=NO \
-  build
+  CODE_SIGNING_ALLOWED=NO build
+
+# Test
+xcodebuild -project VetMap.xcodeproj -scheme VetMap \
+  -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
+  CODE_SIGNING_ALLOWED=NO test
+
+# Archive for TestFlight
+bash scripts/archive.sh
 ```
 
-Run tests:
+## Docs
 
-```bash
-xcodebuild -project VetMap.xcodeproj \
-  -scheme VetMap \
-  -destination 'platform=iOS Simulator,name=iPhone 17' \
-  CODE_SIGNING_ALLOWED=NO \
-  test
-```
-
-## Notes
-
-- `VetMap/Resources/GoogleService-Info.plist` is a placeholder. Replace it with a real Firebase config only when Firebase integration is ready.
-- Clinic and review submissions currently persist locally in Application Support.
-- Address lookup uses CoreLocation geocoding, with region presets and manual coordinates as fallback paths.
-
-## Roadmap
-
-- Firebase-backed clinic/review sync
-- Review moderation, reporting, and trust signals
-- Quote submission beyond seed data
-- Real product and insurance data flows
-- UI test coverage for the main add-clinic journey
+| File | |
+|------|----|
+| `CLAUDE.md` | Architecture, patterns, constraints |
+| `PLAN.md` | Original 16-task implementation plan |
+| `FirebaseSetup.md` | Firebase project setup guide |
+| `AppStoreSetup.md` | App Store Connect submission guide |
+| `AppStoreMetadata.md` | Descriptions, keywords, screenshots plan |
+| `PREFLIGHT_CHECKLIST.md` | 35-item launch checklist |
+| `SECURITY.md` | Security policy + pre-commit hook |
