@@ -14,8 +14,14 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>VetMap 會使用你的位置來顯示附近獸醫診所與距離。</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>用於上傳獸醫診所評價相片。</string>
+	<key>NSCameraUsageDescription</key>
+	<string>用於拍攝獸醫診所評價相片。</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchScreen</key>
