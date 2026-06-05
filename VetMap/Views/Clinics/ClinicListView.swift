@@ -25,7 +25,10 @@ struct ClinicListView: View {
             .background(AppTheme.screenBackground)
             .navigationTitle("獸醫診所")
             .navigationBarTitleDisplayMode(.large)
-            .searchable(text: $viewModel.filter.query, prompt: "搜尋診所、地區、服務")
+            .searchable(text: $viewModel.filter.query,
+                        prompt: Text("搜尋診所、地區、服務")
+                            .accessibilityLabel("搜尋診所")
+                            .accessibilityHint("輸入關鍵字搜尋診所"))
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -130,6 +133,7 @@ struct ClinicListView: View {
                         ClinicListRowView(clinic: clinic)
                     }
                     .buttonStyle(.plain)
+                    .accessibilityLabel("\(clinic.name), 評分 \(String(format: "%.1f", clinic.avgRating))")
                     .accessibilityHint("開啟診所詳情")
                 }
             }

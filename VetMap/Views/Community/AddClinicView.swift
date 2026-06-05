@@ -27,14 +27,17 @@ struct AddClinicView: View {
                     TextField("診所名稱", text: $viewModel.name)
                         .textInputAutocapitalization(.never)
                         .focused($focusedField, equals: .name)
+                        .accessibilityLabel("診所名稱")
 
                     TextField("地址", text: $viewModel.address, axis: .vertical)
                         .lineLimit(2...4)
                         .focused($focusedField, equals: .address)
+                        .accessibilityLabel("診所地址")
 
                     TextField("電話", text: $viewModel.phone)
                         .keyboardType(.phonePad)
                         .focused($focusedField, equals: .phone)
+                        .accessibilityLabel("診所電話")
 
                     TextField("網站 URL", text: $viewModel.website)
                         .keyboardType(.URL)
@@ -154,6 +157,7 @@ struct AddClinicView: View {
                     }
                     .fontWeight(.semibold)
                     .disabled(!viewModel.canSubmit)
+                    .accessibilityLabel("提交診所資料")
                 }
 
                 ToolbarItemGroup(placement: .keyboard) {

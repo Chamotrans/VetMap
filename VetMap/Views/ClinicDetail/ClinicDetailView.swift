@@ -139,6 +139,7 @@ struct ClinicDetailView: View {
             .buttonBorderShape(.roundedRectangle(radius: AppTheme.cardRadius))
             .tint(AppTheme.primary)
             .disabled(clinic.phone.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            .accessibilityLabel("致電診所")
 
             if let website = clinic.website {
                 Button {
@@ -148,6 +149,7 @@ struct ClinicDetailView: View {
                 }
                 .buttonStyle(.bordered)
                 .buttonBorderShape(.roundedRectangle(radius: AppTheme.cardRadius))
+                .accessibilityLabel("診所網站")
             }
 
             Button {
@@ -157,6 +159,7 @@ struct ClinicDetailView: View {
             }
             .buttonStyle(.bordered)
             .buttonBorderShape(.roundedRectangle(radius: AppTheme.cardRadius))
+            .accessibilityLabel("導航到此診所")
         }
     }
 
@@ -246,6 +249,7 @@ struct ClinicDetailView: View {
                 }
             }
         }
+        .accessibilityLabel("查看評價")
     }
 
     @ViewBuilder
