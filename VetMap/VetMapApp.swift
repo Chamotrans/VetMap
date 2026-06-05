@@ -1,4 +1,7 @@
 import SwiftUI
+#if canImport(FirebaseCore)
+import FirebaseCore
+#endif
 
 @main
 struct VetMapApp: App {
@@ -13,10 +16,7 @@ struct VetMapApp: App {
     }
 
     private func configureFirebase() {
-        #if canImport(Firebase)
-        #if targetEnvironment(simulator)
-        print("Firebase: running on simulator — skipping FirebaseApp.configure(). 使用本機資料。")
-        #else
+        #if canImport(FirebaseCore)
         guard let configPath = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist") else {
             print("Firebase: GoogleService-Info.plist not found — 使用本機資料。")
             return
@@ -28,12 +28,14 @@ struct VetMapApp: App {
         }
 
         FirebaseApp.configure(options: options)
-        #endif
+        let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
+        let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
+        print("VetMap v\(appVersion) (\(buildNumber)) — Firebase configured")
         #else
         print("Firebase SDK not linked — 使用本機資料。")
         let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
         let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
-        print("VetMap v\(appVersion) (\(buildNumber)) — cold start")
+        print("VetMap v\(appVersion) (\(buildNumber)) — cold start (local mode)")
         #endif
     }
 }
