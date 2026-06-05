@@ -1,11 +1,42 @@
 import SwiftUI
 
 struct ProductsTab: View {
-    var body: some View {
-        ComingSoonView(
-            title: "毛孩好物",
-            subtitle: "保健品、用品與保險比較會放在這裡，先保留清楚入口。",
-            systemImage: "shippingbox.fill"
-        )
+    @StateObject private var productViewModel = ProductViewModel()
+    @StateObject private var insuranceViewModel = InsuranceViewModel()
+    @State private var selectedSegment: Segment = .products
+
+    enum Segment: String, CaseIterable {
+        case products = "好物"
+        case insurance = "保險"
     }
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 0) {
+                Picker("分類", selection: $selectedSegment) {
+                    ForEach(Segment.allCases, id: \.self) { segment in
+                        Text(segment.rawValue).tag(segment)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+                .background(Color(.systemBackground))
+
+                switch selectedSegment {
+                case .products:
+                    ProductListView(viewModel: productViewModel)
+                case .insurance:
+                    InsuranceListView(viewModel: insuranceViewModel)
+                }
+            }
+            .animation(.default, value: selectedSegment)
+            .navigationTitle("毛孩好物")
+            .navigationBarTitleDisplayMode(.large)
+        }
+    }
+}
+
+#Preview {
+    ProductsTab()
 }

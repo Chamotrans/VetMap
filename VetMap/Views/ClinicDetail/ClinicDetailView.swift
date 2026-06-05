@@ -4,6 +4,8 @@ import SwiftUI
 struct ClinicDetailView: View {
     let clinic: VetClinic
 
+    @StateObject private var viewModel: ClinicDetailViewModel
+    @State private var isAddingReview = false
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
 
@@ -20,20 +22,43 @@ struct ClinicDetailView: View {
         )
     }
 
+    init(clinic: VetClinic) {
+        self.clinic = clinic
+        _viewModel = StateObject(wrappedValue: ClinicDetailViewModel(clinic: clinic))
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
-                    header
-                    contactActions
-                    infoSection
-                    servicesSection
-                    openingHoursSection
-                    mapSection
+                    if viewModel.isLoading {
+                        shimmerSections
+                            .transition(.opacity)
+                    } else {
+                        header
+                            .transition(.opacity)
+                        contactActions
+                            .transition(.opacity)
+                        storageErrorBanner
+                            .transition(.opacity)
+                        infoSection
+                            .transition(.opacity)
+                        reviewsSection
+                            .transition(.opacity)
+                        quoteSection
+                            .transition(.opacity)
+                        servicesSection
+                            .transition(.opacity)
+                        openingHoursSection
+                            .transition(.opacity)
+                        mapSection
+                            .transition(.opacity)
+                    }
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 12)
                 .padding(.bottom, 24)
+                .animation(.easeInOut(duration: 0.3), value: viewModel.isLoading)
             }
             .background(AppTheme.screenBackground)
             .navigationTitle("診所詳情")
@@ -43,6 +68,11 @@ struct ClinicDetailView: View {
                     Button("完成") {
                         dismiss()
                     }
+                }
+            }
+            .sheet(isPresented: $isAddingReview) {
+                AddReviewView(clinicName: clinic.name) { draft in
+                    viewModel.addReview(draft)
                 }
             }
         }
@@ -65,7 +95,7 @@ struct ClinicDetailView: View {
                             .fixedSize(horizontal: false, vertical: true)
 
                         if clinic.verified {
-                                Image(systemName: "checkmark.seal.fill")
+                            Image(systemName: "checkmark.seal.fill")
                                 .foregroundStyle(AppTheme.primary)
                                 .accessibilityLabel("已驗證")
                         }
@@ -130,6 +160,27 @@ struct ClinicDetailView: View {
         }
     }
 
+    private var shimmerSections: some View {
+        Group {
+            ShimmerCard()
+            ShimmerCard()
+            ShimmerCard()
+            ShimmerCard()
+        }
+    }
+
+    @ViewBuilder
+    private var storageErrorBanner: some View {
+        if let storageError = viewModel.storageError {
+            Label(storageError, systemImage: "externaldrive.badge.exclamationmark")
+                .font(.footnote.weight(.medium))
+                .foregroundStyle(AppTheme.warning)
+                .padding(12)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .appCard(fill: AppTheme.warning.opacity(0.12), stroke: AppTheme.warning.opacity(0.22))
+        }
+    }
+
     private var infoSection: some View {
         detailCard(title: "基本資料", systemImage: "info.circle.fill") {
             VStack(alignment: .leading, spacing: 12) {
@@ -139,6 +190,91 @@ struct ClinicDetailView: View {
                     infoRow("網站", website.host() ?? website.absoluteString, systemImage: "safari")
                 }
                 infoRow("資料狀態", clinic.verified ? "社群已驗證" : "待更多社群回報", systemImage: clinic.verified ? "checkmark.seal" : "exclamationmark.triangle")
+            }
+        }
+    }
+
+    private var reviewsSection: some View {
+        detailCard(title: "社群評價", systemImage: "text.bubble.fill") {
+            HStack(alignment: .center) {
+                Label("\(viewModel.reviews.count) 則近期回報", systemImage: "person.2.fill")
+                    .font(.footnote.weight(.medium))
+                    .foregroundStyle(.secondary)
+
+                Spacer()
+
+                Button {
+                    isAddingReview = true
+                } label: {
+                    Label("新增", systemImage: "plus")
+                        .font(.subheadline.weight(.semibold))
+                }
+                .buttonStyle(.borderedProminent)
+                .buttonBorderShape(.roundedRectangle(radius: AppTheme.cardRadius))
+                .tint(AppTheme.primary)
+            }
+
+            if viewModel.reviews.isEmpty {
+                emptyCommunityState("暫時未有評價")
+            } else {
+                VStack(spacing: 10) {
+                    ForEach(viewModel.reviews.prefix(2)) { review in
+                        ReviewRowView(
+                            review: review,
+                            currency: defaultCurrency,
+                            onMarkHelpful: { viewModel.markHelpful(review.id) }
+                        )
+                    }
+
+                    NavigationLink {
+                        ReviewListView(clinic: clinic)
+                    } label: {
+                        HStack {
+                            Text("查看全部 \(viewModel.reviews.count) 則評價")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(AppTheme.primary)
+
+                            Spacer()
+
+                            Image(systemName: "chevron.right")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding(.horizontal, 4)
+                        .padding(.top, 2)
+                    }
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var quoteSection: some View {
+        detailCard(title: "費用報價", systemImage: "dollarsign.circle.fill") {
+            if viewModel.quotes.isEmpty {
+                emptyCommunityState("暫無報價記錄")
+            } else {
+                VStack(spacing: 12) {
+                    ForEach(viewModel.quotes.prefix(2)) { quote in
+                        quoteRow(quote)
+                    }
+
+                    NavigationLink {
+                        QuoteListView(clinicId: clinic.id, clinicName: clinic.name)
+                    } label: {
+                        HStack {
+                            Text("查看全部 \(viewModel.quotes.count) 筆報價")
+                                .font(.subheadline.weight(.semibold))
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption.weight(.bold))
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding(12)
+                        .background(AppTheme.surface, in: RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous))
+                    }
+                    .buttonStyle(.plain)
+                }
             }
         }
     }
@@ -191,6 +327,66 @@ struct ClinicDetailView: View {
             .buttonStyle(.bordered)
             .buttonBorderShape(.roundedRectangle(radius: AppTheme.cardRadius))
         }
+    }
+
+    private func quoteRow(_ quote: Quote) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(quote.treatmentType)
+                    .font(.subheadline.weight(.semibold))
+
+                Text(quote.notes)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            Spacer()
+
+            VStack(alignment: .trailing, spacing: 3) {
+                Text(costText(quote.actualCost ?? quote.estimatedCost, currency: quote.currency))
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(AppTheme.primary)
+
+                if quote.actualCost == nil {
+                    Text("估算")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .padding(12)
+        .background(AppTheme.surface, in: RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous))
+    }
+
+    private func emptyCommunityState(_ message: String) -> some View {
+        HStack(spacing: 10) {
+            Image(systemName: "text.bubble")
+                .foregroundStyle(AppTheme.primary)
+                .frame(width: 36, height: 36)
+                .background(AppTheme.primary.opacity(0.12), in: RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous))
+                .accessibilityHidden(true)
+
+            Text(message)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(AppTheme.surface, in: RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous))
+    }
+
+    private func costText(_ amount: Decimal, currency: String) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = 0
+
+        let number = NSDecimalNumber(decimal: amount)
+        return "\(currency) \(formatter.string(from: number) ?? number.stringValue)"
+    }
+
+    private var defaultCurrency: String {
+        clinic.address.localizedCaseInsensitiveContains("香港") ? "HKD" : "TWD"
     }
 
     private func detailCard<Content: View>(

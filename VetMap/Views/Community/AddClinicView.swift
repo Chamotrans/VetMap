@@ -6,6 +6,7 @@ struct AddClinicView: View {
     @Environment(\.dismiss) private var dismiss
     @FocusState private var focusedField: Field?
     @StateObject private var viewModel = AddClinicViewModel()
+    @State private var showSuccess = false
 
     private enum Field: Hashable {
         case name
@@ -131,6 +132,13 @@ struct AddClinicView: View {
             }
             .scrollContentBackground(.hidden)
             .background(AppTheme.screenBackground)
+            .scrollDismissesKeyboard(.interactively)
+            .simultaneousGesture(
+                TapGesture().onEnded {
+                    focusedField = nil
+                },
+                including: focusedField != nil ? .all : .subviews
+            )
             .navigationTitle("新增診所")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -156,13 +164,44 @@ struct AddClinicView: View {
                     .fontWeight(.semibold)
                 }
             }
+            .overlay {
+                if showSuccess {
+                    successOverlay
+                }
+            }
+        }
+    }
+
+    private var successOverlay: some View {
+        ZStack {
+            Color.black.opacity(0.3)
+                .ignoresSafeArea()
+
+            VStack(spacing: 16) {
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.system(size: 56))
+                    .foregroundStyle(AppTheme.primary)
+
+                Text("新增成功")
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(.primary)
+            }
+            .padding(32)
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .scaleEffect(showSuccess ? 1 : 0.5)
+            .animation(.spring(response: 0.4, dampingFraction: 0.6), value: showSuccess)
         }
     }
 
     private func submit() {
         guard let clinic = viewModel.makeClinic() else { return }
+        Haptics.success()
+        showSuccess = true
         onSubmit(clinic)
-        dismiss()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+            showSuccess = false
+            dismiss()
+        }
     }
 
     @ViewBuilder

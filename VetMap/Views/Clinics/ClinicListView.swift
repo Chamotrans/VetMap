@@ -19,6 +19,9 @@ struct ClinicListView: View {
                 .padding(.top, 12)
                 .padding(.bottom, 24)
             }
+            .refreshable {
+                viewModel.loadClinics()
+            }
             .background(AppTheme.screenBackground)
             .navigationTitle("獸醫診所")
             .navigationBarTitleDisplayMode(.large)
@@ -130,41 +133,21 @@ struct ClinicListView: View {
                     .accessibilityHint("開啟診所詳情")
                 }
             }
+            .animation(.default, value: viewModel.filteredClinics)
         }
     }
 
     private var emptyState: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "magnifyingglass")
-                .font(.title)
-                .foregroundStyle(AppTheme.primary)
-                .frame(width: 56, height: 56)
-                .background(AppTheme.primary.opacity(0.12), in: RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous))
-                .accessibilityHidden(true)
-
-            Text("找不到符合條件的診所")
-                .font(.headline)
-
-            Text("試試放寬篩選，或改用地區、服務項目搜尋。")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-
-            if viewModel.filter.isActive {
-                Button {
-                    viewModel.filter = ClinicSearchFilter()
-                } label: {
-                    Label("清除篩選", systemImage: "xmark")
-                        .font(.subheadline.weight(.semibold))
-                }
-                .buttonStyle(.borderedProminent)
-                .buttonBorderShape(.roundedRectangle(radius: AppTheme.cardRadius))
-                .tint(AppTheme.primary)
-            }
+        VStack(spacing: 14) {
+            EmptyStateView(
+                icon: "magnifyingglass",
+                title: "找不到相關結果",
+                subtitle: "試試放寬篩選，或改用地區、服務項目搜尋。",
+                action: viewModel.filter.isActive
+                    ? ("清除篩選", { viewModel.filter = ClinicSearchFilter() })
+                    : nil
+            )
         }
-        .padding(24)
-        .frame(maxWidth: .infinity)
-        .appCard()
     }
 }
 

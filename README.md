@@ -7,11 +7,11 @@ The current MVP focuses on a usable clinic discovery flow: map browsing, clinic 
 ## Features
 
 - Map-first clinic discovery with MapKit
-- Clinic list with search, segmented filters, verification-first sorting
-- Clinic detail pages with call, website, and Apple Maps route actions
-- Add-clinic flow with local persistence
-- Region-based or manual coordinate entry for new clinics
-- Shared local repository updates so map and list stay in sync
+- Clinic list with keyword search, region/verification/price filters, and verification-first sorting
+- Clinic detail pages with call, website, Apple Maps route actions, community reviews, and quote references
+- Add-clinic flow with address geocoding, manual coordinate fallback, and local persistence
+- Add-review flow with local persistence for early community submissions
+- Shared local repository updates so map, list, and detail screens stay in sync
 - SwiftUI visual system with consistent cards, chips, safe-area handling, and iOS-style material overlays
 
 ## Tech Stack
@@ -72,13 +72,13 @@ xcodebuild -project VetMap.xcodeproj \
 ## Notes
 
 - `VetMap/Resources/GoogleService-Info.plist` is a placeholder. Replace it with a real Firebase config only when Firebase integration is ready.
-- Clinic submissions currently persist locally in Application Support.
-- Geocoding is not connected yet; the MVP uses region presets or manual coordinates.
+- Clinic and review submissions currently persist locally in Application Support.
+- Address lookup uses CoreLocation geocoding, with region presets and manual coordinates as fallback paths.
 
 ## Roadmap
 
-- Address geocoding for automatic coordinate lookup
 - Firebase-backed clinic/review sync
-- Review submission and moderation
+- Review moderation, reporting, and trust signals
+- Quote submission beyond seed data
 - Real product and insurance data flows
 - UI test coverage for the main add-clinic journey

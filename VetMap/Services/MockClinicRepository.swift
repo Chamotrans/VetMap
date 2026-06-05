@@ -1,5 +1,9 @@
 import Foundation
 
+// MARK: - ⚠️ DUMMY SEED DATA — 僅供開發測試用，上線前需替換為真實資料
+// 所有 static let clinics 內的診所資料（名稱、地址、電話、評分等）皆為虛構，
+// 僅用於開發與測試。上線前請替換為 Firebase 或其他真實資料來源。
+
 struct MockClinicRepository {
     private let localFileURL: URL
     private let fileManager: FileManager

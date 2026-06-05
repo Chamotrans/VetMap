@@ -1,0 +1,116 @@
+import SwiftUI
+
+struct ProductListView: View {
+    @ObservedObject var viewModel: ProductViewModel
+
+    private let columns = [
+        GridItem(.flexible(), spacing: 12),
+        GridItem(.flexible(), spacing: 12)
+    ]
+
+    var body: some View {
+        ScrollView {
+            CategoryFilterRow(selected: $viewModel.selectedCategory)
+
+            LazyVGrid(columns: columns, spacing: 12) {
+                ForEach(viewModel.filteredProducts) { product in
+                    NavigationLink {
+                        ProductDetailView(product: product)
+                    } label: {
+                        ProductCardView(product: product)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.bottom, 24)
+        }
+        .background(AppTheme.screenBackground)
+    }
+}
+
+private struct CategoryFilterRow: View {
+    @Binding var selected: String
+
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(ProductViewModel.categories, id: \.self) { category in
+                    Button {
+                        selected = category
+                    } label: {
+                        Text(category)
+                            .appChip(
+                                tint: selected == category ? AppTheme.primary : AppTheme.accent,
+                                isFilled: selected == category
+                            )
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.horizontal, 16)
+        }
+        .padding(.vertical, 12)
+    }
+}
+
+private struct ProductCardView: View {
+    let product: PetProduct
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            RoundedRectangle(cornerRadius: AppTheme.compactRadius, style: .continuous)
+                .fill(AppTheme.surface)
+                .overlay {
+                    Image(systemName: "pawprint.fill")
+                        .font(.title)
+                        .foregroundStyle(AppTheme.primary.opacity(0.35))
+                }
+                .aspectRatio(1, contentMode: .fit)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(product.name)
+                    .font(.subheadline.weight(.semibold))
+                    .lineLimit(2)
+
+                Text(product.category)
+                    .appChip(tint: categoryColor, isFilled: false)
+
+                Text(product.formattedPrice)
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(AppTheme.warning)
+            }
+            .padding(.horizontal, 8)
+            .padding(.bottom, 8)
+        }
+        .appCard()
+    }
+
+    private var categoryColor: Color {
+        switch product.category {
+        case "食品": return .green
+        case "玩具": return .orange
+        case "保健": return .purple
+        case "藥品": return .red
+        default: return AppTheme.accent
+        }
+    }
+}
+
+private extension PetProduct {
+    var formattedPrice: String {
+        let symbol = currency == "HKD" ? "HK$" : "NT$"
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = 0
+        let amount = formatter.string(from: price as NSDecimalNumber) ?? "\(price)"
+        return "\(symbol)\(amount)"
+    }
+}
+
+#Preview {
+    NavigationStack {
+        ProductListView(viewModel: ProductViewModel())
+    }
+}

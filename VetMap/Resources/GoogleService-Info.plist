@@ -2,7 +2,41 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>PLACEHOLDER</key>
-    <string>Replace this with your real GoogleService-Info.plist from Firebase Console</string>
+	<!--
+	Replace this placeholder with your real GoogleService-Info.plist
+	downloaded from the Firebase Console.
+
+	Steps:
+	1. Go to https://console.firebase.google.com/
+	2. Select your project → Project Settings → General
+	3. Under "Your apps", add an iOS app with bundle ID matching this project
+	4. Download GoogleService-Info.plist and replace this file
+
+	Required keys (all values below are placeholders):
+	-->
+	<key>API_KEY</key>
+	<string>AIzaSyPLACEHOLDER_API_KEY_REPLACE_ME</string>
+	<key>GCM_SENDER_ID</key>
+	<string>123456789012</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.vetmap.app</string>
+	<key>PROJECT_ID</key>
+	<string>vetmap-placeholder</string>
+	<key>STORAGE_BUCKET</key>
+	<string>vetmap-placeholder.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false/>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false/>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true/>
+	<key>IS_GCM_ENABLED</key>
+	<true/>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true/>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:123456789012:ios:abcdef1234567890abcdef</string>
 </dict>
 </plist>

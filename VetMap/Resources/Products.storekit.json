@@ -1,0 +1,21 @@
+{
+  "products": [
+    {
+      "id": "com.vetmap.premium.monthly",
+      "type": "non-consumable",
+      "displayName": "VetMap Premium 月費",
+      "description": "解鎖完整診所資料庫、社群功能及無廣告體驗",
+      "price": 2.99,
+      "currency": "USD"
+    },
+    {
+      "id": "com.vetmap.premium.yearly",
+      "type": "non-consumable",
+      "displayName": "VetMap Premium 年費",
+      "description": "以更優惠價格解鎖完整診所資料庫、社群功能及無廣告體驗",
+      "price": 29.99,
+      "currency": "USD"
+    }
+  ],
+  "note": "Convert this to a .storekit file in Xcode: File → New → StoreKit Configuration File"
+}

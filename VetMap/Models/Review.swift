@@ -15,3 +15,11 @@ struct Review: Identifiable, Codable, Equatable {
     var updatedAt: Date
     var helpfulCount: Int
 }
+
+struct ReviewDraft: Equatable {
+    var rating: Int
+    var title: String
+    var content: String
+    var treatmentType: String
+    var cost: Decimal?
+}
