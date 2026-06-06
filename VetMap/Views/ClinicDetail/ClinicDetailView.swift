@@ -6,6 +6,7 @@ struct ClinicDetailView: View {
 
     @StateObject private var viewModel: ClinicDetailViewModel
     @State private var isAddingReview = false
+    @State private var safariURL: URL?
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
 
@@ -73,6 +74,14 @@ struct ClinicDetailView: View {
             .sheet(isPresented: $isAddingReview) {
                 AddReviewView(clinicName: clinic.name) { draft in
                     viewModel.addReview(draft)
+                }
+            }
+            .sheet(isPresented: Binding(
+                get: { safariURL != nil },
+                set: { if !$0 { safariURL = nil } }
+            )) {
+                if let url = safariURL {
+                    SafariViewController(url: url)
                 }
             }
         }
@@ -143,7 +152,7 @@ struct ClinicDetailView: View {
 
             if let website = clinic.website {
                 Button {
-                    openURL(website)
+                    safariURL = website
                 } label: {
                     actionLabel("網站", systemImage: "safari.fill")
                 }
@@ -496,4 +505,18 @@ struct FlowLayout: Layout {
 
 #Preview {
     ClinicDetailView(clinic: MockClinicRepository.clinics[0])
+}
+
+// MARK: - Safari View Controller
+
+import SafariServices
+
+struct SafariViewController: UIViewControllerRepresentable {
+    let url: URL
+
+    func makeUIViewController(context: Context) -> SFSafariViewController {
+        SFSafariViewController(url: url)
+    }
+
+    func updateUIViewController(_ uiViewController: SFSafariViewController, context: Context) {}
 }
