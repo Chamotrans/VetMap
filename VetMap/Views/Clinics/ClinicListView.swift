@@ -20,6 +20,7 @@ struct ClinicListView: View {
                 .navigationTitle("獸醫診所")
                 .navigationBarTitleDisplayMode(.large)
                 .searchable(text: $viewModel.filter.query, prompt: "搜尋診所、地區、服務")
+            .onSubmit(of: .search) { Analytics.searchPerformed(viewModel.filter.query) }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
@@ -47,6 +48,7 @@ struct ClinicListView: View {
                 .navigationTitle("獸醫診所")
                 .navigationBarTitleDisplayMode(.large)
                 .searchable(text: $viewModel.filter.query, prompt: "搜尋診所、地區、服務")
+            .onSubmit(of: .search) { Analytics.searchPerformed(viewModel.filter.query) }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {

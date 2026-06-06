@@ -40,6 +40,7 @@ final class ClinicsViewModel: ObservableObject {
             storageError = nil
         } catch {
             storageError = "診所已加入目前列表，但暫時無法儲存到本機。"
+            CrashReporting.recordError(error, domain: "ClinicsViewModel")
             clinics.append(clinic)
         }
 

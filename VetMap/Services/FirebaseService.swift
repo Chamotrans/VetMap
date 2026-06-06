@@ -117,6 +117,7 @@ final class FirebaseService {
 
     private func resolveFirestore() throws -> Firestore {
         guard let db = firestore else {
+            CrashReporting.log("Firestore not configured")
             throw FirebaseError.notConfigured
         }
         return db

@@ -80,6 +80,7 @@ final class ClinicDetailViewModel: ObservableObject {
             Haptics.success()
         } catch {
             storageError = "評價已加入目前畫面，但暫時無法儲存到本機。"
+            CrashReporting.recordError(error, domain: "ClinicDetail")
             reviews.insert(review, at: 0)
         }
 
