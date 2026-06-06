@@ -59,12 +59,14 @@ struct ContentView: View {
                 .tabItem {
                     Label("診所", systemImage: "cross.case.fill")
                 }
+                .badge(MockClinicRepository().fetchClinics().count)
                 .accessibilityLabel("診所")
 
             ProductsTab()
                 .tabItem {
                     Label("好物", systemImage: "shippingbox.fill")
                 }
+                .badge(MockProductRepository.seedProducts.count)
                 .accessibilityLabel("好物")
 
             ProfileTab()
