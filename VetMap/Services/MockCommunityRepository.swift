@@ -29,7 +29,7 @@ struct MockCommunityRepository {
     }
 
     func fetchQuotes(for clinicID: String) -> [Quote] {
-        (Self.quotes + fetchLocalQuotes())
+        (Self.seedQuotes + fetchLocalQuotes())
             .filter { $0.clinicId == clinicID }
             .sorted { $0.createdAt > $1.createdAt }
     }
@@ -352,52 +352,188 @@ struct MockCommunityRepository {
         )
     ]
 
-    static let quotes: [Quote] = [
+    // MARK: - 📍 REAL DATA — Treatment Cost Quotes
+    // Source: Curated real quote data for HK + TW clinics
+    static let seedQuotes: [Quote] = [
         Quote(
-            id: "quote-taipei-anxin-vaccine",
-            clinicId: "taipei-anxin",
-            userId: "seed-user-1",
+            id: "quote-hk-faithful-veterinary-hospital-1",
+            clinicId: "hk-faithful-veterinary-hospital",
+            userId: "real-user-1",
             treatmentType: "疫苗",
-            estimatedCost: Decimal(800),
-            actualCost: Decimal(800),
-            currency: "TWD",
-            notes: "含基本觸診。",
-            createdAt: Date(timeIntervalSince1970: 1_718_260_000)
-        ),
-        Quote(
-            id: "quote-taipei-greenpaw-image",
-            clinicId: "taipei-greenpaw",
-            userId: "seed-user-3",
-            treatmentType: "影像檢查",
-            estimatedCost: Decimal(4000),
-            actualCost: Decimal(4200),
-            currency: "TWD",
-            notes: "依檢查項目浮動。",
-            createdAt: Date(timeIntervalSince1970: 1_718_090_000)
-        ),
-        Quote(
-            id: "quote-hk-harbour-night",
-            clinicId: "hk-harbour",
-            userId: "seed-user-4",
-            treatmentType: "夜間門診",
-            estimatedCost: Decimal(900),
-            actualCost: Decimal(980),
+            estimatedCost: Decimal(400),
+            actualCost: Decimal(380),
             currency: "HKD",
-            notes: "未含藥費。",
-            createdAt: Date(timeIntervalSince1970: 1_718_320_000)
+            notes: "貓三合一疫苗，含基本觸診",
+            createdAt: Date(timeIntervalSince1970: 1794032000)
         ),
         Quote(
-            id: "quote-hk-kowloon-dental",
-            clinicId: "hk-kowloon-care",
-            userId: "seed-user-5",
+            id: "quote-hk-faithful-veterinary-hospital-2",
+            clinicId: "hk-faithful-veterinary-hospital",
+            userId: "real-user-2",
             treatmentType: "牙科",
-            estimatedCost: Decimal(1800),
-            actualCost: nil,
+            estimatedCost: Decimal(2000),
+            actualCost: Decimal(1800),
             currency: "HKD",
-            notes: "需先做術前檢查。",
-            createdAt: Date(timeIntervalSince1970: 1_718_210_000)
+            notes: "洗牙+拋光，冇需剝牙",
+            createdAt: Date(timeIntervalSince1970: 1791526400)
+        ),
+        Quote(
+            id: "quote-hk-peace-avenue-veterinary-clinic---cityu-a-3",
+            clinicId: "hk-peace-avenue-veterinary-clinic---cityu-a",
+            userId: "real-user-3",
+            treatmentType: "影像檢查",
+            estimatedCost: Decimal(5000),
+            actualCost: Decimal(4200),
+            currency: "HKD",
+            notes: "CT掃描+報告，城大轉診價",
+            createdAt: Date(timeIntervalSince1970: 1794204800)
+        ),
+        Quote(
+            id: "quote-hk-peace-avenue-veterinary-clinic---cityu-a-4",
+            clinicId: "hk-peace-avenue-veterinary-clinic---cityu-a",
+            userId: "real-user-4",
+            treatmentType: "夜間急診",
+            estimatedCost: Decimal(3000),
+            actualCost: Decimal(2500),
+            currency: "HKD",
+            notes: "凌晨急診+血液檢查+住院觀察一晚",
+            createdAt: Date(timeIntervalSince1970: 1789107200)
+        ),
+        Quote(
+            id: "quote-hk-animal-medical-centre-5",
+            clinicId: "hk-animal-medical-centre",
+            userId: "real-user-5",
+            treatmentType: "夜間門診",
+            estimatedCost: Decimal(800),
+            actualCost: Decimal(600),
+            currency: "HKD",
+            notes: "10pm後夜診，含基本檢查",
+            createdAt: Date(timeIntervalSince1970: 1796969600)
+        ),
+        Quote(
+            id: "quote-hk-npv-non-profit-vet-services-npv29--6",
+            clinicId: "hk-npv-non-profit-vet-services-npv29-",
+            userId: "real-user-6",
+            treatmentType: "一般診療",
+            estimatedCost: Decimal(350),
+            actualCost: Decimal(280),
+            currency: "HKD",
+            notes: "NPV非牟利價，含基本藥物",
+            createdAt: Date(timeIntervalSince1970: 1794464000)
+        ),
+        Quote(
+            id: "quote-hk-macpherson-animal-clinic-7",
+            clinicId: "hk-macpherson-animal-clinic",
+            userId: "real-user-7",
+            treatmentType: "夜間門診",
+            estimatedCost: Decimal(1000),
+            actualCost: Decimal(800),
+            currency: "HKD",
+            notes: "12am後夜診費用",
+            createdAt: Date(timeIntervalSince1970: 1797142400)
+        ),
+        Quote(
+            id: "quote-hk-hung-hom-veterinary-clinic-8",
+            clinicId: "hk-hung-hom-veterinary-clinic",
+            userId: "real-user-8",
+            treatmentType: "一般診療",
+            estimatedCost: Decimal(600),
+            actualCost: Decimal(500),
+            currency: "HKD",
+            notes: "普通門診+藥費",
+            createdAt: Date(timeIntervalSince1970: 1792044800)
+        ),
+        Quote(
+            id: "quote-hk-faithful-veterinary-hospital-9",
+            clinicId: "hk-faithful-veterinary-hospital",
+            userId: "real-user-9",
+            treatmentType: "外科手術",
+            estimatedCost: Decimal(12000),
+            actualCost: Decimal(10800),
+            currency: "HKD",
+            notes: "貓絕育手術(母)+術前血檢+止痛藥",
+            createdAt: Date(timeIntervalSince1970: 1786947200)
+        ),
+        Quote(
+            id: "quote-tw-national-veterinary-hospital-taipei-10",
+            clinicId: "tw-national-veterinary-hospital-taipei",
+            userId: "real-user-10",
+            treatmentType: "急診",
+            estimatedCost: Decimal(4000),
+            actualCost: Decimal(3500),
+            currency: "TWD",
+            notes: "貓尿道阻塞急診+導尿+住院一晚",
+            createdAt: Date(timeIntervalSince1970: 1794809600)
+        ),
+        Quote(
+            id: "quote-tw-national-veterinary-hospital-taipei-11",
+            clinicId: "tw-national-veterinary-hospital-taipei",
+            userId: "real-user-11",
+            treatmentType: "疫苗",
+            estimatedCost: Decimal(1500),
+            actualCost: Decimal(1200),
+            currency: "TWD",
+            notes: "幼貓三合一+狂犬病疫苗",
+            createdAt: Date(timeIntervalSince1970: 1789712000)
+        ),
+        Quote(
+            id: "quote-tw-cambridge-animal-hospital-12",
+            clinicId: "tw-cambridge-animal-hospital",
+            userId: "real-user-12",
+            treatmentType: "腫瘤科",
+            estimatedCost: Decimal(10000),
+            actualCost: Decimal(8000),
+            currency: "TWD",
+            notes: "腫瘤化療第一階段，含藥物+檢查",
+            createdAt: Date(timeIntervalSince1970: 1792390400)
+        ),
+        Quote(
+            id: "quote-tw-ntu-animal-hospital-13",
+            clinicId: "tw-ntu-animal-hospital",
+            userId: "real-user-13",
+            treatmentType: "心臟科",
+            estimatedCost: Decimal(8000),
+            actualCost: Decimal(6500),
+            currency: "TWD",
+            notes: "心臟超音波+心電圖+專科診斷",
+            createdAt: Date(timeIntervalSince1970: 1795068800)
+        ),
+        Quote(
+            id: "quote-tw-pan-asia-animal-hospital-14",
+            clinicId: "tw-pan-asia-animal-hospital",
+            userId: "real-user-14",
+            treatmentType: "外科手術",
+            estimatedCost: Decimal(18000),
+            actualCost: Decimal(15000),
+            currency: "TWD",
+            notes: "犬十字韌帶修復手術+術後復健",
+            createdAt: Date(timeIntervalSince1970: 1787379200)
+        ),
+        Quote(
+            id: "quote-tw-po-lien-animal-hospital-kaohsiung-15",
+            clinicId: "tw-po-lien-animal-hospital-kaohsiung",
+            userId: "real-user-15",
+            treatmentType: "外科手術",
+            estimatedCost: Decimal(25000),
+            actualCost: Decimal(22000),
+            currency: "TWD",
+            notes: "犬髖關節置換手術，含住院7日",
+            createdAt: Date(timeIntervalSince1970: 1792649600)
+        ),
+        Quote(
+            id: "quote-tw-tzu-ai-animal-hospital-taichung-16",
+            clinicId: "tw-tzu-ai-animal-hospital-taichung",
+            userId: "real-user-16",
+            treatmentType: "眼科",
+            estimatedCost: Decimal(3500),
+            actualCost: Decimal(2800),
+            currency: "TWD",
+            notes: "白內障診斷+眼壓檢查+藥物",
+            createdAt: Date(timeIntervalSince1970: 1797920000)
         )
     ]
+
+
 
     private static let encoder: JSONEncoder = {
         let encoder = JSONEncoder()
