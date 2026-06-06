@@ -95,18 +95,22 @@ struct CommunityRepository: CommunityRepositoryProtocol {
 
     private func localFallbackQuotes(for clinicId: String) -> [Quote] {
         let seedQuotes = localRepository.fetchQuotes(for: clinicId)
-        let userQuotes = Self.userQuotes
-            .filter { $0.clinicId == clinicId }
-            .sorted { $0.createdAt > $1.createdAt }
+        let userQuotes = Self.quotesQueue.sync {
+            Self.userQuotes
+                .filter { $0.clinicId == clinicId }
+                .sorted { $0.createdAt > $1.createdAt }
+        }
         let seen = Set(userQuotes.map(\.id))
         return userQuotes + seedQuotes.filter { !seen.contains($0.id) }
     }
 
     private func writeQuoteLocally(_ quote: Quote) {
-        if let index = Self.userQuotes.firstIndex(where: { $0.id == quote.id }) {
-            Self.userQuotes[index] = quote
-        } else {
-            Self.userQuotes.append(quote)
+        Self.quotesQueue.sync {
+            if let index = Self.userQuotes.firstIndex(where: { $0.id == quote.id }) {
+                Self.userQuotes[index] = quote
+            } else {
+                Self.userQuotes.append(quote)
+            }
         }
     }
 
@@ -118,5 +122,6 @@ struct CommunityRepository: CommunityRepositoryProtocol {
         )
     }
 
+    private static let quotesQueue = DispatchQueue(label: "com.vetmap.quotes")
     private static var userQuotes: [Quote] = []
 }

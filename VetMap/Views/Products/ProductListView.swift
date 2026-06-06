@@ -4,6 +4,13 @@ struct ProductListView: View {
     @ObservedObject var viewModel: ProductViewModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var productForSheet: PetProduct?
+    @State private var searchText = ""
+
+    private var displayedProducts: [PetProduct] {
+        let products = viewModel.filteredProducts
+        guard !searchText.isEmpty else { return products }
+        return products.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+    }
 
     private var columns: [GridItem] {
         let count = horizontalSizeClass == .regular ? 3 : 2
@@ -15,7 +22,7 @@ struct ProductListView: View {
             CategoryFilterRow(selected: $viewModel.selectedCategory)
 
             LazyVGrid(columns: columns, spacing: 12) {
-                ForEach(viewModel.filteredProducts) { product in
+                ForEach(displayedProducts) { product in
                     productButton(for: product)
                 }
             }
@@ -23,6 +30,7 @@ struct ProductListView: View {
             .padding(.bottom, 24)
         }
         .background(AppTheme.screenBackground)
+        .searchable(text: $searchText, prompt: "搜尋寵物用品")
         .sheet(item: $productForSheet) { product in
             NavigationStack {
                 ProductDetailView(product: product)

@@ -342,11 +342,11 @@ final class VetMapModelTests: XCTestCase {
 
         var low = makeReview(id: "low", clinicId: clinicId, title: "Low")
         low.rating = 2
-        try! repository.addReview(low)
+        XCTAssertNoThrow(try repository.addReview(low))
 
         var high = makeReview(id: "high", clinicId: clinicId, title: "High")
         high.rating = 5
-        try! repository.addReview(high)
+        XCTAssertNoThrow(try repository.addReview(high))
 
         let viewModel = ReviewViewModel(clinicId: clinicId, repository: repository)
         viewModel.sortOrder = .highestRating
@@ -367,11 +367,11 @@ final class VetMapModelTests: XCTestCase {
 
         var less = makeReview(id: "less", clinicId: clinicId, title: "Less")
         less.helpfulCount = 3
-        try! repository.addReview(less)
+        XCTAssertNoThrow(try repository.addReview(less))
 
         var more = makeReview(id: "more", clinicId: clinicId, title: "More")
         more.helpfulCount = 10
-        try! repository.addReview(more)
+        XCTAssertNoThrow(try repository.addReview(more))
 
         let viewModel = ReviewViewModel(clinicId: clinicId, repository: repository)
         viewModel.sortOrder = .mostHelpful
@@ -876,7 +876,7 @@ final class VetMapModelTests: XCTestCase {
 
         // Add a second quote with an older date so we have 2+ to sort
         let olderQuote = makeQuote(id: "quote-sort-test-older", clinicId: "taipei-anxin")
-        try! repository.addQuote(olderQuote)
+        XCTAssertNoThrow(try repository.addQuote(olderQuote))
         viewModel.loadQuotes()
 
         let quotes = viewModel.quotes

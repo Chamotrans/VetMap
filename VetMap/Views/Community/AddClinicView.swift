@@ -135,7 +135,7 @@ struct AddClinicView: View {
             }
             .scrollContentBackground(.hidden)
             .background(AppTheme.screenBackground)
-            .scrollDismissesKeyboard(.interactively)
+            .scrollDismissesKeyboard(.immediately)
             .simultaneousGesture(
                 TapGesture().onEnded {
                     focusedField = nil

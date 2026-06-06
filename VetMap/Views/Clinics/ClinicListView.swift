@@ -93,7 +93,7 @@ struct ClinicListView: View {
             .padding(.bottom, 24)
         }
         .refreshable {
-            viewModel.loadClinics()
+            viewModel.retryLoad()
         }
         .background(AppTheme.screenBackground)
         .onAppear {
@@ -170,7 +170,9 @@ struct ClinicListView: View {
 
     @ViewBuilder
     private var clinicRows: some View {
-        if viewModel.filteredClinics.isEmpty {
+        if viewModel.clinics.isEmpty && !viewModel.isLoading {
+            dataMissingView
+        } else if viewModel.filteredClinics.isEmpty {
             emptyState
         } else {
             LazyVStack(spacing: 10) {
@@ -189,11 +191,22 @@ struct ClinicListView: View {
         }
     }
 
+    private var dataMissingView: some View {
+        ErrorRetryView(
+            icon: "exclamationmark.triangle.fill",
+            title: "無法載入診所資料",
+            message: "請檢查網絡連線後重試。",
+            retryLabel: "重試",
+            onRetry: { viewModel.retryLoad() }
+        )
+        .padding(.top, 20)
+    }
+
     private var emptyState: some View {
         VStack(spacing: 14) {
             EmptyStateView(
                 icon: "magnifyingglass",
-                title: "找不到相關結果",
+                title: "找不到相關診所",
                 subtitle: "試試放寬篩選，或改用地區、服務項目搜尋。",
                 action: viewModel.filter.isActive
                     ? ("清除篩選", { viewModel.filter = ClinicSearchFilter() })

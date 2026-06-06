@@ -109,7 +109,7 @@ struct PremiumView: View {
                 .font(.headline)
 
             VStack(spacing: 2) {
-                Text("NT$80")
+                Text(viewModel.product(for: .monthly)?.displayPrice ?? "NT$80")
                     .font(.title.weight(.bold))
                 Text("/ 月")
                     .font(.caption)
@@ -160,7 +160,7 @@ struct PremiumView: View {
             }
 
             VStack(spacing: 2) {
-                Text("NT$1,000")
+                Text(viewModel.product(for: .yearly)?.displayPrice ?? "NT$1,000")
                     .font(.title.weight(.bold))
                 Text("/ 年")
                     .font(.caption)
