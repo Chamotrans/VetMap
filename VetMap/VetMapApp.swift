@@ -1,4 +1,5 @@
 import SwiftUI
+import UserNotifications
 #if canImport(FirebaseCore)
 import FirebaseCore
 #endif
@@ -18,6 +19,7 @@ struct VetMapApp: App {
             ContentView()
                 .onAppear {
                     RatingPrompt.requestReviewIfAppropriate()
+            requestNotificationPermission()
                 }
         }
     }
@@ -47,5 +49,16 @@ struct VetMapApp: App {
         let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
         print("VetMap v\(appVersion) (\(buildNumber)) — cold start (local mode)")
         #endif
+    }
+}
+
+
+private func requestNotificationPermission() {
+    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, _ in
+        if granted {
+            DispatchQueue.main.async {
+                UIApplication.shared.registerForRemoteNotifications()
+            }
+        }
     }
 }
