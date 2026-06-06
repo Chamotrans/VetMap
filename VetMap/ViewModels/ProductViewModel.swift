@@ -6,7 +6,7 @@ final class ProductViewModel: ObservableObject {
     @Published var products: [PetProduct] = []
     @Published var selectedCategory: String = "全部"
 
-    static let categories = ["全部", "食品", "玩具", "保健", "藥品"]
+    static let categories = ["全部", "用品", "美容", "善終", "食品", "玩具", "保健", "藥品"]
 
     var filteredProducts: [PetProduct] {
         if selectedCategory == "全部" {
