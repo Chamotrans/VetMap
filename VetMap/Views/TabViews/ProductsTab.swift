@@ -31,7 +31,7 @@ struct ProductsTab: View {
                 }
             }
             .animation(.default, value: selectedSegment)
-            .navigationTitle("毛孩好物")
+            .navigationTitle("毛孩好物 (\(MockProductRepository.seedProducts.count))")
             .navigationBarTitleDisplayMode(.large)
         }
     }
