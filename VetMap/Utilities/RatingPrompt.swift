@@ -15,7 +15,7 @@ enum RatingPrompt {
         guard count >= 5 else { return false }
 
         let lastPrompt = UserDefaults.standard.object(forKey: lastPromptDateKey) as? Date
-        guard lastPrompt == nil || Date().timeIntervalSince(lastPrompt!) > 30 * 24 * 3600 else { return false }
+        if let lastPrompt = lastPrompt { guard Date().timeIntervalSince(lastPrompt) > 30 * 24 * 3600 else { return false } }
 
         return true
     }
