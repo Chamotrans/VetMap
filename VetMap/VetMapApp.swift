@@ -50,17 +50,10 @@ struct VetMapApp: App {
         print("VetMap v\(appVersion) (\(buildNumber)) — cold start (local mode)")
         #endif
     }
-    private func requestNotificationPermission() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, _ in
-            if granted {
-                DispatchQueue.main.async {
-                    UIApplication.shared.registerForRemoteNotifications()
-                }
-            }
-        }
-    }
 }
- {
+
+
+private func requestNotificationPermission() {
     UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, _ in
         if granted {
             DispatchQueue.main.async {
