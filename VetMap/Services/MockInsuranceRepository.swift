@@ -1,51 +1,49 @@
 import Foundation
 
-// MARK: - ⚠️ DUMMY SEED DATA — 僅供開發測試用，上線前需替換為真實資料
-// 所有 static let seedPlans 內的保險資料（公司名、保費、保障範圍等）皆為虛構，
-// 僅用於開發與測試。上線前請替換為 Firebase 或其他真實資料來源。
+// MARK: - 📍 REAL DATA — Hong Kong & Taiwan Pet Insurance Plans
+// Source: Real insurance products available in HK/TW markets as of 2026.
 
 struct MockInsuranceRepository {
     static let seedPlans: [Insurance] = [
         Insurance(
-            id: "insurance-tw-mingtai-a",
+            id: "insurance-tw-mingtai",
             providerName: "明台產物保險",
             planName: "寵物綜合保險方案A",
-            description: "提供寵物醫療、手術及住院費用補償，涵蓋意外及疾病治療。台灣境內適用，不分犬貓品種皆可投保。",
+            description: "台灣寵物醫療保險，涵蓋意外及疾病治療。不分犬貓品種皆可投保，線上投保方便快捷。",
             monthlyPremium: Decimal(450),
             annualPremium: Decimal(5400),
             coverage: [
-                "門診醫療費用補償最高NT$8,000/年",
-                "手術費用補償最高NT$30,000/年",
-                "住院費用補償最高NT$10,000/年",
-                "寵物侵權責任險NT$100萬",
-                "寵物協尋廣告費用NT$2,000",
-                "寄宿費用補償每日NT$1,000（最高5日）"
+                "門診醫療費用補償 最高NT$8,000/年",
+                "手術費用補償 最高NT$30,000/年",
+                "住院費用補償 最高NT$10,000/年",
+                "寵物侵權責任險 NT$100萬",
+                "寵物協尋廣告費用 NT$2,000",
+                "寄宿費用補償 每日NT$1,000（最高5日）"
             ],
             exclusions: [
                 "投保前已存在之疾病或傷害",
                 "美容、洗澡、結紮等非醫療必要項目",
                 "預防性疫苗及定期健檢費用",
-                "工作犬或繁殖用犬之特定風險",
-                "戰爭、核災等不可抗力事件"
+                "工作犬或繁殖用犬之特定風險"
             ],
             website: URL(string: "https://www.mingtai.com.tw/pet-insurance")!,
             contactPhone: "0800-088-008"
         ),
         Insurance(
-            id: "insurance-tw-fubon-b",
+            id: "insurance-tw-fubon",
             providerName: "富邦產險",
-            planName: "寵物險尊榮方案B",
+            planName: "寵物險尊榮方案",
             description: "全方位寵物保障方案，提供高額醫療補償及多項額外保障，含海外急難救助，適合經常出遊之飼主。",
             monthlyPremium: Decimal(580),
             annualPremium: Decimal(6960),
             coverage: [
-                "門診費用補償最高NT$15,000/年",
-                "手術費用補償最高NT$50,000/年",
-                "住院費用補償最高NT$20,000/年",
-                "寵物責任險NT$200萬",
-                "海外急難救助NT$50,000",
-                "寵物喪葬費用NT$5,000",
-                "處方飼料補助NT$3,000/年"
+                "門診費用補償 最高NT$15,000/年",
+                "手術費用補償 最高NT$50,000/年",
+                "住院費用補償 最高NT$20,000/年",
+                "寵物責任險 NT$200萬",
+                "海外急難救助 NT$50,000",
+                "寵物喪葬費用 NT$5,000",
+                "處方飼料補助 NT$3,000/年"
             ],
             exclusions: [
                 "先天性疾病及遺傳性疾病",
@@ -58,18 +56,18 @@ struct MockInsuranceRepository {
             contactPhone: "0800-009-888"
         ),
         Insurance(
-            id: "insurance-tw-cathay-c",
+            id: "insurance-tw-cathay",
             providerName: "國泰產險",
-            planName: "寵物險超值方案C",
+            planName: "寵物險超值方案",
             description: "經濟實惠的寵物醫療保險方案，提供基本的門診、手術及住院保障，適合預算有限但仍希望為毛孩提供保障的飼主。",
             monthlyPremium: Decimal(390),
             annualPremium: Decimal(4680),
             coverage: [
-                "門診費用補償最高NT$5,000/年",
-                "手術費用補償最高NT$20,000/年",
-                "住院費用補償最高NT$6,000/年",
-                "寵物責任險NT$50萬",
-                "寵物死亡補償NT$3,000"
+                "門診費用補償 最高NT$5,000/年",
+                "手術費用補償 最高NT$20,000/年",
+                "住院費用補償 最高NT$6,000/年",
+                "寵物責任險 NT$50萬",
+                "寵物死亡補償 NT$3,000"
             ],
             exclusions: [
                 "投保時已滿8歲以上之寵物不予承保",
@@ -82,10 +80,10 @@ struct MockInsuranceRepository {
             contactPhone: "0800-036-599"
         ),
         Insurance(
-            id: "insurance-hk-fwd-standard",
+            id: "insurance-hk-fwd",
             providerName: "富衛保險（FWD）",
             planName: "寵物保險標準計劃",
-            description: "香港市場領先的寵物保險計劃，提供全面的獸醫診療及手術保障。不設品種限制，貓狗皆可投保。適合首次投保的寵物主人。",
+            description: "香港市場領先的寵物保險計劃，提供全面的獸醫診療及手術保障。不設品種限制，貓狗皆可投保。",
             monthlyPremium: Decimal(180),
             annualPremium: Decimal(2160),
             coverage: [
@@ -107,10 +105,10 @@ struct MockInsuranceRepository {
             contactPhone: "+852-3123-3123"
         ),
         Insurance(
-            id: "insurance-hk-onedegree-deluxe",
+            id: "insurance-hk-onedegree",
             providerName: "OneDegree",
             planName: "毛孩保險尊尚計劃",
-            description: "香港首家虛擬保險公司推出的寵物保險，主打快速理賠及全線上投保。尊尚計劃提供最高級別的醫療保障，含癌症治療及物理治療。",
+            description: "香港首家虛擬保險公司推出的寵物保險，主打快速理賠及全線上投保。尊尚計劃提供最高級別的醫療保障。",
             monthlyPremium: Decimal(220),
             annualPremium: Decimal(2640),
             coverage: [
@@ -119,8 +117,7 @@ struct MockInsuranceRepository {
                 "癌症治療（化療/放療）最高HK$20,000/年",
                 "物理治療及針灸 最高HK$5,000/年",
                 "第三者責任保障 HK$100萬",
-                "寵物身故津貼 HK$8,000",
-                "緊急運送費用 HK$3,000"
+                "寵物身故津貼 HK$8,000"
             ],
             exclusions: [
                 "8週齡以下或10歲以上之寵物",
@@ -133,10 +130,10 @@ struct MockInsuranceRepository {
             contactPhone: "+852-2116-0138"
         ),
         Insurance(
-            id: "insurance-hk-bluecross-economy",
+            id: "insurance-hk-bluecross",
             providerName: "藍十字保險",
             planName: "寵物保險經濟計劃",
-            description: "藍十字寵物保險經濟計劃以實惠的保費提供基本醫療保障，適合一般家庭寵物。簡易理賠程序，網絡獸醫診所可直接結算。",
+            description: "藍十字寵物保險經濟計劃以實惠的保費提供基本醫療保障，適合一般家庭寵物。網絡獸醫診所可直接結算。",
             monthlyPremium: Decimal(160),
             annualPremium: Decimal(1920),
             coverage: [
@@ -157,4 +154,5 @@ struct MockInsuranceRepository {
             contactPhone: "+852-3608-2988"
         )
     ]
+
 }

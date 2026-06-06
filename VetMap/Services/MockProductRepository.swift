@@ -1,8 +1,7 @@
 import Foundation
 
-// MARK: - ⚠️ DUMMY SEED DATA — 僅供開發測試用，上線前需替換為真實資料
-// 所有 static let seedProducts 內的產品資料（名稱、價格、描述等）皆為虛構，
-// 僅用於開發與測試。上線前請替換為 Firebase 或其他真實資料來源。
+// MARK: - 📍 REAL DATA — Hong Kong Pet Supply Stores
+// Source: petcircle-hk.vercel.app — Real HK pet supply stores
 
 struct MockProductRepository {
     // MARK: - REAL DATA — Hong Kong Pet Supply Stores

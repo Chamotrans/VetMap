@@ -3,7 +3,9 @@
 import StoreKit
 import SwiftUI
 
-// MARK: - ⚠️ DUMMY SEED DATA — 僅供開發測試用，上線前需替換為真實 StoreKit 產品
+// MARK: - StoreKit 2 IAP Products
+// Product IDs: com.vetmap.premium.monthly / .yearly
+// Configure matching products in App Store Connect
 
 @MainActor
 final class IAPService: ObservableObject {
