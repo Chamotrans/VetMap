@@ -147,7 +147,6 @@
 		04A1B1C2D3E4F5A6B7C8D9E0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		05A1B1C2D3E4F5A6B7C8D9E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		06A1B1C2D3E4F5A6B7C8D9E0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		07A1B1C2D3E4F5A6B7C8D9E0 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Products.storekit; sourceTree = "<group>"; };
 		08A1B1C2D3E4F5A6B7C8D9E0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		09A1B1C2D3E4F5A6B7C8D9E0 /* VetMap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VetMap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		09C846DD91B86E206479EC1E /* InsuranceDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = InsuranceDetailView.swift; path = VetMap/Views/Insurance/InsuranceDetailView.swift; sourceTree = SOURCE_ROOT; };
@@ -338,7 +337,6 @@
 				86A1B1C2D3E4F5A6B7C8D9E0 /* Views */,
 				05A1B1C2D3E4F5A6B7C8D9E0 /* Info.plist */,
 				06A1B1C2D3E4F5A6B7C8D9E0 /* Assets.xcassets */,
-				07A1B1C2D3E4F5A6B7C8D9E0 /* Products.storekit */,
 				08A1B1C2D3E4F5A6B7C8D9E0 /* GoogleService-Info.plist */,
 				7C3248EBBB054C3331F5F81F /* Utilities */,
 			);
