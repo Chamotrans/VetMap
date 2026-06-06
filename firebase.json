@@ -5,5 +5,9 @@
   "storage": [{
     "target": "default",
     "rules": "StorageRules.rules"
-  }]
+  }],
+  "hosting": {
+    "public": "public",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+  }
 }
