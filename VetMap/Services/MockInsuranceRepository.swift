@@ -4,6 +4,8 @@ import Foundation
 // Source: Real insurance products available in HK/TW markets as of 2026.
 
 struct MockInsuranceRepository {
+private let fallbackURL = URL(string: "https://vetmap-app.web.app")!
+
     static let seedPlans: [Insurance] = [
         Insurance(
             id: "insurance-tw-mingtai",
