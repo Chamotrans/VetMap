@@ -75,7 +75,7 @@ final class AuthViewModel: NSObject, ObservableObject {
             let changeRequest = result.user.createProfileChangeRequest()
             changeRequest.displayName = displayName
             try await changeRequest.commitChanges()
-            user = AppUser(from: Auth.auth().currentUser!)
+            if let currentUser = Auth.auth().currentUser { user = AppUser(from: currentUser) }
             authState = .signedIn
             Haptics.success()
         } catch {
