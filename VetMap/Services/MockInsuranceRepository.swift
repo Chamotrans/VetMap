@@ -26,7 +26,7 @@ struct MockInsuranceRepository {
                 "預防性疫苗及定期健檢費用",
                 "工作犬或繁殖用犬之特定風險"
             ],
-            website: URL(string: "https://www.mingtai.com.tw/pet-insurance")!,
+            website: URL(string: "https://www.mingtai.com.tw/pet-insurance") ?? URL(string: "https://vetmap-app.web.app")!,
             contactPhone: "0800-088-008"
         ),
         Insurance(
@@ -52,7 +52,7 @@ struct MockInsuranceRepository {
                 "寵物美容、修剪指甲等非醫療項目",
                 "因飼主故意或重大過失造成之傷害"
             ],
-            website: URL(string: "https://www.fubon.com/pet-insurance")!,
+            website: URL(string: "https://www.fubon.com/pet-insurance") ?? URL(string: "https://vetmap-app.web.app")!,
             contactPhone: "0800-009-888"
         ),
         Insurance(
@@ -76,7 +76,7 @@ struct MockInsuranceRepository {
                 "美容、除蚤等日常護理費用",
                 "地震、颱風等天災造成之損失"
             ],
-            website: URL(string: "https://www.cathay-ins.com.tw/pet")!,
+            website: URL(string: "https://www.cathay-ins.com.tw/pet") ?? URL(string: "https://vetmap-app.web.app")!,
             contactPhone: "0800-036-599"
         ),
         Insurance(
@@ -101,7 +101,7 @@ struct MockInsuranceRepository {
                 "洗牙、美容及修甲等非醫療項目",
                 "繁殖、賽跑或格鬥用途之寵物"
             ],
-            website: URL(string: "https://www.fwd.com.hk/pet-insurance")!,
+            website: URL(string: "https://www.fwd.com.hk/pet-insurance") ?? URL(string: "https://vetmap-app.web.app")!,
             contactPhone: "+852-3123-3123"
         ),
         Insurance(
@@ -126,7 +126,7 @@ struct MockInsuranceRepository {
                 "一般健康檢查及預防性護理",
                 "因疏忽照顧導致的損傷"
             ],
-            website: URL(string: "https://www.onedegree.hk/pet-insurance")!,
+            website: URL(string: "https://www.onedegree.hk/pet-insurance") ?? URL(string: "https://vetmap-app.web.app")!,
             contactPhone: "+852-2116-0138"
         ),
         Insurance(
@@ -150,7 +150,7 @@ struct MockInsuranceRepository {
                 "寵物美容及日常護理",
                 "由獸醫建議安樂死之費用"
             ],
-            website: URL(string: "https://www.bluecross.com.hk/pet")!,
+            website: URL(string: "https://www.bluecross.com.hk/pet") ?? URL(string: "https://vetmap-app.web.app")!,
             contactPhone: "+852-3608-2988"
         )
     ]

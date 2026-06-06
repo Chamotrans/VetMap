@@ -91,7 +91,7 @@ private struct ProductCardView: View {
                 Text(product.category)
                     .appChip(tint: categoryColor, isFilled: false)
 
-                Text(product.formattedPrice)
+                Text("")
                     .font(.caption.weight(.medium))
                     .foregroundStyle(AppTheme.warning)
             }

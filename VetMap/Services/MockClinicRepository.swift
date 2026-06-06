@@ -72,7 +72,7 @@ struct MockClinicRepository {
     // Source: ePetPet HK API (https://epetpet.com.hk/clinics) + manual verification
     static let hkClinics: [VetClinic] = [
         VetClinic(
-            id: "hk-peace-avenue-veterinary-clinic---cityu-a",
+            id: "hk-97f8d4750d8e",
             name: "太平道寵物診所 (PAVC) / 城大動物醫療中心",
             address: "九龍深水埗荔枝角道339號丰匯地下",
             coordinate: ClinicCoordinate(latitude: 22.3335, longitude: 114.158),
@@ -91,7 +91,7 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-animal-medical-centre",
+            id: "tw-7622f6dd9209",
             name: "動物醫療中心",
             address: "旺角勝利道16號D地下",
             coordinate: ClinicCoordinate(latitude: 22.3193, longitude: 114.1708),
@@ -110,7 +110,7 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-hung-hom-veterinary-clinic",
+            id: "hk-bfe31dfc398f",
             name: "紅磡獸醫診所",
             address: "紅磡黃埔新村民泰街30號地下",
             coordinate: ClinicCoordinate(latitude: 22.305, longitude: 114.1898),
@@ -129,7 +129,7 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-npv-non-profit-vet-services-npv29",
+            id: "hk-d4c1df4b33b6",
             name: "NPV非牟利獸醫服務協會（NPV29）",
             address: "太子基隆街29號",
             coordinate: ClinicCoordinate(latitude: 22.3245, longitude: 114.1657),
@@ -148,7 +148,7 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-macpherson-animal-clinic",
+            id: "hk-5035a1759b9b",
             name: "麥花臣動物診所",
             address: "旺角洗衣街26號地下",
             coordinate: ClinicCoordinate(latitude: 22.319, longitude: 114.17),
@@ -167,14 +167,14 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-69dad9893b2c2f0a8731",
+            id: "hk-ab43c4310677",
             name: "土瓜灣動物醫院",
             address: "香港九龍土瓜灣北帝街139號地舖",
             coordinate: ClinicCoordinate(latitude: 22.3236128, longitude: 114.1894662),
             phone: "27119909",
             website: nil,
             openingHours: ["今日": "請致電查詢"],
-            services: ["General practice"],
+            services: ["一般診療"],
             avgRating: 5.0,
             reviewCount: 1,
             priceLevel: 2,
@@ -186,14 +186,14 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-69dc64ed544efd16046c",
+            id: "tw-ce74c78f8cf8",
             name: "Once And For All Veterinary Centre",
             address: "香港鴨脷洲利榮街2號新海怡廣場10樓1006-1007",
             coordinate: ClinicCoordinate(latitude: 22.2391667, longitude: 114.1527778),
             phone: "28828123/62158608",
             website: nil,
             openingHours: ["今日": "請致電查詢"],
-            services: ["General practice"],
+            services: ["一般診療"],
             avgRating: 5.0,
             reviewCount: 1,
             priceLevel: 2,
@@ -205,14 +205,14 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-69dad9893b2c2f0a8731",
+            id: "hk-025c86e2fab2",
             name: "Pets Central 旺角動物醫院",
             address: "香港九龍旺角上海街484至488號順明大廈1樓和2樓",
             coordinate: ClinicCoordinate(latitude: 22.3164651, longitude: 114.168867),
             phone: "23092139",
             website: nil,
             openingHours: ["今日": "請致電查詢"],
-            services: ["General practice"],
+            services: ["一般診療"],
             avgRating: 5.0,
             reviewCount: 1,
             priceLevel: 2,
@@ -224,14 +224,14 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-69dceac485c5cd6a0637",
+            id: "hk-69dbd5d0b296",
             name: "萊奧動物醫療中心 LEAO Animal Medical Center",
             address: "Spring Sea Mansion, Shanghai St, Yau Ma Tei, Hong Kong",
             coordinate: ClinicCoordinate(latitude: 22.3135103, longitude: 114.1691526),
             phone: "25925376",
             website: nil,
             openingHours: ["今日": "請致電查詢"],
-            services: ["General practice"],
+            services: ["一般診療"],
             avgRating: 5.0,
             reviewCount: 1,
             priceLevel: 2,
@@ -243,14 +243,14 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-69dad98a3b2c2f0a8731",
+            id: "tw-51dca9cff77f",
             name: "博施寵物綜合醫療中心",
             address: "香港九龍荔枝角福華街571號曉悅6至8號地舖",
             coordinate: ClinicCoordinate(latitude: 22.3389556, longitude: 114.1525377),
             phone: "23686888",
             website: nil,
             openingHours: ["今日": "請致電查詢"],
-            services: ["General practice"],
+            services: ["一般診療"],
             avgRating: 4.0,
             reviewCount: 1,
             priceLevel: 2,
@@ -262,14 +262,14 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-69dad9893b2c2f0a8731",
+            id: "tw-c869d51846af",
             name: "寵誠動物醫院",
             address: "香港九龍牛頭角馬蹄徑1號寶恩大廈7號地舖",
             coordinate: ClinicCoordinate(latitude: 22.3146811, longitude: 114.2220301),
             phone: "36112877",
             website: nil,
             openingHours: ["今日": "請致電查詢"],
-            services: ["General practice"],
+            services: ["一般診療"],
             avgRating: 4.0,
             reviewCount: 1,
             priceLevel: 2,
@@ -281,14 +281,14 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-69dad9893b2c2f0a8731",
+            id: "tw-e310e859fe0f",
             name: "動物醫療中心24小時中心",
             address: "香港九龍何文田自由道11號 VAU Residence 地下1號舖",
             coordinate: ClinicCoordinate(latitude: 22.318969, longitude: 114.174559),
             phone: "27134155",
             website: nil,
             openingHours: ["今日": "請致電查詢"],
-            services: ["24-hour", "General practice"],
+            services: ["24小時", "一般診療"],
             avgRating: 0.0,
             reviewCount: 0,
             priceLevel: 2,
@@ -300,14 +300,14 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-69dad9893b2c2f0a8731",
+            id: "tw-cd4d29de3c6d",
             name: "鴨脷洲獸醫診所",
             address: "香港鴨脷洲利枝道138號1號舖",
             coordinate: ClinicCoordinate(latitude: 22.2436051, longitude: 114.1532428),
             phone: "25487100",
             website: nil,
             openingHours: ["今日": "請致電查詢"],
-            services: ["General practice"],
+            services: ["一般診療"],
             avgRating: 0.0,
             reviewCount: 0,
             priceLevel: 2,
@@ -319,14 +319,14 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-69dad9893b2c2f0a8731",
+            id: "tw-e55266f1f565",
             name: "恩典動物醫院",
             address: "香港九龍旺角勝利道28-32&36號新勝大樓C舖地下",
             coordinate: ClinicCoordinate(latitude: 22.319949, longitude: 114.1744528),
             phone: "27118482",
             website: nil,
             openingHours: ["今日": "請致電查詢"],
-            services: ["General practice"],
+            services: ["一般診療"],
             avgRating: 0.0,
             reviewCount: 0,
             priceLevel: 2,
@@ -338,14 +338,14 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-69dad98a3b2c2f0a8731",
+            id: "tw-d9468da2f0f5",
             name: "雅發動物診所",
             address: "香港九龍深水埗欽州街65-71號榮業商業大廈4樓4室",
             coordinate: ClinicCoordinate(latitude: 22.3329358, longitude: 114.1617865),
             phone: "27088973",
             website: nil,
             openingHours: ["今日": "請致電查詢"],
-            services: ["General practice"],
+            services: ["一般診療"],
             avgRating: 0.0,
             reviewCount: 0,
             priceLevel: 2,
@@ -357,14 +357,14 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-69dceac485c5cd6a0637",
+            id: "tw-8ef1b5864ac0",
             name: "Hong Kong Veterinary Specialty Services",
             address: "Flat A6, 5/F, Block A, Mai Hing Industrial Building, 16-18 Hing Yip St, Kwun Tong, Hong Kong",
             coordinate: ClinicCoordinate(latitude: 22.3088856, longitude: 114.225174),
             phone: "59953070",
             website: nil,
             openingHours: ["今日": "請致電查詢"],
-            services: ["Diagnostics", "General practice", "Specialty services", "Surgery"],
+            services: ["影像檢查", "一般診療", "專科服務", "外科"],
             avgRating: 0.0,
             reviewCount: 0,
             priceLevel: 2,
@@ -376,14 +376,14 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-69dcead9f1da3469d949",
+            id: "hk-5b5c2b42bdab",
             name: "24 hours Animal Emergency Centre 24小時動物急診中心",
             address: "G/F, 256 Shau Kei Wan Rd, Shau Kei Wan, Hong Kong",
             coordinate: ClinicCoordinate(latitude: 22.280141, longitude: 114.2251136),
             phone: "29157979",
             website: nil,
             openingHours: ["今日": "請致電查詢"],
-            services: ["24-hour", "Emergency", "General practice"],
+            services: ["24小時", "急診", "一般診療"],
             avgRating: 0.0,
             reviewCount: 0,
             priceLevel: 2,
@@ -395,14 +395,14 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-69dad9893b2c2f0a8731",
+            id: "tw-8c8a0930a9da",
             name: "雅各動物醫院",
             address: "香港西營盤第二街68-80號地下",
             coordinate: ClinicCoordinate(latitude: 22.286033, longitude: 114.14156),
             phone: "25400228",
             website: nil,
             openingHours: ["今日": "請致電查詢"],
-            services: ["General practice"],
+            services: ["一般診療"],
             avgRating: 0.0,
             reviewCount: 0,
             priceLevel: 2,
@@ -414,14 +414,14 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-69dad9893b2c2f0a8731",
+            id: "tw-721f21625d3e",
             name: "動物王國醫院",
             address: "香港銅鑼灣威菲路道25至27號佳景大廈2-3號舖",
             coordinate: ClinicCoordinate(latitude: 22.2860011, longitude: 114.1906908),
             phone: "25780321",
             website: nil,
             openingHours: ["今日": "請致電查詢"],
-            services: ["General practice"],
+            services: ["一般診療"],
             avgRating: 0.0,
             reviewCount: 0,
             priceLevel: 2,
@@ -433,14 +433,14 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-69dad98a3b2c2f0a8731",
+            id: "tw-ddc26fe8b10b",
             name: "動物獸醫中心-安健獸醫中心",
             address: "香港新界大埔仁興街54號地下",
             coordinate: ClinicCoordinate(latitude: 22.449307, longitude: 114.1641616),
             phone: "26561168",
             website: nil,
             openingHours: ["今日": "請致電查詢"],
-            services: ["General practice"],
+            services: ["一般診療"],
             avgRating: 0.0,
             reviewCount: 0,
             priceLevel: 2,
@@ -452,14 +452,14 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-69dad98a3b2c2f0a8731",
+            id: "tw-c4ad65c8d1ce",
             name: "哈比動物牙科及口腔手術中心",
             address: "香港新界沙田大圍積信街69-75地下號A地舖",
             coordinate: ClinicCoordinate(latitude: 22.3767729, longitude: 114.1788858),
             phone: "28506088",
             website: nil,
             openingHours: ["今日": "請致電查詢"],
-            services: ["Dentistry", "General practice", "Surgery"],
+            services: ["牙科", "一般診療", "外科"],
             avgRating: 0.0,
             reviewCount: 0,
             priceLevel: 2,
@@ -471,14 +471,14 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-69dad98a3b2c2f0a8731",
+            id: "tw-e2e3fd1e0b3e",
             name: "優活動物診所",
             address: "香港新界元朗鳳攸東街9號好順意大廈地下36及37號舖",
             coordinate: ClinicCoordinate(latitude: 22.4445376, longitude: 114.0222076),
             phone: "29659518",
             website: nil,
             openingHours: ["今日": "請致電查詢"],
-            services: ["General practice"],
+            services: ["一般診療"],
             avgRating: 0.0,
             reviewCount: 0,
             priceLevel: 2,
@@ -490,14 +490,14 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-69dad98a3b2c2f0a8731",
+            id: "tw-8a6cec6ff4b9",
             name: "柏德獸醫診所",
             address: "香港新界屯門青山公路385號嘉喜利大廈12號舖",
             coordinate: ClinicCoordinate(latitude: 22.3884598, longitude: 113.9800707),
             phone: "24042511",
             website: nil,
             openingHours: ["今日": "請致電查詢"],
-            services: ["General practice"],
+            services: ["一般診療"],
             avgRating: 0.0,
             reviewCount: 0,
             priceLevel: 2,
@@ -509,14 +509,14 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-69dad98a3b2c2f0a8731",
+            id: "tw-fa285449712d",
             name: "貝澳獸醫診所",
             address: "香港大嶼山貝澳新圍村地下",
             coordinate: ClinicCoordinate(latitude: 22.245461, longitude: 113.977841),
             phone: "34866100",
             website: nil,
             openingHours: ["今日": "請致電查詢"],
-            services: ["General practice"],
+            services: ["一般診療"],
             avgRating: 0.0,
             reviewCount: 0,
             priceLevel: 2,
@@ -528,14 +528,14 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-69dad98a3b2c2f0a8731",
+            id: "tw-a807d3684b96",
             name: "角落獸醫診所",
             address: "香港九龍黃大仙環鳳街68號鑽嶺低層地下01號",
             coordinate: ClinicCoordinate(latitude: 22.3449174, longitude: 114.1986224),
             phone: "26626232",
             website: nil,
             openingHours: ["今日": "請致電查詢"],
-            services: ["General practice"],
+            services: ["一般診療"],
             avgRating: 0.0,
             reviewCount: 0,
             priceLevel: 2,
@@ -547,14 +547,14 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-69dad98a3b2c2f0a8731",
+            id: "hk-6665bad8ab3e",
             name: "將軍澳獸醫中心",
             address: "香港新界將軍澳唐俊街21號地下翩匯坊G18號舖",
             coordinate: ClinicCoordinate(latitude: 22.3030015, longitude: 114.2634544),
             phone: "29157007",
             website: nil,
             openingHours: ["今日": "請致電查詢"],
-            services: ["General practice"],
+            services: ["一般診療"],
             avgRating: 0.0,
             reviewCount: 0,
             priceLevel: 2,
@@ -566,14 +566,14 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-69dad98a3b2c2f0a8731",
+            id: "tw-7bfb248aa2e1",
             name: "Dr. George's 獸醫醫療中心",
             address: "香港新界荃灣享和街36號好景樓地舖",
             coordinate: ClinicCoordinate(latitude: 22.371839, longitude: 114.1112672),
             phone: "24988102",
             website: nil,
             openingHours: ["今日": "請致電查詢"],
-            services: ["General practice"],
+            services: ["一般診療"],
             avgRating: 0.0,
             reviewCount: 0,
             priceLevel: 2,
@@ -585,14 +585,14 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-69dad98a3b2c2f0a8731",
+            id: "tw-14a695262021",
             name: "粉嶺動物醫院",
             address: "香港新界粉嶺聯和墟聯安街31號4號地舖",
             coordinate: ClinicCoordinate(latitude: 22.4998322, longitude: 114.1432444),
             phone: "26776046",
             website: nil,
             openingHours: ["今日": "請致電查詢"],
-            services: ["General practice"],
+            services: ["一般診療"],
             avgRating: 0.0,
             reviewCount: 0,
             priceLevel: 2,
@@ -604,14 +604,14 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "hk-69dad98a3b2c2f0a8731",
+            id: "tw-3f69eeba3de8",
             name: "豐盈動物腫瘤中心",
             address: "香港新界葵涌葵豐街38至42號大鴻輝(葵涌)中心2期地下1號舖",
             coordinate: ClinicCoordinate(latitude: 22.3555118, longitude: 114.1253095),
             phone: "34263500",
             website: nil,
             openingHours: ["今日": "請致電查詢"],
-            services: ["General practice", "Internal medicine", "Specialty services", "Surgery"],
+            services: ["一般診療", "內科", "專科服務", "外科"],
             avgRating: 0.0,
             reviewCount: 0,
             priceLevel: 2,
@@ -628,7 +628,7 @@ struct MockClinicRepository {
     // Source: Curation of major Taiwan vet hospitals across 7 cities
     static let twClinics: [VetClinic] = [
         VetClinic(
-            id: "tw-national-veterinary-hospital-taipei",
+            id: "tw-7ca1570d2880",
             name: "全國動物醫院 台北總院",
             address: "台北市大安區仁愛路四段1號",
             coordinate: ClinicCoordinate(latitude: 25.0375, longitude: 121.549),
@@ -647,7 +647,7 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "tw-cambridge-animal-hospital",
+            id: "tw-9a8318a36696",
             name: "劍橋動物醫院",
             address: "台北市大安區忠孝東路四段170巷6弄2號",
             coordinate: ClinicCoordinate(latitude: 25.0418, longitude: 121.5495),
@@ -666,7 +666,7 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "tw-luke-animal-hospital",
+            id: "tw-6b484c63dbfc",
             name: "路加動物醫院",
             address: "台北市文山區興隆路二段143號",
             coordinate: ClinicCoordinate(latitude: 24.997, longitude: 121.5475),
@@ -685,7 +685,7 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "tw-pan-asia-animal-hospital",
+            id: "tw-a91d6eaeab4f",
             name: "汎亞動物醫院",
             address: "台北市松山區民生東路五段77號",
             coordinate: ClinicCoordinate(latitude: 25.058, longitude: 121.559),
@@ -704,7 +704,7 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "tw-moon-animal-hospital",
+            id: "tw-2294b2a27fb0",
             name: "沐恩動物醫院",
             address: "台北市中山區北安路518巷14弄3號",
             coordinate: ClinicCoordinate(latitude: 25.0785, longitude: 121.545),
@@ -723,7 +723,7 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "tw-dean-animal-hospital",
+            id: "tw-e41df60633a0",
             name: "德安動物醫院",
             address: "台北市內湖區成功路四段61號",
             coordinate: ClinicCoordinate(latitude: 25.082, longitude: 121.591),
@@ -742,7 +742,7 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "tw-chung-hsing-animal-hospital",
+            id: "tw-452147d2b609",
             name: "中興動物醫院",
             address: "台中市西區公益路150號",
             coordinate: ClinicCoordinate(latitude: 24.1477, longitude: 120.66),
@@ -761,7 +761,7 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "tw-tzu-ai-animal-hospital-taichung",
+            id: "tw-568118855d54",
             name: "慈愛動物醫院 台中總院",
             address: "台中市北區中清路一段295號",
             coordinate: ClinicCoordinate(latitude: 24.165, longitude: 120.675),
@@ -780,7 +780,7 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "tw-po-lien-animal-hospital-kaohsiung",
+            id: "tw-4032457873f0",
             name: "高雄博聯動物醫院",
             address: "高雄市左營區自由三路295號",
             coordinate: ClinicCoordinate(latitude: 22.675, longitude: 120.31),
@@ -799,7 +799,7 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "tw-hong-li-animal-hospital",
+            id: "tw-2f23686f0e6e",
             name: "宏力動物醫院",
             address: "高雄市前鎮區一心一路212號",
             coordinate: ClinicCoordinate(latitude: 22.61, longitude: 120.318),
@@ -818,7 +818,7 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "tw-ntu-animal-hospital",
+            id: "tw-b654e84504ba",
             name: "台大動物醫院",
             address: "台北市大安區基隆路三段165號",
             coordinate: ClinicCoordinate(latitude: 25.018, longitude: 121.543),
@@ -837,7 +837,7 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "tw-en-ya-animal-hospital",
+            id: "tw-85b9b2962f71",
             name: "恩亞動物醫院",
             address: "新北市板橋區文化路二段225巷1號",
             coordinate: ClinicCoordinate(latitude: 25.026, longitude: 121.468),
@@ -856,7 +856,7 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "tw-national-veterinary-hospital-taichung",
+            id: "tw-6f62d827179d",
             name: "台中全國動物醫院",
             address: "台中市西屯區台灣大道四段1230號",
             coordinate: ClinicCoordinate(latitude: 24.18, longitude: 120.62),
@@ -875,7 +875,7 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "tw-chung-hsing-animal-hospital-kaohsiung",
+            id: "tw-0a68055e86a4",
             name: "高雄中興動物醫院",
             address: "高雄市三民區民族一路455號",
             coordinate: ClinicCoordinate(latitude: 22.648, longitude: 120.315),
@@ -894,7 +894,7 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "tw-li-han-animal-hospital-tainan",
+            id: "tw-55a26337e9e7",
             name: "台南力漢動物醫院",
             address: "台南市東區中華東路三段200號",
             coordinate: ClinicCoordinate(latitude: 22.985, longitude: 120.233),
@@ -913,7 +913,7 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "tw-hsin-an-animal-hospital-hsinchu",
+            id: "tw-5a6330982103",
             name: "新竹信安動物醫院",
             address: "新竹市東區光復路二段350號",
             coordinate: ClinicCoordinate(latitude: 24.798, longitude: 120.995),
@@ -932,7 +932,7 @@ struct MockClinicRepository {
             verified: true
         ),
         VetClinic(
-            id: "tw-pro-animal-hospital-taoyuan",
+            id: "tw-7d19df9d81a3",
             name: "桃園普羅動物醫院",
             address: "桃園市中壢區龍岡路一段123號",
             coordinate: ClinicCoordinate(latitude: 24.94, longitude: 121.23),
