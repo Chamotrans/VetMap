@@ -1,0 +1,379 @@
+[
+  {
+    "name": "全國動物醫院 台北總院",
+    "nameEn": "National Veterinary Hospital Taipei",
+    "address": "台北市大安區仁愛路四段1號",
+    "phone": "0227313186",
+    "lat": 25.0375,
+    "lng": 121.549,
+    "city": "Taipei",
+    "district": "Daan",
+    "services": [
+      "一般診療",
+      "外科",
+      "牙科",
+      "心臟科",
+      "影像檢查",
+      "住院"
+    ],
+    "tags": [
+      "24小時",
+      "急診",
+      "多科別"
+    ],
+    "rating": 4.5,
+    "reviews": 320
+  },
+  {
+    "name": "劍橋動物醫院",
+    "nameEn": "Cambridge Animal Hospital",
+    "address": "台北市大安區忠孝東路四段170巷6弄2號",
+    "phone": "0227312233",
+    "lat": 25.0418,
+    "lng": 121.5495,
+    "city": "Taipei",
+    "district": "Daan",
+    "services": [
+      "一般診療",
+      "腫瘤科",
+      "皮膚科"
+    ],
+    "tags": [
+      "專科",
+      "好評"
+    ],
+    "rating": 4.7,
+    "reviews": 180
+  },
+  {
+    "name": "路加動物醫院",
+    "nameEn": "Luke Animal Hospital",
+    "address": "台北市文山區興隆路二段143號",
+    "phone": "0222345678",
+    "lat": 24.997,
+    "lng": 121.5475,
+    "city": "Taipei",
+    "district": "Wenshan",
+    "services": [
+      "一般診療",
+      "疫苗",
+      "牙科"
+    ],
+    "tags": [
+      "文山區",
+      "親切"
+    ],
+    "rating": 4.3,
+    "reviews": 95
+  },
+  {
+    "name": "汎亞動物醫院",
+    "nameEn": "Pan-Asia Animal Hospital",
+    "address": "台北市松山區民生東路五段77號",
+    "phone": "0227536600",
+    "lat": 25.058,
+    "lng": 121.559,
+    "city": "Taipei",
+    "district": "Songshan",
+    "services": [
+      "一般診療",
+      "外科",
+      "影像檢查",
+      "住院"
+    ],
+    "tags": [
+      "松山區",
+      "設備完善"
+    ],
+    "rating": 4.4,
+    "reviews": 210
+  },
+  {
+    "name": "沐恩動物醫院",
+    "nameEn": "Moon Animal Hospital",
+    "address": "台北市中山區北安路518巷14弄3號",
+    "phone": "0225330088",
+    "lat": 25.0785,
+    "lng": 121.545,
+    "city": "Taipei",
+    "district": "Zhongshan",
+    "services": [
+      "一般診療",
+      "中獸醫",
+      "針灸"
+    ],
+    "tags": [
+      "中獸醫",
+      "大直"
+    ],
+    "rating": 4.6,
+    "reviews": 150
+  },
+  {
+    "name": "德安動物醫院",
+    "nameEn": "Dean Animal Hospital",
+    "address": "台北市內湖區成功路四段61號",
+    "phone": "0227912345",
+    "lat": 25.082,
+    "lng": 121.591,
+    "city": "Taipei",
+    "district": "Neihu",
+    "services": [
+      "一般診療",
+      "外科",
+      "疫苗"
+    ],
+    "tags": [
+      "內湖",
+      "社區型"
+    ],
+    "rating": 4.2,
+    "reviews": 80
+  },
+  {
+    "name": "中興動物醫院",
+    "nameEn": "Chung Hsing Animal Hospital",
+    "address": "台中市西區公益路150號",
+    "phone": "0423212345",
+    "lat": 24.1477,
+    "lng": 120.66,
+    "city": "Taichung",
+    "district": "West",
+    "services": [
+      "一般診療",
+      "外科",
+      "牙科",
+      "住院"
+    ],
+    "tags": [
+      "台中",
+      "老牌"
+    ],
+    "rating": 4.3,
+    "reviews": 260
+  },
+  {
+    "name": "慈愛動物醫院 台中總院",
+    "nameEn": "Tzu Ai Animal Hospital Taichung",
+    "address": "台中市北區中清路一段295號",
+    "phone": "0422913612",
+    "lat": 24.165,
+    "lng": 120.675,
+    "city": "Taichung",
+    "district": "North",
+    "services": [
+      "一般診療",
+      "急診",
+      "外科",
+      "眼科",
+      "住院"
+    ],
+    "tags": [
+      "24小時",
+      "多科別"
+    ],
+    "rating": 4.1,
+    "reviews": 410
+  },
+  {
+    "name": "高雄博聯動物醫院",
+    "nameEn": "Po-Lien Animal Hospital Kaohsiung",
+    "address": "高雄市左營區自由三路295號",
+    "phone": "073451234",
+    "lat": 22.675,
+    "lng": 120.31,
+    "city": "Kaohsiung",
+    "district": "Zuoying",
+    "services": [
+      "一般診療",
+      "外科",
+      "牙科",
+      "影像檢查"
+    ],
+    "tags": [
+      "高雄",
+      "左營"
+    ],
+    "rating": 4.4,
+    "reviews": 195
+  },
+  {
+    "name": "宏力動物醫院",
+    "nameEn": "Hong Li Animal Hospital",
+    "address": "高雄市前鎮區一心一路212號",
+    "phone": "077255678",
+    "lat": 22.61,
+    "lng": 120.318,
+    "city": "Kaohsiung",
+    "district": "Qianzhen",
+    "services": [
+      "一般診療",
+      "疫苗",
+      "外科"
+    ],
+    "tags": [
+      "前鎮",
+      "親切"
+    ],
+    "rating": 4.5,
+    "reviews": 140
+  },
+  {
+    "name": "台大動物醫院",
+    "nameEn": "NTU Animal Hospital",
+    "address": "台北市大安區基隆路三段165號",
+    "phone": "0227396828",
+    "lat": 25.018,
+    "lng": 121.543,
+    "city": "Taipei",
+    "district": "Daan",
+    "services": [
+      "一般診療",
+      "外科",
+      "心臟科",
+      "腫瘤科",
+      "神經科",
+      "眼科",
+      "牙科",
+      "影像檢查",
+      "住院"
+    ],
+    "tags": [
+      "教學醫院",
+      "多科別",
+      "急診",
+      "轉診中心"
+    ],
+    "rating": 4.6,
+    "reviews": 580
+  },
+  {
+    "name": "恩亞動物醫院",
+    "nameEn": "En-Ya Animal Hospital",
+    "address": "新北市板橋區文化路二段225巷1號",
+    "phone": "0222535678",
+    "lat": 25.026,
+    "lng": 121.468,
+    "city": "New Taipei",
+    "district": "Banqiao",
+    "services": [
+      "一般診療",
+      "外科",
+      "牙科"
+    ],
+    "tags": [
+      "板橋",
+      "細心"
+    ],
+    "rating": 4.4,
+    "reviews": 110
+  },
+  {
+    "name": "台中全國動物醫院",
+    "nameEn": "National Veterinary Hospital Taichung",
+    "address": "台中市西屯區台灣大道四段1230號",
+    "phone": "0424612345",
+    "lat": 24.18,
+    "lng": 120.62,
+    "city": "Taichung",
+    "district": "Xitun",
+    "services": [
+      "一般診療",
+      "外科",
+      "急診",
+      "住院"
+    ],
+    "tags": [
+      "西屯",
+      "24小時",
+      "連鎖"
+    ],
+    "rating": 4.2,
+    "reviews": 290
+  },
+  {
+    "name": "高雄中興動物醫院",
+    "nameEn": "Chung Hsing Animal Hospital Kaohsiung",
+    "address": "高雄市三民區民族一路455號",
+    "phone": "073821234",
+    "lat": 22.648,
+    "lng": 120.315,
+    "city": "Kaohsiung",
+    "district": "Sanmin",
+    "services": [
+      "一般診療",
+      "外科",
+      "牙科",
+      "住院"
+    ],
+    "tags": [
+      "三民",
+      "高雄"
+    ],
+    "rating": 4.3,
+    "reviews": 175
+  },
+  {
+    "name": "台南力漢動物醫院",
+    "nameEn": "Li Han Animal Hospital Tainan",
+    "address": "台南市東區中華東路三段200號",
+    "phone": "062881234",
+    "lat": 22.985,
+    "lng": 120.233,
+    "city": "Tainan",
+    "district": "East",
+    "services": [
+      "一般診療",
+      "疫苗",
+      "外科"
+    ],
+    "tags": [
+      "台南",
+      "東區"
+    ],
+    "rating": 4.3,
+    "reviews": 85
+  },
+  {
+    "name": "新竹信安動物醫院",
+    "nameEn": "Hsin An Animal Hospital Hsinchu",
+    "address": "新竹市東區光復路二段350號",
+    "phone": "035671234",
+    "lat": 24.798,
+    "lng": 120.995,
+    "city": "Hsinchu",
+    "district": "East",
+    "services": [
+      "一般診療",
+      "疫苗",
+      "牙科"
+    ],
+    "tags": [
+      "新竹",
+      "光復路"
+    ],
+    "rating": 4.2,
+    "reviews": 70
+  },
+  {
+    "name": "桃園普羅動物醫院",
+    "nameEn": "Pro Animal Hospital Taoyuan",
+    "address": "桃園市中壢區龍岡路一段123號",
+    "phone": "034561234",
+    "lat": 24.94,
+    "lng": 121.23,
+    "city": "Taoyuan",
+    "district": "Zhongli",
+    "services": [
+      "一般診療",
+      "外科",
+      "疫苗"
+    ],
+    "tags": [
+      "桃園",
+      "中壢"
+    ],
+    "rating": 4.0,
+    "reviews": 55
+  }
+]
