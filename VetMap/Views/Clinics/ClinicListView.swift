@@ -17,7 +17,7 @@ struct ClinicListView: View {
     private var iphoneLayout: some View {
         NavigationStack {
             clinicListContent
-                .navigationTitle("獸醫診所")
+                .navigationTitle("獸醫診所 (\(MockClinicRepository().fetchClinics().count))")
                 .navigationBarTitleDisplayMode(.large)
                 .searchable(text: $viewModel.filter.query, prompt: "搜尋診所、地區、服務")
             .onSubmit(of: .search) { Analytics.searchPerformed(viewModel.filter.query) }
@@ -45,7 +45,7 @@ struct ClinicListView: View {
     private var ipadLayout: some View {
         NavigationSplitView {
             clinicListContent
-                .navigationTitle("獸醫診所")
+                .navigationTitle("獸醫診所 (\(MockClinicRepository().fetchClinics().count))")
                 .navigationBarTitleDisplayMode(.large)
                 .searchable(text: $viewModel.filter.query, prompt: "搜尋診所、地區、服務")
             .onSubmit(of: .search) { Analytics.searchPerformed(viewModel.filter.query) }
