@@ -3,7 +3,7 @@ import SwiftUI
 
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> ClinicEntry {
-        ClinicEntry(clinics: MockClinicRepository.clinics.prefix(3).map { .init(id: $0.id, name: $0.name, rating: $0.avgRating) })
+        ClinicEntry(clinics: MockClinicRepository.hkClinics.prefix(3).map { .init(id: $0.id, name: $0.name, rating: $0.avgRating) })
     }
 
     func getSnapshot(in context: Context, completion: @escaping (ClinicEntry) -> Void) {
@@ -11,7 +11,7 @@ struct Provider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<ClinicEntry>) -> Void) {
-        let clinics = MockClinicRepository.clinics.prefix(3).map {
+        let clinics = MockClinicRepository.hkClinics.prefix(3).map {
             WidgetClinic(id: $0.id, name: $0.name, rating: $0.avgRating)
         }
         let entry = ClinicEntry(clinics: clinics)

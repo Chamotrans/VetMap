@@ -504,7 +504,7 @@ struct FlowLayout: Layout {
 }
 
 #Preview {
-    ClinicDetailView(clinic: MockClinicRepository.clinics[0])
+    ClinicDetailView(clinic: MockClinicRepository.hkClinics[0])
 }
 
 // MARK: - Safari View Controller

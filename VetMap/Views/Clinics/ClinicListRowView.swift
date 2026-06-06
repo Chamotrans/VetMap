@@ -82,7 +82,7 @@ struct ClinicListRowView: View {
 }
 
 #Preview {
-    ClinicListRowView(clinic: MockClinicRepository.clinics[0])
+    ClinicListRowView(clinic: MockClinicRepository.hkClinics[0])
         .padding()
         .background(Color(.systemGroupedBackground))
 }

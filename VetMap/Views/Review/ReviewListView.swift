@@ -101,6 +101,6 @@ struct ReviewListView: View {
 
 #Preview {
     NavigationStack {
-        ReviewListView(clinic: MockClinicRepository.clinics[0])
+        ReviewListView(clinic: MockClinicRepository.hkClinics[0])
     }
 }

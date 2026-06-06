@@ -114,7 +114,7 @@ struct ProductDetailView: View {
 
     private var clinicName: String? {
         guard let clinicId = product.clinicId else { return nil }
-        return MockClinicRepository.clinics.first { $0.id == clinicId }?.name
+        return MockClinicRepository.hkClinics.first { $0.id == clinicId }?.name
     }
 
     private var formattedPrice: String {

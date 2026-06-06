@@ -88,7 +88,7 @@ struct ClinicRowView: View {
 
 #Preview {
     ClinicRowView(
-        clinic: MockClinicRepository.clinics[0],
+        clinic: MockClinicRepository.hkClinics[0],
         currentLocation: nil,
         isSelected: true,
         onOpenDetails: {}

@@ -142,7 +142,7 @@ final class VetMapModelTests: XCTestCase {
         var filter = ClinicSearchFilter()
         filter.query = "牙科"
 
-        let results = filter.results(from: MockClinicRepository.clinics)
+        let results = filter.results(from: MockClinicRepository.hkClinics)
 
         XCTAssertEqual(results.map(\.id), ["taipei-anxin", "hk-kowloon-care"])
     }
@@ -153,7 +153,7 @@ final class VetMapModelTests: XCTestCase {
         filter.verifiedOnly = true
         filter.price = .premium
 
-        let results = filter.results(from: MockClinicRepository.clinics)
+        let results = filter.results(from: MockClinicRepository.hkClinics)
 
         XCTAssertEqual(results.map(\.id), ["hk-harbour"])
     }
@@ -177,7 +177,7 @@ final class VetMapModelTests: XCTestCase {
         let fileURL = FileManager.default.temporaryDirectory
             .appending(path: UUID().uuidString, directoryHint: .isDirectory)
             .appending(path: "reviews.json")
-        let clinic = MockClinicRepository.clinics[0]
+        let clinic = MockClinicRepository.hkClinics[0]
         let repository = MockCommunityRepository(localReviewsFileURL: fileURL)
 
         let viewModel = ClinicDetailViewModel(clinic: clinic, repository: repository)
@@ -193,7 +193,7 @@ final class VetMapModelTests: XCTestCase {
         let fileURL = FileManager.default.temporaryDirectory
             .appending(path: UUID().uuidString, directoryHint: .isDirectory)
             .appending(path: "reviews.json")
-        let clinic = MockClinicRepository.clinics[0]
+        let clinic = MockClinicRepository.hkClinics[0]
         let repository = MockCommunityRepository(localReviewsFileURL: fileURL)
         let viewModel = ClinicDetailViewModel(clinic: clinic, repository: repository)
 
@@ -218,7 +218,7 @@ final class VetMapModelTests: XCTestCase {
         let fileURL = FileManager.default.temporaryDirectory
             .appending(path: UUID().uuidString, directoryHint: .isDirectory)
             .appending(path: "reviews.json")
-        let clinic = MockClinicRepository.clinics[0]
+        let clinic = MockClinicRepository.hkClinics[0]
         let repository = MockCommunityRepository(localReviewsFileURL: fileURL)
         let viewModel = ClinicDetailViewModel(clinic: clinic, repository: repository)
         let initialReviewCount = viewModel.reviews.count
@@ -568,15 +568,15 @@ final class VetMapModelTests: XCTestCase {
 
     func testClinicSearchFilterEmptyQueryReturnsAll() {
         let filter = ClinicSearchFilter()
-        let results = filter.results(from: MockClinicRepository.clinics)
+        let results = filter.results(from: MockClinicRepository.hkClinics)
 
-        XCTAssertEqual(results.count, MockClinicRepository.clinics.count)
+        XCTAssertEqual(results.count, MockClinicRepository.hkClinics.count)
     }
 
     func testClinicSearchFilterPriceBudget() {
         var filter = ClinicSearchFilter()
         filter.price = .budget
-        let results = filter.results(from: MockClinicRepository.clinics)
+        let results = filter.results(from: MockClinicRepository.hkClinics)
 
         XCTAssertTrue(results.allSatisfy { $0.priceLevel <= 1 })
     }
@@ -584,7 +584,7 @@ final class VetMapModelTests: XCTestCase {
     func testClinicSearchFilterPriceModerate() {
         var filter = ClinicSearchFilter()
         filter.price = .moderate
-        let results = filter.results(from: MockClinicRepository.clinics)
+        let results = filter.results(from: MockClinicRepository.hkClinics)
 
         XCTAssertFalse(results.isEmpty)
         XCTAssertTrue(results.allSatisfy { $0.priceLevel <= 2 })
@@ -598,7 +598,7 @@ final class VetMapModelTests: XCTestCase {
         let fileURL = FileManager.default.temporaryDirectory
             .appending(path: UUID().uuidString, directoryHint: .isDirectory)
             .appending(path: "reviews.json")
-        let clinic = MockClinicRepository.clinics[0]
+        let clinic = MockClinicRepository.hkClinics[0]
         let repository = MockCommunityRepository(localReviewsFileURL: fileURL)
         let viewModel = ClinicDetailViewModel(clinic: clinic, repository: repository)
 
