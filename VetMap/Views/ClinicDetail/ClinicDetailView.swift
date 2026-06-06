@@ -1,3 +1,4 @@
+import SafariServices
 import MapKit
 import SwiftUI
 
@@ -509,7 +510,6 @@ struct FlowLayout: Layout {
 
 // MARK: - Safari View Controller
 
-import SafariServices
 
 struct SafariViewController: UIViewControllerRepresentable {
     let url: URL
