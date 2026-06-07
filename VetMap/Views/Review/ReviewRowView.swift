@@ -86,6 +86,13 @@ struct ReviewRowView: View {
         }
         .padding(14)
         .appCard()
+        .swipeActions(edge: .trailing) {
+            Button(role: .destructive) {
+                // Delete review — needs ViewModel integration
+            } label: {
+                Label("刪除", systemImage: "trash")
+            }
+        }
     }
 
     private var starRatingView: some View {
