@@ -101,6 +101,8 @@ struct ReviewRowView: View {
                 Image(systemName: value <= review.rating ? "star.fill" : "star")
                     .font(.caption2)
                     .foregroundStyle(AppTheme.warning)
+                    .scaleEffect(value <= review.rating ? 1.0 : 0.8)
+                    .animation(.spring(response: 0.3, dampingFraction: 0.6).delay(Double(value) * 0.1), value: review.rating)
             }
         }
         .accessibilityLabel("評分 \(review.rating) 分")

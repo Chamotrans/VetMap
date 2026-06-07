@@ -67,3 +67,15 @@ bash scripts/archive.sh
 | `AppStoreMetadata.md` | Descriptions, keywords, screenshots plan |
 | `PREFLIGHT_CHECKLIST.md` | 35-item launch checklist |
 | `SECURITY.md` | Security policy + pre-commit hook |
+
+## App Store Pitch
+
+> "VetMap helps pet owners across Hong Kong and Taiwan find trusted veterinary clinics with real reviews, transparent pricing, and community wisdom. 222 clinics, 127 pet services, all verified."
+
+**Keywords for App Store reviewers:**
+- 3-language support (zh-Hant-HK, zh-Hans, en)
+- Real clinic data from ePetPet + petcircle
+- Community reviews with helpful voting
+- Treatment cost transparency
+- Widget + iPad + accessibility
+- Firebase backend with Firestore
