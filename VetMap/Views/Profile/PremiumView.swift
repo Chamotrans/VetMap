@@ -48,6 +48,9 @@ struct PremiumView: View {
                 .font(.largeTitle.weight(.bold))
 
             Text("解鎖完整功能，為毛孩搵到最好嘅照顧")
+            Text("🎁 7日免費試用，隨時取消")
+                .font(.subheadline)
+                .foregroundStyle(AppTheme.warning)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
