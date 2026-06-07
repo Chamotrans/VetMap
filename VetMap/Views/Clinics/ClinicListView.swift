@@ -212,6 +212,7 @@ struct ClinicListView: View {
                     .buttonStyle(.plain)
                     .accessibilityLabel("\(clinic.name), 評分 \(String(format: "%.1f", clinic.avgRating))")
                     .accessibilityHint("開啟診所詳情")
+                    .accessibilitySortPriority(1)
                 }
             }
             .animation(.default, value: viewModel.filteredClinics)
