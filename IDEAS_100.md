@@ -106,15 +106,15 @@
 | # | Feature | Difficulty |
 |---|---------|------------|
 | 69 ✅ | Free trial period for Premium (7 days) | Medium |
-| 70 | Family sharing for Premium subscription | Easy |
+| 70 ✅ | Family sharing for Premium subscription | Easy |
 | 71 | Referral program — "Invite a friend, get 1 month free" | Medium |
 | 72 | Featured / sponsored clinic placements (non-intrusive) | Medium |
-| 73 | "Unlock with review" — write review to unlock Premium trial | Easy |
-| 74 | Seasonal promotions (CNY, Christmas pet care packages) | Easy |
+| 73 ✅ | "Unlock with review" — write review to unlock Premium trial | Easy |
+| 74 ✅ | Seasonal promotions (CNY, Christmas pet care packages) | Easy |
 | 75 ✅ | App Store featured story pitch kit | Easy |
-| 76 | Pet brand partnerships for exclusive discounts | Medium |
-| 77 | QR code stickers for clinics — scan to open in VetMap | Easy |
-| 78 | Email newsletter — monthly pet care tips + clinic highlights | Easy |
+| 76 ✅ | Pet brand partnerships for exclusive discounts | Medium |
+| 77 ✅ | QR code stickers for clinics — scan to open in VetMap | Easy |
+| 78 ✅ | Email newsletter — monthly pet care tips + clinic highlights | Easy |
 
 ## Data & Content (79-88)
 | # | Feature | Difficulty |
@@ -128,7 +128,7 @@
 | 85 | Service availability calendar (e.g., "X-ray: Mon/Wed/Fri") | Medium |
 | 86 | Seasonal allergy alerts by district (pet-relevant pollen) | Hard |
 | 87 | Pet disease outbreak tracking map | Hard |
-| 88 | Import/export clinic data as CSV for researchers | Easy |
+| 88 ✅ | Import/export clinic data as CSV for researchers | Easy |
 
 ## Performance & Quality (89-95)
 | # | Feature | Difficulty |
@@ -136,9 +136,9 @@
 | 89 | Lazy loading for distant map annotations | Medium |
 | 90 ✅ | Image caching optimization (Kingfisher already linked) | Easy |
 | 91 | Background refresh for clinic data updates | Medium |
-| 92 | Crash-free session rate tracking (>99.9% target) | Easy |
+| 92 ✅ | Crash-free session rate tracking (>99.9% target) | Easy |
 | 93 | Network request batching — reduce Firestore reads | Medium |
-| 94 | App size audit — remove unused assets/Swift files | Easy |
+| 94 ✅ | App size audit — remove unused assets/Swift files | Easy |
 | 95 | Unit test coverage target: 80%+ (currently ~40%) | Medium |
 
 ## Wild Ideas (96-100)
