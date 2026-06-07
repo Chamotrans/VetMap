@@ -91,6 +91,12 @@ struct ClinicListView: View {
             .padding(.horizontal, 16)
             .padding(.top, 12)
             .padding(.bottom, 24)
+
+            Text("資料來源：ePetPet HK + petcircle • 共 222 間診所")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.top, 8)
         }
         .refreshable {
             viewModel.retryLoad()
