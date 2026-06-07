@@ -22,7 +22,7 @@
 | 13 | Service price list — transparent pricing per clinic | Medium |
 | 14 ✅ | "Accepting new patients?" badge on clinic cards | Easy |
 | 15 | Clinic response to reviews (owner reply) | Medium |
-| 16 | Parking / MTR station nearby info | Easy |
+| 16 ✅ | Parking / MTR station nearby info | Easy |
 | 17 | "Languages spoken" filter (English, Mandarin, Cantonese) | Easy |
 | 18 | Virtual tour / 360° photos of clinic interior | Hard |
 
@@ -59,7 +59,7 @@
 |---|---------|------------|
 | 39 ✅ | Dark mode optimization audit (some hardcoded colors) | Easy |
 | 40 ✅ | Haptic feedback throughout (already partial) | Easy |
-| 41 | Siri Shortcuts — "Hey Siri, find a vet near me" | Medium |
+| 41 ✅ | Siri Shortcuts — "Hey Siri, find a vet near me" | Medium |
 | 42 | Apple Watch companion app — nearby clinics on wrist | Hard |
 | 43 | Dynamic Island live activity for emergency navigation | Hard |
 | 44 | App Intents / Shortcuts integration | Medium |
@@ -81,10 +81,10 @@
 |---|---------|------------|
 | 51 | Skeleton loading shimmer on all list views (partial now) | Easy |
 | 52 | Pull-to-refresh animation with pawprint | Easy |
-| 53 | Smooth hero transitions between list → detail | Medium |
+| 53 ✅ | Smooth hero transitions between list → detail | Medium |
 | 54 ✅ | Floating action button (FAB) for quick "Add Clinic" | Easy |
 | 55 ✅ | Swipe-to-delete for user's own reviews | Easy |
-| 56 | Bottom sheet for quick clinic info (peek before detail) | Medium |
+| 56 ✅ | Bottom sheet for quick clinic info (peek before detail) | Medium |
 | 57 | Parallax header image in clinic detail | Medium |
 | 58 ✅ | Animated rating stars that fill up on scroll | Easy |
 | 59 ✅ | Confetti / celebration animation after first review | Easy |
@@ -93,22 +93,22 @@
 ## Accessibility & Inclusion (61-68)
 | # | Feature | Difficulty |
 |---|---------|------------|
-| 61 | Dynamic Type support audit (all text should scale) | Medium |
+| 61 ✅ | Dynamic Type support audit (all text should scale) | Medium |
 | 62 | VoiceOver rotor navigation for clinic list | Medium |
 | 63 | High contrast mode toggle in settings | Easy |
 | 64 ✅ | Reduce motion support | Easy |
-| 65 | Closed captions for any video content | Easy |
-| 66 | Screen reader-optimized clinic descriptions | Easy |
+| 65 ✅ | Closed captions for any video content | Easy |
+| 66 ✅ | Screen reader-optimized clinic descriptions | Easy |
 | 67 | Color-blind friendly map pin palette | Easy |
-| 68 | Font size adjustment independent of system setting | Medium |
+| 68 ✅ | Font size adjustment independent of system setting | Medium |
 
 ## Monetization & Growth (69-78)
 | # | Feature | Difficulty |
 |---|---------|------------|
 | 69 ✅ | Free trial period for Premium (7 days) | Medium |
 | 70 ✅ | Family sharing for Premium subscription | Easy |
-| 71 | Referral program — "Invite a friend, get 1 month free" | Medium |
-| 72 | Featured / sponsored clinic placements (non-intrusive) | Medium |
+| 71 ✅ | Referral program — "Invite a friend, get 1 month free" | Medium |
+| 72 ✅ | Featured / sponsored clinic placements (non-intrusive) | Medium |
 | 73 ✅ | "Unlock with review" — write review to unlock Premium trial | Easy |
 | 74 ✅ | Seasonal promotions (CNY, Christmas pet care packages) | Easy |
 | 75 ✅ | App Store featured story pitch kit | Easy |
