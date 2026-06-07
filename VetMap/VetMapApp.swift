@@ -12,6 +12,7 @@ import FirebaseCrashlytics
 
 @main
 struct VetMapApp: App {
+    private let launchTime = Date()
     init() {
         configureFirebase()
         RatingPrompt.incrementLaunchCount()
@@ -46,7 +47,7 @@ struct VetMapApp: App {
         #endif
         let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
         let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
-        print("VetMap v\(appVersion) (\(buildNumber)) — Firebase configured")
+        print("VetMap v\(appVersion) (\(buildNumber)) — Firebase configured (\(String(format: "%.2f", Date().timeIntervalSince(launchTime)))s launch)")
         #else
         print("Firebase SDK not linked — 使用本機資料。")
         let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
