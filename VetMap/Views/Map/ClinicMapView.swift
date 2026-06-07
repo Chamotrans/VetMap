@@ -13,7 +13,12 @@ struct ClinicMapView: View {
                 UserAnnotation()
 
                 ForEach(viewModel.filteredClinics) { clinic in
-                    Marker(clinic.name, systemImage: "cross.case.fill", coordinate: clinic.mapCoordinate)
+                    Annotation(coordinate: clinic.mapCoordinate) {
+                    Image(systemName: clinic.avgRating >= 4.5 ? "star.circle.fill" : "cross.case.fill")
+                        .foregroundStyle(clinic.avgRating >= 4.5 ? .green : AppTheme.primary)
+                } label: {
+                    Text(clinic.name)
+                }
                         .tint(clinic.verified ? AppTheme.primary : AppTheme.accent)
                         .tag(clinic.id)
                 }
