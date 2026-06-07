@@ -93,6 +93,11 @@ struct ClinicListView: View {
             .padding(.bottom, 24)
 
             Text("資料來源：ePetPet HK + petcircle • 共 222 間診所")
+
+            Text("最近更新：2026年6月")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+                .frame(maxWidth: .infinity, alignment: .center)
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
                 .frame(maxWidth: .infinity, alignment: .center)

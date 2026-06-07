@@ -67,6 +67,11 @@ struct ClinicDetailView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
+                    ShareLink(item: "VetMap - " + clinic.name + " - " + clinic.address) {
+                        Image(systemName: "square.and.arrow.up")
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
                     Button("完成") {
                         dismiss()
                     }
