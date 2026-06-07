@@ -16,6 +16,7 @@ struct AddReviewView: View {
 
     @State private var selectedPhotoItems: [PhotosPickerItem] = []
     @State private var selectedPhotoData: [Data] = []
+    @State private var showConfetti = false
 
     private let treatmentTypes = [
         "疫苗接種", "一般診療", "外科手術", "牙科",
@@ -43,6 +44,7 @@ struct AddReviewView: View {
             .background(AppTheme.screenBackground)
             .navigationTitle("新增評價")
             .navigationBarTitleDisplayMode(.inline)
+        .confetti(isShowing: $showConfetti)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("取消") { dismiss() }

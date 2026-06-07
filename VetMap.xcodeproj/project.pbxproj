@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E94CA13CC0A34BFEBDC7AD17 /* ConfettiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C49DD1F75004E7282472B68 /* ConfettiView.swift */; };
 		C913330B60864C46A8A2B21E /* FavoriteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE0F1AC22424EF394E428D2 /* FavoriteButton.swift */; };
 		01A1B1C2D3E4F5A6B7C8D9E0 /* VetMapApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A1B1C2D3E4F5A6B7C8D9E0 /* VetMapApp.swift */; };
 		03A1B1C2D3E4F5A6B7C8D9E0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A1B1C2D3E4F5A6B7C8D9E0 /* ContentView.swift */; };
@@ -142,6 +143,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9C49DD1F75004E7282472B68 /* ConfettiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ConfettiView.swift; path = VetMap/Utilities/ConfettiView.swift; sourceTree = SOURCE_ROOT; };
 		8FE0F1AC22424EF394E428D2 /* FavoriteButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FavoriteButton.swift; path = VetMap/Utilities/FavoriteButton.swift; sourceTree = SOURCE_ROOT; };
 		00534FDABECEC47FFBB7F277 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EmptyStateView.swift; path = VetMap/Utilities/EmptyStateView.swift; sourceTree = SOURCE_ROOT; };
 		0067472989BAC4C8FC1C2C11 /* IAPService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = IAPService.swift; path = VetMap/Services/IAPService.swift; sourceTree = SOURCE_ROOT; };
@@ -723,6 +725,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E94CA13CC0A34BFEBDC7AD17 /* ConfettiView.swift in Sources */,
 				C913330B60864C46A8A2B21E /* FavoriteButton.swift in Sources */,
 				01A1B1C2D3E4F5A6B7C8D9E0 /* VetMapApp.swift in Sources */,
 				03A1B1C2D3E4F5A6B7C8D9E0 /* ContentView.swift in Sources */,
