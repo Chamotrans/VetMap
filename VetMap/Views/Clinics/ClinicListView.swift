@@ -31,7 +31,23 @@ struct ClinicListView: View {
                         .accessibilityLabel("新增診所")
                     }
                 }
-                .sheet(item: $clinicForDetail) { clinic in
+                
+            .overlay(alignment: .bottomTrailing) {
+                Button {
+                    isAddingClinic = true
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.title2.weight(.bold))
+                        .foregroundStyle(.white)
+                        .frame(width: 56, height: 56)
+                        .background(AppTheme.primary, in: Circle())
+                        .shadow(color: .black.opacity(0.2), radius: 8, y: 4)
+                }
+                .padding(.trailing, 20)
+                .padding(.bottom, 20)
+                .accessibilityLabel("新增診所")
+            }
+        .sheet(item: $clinicForDetail) { clinic in
                     ClinicDetailView(clinic: clinic)
                 }
                 .sheet(isPresented: $isAddingClinic) {
