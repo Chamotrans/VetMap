@@ -125,7 +125,13 @@ struct ProfileTab: View {
                 }
             }
 
-            Section("設定") {
+            Section("顯示") {
+                    Toggle(isOn: .constant(false)) {
+                        Label("高對比模式", systemImage: "circle.lefthalf.filled")
+                    }
+                }
+
+                Section("設定") {
                 NavigationLink {
                     ComingSoonView(
                         title: "設定",
