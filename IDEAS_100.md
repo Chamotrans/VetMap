@@ -3,7 +3,7 @@
 ## Map & Discovery (1-8)
 | # | Feature | Difficulty |
 |---|---------|------------|
-| 1 | Real-time location tracking with heading direction on map | Easy |
+| 1 ✅ | Real-time location tracking with heading direction on map | Easy |
 | 2 | Cluster map annotations when zoomed out (222 pins too dense) | Medium |
 | 3 | 3D map view with building highlights for clinics | Medium |
 | 4 ✅ | "Search as I move" — auto-refresh clinics when panning map | Easy |
@@ -18,8 +18,8 @@
 | 9 | Clinic comparison tool — side-by-side 2 clinics | Medium |
 | 10 ✅ | "Bookmark" / save clinic for later | Easy |
 | 11 | Wait time estimation based on community reports | Medium |
-| 12 | Clinic photo gallery with user-uploaded images | Medium |
-| 13 | Service price list — transparent pricing per clinic | Medium |
+| 12 ✅ | Clinic photo gallery with user-uploaded images | Medium |
+| 13 ✅ | Service price list — transparent pricing per clinic | Medium |
 | 14 ✅ | "Accepting new patients?" badge on clinic cards | Easy |
 | 15 | Clinic response to reviews (owner reply) | Medium |
 | 16 ✅ | Parking / MTR station nearby info | Easy |
@@ -44,12 +44,12 @@
 | # | Feature | Difficulty |
 |---|---------|------------|
 | 29 | In-app purchase of pet food/medicine with delivery | Hard |
-| 30 | Price comparison across product stores | Medium |
+| 30 ✅ | Price comparison across product stores | Medium |
 | 31 | Barcode scanner for product lookup | Medium |
 | 32 | Subscription box — monthly pet care package | Hard |
 | 33 | Coupon / promo codes from partner clinics | Easy |
-| 34 | Loyalty points system — earn points for reviews | Medium |
-| 35 | Affiliate link tracking for product referrals | Medium |
+| 34 ✅ | Loyalty points system — earn points for reviews | Medium |
+| 35 ✅ | Affiliate link tracking for product referrals | Medium |
 | 36 | "Nearby deals" — geo-fenced promotions | Medium |
 | 37 | Gift cards for clinic services | Hard |
 | 38 | Crowdfunding for expensive pet surgeries | Hard |
@@ -62,16 +62,16 @@
 | 41 ✅ | Siri Shortcuts — "Hey Siri, find a vet near me" | Medium |
 | 42 | Apple Watch companion app — nearby clinics on wrist | Hard |
 | 43 | Dynamic Island live activity for emergency navigation | Hard |
-| 44 | App Intents / Shortcuts integration | Medium |
+| 44 ✅ | App Intents / Shortcuts integration | Medium |
 | 45 | CarPlay — find clinics while driving | Hard |
 
 ## Technical & Infrastructure (46-50)
 | # | Feature | Difficulty |
 |---|---------|------------|
 | 46 | Real-time Firestore sync (currently local-only for some paths) | Hard |
-| 47 | CI/CD — add UI test target with screenshot capture | Medium |
+| 47 ✅ | CI/CD — add UI test target with screenshot capture | Medium |
 | 48 | Performance monitoring — launch time < 1s tracking | Easy |
-| 49 | Automated backup of user-generated content | Medium |
+| 49 ✅ | Automated backup of user-generated content | Medium |
 | 50 | Migration from MockRepository to Firebase for all data paths | Hard |
 
 ---
@@ -119,11 +119,11 @@
 ## Data & Content (79-88)
 | # | Feature | Difficulty |
 |---|---------|------------|
-| 79 | Taiwan clinic data from government open data API | Medium |
+| 79 ✅ | Taiwan clinic data from government open data API | Medium |
 | 80 | Singapore / Macau clinic expansion | Hard |
 | 81 | AI-generated clinic descriptions from reviews | Hard |
 | 82 ✅ | Data freshness indicator — "Last verified: June 2026" | Easy |
-| 83 | User-reported data corrections with moderation queue | Medium |
+| 83 ✅ | User-reported data corrections with moderation queue | Medium |
 | 84 ✅ | Automated phone number validation for clinics | Medium |
 | 85 | Service availability calendar (e.g., "X-ray: Mon/Wed/Fri") | Medium |
 | 86 | Seasonal allergy alerts by district (pet-relevant pollen) | Hard |
@@ -133,13 +133,13 @@
 ## Performance & Quality (89-95)
 | # | Feature | Difficulty |
 |---|---------|------------|
-| 89 | Lazy loading for distant map annotations | Medium |
+| 89 ✅ | Lazy loading for distant map annotations | Medium |
 | 90 ✅ | Image caching optimization (Kingfisher already linked) | Easy |
-| 91 | Background refresh for clinic data updates | Medium |
+| 91 ✅ | Background refresh for clinic data updates | Medium |
 | 92 ✅ | Crash-free session rate tracking (>99.9% target) | Easy |
-| 93 | Network request batching — reduce Firestore reads | Medium |
+| 93 ✅ | Network request batching — reduce Firestore reads | Medium |
 | 94 ✅ | App size audit — remove unused assets/Swift files | Easy |
-| 95 | Unit test coverage target: 80%+ (currently ~40%) | Medium |
+| 95 ✅ | Unit test coverage target: 80%+ (currently ~40%) | Medium |
 
 ## Wild Ideas (96-100)
 | # | Feature | Difficulty |
