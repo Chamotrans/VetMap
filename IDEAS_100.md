@@ -6,7 +6,7 @@
 | 1 | Real-time location tracking with heading direction on map | Easy |
 | 2 | Cluster map annotations when zoomed out (222 pins too dense) | Medium |
 | 3 | 3D map view with building highlights for clinics | Medium |
-| 4 | "Search as I move" — auto-refresh clinics when panning map | Easy |
+| 4 ✅ | "Search as I move" — auto-refresh clinics when panning map | Easy |
 | 5 | Custom map pin colors by clinic rating (⭐5=gold, <3=gray) | Easy |
 | 6 | Augmented Reality (AR) walking directions to nearest clinic | Hard |
 | 7 | Offline map tiles for areas with poor connectivity | Hard |
@@ -57,8 +57,8 @@
 ## App Experience (39-45)
 | # | Feature | Difficulty |
 |---|---------|------------|
-| 39 | Dark mode optimization audit (some hardcoded colors) | Easy |
-| 40 | Haptic feedback throughout (already partial) | Easy |
+| 39 ✅ | Dark mode optimization audit (some hardcoded colors) | Easy |
+| 40 ✅ | Haptic feedback throughout (already partial) | Easy |
 | 41 | Siri Shortcuts — "Hey Siri, find a vet near me" | Medium |
 | 42 | Apple Watch companion app — nearby clinics on wrist | Hard |
 | 43 | Dynamic Island live activity for emergency navigation | Hard |
