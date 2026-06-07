@@ -1,5 +1,8 @@
 import SwiftUI
 import UserNotifications
+#if canImport(Kingfisher)
+import Kingfisher
+#endif
 #if canImport(FirebaseCore)
 import FirebaseCore
 #endif
@@ -12,6 +15,7 @@ struct VetMapApp: App {
     init() {
         configureFirebase()
         RatingPrompt.incrementLaunchCount()
+        configureImageCache()
     }
 
     var body: some Scene {
@@ -48,6 +52,12 @@ struct VetMapApp: App {
         let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
         let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
         print("VetMap v\(appVersion) (\(buildNumber)) — cold start (local mode)")
+        #endif
+    }
+    private func configureImageCache() {
+        #if canImport(Kingfisher)
+        ImageCache.default.memoryStorage.config.totalCostLimit = 50 * 1024 * 1024 // 50MB
+        ImageCache.default.diskStorage.config.sizeLimit = 200 * 1024 * 1024 // 200MB
         #endif
     }
 }

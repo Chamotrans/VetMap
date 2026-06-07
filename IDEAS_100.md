@@ -16,11 +16,11 @@
 | # | Feature | Difficulty |
 |---|---------|------------|
 | 9 | Clinic comparison tool — side-by-side 2 clinics | Medium |
-| 10 | "Bookmark" / save clinic for later | Easy |
+| 10 ✅ | "Bookmark" / save clinic for later | Easy |
 | 11 | Wait time estimation based on community reports | Medium |
 | 12 | Clinic photo gallery with user-uploaded images | Medium |
 | 13 | Service price list — transparent pricing per clinic | Medium |
-| 14 | "Accepting new patients?" badge on clinic cards | Easy |
+| 14 ✅ | "Accepting new patients?" badge on clinic cards | Easy |
 | 15 | Clinic response to reviews (owner reply) | Medium |
 | 16 | Parking / MTR station nearby info | Easy |
 | 17 | "Languages spoken" filter (English, Mandarin, Cantonese) | Easy |
@@ -30,7 +30,7 @@
 | # | Feature | Difficulty |
 |---|---------|------------|
 | 19 | Pet owner community forum per district | Hard |
-| 20 | Share clinic/review as image card to social media | Easy |
+| 20 ✅ | Share clinic/review as image card to social media | Easy |
 | 21 | "Pet of the week" featured post | Medium |
 | 22 | Follow other pet owners, see their reviews | Medium |
 | 23 | Private messaging between users | Hard |
@@ -38,7 +38,7 @@
 | 25 | Lost & found pets section with map | Medium |
 | 26 | Emergency alert — notify nearby users of urgent pet needs | Hard |
 | 27 | Pet adoption listings integrated with shelters | Medium |
-| 28 | Review streaks / badges for active contributors | Easy |
+| 28 ✅ | Review streaks / badges for active contributors | Easy |
 
 ## Commerce & Products (29-38)
 | # | Feature | Difficulty |
@@ -82,12 +82,12 @@
 | 51 | Skeleton loading shimmer on all list views (partial now) | Easy |
 | 52 | Pull-to-refresh animation with pawprint | Easy |
 | 53 | Smooth hero transitions between list → detail | Medium |
-| 54 | Floating action button (FAB) for quick "Add Clinic" | Easy |
-| 55 | Swipe-to-delete for user's own reviews | Easy |
+| 54 ✅ | Floating action button (FAB) for quick "Add Clinic" | Easy |
+| 55 ✅ | Swipe-to-delete for user's own reviews | Easy |
 | 56 | Bottom sheet for quick clinic info (peek before detail) | Medium |
 | 57 | Parallax header image in clinic detail | Medium |
-| 58 | Animated rating stars that fill up on scroll | Easy |
-| 59 | Confetti / celebration animation after first review | Easy |
+| 58 ✅ | Animated rating stars that fill up on scroll | Easy |
+| 59 ✅ | Confetti / celebration animation after first review | Easy |
 | 60 | Custom tab bar with curved center button | Medium |
 
 ## Accessibility & Inclusion (61-68)
@@ -96,7 +96,7 @@
 | 61 | Dynamic Type support audit (all text should scale) | Medium |
 | 62 | VoiceOver rotor navigation for clinic list | Medium |
 | 63 | High contrast mode toggle in settings | Easy |
-| 64 | Reduce motion support | Easy |
+| 64 ✅ | Reduce motion support | Easy |
 | 65 | Closed captions for any video content | Easy |
 | 66 | Screen reader-optimized clinic descriptions | Easy |
 | 67 | Color-blind friendly map pin palette | Easy |
@@ -105,13 +105,13 @@
 ## Monetization & Growth (69-78)
 | # | Feature | Difficulty |
 |---|---------|------------|
-| 69 | Free trial period for Premium (7 days) | Medium |
+| 69 ✅ | Free trial period for Premium (7 days) | Medium |
 | 70 | Family sharing for Premium subscription | Easy |
 | 71 | Referral program — "Invite a friend, get 1 month free" | Medium |
 | 72 | Featured / sponsored clinic placements (non-intrusive) | Medium |
 | 73 | "Unlock with review" — write review to unlock Premium trial | Easy |
 | 74 | Seasonal promotions (CNY, Christmas pet care packages) | Easy |
-| 75 | App Store featured story pitch kit | Easy |
+| 75 ✅ | App Store featured story pitch kit | Easy |
 | 76 | Pet brand partnerships for exclusive discounts | Medium |
 | 77 | QR code stickers for clinics — scan to open in VetMap | Easy |
 | 78 | Email newsletter — monthly pet care tips + clinic highlights | Easy |
@@ -122,9 +122,9 @@
 | 79 | Taiwan clinic data from government open data API | Medium |
 | 80 | Singapore / Macau clinic expansion | Hard |
 | 81 | AI-generated clinic descriptions from reviews | Hard |
-| 82 | Data freshness indicator — "Last verified: June 2026" | Easy |
+| 82 ✅ | Data freshness indicator — "Last verified: June 2026" | Easy |
 | 83 | User-reported data corrections with moderation queue | Medium |
-| 84 | Automated phone number validation for clinics | Medium |
+| 84 ✅ | Automated phone number validation for clinics | Medium |
 | 85 | Service availability calendar (e.g., "X-ray: Mon/Wed/Fri") | Medium |
 | 86 | Seasonal allergy alerts by district (pet-relevant pollen) | Hard |
 | 87 | Pet disease outbreak tracking map | Hard |
@@ -134,7 +134,7 @@
 | # | Feature | Difficulty |
 |---|---------|------------|
 | 89 | Lazy loading for distant map annotations | Medium |
-| 90 | Image caching optimization (Kingfisher already linked) | Easy |
+| 90 ✅ | Image caching optimization (Kingfisher already linked) | Easy |
 | 91 | Background refresh for clinic data updates | Medium |
 | 92 | Crash-free session rate tracking (>99.9% target) | Easy |
 | 93 | Network request batching — reduce Firestore reads | Medium |

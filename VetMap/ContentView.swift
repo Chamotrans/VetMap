@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var networkMonitor = NetworkMonitor()
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var selectedTab: SidebarTab? = .home
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
