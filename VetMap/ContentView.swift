@@ -53,6 +53,7 @@ struct ContentView: View {
                 .tabItem {
                     Label("首頁", systemImage: "map.fill")
                 }
+                .badge(MockClinicRepository().fetchClinics().count)
                 .accessibilityLabel("首頁")
 
             ClinicsTab()
