@@ -20,6 +20,10 @@ struct ProductListView: View {
     var body: some View {
         ScrollView {
             CategoryFilterRow(selected: $viewModel.selectedCategory)
+            Text("共 \(viewModel.filteredProducts.count) 項服務")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 16)
 
             LazyVGrid(columns: columns, spacing: 12) {
                 ForEach(displayedProducts) { product in
