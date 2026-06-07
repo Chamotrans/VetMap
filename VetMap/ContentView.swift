@@ -53,22 +53,19 @@ struct ContentView: View {
                 .tabItem {
                     Label("首頁", systemImage: "map.fill")
                 }
-                .badge(MockClinicRepository().fetchClinics().count)
-                .accessibilityLabel("首頁")
+                                .accessibilityLabel("首頁")
 
             ClinicsTab()
                 .tabItem {
                     Label("診所", systemImage: "cross.case.fill")
                 }
-                .badge(MockClinicRepository().fetchClinics().count)
-                .accessibilityLabel("診所")
+                                .accessibilityLabel("診所")
 
             ProductsTab()
                 .tabItem {
                     Label("好物", systemImage: "shippingbox.fill")
                 }
-                .badge(MockProductRepository.seedProducts.count)
-                .accessibilityLabel("好物")
+                                .accessibilityLabel("好物")
 
             ProfileTab()
                 .tabItem {
