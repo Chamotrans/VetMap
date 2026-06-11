@@ -50,18 +50,22 @@ struct ClinicListRowView: View {
         }
         .padding(14)
         .appCard()
+        .pressScale()
     }
 
     private var statusIcon: some View {
-        Image(systemName: clinic.verified ? "cross.case.fill" : "cross.case")
-            .font(.headline)
-            .foregroundStyle(clinic.verified ? .white : AppTheme.primary)
-            .frame(width: 42, height: 42)
-            .background(
-                clinic.verified ? AppTheme.primary : AppTheme.primary.opacity(0.11),
-                in: RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous)
-            )
-            .accessibilityHidden(true)
+        ZStack(alignment: .topTrailing) {
+            ClinicAvatarSmall(name: clinic.name)
+
+            if clinic.verified {
+                Image(systemName: "checkmark.seal.fill")
+                    .font(.caption2)
+                    .foregroundStyle(AppTheme.primary)
+                    .background(Circle().fill(Color(.systemBackground)).frame(width: 14, height: 14))
+                    .offset(x: 4, y: -2)
+                    .accessibilityLabel("已驗證")
+            }
+        }
     }
 
     private var metrics: some View {

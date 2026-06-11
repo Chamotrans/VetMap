@@ -1,10 +1,10 @@
-import Combine
 import Foundation
 
 @MainActor
-final class InsuranceViewModel: ObservableObject {
-    @Published var plans: [Insurance] = []
-    @Published var sortOrder: SortOrder = .lowToHigh
+@Observable
+final class InsuranceViewModel {
+    var plans: [Insurance] = []
+    var sortOrder: SortOrder = .lowToHigh
 
     enum SortOrder: String, CaseIterable {
         case lowToHigh = "保費由低至高"

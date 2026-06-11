@@ -5,20 +5,21 @@ import MapKit
 import SwiftUI
 
 @MainActor
-final class MapViewModel: ObservableObject {
-    @Published private(set) var clinics: [VetClinic] = []
-    @Published var selectedClinicID: String?
-    @Published var cameraPosition: MapCameraPosition
-    @Published var filter = ClinicSearchFilter() {
+@Observable
+final class MapViewModel {
+    private(set) var clinics: [VetClinic] = []
+    var selectedClinicID: String?
+    var cameraPosition: MapCameraPosition
+    var filter = ClinicSearchFilter() {
         didSet {
             syncSelectionWithFilteredClinics(shouldFocus: true)
         }
     }
-    @Published var isLoading = false
-    @Published var networkError: String?
+    var isLoading = false
+    var networkError: String?
 
     private let repository: MockClinicRepository
-    private var cancellables: Set<AnyCancellable> = []
+    @ObservationIgnored private var cancellables: Set<AnyCancellable> = []
 
     init(repository: MockClinicRepository = MockClinicRepository()) {
         self.repository = repository

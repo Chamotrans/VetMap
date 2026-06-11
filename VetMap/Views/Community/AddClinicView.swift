@@ -5,7 +5,7 @@ struct AddClinicView: View {
 
     @Environment(\.dismiss) private var dismiss
     @FocusState private var focusedField: Field?
-    @StateObject private var viewModel = AddClinicViewModel()
+    @State private var viewModel = AddClinicViewModel()
     @State private var showSuccess = false
 
     private enum Field: Hashable {

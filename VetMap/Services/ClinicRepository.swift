@@ -34,22 +34,18 @@ struct ClinicRepository: ClinicRepositoryProtocol {
     }
 
     func addClinic(_ clinic: VetClinic) async throws {
+        // 本機為真實來源（source of truth）；Firebase 為盡力同步（best-effort）。
+        // 本機儲存失敗才是真錯誤；Firebase 同步失敗只記錄，不影響呼叫者。
+        try localRepository.addClinic(clinic)
         #if canImport(Firebase)
         if let firebaseService {
-            var firebaseFailed = false
             do {
                 try await firebaseService.addClinic(clinic)
             } catch {
-                firebaseFailed = true
+                CrashReporting.recordError(error, domain: "ClinicRepository.sync")
             }
-            try localRepository.addClinic(clinic)
-            if firebaseFailed {
-                throw FirebaseError.notConfigured
-            }
-            return
         }
         #endif
-        try localRepository.addClinic(clinic)
     }
 
     func searchClinics(query: String) async throws -> [VetClinic] {

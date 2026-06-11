@@ -37,22 +37,17 @@ struct CommunityRepository: CommunityRepositoryProtocol {
     }
 
     func addReview(_ review: Review) async throws {
+        // 本機為真實來源；Firebase 為盡力同步。
+        try localRepository.addReview(review)
         #if canImport(Firebase)
         if let firebaseService {
-            var firebaseFailed = false
             do {
                 try await firebaseService.addReview(review)
             } catch {
-                firebaseFailed = true
+                CrashReporting.recordError(error, domain: "CommunityRepository.syncReview")
             }
-            try localRepository.addReview(review)
-            if firebaseFailed {
-                throw FirebaseError.notConfigured
-            }
-            return
         }
         #endif
-        try localRepository.addReview(review)
     }
 
     // MARK: - Quotes
@@ -71,24 +66,18 @@ struct CommunityRepository: CommunityRepositoryProtocol {
     }
 
     func addQuote(_ quote: Quote) async throws {
+        // 本機為真實來源；Firebase 為盡力同步。
+        writeQuoteLocally(quote)
+        postQuoteNotification(quote)
         #if canImport(Firebase)
         if let firebaseService {
-            var firebaseFailed = false
             do {
                 try await firebaseService.addQuote(quote)
             } catch {
-                firebaseFailed = true
+                CrashReporting.recordError(error, domain: "CommunityRepository.syncQuote")
             }
-            writeQuoteLocally(quote)
-            postQuoteNotification(quote)
-            if firebaseFailed {
-                throw FirebaseError.notConfigured
-            }
-            return
         }
         #endif
-        writeQuoteLocally(quote)
-        postQuoteNotification(quote)
     }
 
     // MARK: - Private helpers

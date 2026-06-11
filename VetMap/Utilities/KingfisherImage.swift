@@ -33,7 +33,6 @@ struct KingfisherImage: View {
                 #if canImport(Kingfisher)
                 KFImage(url)
                     .placeholder { placeholderView }
-                    .onFailure { _ in errorFallback }
                     .resizable()
                     .aspectRatio(contentMode: contentMode)
                 #else

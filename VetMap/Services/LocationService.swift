@@ -2,11 +2,12 @@ import CoreLocation
 import Foundation
 
 @MainActor
-final class LocationService: NSObject, ObservableObject {
-    @Published private(set) var authorizationStatus: CLAuthorizationStatus
-    @Published private(set) var currentLocation: CLLocation?
+@Observable
+final class LocationService: NSObject {
+    private(set) var authorizationStatus: CLAuthorizationStatus
+    private(set) var currentLocation: CLLocation?
 
-    private let manager: CLLocationManager
+    @ObservationIgnored private let manager: CLLocationManager
 
     override init() {
         let manager = CLLocationManager()

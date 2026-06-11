@@ -24,6 +24,11 @@
 	<string>用於上傳獸醫診所評價相片。</string>
 	<key>NSCameraUsageDescription</key>
 	<string>用於拍攝獸醫診所評價相片。</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>RoundedMplus1c-Bold.ttf</string>
+		<string>RoundedMplus1c-Regular.ttf</string>
+	</array>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchScreen</key>

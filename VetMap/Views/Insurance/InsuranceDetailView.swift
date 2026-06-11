@@ -2,7 +2,7 @@ import SwiftUI
 
 struct InsuranceDetailView: View {
     let plan: Insurance
-    @ObservedObject var viewModel: InsuranceViewModel
+    let viewModel: InsuranceViewModel
 
     var body: some View {
         ScrollView {

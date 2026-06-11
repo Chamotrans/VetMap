@@ -147,7 +147,7 @@ final class AuthViewModel: NSObject, ObservableObject {
             }()
             let email = credential.email
 
-            KeychainService.saveAppleUserIdentifier(userID)
+            _ = KeychainService.saveAppleUserIdentifier(userID)
             user = AppUser(displayName: displayName, email: email)
             authState = .signedIn
             errorMessage = nil

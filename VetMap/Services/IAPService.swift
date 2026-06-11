@@ -8,17 +8,18 @@ import SwiftUI
 // Configure matching products in App Store Connect
 
 @MainActor
-final class IAPService: ObservableObject {
-    @Published var products: [Product] = []
-    @Published var purchasedProductIDs: Set<String> = []
-    @Published var isPremium: Bool = false
+@Observable
+final class IAPService {
+    var products: [Product] = []
+    var purchasedProductIDs: Set<String> = []
+    var isPremium: Bool = false
 
-    private let productIDs = [
+    @ObservationIgnored private let productIDs = [
         "com.vetmap.premium.monthly",
         "com.vetmap.premium.yearly"
     ]
 
-    private var updatesTask: Task<Void, Never>?
+    @ObservationIgnored private var updatesTask: Task<Void, Never>?
 
     init() {
         updatesTask = Task { [weak self] in

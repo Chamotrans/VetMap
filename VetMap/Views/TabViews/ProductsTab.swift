@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct ProductsTab: View {
-    @StateObject private var productViewModel = ProductViewModel()
-    @StateObject private var insuranceViewModel = InsuranceViewModel()
+    @State private var productViewModel = ProductViewModel()
+    @State private var insuranceViewModel = InsuranceViewModel()
     @State private var selectedSegment: Segment = .products
 
     enum Segment: String, CaseIterable {

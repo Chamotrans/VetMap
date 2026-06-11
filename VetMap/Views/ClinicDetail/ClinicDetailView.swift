@@ -5,7 +5,7 @@ import SwiftUI
 struct ClinicDetailView: View {
     let clinic: VetClinic
 
-    @StateObject private var viewModel: ClinicDetailViewModel
+    @State private var viewModel: ClinicDetailViewModel
     @State private var isAddingReview = false
     @State private var safariURL: URL?
     @Environment(\.dismiss) private var dismiss
@@ -26,7 +26,7 @@ struct ClinicDetailView: View {
 
     init(clinic: VetClinic) {
         self.clinic = clinic
-        _viewModel = StateObject(wrappedValue: ClinicDetailViewModel(clinic: clinic))
+        _viewModel = State(wrappedValue: ClinicDetailViewModel(clinic: clinic))
     }
 
     var body: some View {
@@ -96,11 +96,7 @@ struct ClinicDetailView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top, spacing: 12) {
-                Image(systemName: "cross.case.fill")
-                    .font(.title2)
-                    .foregroundStyle(.white)
-                    .frame(width: 52, height: 52)
-                    .background(AppTheme.primary, in: RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous))
+                ClinicAvatar(name: clinic.name, size: 52, font: .title2)
                     .accessibilityHidden(true)
 
                 VStack(alignment: .leading, spacing: 6) {

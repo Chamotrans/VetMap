@@ -8,13 +8,14 @@ enum ReviewSortOrder: String, CaseIterable {
 }
 
 @MainActor
-final class ReviewViewModel: ObservableObject {
-    @Published var reviews: [Review] = []
-    @Published var sortOrder: ReviewSortOrder = .newest
+@Observable
+final class ReviewViewModel {
+    var reviews: [Review] = []
+    var sortOrder: ReviewSortOrder = .newest
 
     private let clinicId: String
     private let repository: MockCommunityRepository
-    private var cancellables: Set<AnyCancellable> = []
+    @ObservationIgnored private var cancellables: Set<AnyCancellable> = []
 
     init(
         clinicId: String,

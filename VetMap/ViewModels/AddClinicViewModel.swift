@@ -1,7 +1,8 @@
 import Foundation
 
 @MainActor
-final class AddClinicViewModel: ObservableObject {
+@Observable
+final class AddClinicViewModel {
     enum LocationLookupState: Equatable {
         case idle
         case resolving
@@ -28,32 +29,32 @@ final class AddClinicViewModel: ObservableObject {
         }
     }
 
-    @Published var name = ""
-    @Published var address = "" {
+    var name = ""
+    var address = "" {
         didSet {
             if oldValue != address {
                 locationLookupState = .idle
             }
         }
     }
-    @Published var phone = ""
-    @Published var website = ""
-    @Published var selectedRegion: RegionPreset = .taipei {
+    var phone = ""
+    var website = ""
+    var selectedRegion: RegionPreset = .taipei {
         didSet {
             if selectedRegion != .custom {
                 locationLookupState = .idle
             }
         }
     }
-    @Published var latitude = ""
-    @Published var longitude = ""
-    @Published var services = "一般診療, 疫苗"
-    @Published var tags = "社群回報"
-    @Published var openingHours = "09:00-18:00"
-    @Published var priceLevel = 2
-    @Published var verified = false
-    @Published var validationMessage: String?
-    @Published private(set) var locationLookupState: LocationLookupState = .idle
+    var latitude = ""
+    var longitude = ""
+    var services = "一般診療, 疫苗"
+    var tags = "社群回報"
+    var openingHours = "09:00-18:00"
+    var priceLevel = 2
+    var verified = false
+    var validationMessage: String?
+    private(set) var locationLookupState: LocationLookupState = .idle
 
     private let geocodingService: GeocodingServicing
 

@@ -2,13 +2,14 @@ import Combine
 import Foundation
 
 @MainActor
-final class QuoteViewModel: ObservableObject {
-    @Published private(set) var quotes: [Quote] = []
-    @Published private(set) var storageError: String?
+@Observable
+final class QuoteViewModel {
+    private(set) var quotes: [Quote] = []
+    private(set) var storageError: String?
 
     private let clinicId: String
     private let repository: MockCommunityRepository
-    private var cancellables: Set<AnyCancellable> = []
+    @ObservationIgnored private var cancellables: Set<AnyCancellable> = []
 
     init(
         clinicId: String,

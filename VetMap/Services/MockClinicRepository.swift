@@ -1,7 +1,7 @@
 import Foundation
 
 // MARK: - 📍 REAL DATA — Hong Kong Veterinary Clinics
-// Source: ePetPet HK API (https://epetpet.com.hk/clinics) + manual verification.
+// Source: curated clinic data
 // 29 clinics covering all 18 Hong Kong districts. Last updated: 2026-06-06.
 
 struct MockClinicRepository {
@@ -66,10 +66,10 @@ struct MockClinicRepository {
     static let changedClinicIDUserInfoKey = "changedClinicID"
 
     // MARK: - 📍 REAL DATA — Hong Kong Veterinary Clinics
-    // Source: ePetPet HK API (https://epetpet.com.hk/clinics) + manual verification
+    // Source: curated clinic data
     // Data licensed for community use. Last updated: 2026-06-06
     // MARK: - 📍 REAL DATA — Hong Kong Veterinary Clinics
-    // Source: ePetPet HK API (https://epetpet.com.hk/clinics) + manual verification
+    // Source: curated clinic data
     static let hkClinics: [VetClinic] = [
         VetClinic(
             id: "hk-97f8d4750d8e",
@@ -179,7 +179,7 @@ struct MockClinicRepository {
             reviewCount: 1,
             priceLevel: 2,
             images: [],
-            tags: ["ePetPet ⭐5"],
+            tags: ["社群推薦"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "curated",
@@ -198,7 +198,7 @@ struct MockClinicRepository {
             reviewCount: 1,
             priceLevel: 2,
             images: [],
-            tags: ["ePetPet ⭐5"],
+            tags: ["社群推薦"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "curated",
@@ -217,7 +217,7 @@ struct MockClinicRepository {
             reviewCount: 1,
             priceLevel: 2,
             images: [],
-            tags: ["ePetPet ⭐5"],
+            tags: ["社群推薦"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "curated",
@@ -236,7 +236,7 @@ struct MockClinicRepository {
             reviewCount: 1,
             priceLevel: 2,
             images: [],
-            tags: ["ePetPet ⭐5"],
+            tags: ["社群推薦"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "curated",
@@ -255,7 +255,7 @@ struct MockClinicRepository {
             reviewCount: 1,
             priceLevel: 2,
             images: [],
-            tags: ["ePetPet ⭐4"],
+            tags: ["社群推薦"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "curated",
@@ -274,7 +274,7 @@ struct MockClinicRepository {
             reviewCount: 1,
             priceLevel: 2,
             images: [],
-            tags: ["ePetPet ⭐4"],
+            tags: ["社群推薦"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "curated",
@@ -293,7 +293,7 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["ePetPet"],
+            tags: ["社群推薦"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "curated",
@@ -312,7 +312,7 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["ePetPet"],
+            tags: ["社群推薦"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "curated",
@@ -331,7 +331,7 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["ePetPet"],
+            tags: ["社群推薦"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "curated",
@@ -350,7 +350,7 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["ePetPet"],
+            tags: ["社群推薦"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "curated",
@@ -369,7 +369,7 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["ePetPet"],
+            tags: ["社群推薦"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "curated",
@@ -388,7 +388,7 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["ePetPet"],
+            tags: ["社群推薦"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "curated",
@@ -407,7 +407,7 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["ePetPet"],
+            tags: ["社群推薦"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "curated",
@@ -426,7 +426,7 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["ePetPet"],
+            tags: ["社群推薦"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "curated",
@@ -445,7 +445,7 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["ePetPet"],
+            tags: ["社群推薦"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "curated",
@@ -464,7 +464,7 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["ePetPet"],
+            tags: ["社群推薦"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "curated",
@@ -483,7 +483,7 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["ePetPet"],
+            tags: ["社群推薦"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "curated",
@@ -502,7 +502,7 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["ePetPet"],
+            tags: ["社群推薦"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "curated",
@@ -521,7 +521,7 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["ePetPet"],
+            tags: ["社群推薦"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "curated",
@@ -540,7 +540,7 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["ePetPet"],
+            tags: ["社群推薦"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "curated",
@@ -559,7 +559,7 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["ePetPet"],
+            tags: ["社群推薦"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "curated",
@@ -578,7 +578,7 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["ePetPet"],
+            tags: ["社群推薦"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "curated",
@@ -597,7 +597,7 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["ePetPet"],
+            tags: ["社群推薦"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "curated",
@@ -616,7 +616,7 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["ePetPet"],
+            tags: ["社群推薦"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "curated",
@@ -969,10 +969,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "深水埗區"],
+            tags: ["獸醫", "深水埗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -988,10 +988,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "深水埗區"],
+            tags: ["獸醫", "深水埗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1007,10 +1007,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "深水埗區"],
+            tags: ["獸醫", "深水埗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1026,10 +1026,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "深水埗區"],
+            tags: ["獸醫", "深水埗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1045,10 +1045,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "深水埗區"],
+            tags: ["獸醫", "深水埗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1064,10 +1064,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "深水埗區"],
+            tags: ["獸醫", "深水埗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1083,10 +1083,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "深水埗區"],
+            tags: ["獸醫", "深水埗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1102,10 +1102,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "深水埗區"],
+            tags: ["獸醫", "深水埗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1121,10 +1121,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "深水埗區"],
+            tags: ["獸醫", "深水埗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1140,10 +1140,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "深水埗區"],
+            tags: ["獸醫", "深水埗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1159,10 +1159,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "深水埗區"],
+            tags: ["獸醫", "深水埗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1178,10 +1178,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "深水埗區"],
+            tags: ["獸醫", "深水埗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1197,10 +1197,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "深水埗區"],
+            tags: ["獸醫", "深水埗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1216,10 +1216,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "黃大仙區"],
+            tags: ["獸醫", "黃大仙區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1235,10 +1235,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "黃大仙區"],
+            tags: ["獸醫", "黃大仙區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1254,10 +1254,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "黃大仙區"],
+            tags: ["獸醫", "黃大仙區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1273,10 +1273,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "黃大仙區"],
+            tags: ["獸醫", "黃大仙區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1292,10 +1292,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "東區"],
+            tags: ["獸醫", "東區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1311,10 +1311,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "東區"],
+            tags: ["獸醫", "東區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1330,10 +1330,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "東區"],
+            tags: ["獸醫", "東區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1349,10 +1349,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "東區"],
+            tags: ["獸醫", "東區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1368,10 +1368,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "東區"],
+            tags: ["獸醫", "東區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1387,10 +1387,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "東區"],
+            tags: ["獸醫", "東區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1406,10 +1406,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "東區"],
+            tags: ["獸醫", "東區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1425,10 +1425,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "東區"],
+            tags: ["獸醫", "東區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1444,10 +1444,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "東區"],
+            tags: ["獸醫", "東區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1463,10 +1463,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "東區"],
+            tags: ["獸醫", "東區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1482,10 +1482,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "東區"],
+            tags: ["獸醫", "東區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1501,10 +1501,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "東區"],
+            tags: ["獸醫", "東區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1520,10 +1520,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "灣仔區"],
+            tags: ["獸醫", "灣仔區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1539,10 +1539,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "灣仔區"],
+            tags: ["獸醫", "灣仔區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1558,10 +1558,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "灣仔區"],
+            tags: ["獸醫", "灣仔區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1577,10 +1577,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "灣仔區"],
+            tags: ["獸醫", "灣仔區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1596,10 +1596,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "灣仔區"],
+            tags: ["獸醫", "灣仔區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1615,10 +1615,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "灣仔區"],
+            tags: ["獸醫", "灣仔區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1634,10 +1634,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "灣仔區"],
+            tags: ["獸醫", "灣仔區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1653,10 +1653,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "灣仔區"],
+            tags: ["獸醫", "灣仔區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1672,10 +1672,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "灣仔區"],
+            tags: ["獸醫", "灣仔區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1691,10 +1691,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "灣仔區"],
+            tags: ["獸醫", "灣仔區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1710,10 +1710,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "葵青區"],
+            tags: ["獸醫", "葵青區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1729,10 +1729,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "灣仔區"],
+            tags: ["獸醫", "灣仔區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1748,10 +1748,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "灣仔區"],
+            tags: ["獸醫", "灣仔區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1767,10 +1767,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "灣仔區"],
+            tags: ["獸醫", "灣仔區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1786,10 +1786,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "中西及南區"],
+            tags: ["獸醫", "中西及南區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1805,10 +1805,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "中西及南區"],
+            tags: ["獸醫", "中西及南區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1824,10 +1824,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "中西及南區"],
+            tags: ["獸醫", "中西及南區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1843,10 +1843,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "中西及南區"],
+            tags: ["獸醫", "中西及南區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1862,10 +1862,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "中西及南區"],
+            tags: ["獸醫", "中西及南區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1881,10 +1881,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "中西及南區"],
+            tags: ["獸醫", "中西及南區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1900,10 +1900,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "中西及南區"],
+            tags: ["獸醫", "中西及南區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1919,10 +1919,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "中西及南區"],
+            tags: ["獸醫", "中西及南區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1938,10 +1938,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "中西及南區"],
+            tags: ["獸醫", "中西及南區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1957,10 +1957,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "中西及南區"],
+            tags: ["獸醫", "中西及南區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1976,10 +1976,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "中西及南區"],
+            tags: ["獸醫", "中西及南區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -1995,10 +1995,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "九龍城區"],
+            tags: ["獸醫", "九龍城區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2014,10 +2014,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "九龍城區"],
+            tags: ["獸醫", "九龍城區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2033,10 +2033,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "九龍城區"],
+            tags: ["獸醫", "九龍城區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2052,10 +2052,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "九龍城區"],
+            tags: ["獸醫", "九龍城區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2071,10 +2071,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "九龍城區"],
+            tags: ["獸醫", "九龍城區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2090,10 +2090,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "九龍城區"],
+            tags: ["獸醫", "九龍城區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2109,10 +2109,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "九龍城區"],
+            tags: ["獸醫", "九龍城區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2128,10 +2128,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "九龍城區"],
+            tags: ["獸醫", "九龍城區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2147,10 +2147,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "九龍城區"],
+            tags: ["獸醫", "九龍城區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2166,10 +2166,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "九龍城區"],
+            tags: ["獸醫", "九龍城區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2185,10 +2185,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "九龍城區"],
+            tags: ["獸醫", "九龍城區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2204,10 +2204,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "九龍城區"],
+            tags: ["獸醫", "九龍城區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2223,10 +2223,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "九龍城區"],
+            tags: ["獸醫", "九龍城區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2242,10 +2242,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "九龍城區"],
+            tags: ["獸醫", "九龍城區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2261,10 +2261,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "觀塘區"],
+            tags: ["獸醫", "觀塘區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2280,10 +2280,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "觀塘區"],
+            tags: ["獸醫", "觀塘區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2299,10 +2299,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "油尖旺區"],
+            tags: ["獸醫", "油尖旺區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2318,10 +2318,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "油尖旺區"],
+            tags: ["獸醫", "油尖旺區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2337,10 +2337,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "油尖旺區"],
+            tags: ["獸醫", "油尖旺區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2356,10 +2356,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "油尖旺區"],
+            tags: ["獸醫", "油尖旺區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2375,10 +2375,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "油尖旺區"],
+            tags: ["獸醫", "油尖旺區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2394,10 +2394,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "油尖旺區"],
+            tags: ["獸醫", "油尖旺區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2413,10 +2413,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "油尖旺區"],
+            tags: ["獸醫", "油尖旺區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2432,10 +2432,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "油尖旺區"],
+            tags: ["獸醫", "油尖旺區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2451,10 +2451,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "油尖旺區"],
+            tags: ["獸醫", "油尖旺區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2470,10 +2470,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "油尖旺區"],
+            tags: ["獸醫", "油尖旺區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2489,10 +2489,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "油尖旺區"],
+            tags: ["獸醫", "油尖旺區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2508,10 +2508,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "油尖旺區"],
+            tags: ["獸醫", "油尖旺區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2527,10 +2527,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "油尖旺區"],
+            tags: ["獸醫", "油尖旺區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2546,10 +2546,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "油尖旺區"],
+            tags: ["獸醫", "油尖旺區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2565,10 +2565,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "油尖旺區"],
+            tags: ["獸醫", "油尖旺區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2584,10 +2584,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "屯門區"],
+            tags: ["獸醫", "屯門區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2603,10 +2603,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "屯門區"],
+            tags: ["獸醫", "屯門區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2622,10 +2622,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "屯門區"],
+            tags: ["獸醫", "屯門區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2641,10 +2641,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "屯門區"],
+            tags: ["獸醫", "屯門區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2660,10 +2660,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "屯門區"],
+            tags: ["獸醫", "屯門區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2679,10 +2679,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "屯門區"],
+            tags: ["獸醫", "屯門區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2698,10 +2698,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "葵青區"],
+            tags: ["獸醫", "葵青區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2717,10 +2717,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "葵青區"],
+            tags: ["獸醫", "葵青區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2736,10 +2736,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "沙田區"],
+            tags: ["獸醫", "沙田區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2755,10 +2755,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "沙田區"],
+            tags: ["獸醫", "沙田區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2774,10 +2774,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "沙田區"],
+            tags: ["獸醫", "沙田區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2793,10 +2793,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "沙田區"],
+            tags: ["獸醫", "沙田區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2812,10 +2812,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "沙田區"],
+            tags: ["獸醫", "沙田區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2831,10 +2831,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "沙田區"],
+            tags: ["獸醫", "沙田區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2850,10 +2850,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "沙田區"],
+            tags: ["獸醫", "沙田區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2869,10 +2869,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "沙田區"],
+            tags: ["獸醫", "沙田區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2888,10 +2888,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "沙田區"],
+            tags: ["獸醫", "沙田區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2907,10 +2907,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "元朗區"],
+            tags: ["獸醫", "元朗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2926,10 +2926,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "元朗區"],
+            tags: ["獸醫", "元朗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2945,10 +2945,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "元朗區"],
+            tags: ["獸醫", "元朗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2964,10 +2964,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "元朗區"],
+            tags: ["獸醫", "元朗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -2983,10 +2983,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "元朗區"],
+            tags: ["獸醫", "元朗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3002,10 +3002,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "元朗區"],
+            tags: ["獸醫", "元朗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3021,10 +3021,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "元朗區"],
+            tags: ["獸醫", "元朗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3040,10 +3040,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "元朗區"],
+            tags: ["獸醫", "元朗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3059,10 +3059,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "元朗區"],
+            tags: ["獸醫", "元朗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3078,10 +3078,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "元朗區"],
+            tags: ["獸醫", "元朗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3097,10 +3097,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "元朗區"],
+            tags: ["獸醫", "元朗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3116,10 +3116,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "元朗區"],
+            tags: ["獸醫", "元朗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3135,10 +3135,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "元朗區"],
+            tags: ["獸醫", "元朗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3154,10 +3154,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "元朗區"],
+            tags: ["獸醫", "元朗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3173,10 +3173,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "元朗區"],
+            tags: ["獸醫", "元朗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3192,10 +3192,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "元朗區"],
+            tags: ["獸醫", "元朗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3211,10 +3211,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "元朗區"],
+            tags: ["獸醫", "元朗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3230,10 +3230,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "元朗區"],
+            tags: ["獸醫", "元朗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3249,10 +3249,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "元朗區"],
+            tags: ["獸醫", "元朗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3268,10 +3268,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "荃灣區"],
+            tags: ["獸醫", "荃灣區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3287,10 +3287,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "荃灣區"],
+            tags: ["獸醫", "荃灣區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3306,10 +3306,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "荃灣區"],
+            tags: ["獸醫", "荃灣區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3325,10 +3325,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "荃灣區"],
+            tags: ["獸醫", "荃灣區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3344,10 +3344,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "荃灣區"],
+            tags: ["獸醫", "荃灣區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3363,10 +3363,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "荃灣區"],
+            tags: ["獸醫", "荃灣區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3382,10 +3382,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "荃灣區"],
+            tags: ["獸醫", "荃灣區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3401,10 +3401,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "荃灣區"],
+            tags: ["獸醫", "荃灣區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3420,10 +3420,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "西貢區"],
+            tags: ["獸醫", "西貢區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3439,10 +3439,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "西貢區"],
+            tags: ["獸醫", "西貢區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3458,10 +3458,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "西貢區"],
+            tags: ["獸醫", "西貢區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3477,10 +3477,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "西貢區"],
+            tags: ["獸醫", "西貢區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3496,10 +3496,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "西貢區"],
+            tags: ["獸醫", "西貢區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3515,10 +3515,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "西貢區"],
+            tags: ["獸醫", "西貢區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3534,10 +3534,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "西貢區"],
+            tags: ["獸醫", "西貢區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3553,10 +3553,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "西貢區"],
+            tags: ["獸醫", "西貢區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3572,10 +3572,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "北區"],
+            tags: ["獸醫", "北區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3591,10 +3591,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "北區"],
+            tags: ["獸醫", "北區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3610,10 +3610,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "北區"],
+            tags: ["獸醫", "北區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3629,10 +3629,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "北區"],
+            tags: ["獸醫", "北區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3648,10 +3648,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "離島區"],
+            tags: ["獸醫", "離島區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3667,10 +3667,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "離島區"],
+            tags: ["獸醫", "離島區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3686,10 +3686,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "離島區"],
+            tags: ["獸醫", "離島區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3705,10 +3705,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "大埔區"],
+            tags: ["獸醫", "大埔區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3724,10 +3724,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "大埔區"],
+            tags: ["獸醫", "大埔區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3743,10 +3743,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "大埔區"],
+            tags: ["獸醫", "大埔區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3762,10 +3762,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "大埔區"],
+            tags: ["獸醫", "大埔區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3781,10 +3781,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "大埔區"],
+            tags: ["獸醫", "大埔區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3800,10 +3800,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "大埔區"],
+            tags: ["獸醫", "大埔區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3819,10 +3819,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "大埔區"],
+            tags: ["獸醫", "大埔區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3838,10 +3838,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "港島東區"],
+            tags: ["獸醫", "港島東區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3857,10 +3857,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "中西及南區"],
+            tags: ["獸醫", "中西及南區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3876,10 +3876,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "急症", "petcircle", "中西及南區"],
+            tags: ["獸醫", "急症", "中西及南區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3895,10 +3895,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "中西及南區"],
+            tags: ["獸醫", "中西及南區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3914,10 +3914,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "中西及南區"],
+            tags: ["獸醫", "中西及南區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3933,10 +3933,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "九龍城區"],
+            tags: ["獸醫", "九龍城區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3952,10 +3952,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "九龍城區"],
+            tags: ["獸醫", "九龍城區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3971,10 +3971,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "觀塘區"],
+            tags: ["獸醫", "觀塘區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -3990,10 +3990,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "深水埗區"],
+            tags: ["獸醫", "深水埗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -4009,10 +4009,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "深水埗區"],
+            tags: ["獸醫", "深水埗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -4028,10 +4028,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "油尖旺區"],
+            tags: ["獸醫", "油尖旺區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -4047,10 +4047,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "油尖旺區"],
+            tags: ["獸醫", "油尖旺區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -4066,10 +4066,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "西貢區"],
+            tags: ["獸醫", "西貢區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -4085,10 +4085,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "離島區"],
+            tags: ["獸醫", "離島區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -4104,10 +4104,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "離島區"],
+            tags: ["獸醫", "離島區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -4123,10 +4123,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "大埔區"],
+            tags: ["獸醫", "大埔區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -4142,10 +4142,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "屯門區"],
+            tags: ["獸醫", "屯門區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -4161,10 +4161,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "沙田區"],
+            tags: ["獸醫", "沙田區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -4180,10 +4180,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "沙田區"],
+            tags: ["獸醫", "沙田區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -4199,10 +4199,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "沙田區"],
+            tags: ["獸醫", "沙田區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -4218,10 +4218,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "沙田區"],
+            tags: ["獸醫", "沙田區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -4237,10 +4237,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "外來動物", "petcircle", "沙田區"],
+            tags: ["獸醫", "外來動物", "沙田區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -4256,10 +4256,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "元朗區"],
+            tags: ["獸醫", "元朗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -4275,10 +4275,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "元朗區"],
+            tags: ["獸醫", "元朗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
         VetClinic(
@@ -4294,10 +4294,10 @@ struct MockClinicRepository {
             reviewCount: 0,
             priceLevel: 2,
             images: [],
-            tags: ["獸醫", "petcircle", "元朗區"],
+            tags: ["獸醫", "元朗區"],
             createdAt: Date(timeIntervalSince1970: 1_749_200_000),
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "petcircle-hk",
+            reportedBy: "community",
             verified: true
         ),
     ]

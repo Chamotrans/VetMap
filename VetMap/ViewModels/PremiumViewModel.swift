@@ -7,13 +7,14 @@ enum PremiumPlan: String, CaseIterable {
 }
 
 @MainActor
-final class PremiumViewModel: ObservableObject {
-    @Published var selectedPlan: PremiumPlan?
-    @Published var isPurchasing = false
-    @Published var purchaseError: String?
-    @Published var purchaseSuccess = false
+@Observable
+final class PremiumViewModel {
+    var selectedPlan: PremiumPlan?
+    var isPurchasing = false
+    var purchaseError: String?
+    var purchaseSuccess = false
 
-    private let service: IAPService
+    @ObservationIgnored private let service: IAPService
 
     var products: [Product] { service.products }
     var isPremium: Bool { service.isPremium }

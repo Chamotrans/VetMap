@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ClinicListView: View {
-    @StateObject private var viewModel = ClinicsViewModel()
+    @State private var viewModel = ClinicsViewModel()
     @State private var clinicForDetail: VetClinic?
     @State private var isAddingClinic = false
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -41,6 +41,8 @@ struct ClinicListView: View {
                         .foregroundStyle(.white)
                         .frame(width: 56, height: 56)
                         .background(AppTheme.primary, in: Circle())
+                        .clipShape(Circle())
+                        .liquidGlassCapsule(tint: AppTheme.primary)
                         .shadow(color: .black.opacity(0.2), radius: 8, y: 4)
                 }
                 .padding(.trailing, 20)
@@ -108,12 +110,7 @@ struct ClinicListView: View {
             .padding(.top, 12)
             .padding(.bottom, 24)
 
-            Text("資料來源：ePetPet HK + petcircle • 共 222 間診所")
-
             Text("最近更新：2026年6月")
-                .font(.caption2)
-                .foregroundStyle(.tertiary)
-                .frame(maxWidth: .infinity, alignment: .center)
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
                 .frame(maxWidth: .infinity, alignment: .center)
@@ -122,7 +119,7 @@ struct ClinicListView: View {
         .refreshable {
             viewModel.retryLoad()
         }
-        .background(AppTheme.screenBackground)
+        .organicBackground()
         .onAppear {
             viewModel.loadClinics()
         }

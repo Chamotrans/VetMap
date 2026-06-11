@@ -2,15 +2,16 @@ import Combine
 import Foundation
 
 @MainActor
-final class ClinicsViewModel: ObservableObject {
-    @Published var filter = ClinicSearchFilter()
-    @Published private(set) var clinics: [VetClinic] = []
-    @Published private(set) var storageError: String?
-    @Published var isLoading = false
-    @Published var networkError: String?
+@Observable
+final class ClinicsViewModel {
+    var filter = ClinicSearchFilter()
+    private(set) var clinics: [VetClinic] = []
+    private(set) var storageError: String?
+    var isLoading = false
+    var networkError: String?
 
     private let repository: MockClinicRepository
-    private var cancellables: Set<AnyCancellable> = []
+    @ObservationIgnored private var cancellables: Set<AnyCancellable> = []
 
     init(repository: MockClinicRepository = MockClinicRepository()) {
         self.repository = repository

@@ -1,10 +1,10 @@
-import Combine
 import Foundation
 
 @MainActor
-final class ProductViewModel: ObservableObject {
-    @Published var products: [PetProduct] = []
-    @Published var selectedCategory: String = "全部"
+@Observable
+final class ProductViewModel {
+    var products: [PetProduct] = []
+    var selectedCategory: String = "全部"
 
     static let categories = ["全部", "用品", "美容", "善終", "食品", "玩具", "保健", "藥品"]
 

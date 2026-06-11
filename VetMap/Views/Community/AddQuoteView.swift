@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct AddQuoteView: View {
-    @ObservedObject var viewModel: QuoteViewModel
+    let viewModel: QuoteViewModel
 
     @Environment(\.dismiss) private var dismiss
     @FocusState private var focusedField: Field?

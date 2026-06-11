@@ -3,11 +3,11 @@ import SwiftUI
 struct ReviewListView: View {
     let clinic: VetClinic
 
-    @StateObject private var viewModel: ReviewViewModel
+    @State private var viewModel: ReviewViewModel
 
     init(clinic: VetClinic) {
         self.clinic = clinic
-        _viewModel = StateObject(wrappedValue: ReviewViewModel(clinicId: clinic.id))
+        _viewModel = State(wrappedValue: ReviewViewModel(clinicId: clinic.id))
     }
 
     private var currency: String {

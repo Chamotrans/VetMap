@@ -4,13 +4,13 @@ struct QuoteListView: View {
     let clinicId: String
     let clinicName: String
 
-    @StateObject private var viewModel: QuoteViewModel
+    @State private var viewModel: QuoteViewModel
     @State private var isAddingQuote = false
 
     init(clinicId: String, clinicName: String) {
         self.clinicId = clinicId
         self.clinicName = clinicName
-        _viewModel = StateObject(wrappedValue: QuoteViewModel(clinicId: clinicId))
+        _viewModel = State(wrappedValue: QuoteViewModel(clinicId: clinicId))
     }
 
     var body: some View {

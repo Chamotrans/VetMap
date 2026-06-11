@@ -2,9 +2,10 @@ import Network
 import SwiftUI
 
 @MainActor
-final class NetworkMonitor: ObservableObject {
-    @Published var isConnected = true
-    private let monitor = NWPathMonitor()
+@Observable
+final class NetworkMonitor {
+    var isConnected = true
+    @ObservationIgnored private let monitor = NWPathMonitor()
 
     init() {
         monitor.pathUpdateHandler = { [weak self] path in

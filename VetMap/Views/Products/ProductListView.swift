@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ProductListView: View {
-    @ObservedObject var viewModel: ProductViewModel
+    @Bindable var viewModel: ProductViewModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var productForSheet: PetProduct?
     @State private var searchText = ""
@@ -33,7 +33,7 @@ struct ProductListView: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 24)
         }
-        .background(AppTheme.screenBackground)
+        .organicBackground()
         .searchable(text: $searchText, prompt: "搜尋寵物用品")
         .sheet(item: $productForSheet) { product in
             NavigationStack {
@@ -103,7 +103,7 @@ private struct ProductCardView: View {
                 Text(product.category)
                     .appChip(tint: categoryColor, isFilled: false)
 
-                Text("")
+                Text(product.formattedPrice)
                     .font(.caption.weight(.medium))
                     .foregroundStyle(AppTheme.warning)
             }

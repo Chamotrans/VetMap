@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct InsuranceListView: View {
-    @ObservedObject var viewModel: InsuranceViewModel
+    @Bindable var viewModel: InsuranceViewModel
 
     var body: some View {
         VStack(spacing: 0) {

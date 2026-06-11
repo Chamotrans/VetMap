@@ -2,15 +2,16 @@ import Combine
 import Foundation
 
 @MainActor
-final class ClinicDetailViewModel: ObservableObject {
-    @Published private(set) var reviews: [Review] = []
-    @Published private(set) var quotes: [Quote] = []
-    @Published private(set) var storageError: String?
-    @Published private(set) var isLoading = true
+@Observable
+final class ClinicDetailViewModel {
+    private(set) var reviews: [Review] = []
+    private(set) var quotes: [Quote] = []
+    private(set) var storageError: String?
+    private(set) var isLoading = true
 
     private let clinic: VetClinic
     private let repository: MockCommunityRepository
-    private var cancellables: Set<AnyCancellable> = []
+    @ObservationIgnored private var cancellables: Set<AnyCancellable> = []
 
     init(
         clinic: VetClinic,

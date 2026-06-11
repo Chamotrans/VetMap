@@ -43,7 +43,7 @@ final class FirebaseService {
     }
 
     func searchClinics(query: String) async throws -> [VetClinic] {
-        let db = try resolveFirestore()
+        _ = try resolveFirestore()
         let clinics = try await fetchClinics()
 
         guard !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {

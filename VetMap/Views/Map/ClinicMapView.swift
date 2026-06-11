@@ -2,10 +2,11 @@ import SwiftUI
 import MapKit
 
 struct ClinicMapView: View {
-    @StateObject private var viewModel = MapViewModel()
-    @StateObject private var locationService = LocationService()
+    @State private var viewModel = MapViewModel()
+    @State private var locationService = LocationService()
     @State private var clinicForDetail: VetClinic?
     @State private var shouldFocusOnUserLocation = false
+    @State private var initialLocationApplied = false
 
     var body: some View {
         ZStack {
@@ -42,8 +43,14 @@ struct ClinicMapView: View {
         }
         .onAppear {
             viewModel.loadClinics()
+            applyInitialLocation()
         }
         .onChange(of: locationService.currentLocation) { _, location in
+            if !initialLocationApplied, let location {
+                initialLocationApplied = true
+                viewModel.focusOnUserLocation(location)
+                return
+            }
             guard shouldFocusOnUserLocation else { return }
             shouldFocusOnUserLocation = false
             viewModel.focusOnUserLocation(location)
@@ -87,11 +94,7 @@ struct ClinicMapView: View {
         .padding(.leading, 14)
         .padding(.trailing, 8)
         .padding(.vertical, 8)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous)
-                .stroke(.white.opacity(0.36), lineWidth: 1)
-        )
+        .liquidGlass(cornerRadius: AppTheme.cardRadius)
     }
 
     private var resultCountText: String {
@@ -175,11 +178,7 @@ struct ClinicMapView: View {
             }
         }
         .padding(14)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous)
-                .stroke(.white.opacity(0.36), lineWidth: 1)
-        )
+        .liquidGlass(cornerRadius: AppTheme.cardRadius)
     }
 
     private func focusOnUserLocation() {
@@ -192,6 +191,21 @@ struct ClinicMapView: View {
         }
 
         locationService.refreshLocation()
+    }
+
+    /// 如用戶已授權位置，開 App 自動移到當前位置
+    private func applyInitialLocation() {
+        guard !initialLocationApplied else { return }
+
+        if locationService.canUseLocation {
+            if let location = locationService.currentLocation {
+                initialLocationApplied = true
+                viewModel.focusOnUserLocation(location)
+            } else {
+                // 有權限但未有位置快取，請求一次並等待 onChange 處理
+                locationService.refreshLocation()
+            }
+        }
     }
 }
 
