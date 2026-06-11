@@ -34,7 +34,19 @@ struct LoginView: View {
                 .padding(.vertical, 32)
             }
             .background(AppTheme.screenBackground)
-            .navigationBarHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .symbolRenderingMode(.hierarchical)
+                            .font(.title2)
+                            .foregroundStyle(.secondary)
+                    }
+                    .accessibilityLabel("關閉")
+                }
+            }
         }
     }
 

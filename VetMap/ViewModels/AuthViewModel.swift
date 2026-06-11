@@ -86,7 +86,7 @@ final class AuthViewModel: NSObject, ObservableObject {
         errorMessage = nil
         #if canImport(FirebaseAuth)
         guard isFirebaseConfigured else {
-            errorMessage = "雲端服務尚未設定，目前為本機模式。"
+            errorMessage = nil  // 靜默 — 不顯示錯誤，UI 層已 disable email 登入
             return
         }
         do {
@@ -109,7 +109,7 @@ final class AuthViewModel: NSObject, ObservableObject {
         errorMessage = nil
         #if canImport(FirebaseAuth)
         guard isFirebaseConfigured else {
-            errorMessage = "雲端服務尚未設定，目前為本機模式。"
+            errorMessage = nil  // 靜默
             return
         }
         do {

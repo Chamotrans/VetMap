@@ -116,6 +116,7 @@
 		A652A0C6596F44A2A6704ED0 /* OrganicTexture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20890FFF848345828DC4DD8A /* OrganicTexture.swift */; };
 		773984603C98419AA192DDC2 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D5481FD47C3A4ED49B05ED87 /* PrivacyInfo.xcprivacy */; };
 		F96F9CD1F1A049BC966DE388 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 06A1B1C2D3E4F5A6B7C8D9E0 /* Assets.xcassets */; };
+		B7E2A91F4C0D48E1A3F56789 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 08A1B1C2D3E4F5A6B7C8D9E0 /* GoogleService-Info.plist */; };
 		C7CA5B01A2ED43399FDBEA19 /* GlassEffects.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64C5E4FF15E491697CD8B35 /* GlassEffects.swift */; };
 		CAD0F0515DB14FBAAF2B67DB /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 6E44DE5024594496B1268FB7 /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
@@ -728,6 +729,7 @@
 				F96F9CD1F1A049BC966DE388 /* Assets.xcassets in Resources */,
 				9A07AB813AA248939013B4C6 /* RoundedMplus1c-Bold.ttf in Resources */,
 				FECE471E776541A2BB985BDD /* RoundedMplus1c-Regular.ttf in Resources */,
+				B7E2A91F4C0D48E1A3F56789 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
