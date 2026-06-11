@@ -45,7 +45,7 @@ struct OnboardingView: View {
             // Subtle pawprint pattern overlay
             GeometryReader { proxy in
                 Canvas { context, size in
-                    let pawprint = context.resolveSymbol(id: "pawprint")!
+                    guard let pawprint = context.resolveSymbol(id: "pawprint") else { return }
                     let spacing: CGFloat = 60
                     var x: CGFloat = -20
                     var y: CGFloat = -20
