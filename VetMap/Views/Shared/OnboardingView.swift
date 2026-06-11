@@ -112,9 +112,15 @@ struct OnboardingView: View {
                 }
                 .buttonStyle(.plain)
                 .padding(.horizontal, 32)
-                .padding(.bottom, 48)
+                .padding(.bottom, 12)
                 .opacity(buttonVisible ? 1 : 0)
                 .offset(y: buttonVisible ? 0 : 16)
+
+                // 服務條款 + 私隱政策
+                legalFooter
+                    .padding(.horizontal, 32)
+                    .padding(.bottom, 32)
+                    .opacity(buttonVisible ? 1 : 0)
             }
         }
         .onAppear {
@@ -177,6 +183,32 @@ struct OnboardingView: View {
             Spacer()
             Spacer()
         }
+    }
+
+    // MARK: - 服務條款 + 私隱政策
+
+    private var legalFooter: some View {
+        VStack(spacing: 2) {
+            Text("繼續即代表你同意我們的")
+                .font(.caption2)
+                .foregroundStyle(Color(red: 0.5, green: 0.46, blue: 0.40))
+
+            HStack(spacing: 4) {
+                Link("服務條款", destination: URL(string: "https://vetmap-app.web.app/tos")!)
+                    .font(.caption2.weight(.semibold))
+                    .tint(warmAmber)
+
+                Text("與")
+                    .font(.caption2)
+                    .foregroundStyle(Color(red: 0.5, green: 0.46, blue: 0.40))
+
+                Link("私隱政策", destination: URL(string: "https://vetmap-app.web.app")!)
+                    .font(.caption2.weight(.semibold))
+                    .tint(warmAmber)
+            }
+        }
+        .multilineTextAlignment(.center)
+        .accessibilityElement(children: .combine)
     }
 
     // MARK: - 自訂頁面指示器

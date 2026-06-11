@@ -13,10 +13,6 @@ struct ProductDetailView: View {
                     Text(product.name)
                         .font(.title3.weight(.bold))
 
-                    Text(formattedPrice)
-                        .font(.title2.weight(.heavy))
-                        .foregroundStyle(AppTheme.warning)
-
                     Text(product.description)
                         .font(.body)
                         .foregroundStyle(.secondary)
@@ -38,12 +34,12 @@ struct ProductDetailView: View {
             }
         }
         .background(AppTheme.screenBackground)
-        .navigationTitle("商品詳情")
+        .navigationTitle("商戶詳情")
         .navigationBarTitleDisplayMode(.inline)
         .alert("無法開啟連結", isPresented: $showNoURLAler) {
             Button("確定", role: .cancel) {}
         } message: {
-            Text("此商品目前沒有購買連結，請聯繫相關診所查詢。")
+            Text("此商戶目前沒有連結，請聯繫相關診所查詢。")
         }
     }
 
@@ -100,8 +96,8 @@ struct ProductDetailView: View {
             }
         } label: {
             HStack {
-                Image(systemName: "cart.fill")
-                Text("前往購買")
+                Image(systemName: "storefront.fill")
+                Text("前往商戶")
             }
             .font(.headline)
             .foregroundStyle(.white)
@@ -115,16 +111,6 @@ struct ProductDetailView: View {
     private var clinicName: String? {
         guard let clinicId = product.clinicId else { return nil }
         return MockClinicRepository.hkClinics.first { $0.id == clinicId }?.name
-    }
-
-    private var formattedPrice: String {
-        let symbol = product.currency == "HKD" ? "HK$" : "NT$"
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.minimumFractionDigits = 0
-        formatter.maximumFractionDigits = 0
-        let amount = formatter.string(from: product.price as NSDecimalNumber) ?? "\(product.price)"
-        return "\(symbol)\(amount)"
     }
 
     private var categoryColor: Color {

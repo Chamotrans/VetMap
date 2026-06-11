@@ -7,6 +7,7 @@ struct ClinicMapView: View {
     @State private var clinicForDetail: VetClinic?
     @State private var shouldFocusOnUserLocation = false
     @State private var initialLocationApplied = false
+    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
 
     var body: some View {
         ZStack {
@@ -43,7 +44,13 @@ struct ClinicMapView: View {
         }
         .onAppear {
             viewModel.loadClinics()
-            applyInitialLocation()
+            // 只在過咗 onboarding 先請求定位，避免權限對話框蓋住 onboarding
+            if hasSeenOnboarding {
+                applyInitialLocation()
+            }
+        }
+        .onChange(of: hasSeenOnboarding) { _, seen in
+            if seen { applyInitialLocation() }
         }
         .onChange(of: locationService.currentLocation) { _, location in
             if !initialLocationApplied, let location {
@@ -193,18 +200,17 @@ struct ClinicMapView: View {
         locationService.refreshLocation()
     }
 
-    /// 如用戶已授權位置，開 App 自動移到當前位置
+    /// 開 App 自動移到當前位置（未授權則請求權限）
     private func applyInitialLocation() {
         guard !initialLocationApplied else { return }
 
-        if locationService.canUseLocation {
-            if let location = locationService.currentLocation {
-                initialLocationApplied = true
-                viewModel.focusOnUserLocation(location)
-            } else {
-                // 有權限但未有位置快取，請求一次並等待 onChange 處理
-                locationService.refreshLocation()
-            }
+        if locationService.canUseLocation, let location = locationService.currentLocation {
+            initialLocationApplied = true
+            viewModel.focusOnUserLocation(location)
+        } else {
+            // notDetermined → 請求權限；已授權但未有快取 → 請求一次定位
+            // 授權/定位更新後由 onChange(currentLocation) 完成 focus
+            locationService.requestPermission()
         }
     }
 }

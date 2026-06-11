@@ -3,6 +3,9 @@ import AuthenticationServices
 #if canImport(FirebaseAuth)
 import FirebaseAuth
 #endif
+#if canImport(FirebaseCore)
+import FirebaseCore
+#endif
 
 enum AuthState {
     case loading
@@ -37,8 +40,20 @@ final class AuthViewModel: NSObject, ObservableObject {
     #if canImport(FirebaseAuth)
     private var authStateHandle: AuthStateDidChangeListenerHandle?
 
+    /// Firebase SDK 已連結但可能未 configure（缺 GoogleService-Info.plist）。
+    /// 未 configure 時呼叫 Auth.auth() 會 crash，必須先檢查。
+    private var isFirebaseConfigured: Bool { FirebaseApp.app() != nil }
+
     override init() {
         super.init()
+        guard isFirebaseConfigured else {
+            // Firebase 未 configure — 退回本機模式（避免 Auth.auth() crash）
+            authState = .signedOut
+            DispatchQueue.main.async { [weak self] in
+                self?.checkExistingAppleSignIn()
+            }
+            return
+        }
         authStateHandle = Auth.auth().addStateDidChangeListener { [weak self] _, user in
             Task { @MainActor in
                 if let user {
@@ -70,6 +85,10 @@ final class AuthViewModel: NSObject, ObservableObject {
     func signUp(email: String, password: String, displayName: String) async {
         errorMessage = nil
         #if canImport(FirebaseAuth)
+        guard isFirebaseConfigured else {
+            errorMessage = "雲端服務尚未設定，目前為本機模式。"
+            return
+        }
         do {
             let result = try await Auth.auth().createUser(withEmail: email, password: password)
             let changeRequest = result.user.createProfileChangeRequest()
@@ -89,6 +108,10 @@ final class AuthViewModel: NSObject, ObservableObject {
     func signIn(email: String, password: String) async {
         errorMessage = nil
         #if canImport(FirebaseAuth)
+        guard isFirebaseConfigured else {
+            errorMessage = "雲端服務尚未設定，目前為本機模式。"
+            return
+        }
         do {
             let result = try await Auth.auth().signIn(withEmail: email, password: password)
             user = AppUser(from: result.user)
@@ -104,11 +127,13 @@ final class AuthViewModel: NSObject, ObservableObject {
 
     func signOut() {
         #if canImport(FirebaseAuth)
-        do {
-            try Auth.auth().signOut()
-        } catch {
-            errorMessage = "登出失敗，請再試一次。"
-            return
+        if isFirebaseConfigured {
+            do {
+                try Auth.auth().signOut()
+            } catch {
+                errorMessage = "登出失敗，請再試一次。"
+                return
+            }
         }
         #endif
         KeychainService.deleteAppleUserIdentifier()

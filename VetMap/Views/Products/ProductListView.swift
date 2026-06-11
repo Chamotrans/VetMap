@@ -102,10 +102,6 @@ private struct ProductCardView: View {
 
                 Text(product.category)
                     .appChip(tint: categoryColor, isFilled: false)
-
-                Text(product.formattedPrice)
-                    .font(.caption.weight(.medium))
-                    .foregroundStyle(AppTheme.warning)
             }
             .padding(.horizontal, 8)
             .padding(.bottom, 8)
@@ -131,18 +127,6 @@ private struct ProductCardView: View {
             cornerRadius: AppTheme.compactRadius,
             showsCardBorder: false
         )
-    }
-}
-
-private extension PetProduct {
-    var formattedPrice: String {
-        let symbol = currency == "HKD" ? "HK$" : "NT$"
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.minimumFractionDigits = 0
-        formatter.maximumFractionDigits = 0
-        let amount = formatter.string(from: price as NSDecimalNumber) ?? "\(price)"
-        return "\(symbol)\(amount)"
     }
 }
 
