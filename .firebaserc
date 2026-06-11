@@ -1,5 +1,7 @@
 {
-  "projects": {},
+  "projects": {
+    "default": "vetmap-app"
+  },
   "targets": {
     "vetmap-app": {
       "storage": {
