@@ -22,10 +22,6 @@ struct VetMapApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .onAppear {
-                    RatingPrompt.requestReviewIfAppropriate()
-            requestNotificationPermission()
-                }
         }
     }
 
@@ -60,15 +56,5 @@ struct VetMapApp: App {
         ImageCache.default.memoryStorage.config.totalCostLimit = 50 * 1024 * 1024 // 50MB
         ImageCache.default.diskStorage.config.sizeLimit = 200 * 1024 * 1024 // 200MB
         #endif
-    }
-
-    private func requestNotificationPermission() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, _ in
-            if granted {
-                DispatchQueue.main.async {
-                    UIApplication.shared.registerForRemoteNotifications()
-                }
-            }
-        }
     }
 }

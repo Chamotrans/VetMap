@@ -87,35 +87,34 @@ struct OnboardingView: View {
 
                 Spacer()
 
-                // CTA 按鈕
-                if buttonVisible {
-                    Button {
-                        hasSeenOnboarding = true
-                    } label: {
-                        HStack(spacing: 8) {
-                            Text("開始使用")
-                                .font(.headline.weight(.bold))
-                            Image(systemName: "arrow.right")
-                                .font(.headline.weight(.bold))
-                        }
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 56)
-                        .background(
-                            LinearGradient(
-                                colors: [warmAmber, warmAmber.opacity(0.8)],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            ),
-                            in: RoundedRectangle(cornerRadius: 16, style: .continuous)
-                        )
-                        .shadow(color: warmAmber.opacity(0.35), radius: 12, y: 6)
+                // CTA 按鈕 — 永遠 render，用 opacity/offset 控制進場
+                Button {
+                    hasSeenOnboarding = true
+                } label: {
+                    HStack(spacing: 8) {
+                        Text("開始使用")
+                            .font(.headline.weight(.bold))
+                        Image(systemName: "arrow.right")
+                            .font(.headline.weight(.bold))
                     }
-                    .buttonStyle(.plain)
-                    .padding(.horizontal, 32)
-                    .padding(.bottom, 48)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 56)
+                    .background(
+                        LinearGradient(
+                            colors: [warmAmber, warmAmber.opacity(0.8)],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        ),
+                        in: RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    )
+                    .shadow(color: warmAmber.opacity(0.35), radius: 12, y: 6)
                 }
+                .buttonStyle(.plain)
+                .padding(.horizontal, 32)
+                .padding(.bottom, 48)
+                .opacity(buttonVisible ? 1 : 0)
+                .offset(y: buttonVisible ? 0 : 16)
             }
         }
         .onAppear {
@@ -156,26 +155,24 @@ struct OnboardingView: View {
             }
             .padding(.bottom, 48)
 
-            // 標題
-            if titleVisible {
-                Text(page.title)
-                    .font(.largeTitle.weight(.bold))
-                    .foregroundStyle(Color(red: 0.22, green: 0.18, blue: 0.12))
-                    .multilineTextAlignment(.center)
-                    .padding(.bottom, 16)
-                    .transition(.opacity.combined(with: .move(edge: .bottom)))
-            }
+            // 標題 — 永遠 render，用 opacity/offset 控制進場（避免 TabView 分頁內條件插入失效）
+            Text(page.title)
+                .font(.largeTitle.weight(.bold))
+                .foregroundStyle(Color(red: 0.22, green: 0.18, blue: 0.12))
+                .multilineTextAlignment(.center)
+                .padding(.bottom, 16)
+                .opacity(titleVisible ? 1 : 0)
+                .offset(y: titleVisible ? 0 : 12)
 
             // 副標題
-            if subtitleVisible {
-                Text(page.subtitle)
-                    .font(.title3)
-                    .foregroundStyle(Color(red: 0.42, green: 0.38, blue: 0.32))
-                    .multilineTextAlignment(.center)
-                    .lineSpacing(6)
-                    .padding(.horizontal, 40)
-                    .transition(.opacity.combined(with: .move(edge: .bottom)))
-            }
+            Text(page.subtitle)
+                .font(.title3)
+                .foregroundStyle(Color(red: 0.42, green: 0.38, blue: 0.32))
+                .multilineTextAlignment(.center)
+                .lineSpacing(6)
+                .padding(.horizontal, 40)
+                .opacity(subtitleVisible ? 1 : 0)
+                .offset(y: subtitleVisible ? 0 : 12)
 
             Spacer()
             Spacer()
