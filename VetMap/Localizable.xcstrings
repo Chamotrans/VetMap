@@ -1,0 +1,264 @@
+{
+  "sourceLanguage" : "zh-Hant",
+  "strings" : {
+    "首頁" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Home" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "首页" } }
+      }
+    },
+    "診所" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Clinics" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "诊所" } }
+      }
+    },
+    "好物" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Shop" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "好物" } }
+      }
+    },
+    "我的" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Me" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "我的" } }
+      }
+    },
+    "保險" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Insurance" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "保险" } }
+      }
+    },
+    "登入 / 註冊" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Sign In / Register" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "登录 / 注册" } }
+      }
+    },
+    "登入" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Sign In" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "登录" } }
+      }
+    },
+    "註冊" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Register" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "注册" } }
+      }
+    },
+    "登出" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Sign Out" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "登出" } }
+      }
+    },
+    "取消" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Cancel" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "取消" } }
+      }
+    },
+    "提交" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Submit" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "提交" } }
+      }
+    },
+    "完成" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Done" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "完成" } }
+      }
+    },
+    "確定" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "OK" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "确定" } }
+      }
+    },
+    "致電" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Call" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "致电" } }
+      }
+    },
+    "網站" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Website" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "网站" } }
+      }
+    },
+    "路線" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Directions" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "路线" } }
+      }
+    },
+    "新增" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Add" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "新增" } }
+      }
+    },
+    "新增診所" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Add Clinic" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "新增诊所" } }
+      }
+    },
+    "新增評價" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Add Review" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "新增评价" } }
+      }
+    },
+    "訂閱" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Subscribe" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "订阅" } }
+      }
+    },
+    "恢復購買" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Restore Purchases" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "恢复购买" } }
+      }
+    },
+    "開始使用" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Get Started" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "开始使用" } }
+      }
+    },
+    "歡迎來到 VetMap" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Welcome to VetMap" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "欢迎来到 VetMap" } }
+      }
+    },
+    "地圖搜尋" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Map Search" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "地图搜寻" } }
+      }
+    },
+    "社群分享" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Community Sharing" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "社群分享" } }
+      }
+    },
+    "升級 Premium" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Upgrade to Premium" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "升级 Premium" } }
+      }
+    },
+    "VetMap Premium" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "VetMap Premium" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "VetMap Premium" } }
+      }
+    },
+    "搜尋診所、地區、服務" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Search clinics, areas, services" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "搜寻诊所、地区、服务" } }
+      }
+    },
+    "已驗證" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Verified" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "已验证" } }
+      }
+    },
+    "附近獸醫" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Nearby Vets" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "附近兽医" } }
+      }
+    },
+    "診所詳情" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Clinic Details" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "诊所详情" } }
+      }
+    },
+    "社群評價" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Community Reviews" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "社群评价" } }
+      }
+    },
+    "費用報價" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Cost Quotes" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "费用报价" } }
+      }
+    },
+    "服務項目" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Services" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "服务项目" } }
+      }
+    },
+    "營業時間" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Opening Hours" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "营业时间" } }
+      }
+    },
+    "位置" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Location" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "位置" } }
+      }
+    },
+    "載入中…" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Loading…" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "载入中…" } }
+      }
+    },
+    "離線模式 — 顯示本機資料" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Offline — showing local data" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "离线模式 — 显示本机资料" } }
+      }
+    },
+    "確認登出" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Confirm Sign Out" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "确认登出" } }
+      }
+    },
+    "確定要登出嗎？" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Are you sure you want to sign out?" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "确定要登出吗？" } }
+      }
+    },
+    "電子郵件" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Email" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "电子邮件" } }
+      }
+    },
+    "密碼" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Password" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "密码" } }
+      }
+    },
+    "願世間再無誤診毛孩" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "No more misdiagnosed fur babies" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "愿世间再无误诊毛孩" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}
