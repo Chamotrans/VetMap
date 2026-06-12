@@ -11,3 +11,4 @@ screenshots/
 public/
 build/
 data_sources/
+.firebase/
