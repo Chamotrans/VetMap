@@ -19,7 +19,11 @@ struct InsuranceListView: View {
                     }
                 }
                 .padding(.horizontal, 16)
-                .padding(.vertical, 12)
+                .padding(.top, 12)
+
+                InsuranceDisclaimerView()
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 24)
             }
         }
         .background(AppTheme.screenBackground)
@@ -103,6 +107,23 @@ private struct InsuranceCardView: View {
         formatter.maximumFractionDigits = 0
         let amount = formatter.string(from: plan.monthlyPremium as NSDecimalNumber) ?? "\(plan.monthlyPremium)"
         return "\(symbol)\(amount)"
+    }
+}
+
+struct InsuranceDisclaimerView: View {
+    var body: some View {
+        HStack(alignment: .top, spacing: 8) {
+            Image(systemName: "info.circle")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .padding(.top, 1)
+            Text("資料僅供參考。VetMap 與各保險公司並無聯繫或利益關係，不構成任何保險或財務建議。投保前請直接向保險公司查詢詳情。")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .lineSpacing(2)
+        }
+        .padding(12)
+        .appCard(fill: Color(.systemBackground))
     }
 }
 

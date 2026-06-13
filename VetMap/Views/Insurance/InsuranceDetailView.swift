@@ -19,6 +19,9 @@ struct InsuranceDetailView: View {
 
                 websiteButton
 
+                InsuranceDisclaimerView()
+                    .padding(.horizontal, 16)
+
                 similarPlansSection
             }
             .padding(.bottom, 24)

@@ -47,7 +47,7 @@ SCREENSHOT_PLAN = [
     {
         "file": "Insurance.png",
         "headline": "寵物保險\n輕鬆比較",
-        "subline": "6 間保險計劃 · 保費 · 保障範圍",
+        "subline": "6 間計劃 · 純資訊參考 · 不作投保建議",
         "output": "04_insurance.png",
     },
     # 待補：Clinic Detail（真實評價/費用透明）+ Premium（會員解鎖）
