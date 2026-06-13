@@ -60,6 +60,7 @@ final class AuthViewModel: NSObject, ObservableObject {
                     self?.user = AppUser(from: user)
                     self?.authState = .signedIn
                 } else {
+                    self?.authState = .signedOut
                     self?.checkExistingAppleSignIn()
                 }
             }
@@ -206,10 +207,12 @@ final class AuthViewModel: NSObject, ObservableObject {
                     self.authState = .signedIn
                 case .revoked, .notFound:
                     KeychainService.deleteAppleUserIdentifier()
+                    self.authState = .signedOut
                 case .transferred:
                     KeychainService.deleteAppleUserIdentifier()
+                    self.authState = .signedOut
                 @unknown default:
-                    break
+                    self.authState = .signedOut
                 }
             }
         }
