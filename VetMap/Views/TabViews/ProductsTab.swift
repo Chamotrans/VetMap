@@ -21,7 +21,6 @@ struct ProductsTab: View {
                 .pickerStyle(.segmented)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
-                .background(Color(.systemBackground))
 
                 switch selectedSegment {
                 case .products:
@@ -30,6 +29,7 @@ struct ProductsTab: View {
                     InsuranceListView(viewModel: insuranceViewModel)
                 }
             }
+            .organicBackground()
             .animation(.default, value: selectedSegment)
             .navigationTitle("毛孩好物 (\(MockProductRepository.seedProducts.count))")
             .navigationBarTitleDisplayMode(.large)

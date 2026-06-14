@@ -26,7 +26,7 @@ struct InsuranceListView: View {
                     .padding(.bottom, 24)
             }
         }
-        .background(AppTheme.screenBackground)
+        .organicBackground()
     }
 
     private var sortPicker: some View {
@@ -44,7 +44,6 @@ struct InsuranceListView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
-        .background(Color(.systemBackground))
     }
 }
 

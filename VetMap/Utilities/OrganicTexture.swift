@@ -5,17 +5,27 @@ import SwiftUI
 // 靈感來自診所木質櫃枱 / 溫暖紙紋
 
 struct OrganicBackgroundModifier: ViewModifier {
-    var baseColor: Color = Color(red: 0.98, green: 0.96, blue: 0.93) // warm cream
+    @Environment(\.colorScheme) private var colorScheme
     var grainOpacity: Double = 0.035
     var grainCount: Int = 600
 
+    private var baseColor: Color {
+        colorScheme == .dark
+            ? Color(red: 0.10, green: 0.09, blue: 0.08)
+            : Color(red: 0.98, green: 0.96, blue: 0.93)
+    }
+
+    private var grainColor: Color {
+        colorScheme == .dark ? .white : .brown
+    }
+
     func body(content: Content) -> some View {
-        content
+        let grain = grainColor
+        return content
             .background(
                 ZStack {
                     baseColor
 
-                    // 微粒紋理
                     Canvas { context, size in
                         var rng = SeededRandom(seed: 42)
                         for _ in 0..<grainCount {
@@ -27,7 +37,7 @@ struct OrganicBackgroundModifier: ViewModifier {
                             let rect = CGRect(x: x, y: y, width: radius * 2, height: radius * 2)
                             context.fill(
                                 Path(ellipseIn: rect),
-                                with: .color(.brown.opacity(alpha))
+                                with: .color(grain.opacity(alpha))
                             )
                         }
                     }
@@ -71,11 +81,8 @@ struct PressScaleModifier: ViewModifier {
 
 extension View {
     /// 有機微粒紋理背景
-    func organicBackground(
-        color: Color = Color(red: 0.98, green: 0.96, blue: 0.93),
-        grainOpacity: Double = 0.035
-    ) -> some View {
-        modifier(OrganicBackgroundModifier(baseColor: color, grainOpacity: grainOpacity))
+    func organicBackground(grainOpacity: Double = 0.035) -> some View {
+        modifier(OrganicBackgroundModifier(grainOpacity: grainOpacity))
     }
 
     /// 卡片點按縮放效果
