@@ -142,13 +142,7 @@ struct ProfileTab: View {
                     Label("帳號設定", systemImage: "gearshape.fill")
                 }
 
-                NavigationLink {
-                    ComingSoonView(
-                        title: "設定",
-                        subtitle: "隱私政策即將推出。",
-                        systemImage: "gearshape.fill"
-                    )
-                } label: {
+                Link(destination: URL(string: "https://vetmap-app.web.app")!) {
                     Label("隱私政策", systemImage: "hand.raised.fill")
                 }
 
