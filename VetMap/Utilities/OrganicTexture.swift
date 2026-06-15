@@ -71,9 +71,11 @@ struct PressScaleModifier: ViewModifier {
         content
             .scaleEffect(isPressed ? 0.97 : 1.0)
             .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isPressed)
-            .onLongPressGesture(minimumDuration: 0, maximumDistance: 50) { } onPressingChanged: { pressing in
-                isPressed = pressing
-            }
+            .simultaneousGesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { _ in isPressed = true }
+                    .onEnded { _ in isPressed = false }
+            )
     }
 }
 
