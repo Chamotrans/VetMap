@@ -23,6 +23,11 @@ struct ProfileTab: View {
         .fullScreenCover(isPresented: $showLogin) {
             LoginView(authViewModel: authViewModel)
         }
+        .onChange(of: authViewModel.authState) { _, newState in
+            if newState == .signedIn {
+                showLogin = false
+            }
+        }
     }
 
     // MARK: - Loading
