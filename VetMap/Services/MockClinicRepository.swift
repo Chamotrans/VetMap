@@ -17,7 +17,15 @@ struct MockClinicRepository {
     }
 
     func fetchClinics() -> [VetClinic] {
-        Self.hkClinics + Self.twClinics + Self.petcircleVets + fetchLocalClinics()
+        let all = Self.hkClinics + Self.twClinics + Self.petcircleVets + fetchLocalClinics()
+        var seen = Set<String>()
+        var seenNames = Set<String>()
+        return all.filter { clinic in
+            let nameKey = clinic.name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+            guard seen.insert(clinic.id).inserted,
+                  seenNames.insert(nameKey).inserted else { return false }
+            return true
+        }
     }
 
     func addClinic(_ clinic: VetClinic) throws {
@@ -993,27 +1001,7 @@ struct MockClinicRepository {
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "community",
             verified: true
-        ),
-        VetClinic(
-            id: "hk-pc-b78ae1719df7c689",
-            name: "博施寵物綜合醫療中心",
-            address: "香港九龍荔枝角福華街571號曉悅6至8號地舖",
-            coordinate: ClinicCoordinate(latitude: 22.3335, longitude: 114.158),
-            phone: "2368 6888",
-            website: nil,
-            openingHours: ["今日": "請致電查詢"],
-            services: ["一般診療"],
-            avgRating: 0.0,
-            reviewCount: 0,
-            priceLevel: 2,
-            images: [],
-            tags: ["獸醫", "深水埗區"],
-            createdAt: Date(timeIntervalSince1970: 1_749_200_000),
-            updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "community",
-            verified: true
-        ),
-        VetClinic(
+        ),        VetClinic(
             id: "hk-pc-61842a8f9e4ab0d7",
             name: "星宇動物醫院",
             address: "香港九龍深水埗大南街84號地下",
@@ -1202,27 +1190,7 @@ struct MockClinicRepository {
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "community",
             verified: true
-        ),
-        VetClinic(
-            id: "hk-pc-dd2225fdff9886e4",
-            name: "角落獸醫診所",
-            address: "香港九龍黃大仙環鳳街68號鑽嶺低層地下01號",
-            coordinate: ClinicCoordinate(latitude: 22.3419, longitude: 114.1957),
-            phone: "2662 6232",
-            website: nil,
-            openingHours: ["今日": "請致電查詢"],
-            services: ["一般診療"],
-            avgRating: 0.0,
-            reviewCount: 0,
-            priceLevel: 2,
-            images: [],
-            tags: ["獸醫", "黃大仙區"],
-            createdAt: Date(timeIntervalSince1970: 1_749_200_000),
-            updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "community",
-            verified: true
-        ),
-        VetClinic(
+        ),        VetClinic(
             id: "hk-pc-524c40c8e4ce3a86",
             name: "新蒲崗動物醫院",
             address: "香港九龍新蒲崗景福街77號地下",
@@ -1658,27 +1626,7 @@ struct MockClinicRepository {
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "community",
             verified: true
-        ),
-        VetClinic(
-            id: "hk-pc-25d16bef514a63bc",
-            name: "動物王國醫院",
-            address: "香港銅鑼灣威菲路道25至27號佳景大廈2-3號舖",
-            coordinate: ClinicCoordinate(latitude: 22.276, longitude: 114.1753),
-            phone: "2578 0321",
-            website: nil,
-            openingHours: ["今日": "請致電查詢"],
-            services: ["一般診療"],
-            avgRating: 0.0,
-            reviewCount: 0,
-            priceLevel: 2,
-            images: [],
-            tags: ["獸醫", "灣仔區"],
-            createdAt: Date(timeIntervalSince1970: 1_749_200_000),
-            updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "community",
-            verified: true
-        ),
-        VetClinic(
+        ),        VetClinic(
             id: "hk-pc-f4be69fc9fa05914",
             name: "銅鑼灣動物醫院",
             address: "香港銅鑼灣威非路道29號地下",
@@ -1772,27 +1720,7 @@ struct MockClinicRepository {
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "community",
             verified: true
-        ),
-        VetClinic(
-            id: "hk-pc-7dd10016a40b68e8",
-            name: "雅各動物醫院",
-            address: "香港西營盤第二街68-80號地下",
-            coordinate: ClinicCoordinate(latitude: 22.2667, longitude: 114.15),
-            phone: "2540 0228",
-            website: nil,
-            openingHours: ["今日": "請致電查詢"],
-            services: ["一般診療"],
-            avgRating: 0.0,
-            reviewCount: 0,
-            priceLevel: 2,
-            images: [],
-            tags: ["獸醫", "中西及南區"],
-            createdAt: Date(timeIntervalSince1970: 1_749_200_000),
-            updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "community",
-            verified: true
-        ),
-        VetClinic(
+        ),        VetClinic(
             id: "hk-pc-0d47fcc53875f9f1",
             name: "半山獸醫中心",
             address: "香港半山卑利街80至82號地下A舖",
@@ -1848,27 +1776,7 @@ struct MockClinicRepository {
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "community",
             verified: true
-        ),
-        VetClinic(
-            id: "hk-pc-fada333af922f4f7",
-            name: "鴨脷洲獸醫診所",
-            address: "香港鴨脷洲利枝道138號1號舖",
-            coordinate: ClinicCoordinate(latitude: 22.2667, longitude: 114.15),
-            phone: "2548 7100",
-            website: nil,
-            openingHours: ["今日": "請致電查詢"],
-            services: ["一般診療"],
-            avgRating: 0.0,
-            reviewCount: 0,
-            priceLevel: 2,
-            images: [],
-            tags: ["獸醫", "中西及南區"],
-            createdAt: Date(timeIntervalSince1970: 1_749_200_000),
-            updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "community",
-            verified: true
-        ),
-        VetClinic(
+        ),        VetClinic(
             id: "hk-pc-346f1ff214eb9a33",
             name: "蘇利宜動物醫院",
             address: "香港中環半山堅道130號堅威大廈地下B舖",
@@ -2133,27 +2041,7 @@ struct MockClinicRepository {
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "community",
             verified: true
-        ),
-        VetClinic(
-            id: "hk-pc-b2a5baa72497dccc",
-            name: "動物醫療中心24小時中心",
-            address: "香港九龍何文田自由道11號 VAU Residence 地下1號舖",
-            coordinate: ClinicCoordinate(latitude: 22.3236, longitude: 114.1895),
-            phone: "2713 4155",
-            website: nil,
-            openingHours: ["今日": "請致電查詢"],
-            services: ["一般診療"],
-            avgRating: 0.0,
-            reviewCount: 0,
-            priceLevel: 2,
-            images: [],
-            tags: ["獸醫", "九龍城區"],
-            createdAt: Date(timeIntervalSince1970: 1_749_200_000),
-            updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "community",
-            verified: true
-        ),
-        VetClinic(
+        ),        VetClinic(
             id: "hk-pc-5091970d5b288864",
             name: "朋友仔珍禽異獸動物醫院",
             address: "香港九龍九龍城聯合道38號地舖",
@@ -2171,27 +2059,7 @@ struct MockClinicRepository {
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "community",
             verified: true
-        ),
-        VetClinic(
-            id: "hk-pc-79ff372aeea755f6",
-            name: "土瓜灣動物醫院",
-            address: "香港九龍土瓜灣北帝街139號地舖",
-            coordinate: ClinicCoordinate(latitude: 22.3236, longitude: 114.1895),
-            phone: "2711 9909",
-            website: nil,
-            openingHours: ["今日": "請致電查詢"],
-            services: ["一般診療"],
-            avgRating: 0.0,
-            reviewCount: 0,
-            priceLevel: 2,
-            images: [],
-            tags: ["獸醫", "九龍城區"],
-            createdAt: Date(timeIntervalSince1970: 1_749_200_000),
-            updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "community",
-            verified: true
-        ),
-        VetClinic(
+        ),        VetClinic(
             id: "hk-pc-99566f5a4d7f5b58",
             name: "九龍動物醫院",
             address: "香港九龍城聯合道2號裕聯大廈地下",
@@ -2266,27 +2134,7 @@ struct MockClinicRepository {
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "community",
             verified: true
-        ),
-        VetClinic(
-            id: "hk-pc-7bb662c58ba64a1d",
-            name: "寵誠動物醫院",
-            address: "香港九龍牛頭角馬蹄徑1號寶恩大廈7號地舖",
-            coordinate: ClinicCoordinate(latitude: 22.3134, longitude: 114.2241),
-            phone: "3611 2877",
-            website: nil,
-            openingHours: ["今日": "請致電查詢"],
-            services: ["一般診療"],
-            avgRating: 0.0,
-            reviewCount: 0,
-            priceLevel: 2,
-            images: [],
-            tags: ["獸醫", "觀塘區"],
-            createdAt: Date(timeIntervalSince1970: 1_749_200_000),
-            updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "community",
-            verified: true
-        ),
-        VetClinic(
+        ),        VetClinic(
             id: "hk-pc-f643e736721bca81",
             name: "天心寵物醫院",
             address: "香港九龍尖沙咀山林道34號地舖",
@@ -2304,27 +2152,7 @@ struct MockClinicRepository {
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "community",
             verified: true
-        ),
-        VetClinic(
-            id: "hk-pc-a14c7f33b0fdb257",
-            name: "麥花臣動物診所",
-            address: "香港九龍旺角洗衣街26號興業樓地下",
-            coordinate: ClinicCoordinate(latitude: 22.3186, longitude: 114.1693),
-            phone: "2781 2386",
-            website: nil,
-            openingHours: ["今日": "請致電查詢"],
-            services: ["一般診療"],
-            avgRating: 0.0,
-            reviewCount: 0,
-            priceLevel: 2,
-            images: [],
-            tags: ["獸醫", "油尖旺區"],
-            createdAt: Date(timeIntervalSince1970: 1_749_200_000),
-            updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "community",
-            verified: true
-        ),
-        VetClinic(
+        ),        VetClinic(
             id: "hk-pc-d933de9f7df56fe1",
             name: "非牟利獸醫診所",
             address: "香港九龍太子基隆街22-24號及77號",
@@ -2570,27 +2398,7 @@ struct MockClinicRepository {
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "community",
             verified: true
-        ),
-        VetClinic(
-            id: "hk-pc-4079e76657d873f6",
-            name: "柏德獸醫診所",
-            address: "香港新界屯門青山公路385號嘉喜利大廈12號舖",
-            coordinate: ClinicCoordinate(latitude: 22.391, longitude: 113.9766),
-            phone: "2404 2511",
-            website: nil,
-            openingHours: ["今日": "請致電查詢"],
-            services: ["一般診療"],
-            avgRating: 0.0,
-            reviewCount: 0,
-            priceLevel: 2,
-            images: [],
-            tags: ["獸醫", "屯門區"],
-            createdAt: Date(timeIntervalSince1970: 1_749_200_000),
-            updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "community",
-            verified: true
-        ),
-        VetClinic(
+        ),        VetClinic(
             id: "hk-pc-13155a79836004bc",
             name: "置樂動物診所",
             address: "香港新界屯門彩華花園地下13號舖",
@@ -2798,27 +2606,7 @@ struct MockClinicRepository {
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "community",
             verified: true
-        ),
-        VetClinic(
-            id: "hk-pc-625a4e0de21edc92",
-            name: "綠十字寵物診所",
-            address: "香港新界沙田正街希爾頓中心地下5B號舖",
-            coordinate: ClinicCoordinate(latitude: 22.38, longitude: 114.19),
-            phone: "2601 1219",
-            website: nil,
-            openingHours: ["今日": "請致電查詢"],
-            services: ["一般診療"],
-            avgRating: 0.0,
-            reviewCount: 0,
-            priceLevel: 2,
-            images: [],
-            tags: ["獸醫", "沙田區"],
-            createdAt: Date(timeIntervalSince1970: 1_749_200_000),
-            updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "community",
-            verified: true
-        ),
-        VetClinic(
+        ),        VetClinic(
             id: "hk-pc-2ddfa6983dfd3424",
             name: "沙田圍獸醫診所",
             address: "香港新界沙田沙角街8-12號花園城1期地下3A-3F舖",
@@ -2855,27 +2643,7 @@ struct MockClinicRepository {
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "community",
             verified: true
-        ),
-        VetClinic(
-            id: "hk-pc-5679c0f1f185a1a2",
-            name: "哈比動物牙科及口腔手術中心",
-            address: "香港新界沙田大圍積信街69-75地下號A地舖",
-            coordinate: ClinicCoordinate(latitude: 22.38, longitude: 114.19),
-            phone: "2850 6088",
-            website: nil,
-            openingHours: ["今日": "請致電查詢"],
-            services: ["一般診療"],
-            avgRating: 0.0,
-            reviewCount: 0,
-            priceLevel: 2,
-            images: [],
-            tags: ["獸醫", "沙田區"],
-            createdAt: Date(timeIntervalSince1970: 1_749_200_000),
-            updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "community",
-            verified: true
-        ),
-        VetClinic(
+        ),        VetClinic(
             id: "hk-pc-2e4199e4d34756ab",
             name: "西沙路動物醫院",
             address: "香港新界馬鞍山鞍駿街1號馬鞍山中心地下A13號",
@@ -3349,27 +3117,7 @@ struct MockClinicRepository {
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "community",
             verified: true
-        ),
-        VetClinic(
-            id: "hk-pc-d1331e3ef7023624",
-            name: "Dr. George's 獸醫醫療中心",
-            address: "香港新界荃灣享和街36號好景樓地舖",
-            coordinate: ClinicCoordinate(latitude: 22.3707, longitude: 114.1135),
-            phone: "2498 8102",
-            website: nil,
-            openingHours: ["今日": "請致電查詢"],
-            services: ["一般診療"],
-            avgRating: 0.0,
-            reviewCount: 0,
-            priceLevel: 2,
-            images: [],
-            tags: ["獸醫", "荃灣區"],
-            createdAt: Date(timeIntervalSince1970: 1_749_200_000),
-            updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "community",
-            verified: true
-        ),
-        VetClinic(
+        ),        VetClinic(
             id: "hk-pc-e98e5ea0e1a28832",
             name: "珀麗灣獸醫診所",
             address: "香港新界馬灣大街北322號地下",
@@ -3463,27 +3211,7 @@ struct MockClinicRepository {
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "community",
             verified: true
-        ),
-        VetClinic(
-            id: "hk-pc-fa69d94b88316887",
-            name: "將軍澳獸醫中心",
-            address: "香港新界將軍澳唐俊街21號地下翩匯坊G18號舖",
-            coordinate: ClinicCoordinate(latitude: 22.3156, longitude: 114.2667),
-            phone: "2915 7007",
-            website: nil,
-            openingHours: ["今日": "請致電查詢"],
-            services: ["一般診療"],
-            avgRating: 0.0,
-            reviewCount: 0,
-            priceLevel: 2,
-            images: [],
-            tags: ["獸醫", "西貢區"],
-            createdAt: Date(timeIntervalSince1970: 1_749_200_000),
-            updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "community",
-            verified: true
-        ),
-        VetClinic(
+        ),        VetClinic(
             id: "hk-pc-006e6133f5b029c4",
             name: "坑口獸醫診所",
             address: "香港新界將軍澳坑口村第三座地下A室",
@@ -3577,27 +3305,7 @@ struct MockClinicRepository {
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "community",
             verified: true
-        ),
-        VetClinic(
-            id: "hk-pc-175a4a67913c99ef",
-            name: "粉嶺動物醫院",
-            address: "香港新界粉嶺聯和墟聯安街31號4號地舖",
-            coordinate: ClinicCoordinate(latitude: 22.5, longitude: 114.1375),
-            phone: "2677 6046",
-            website: nil,
-            openingHours: ["今日": "請致電查詢"],
-            services: ["一般診療"],
-            avgRating: 0.0,
-            reviewCount: 0,
-            priceLevel: 2,
-            images: [],
-            tags: ["獸醫", "北區"],
-            createdAt: Date(timeIntervalSince1970: 1_749_200_000),
-            updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "community",
-            verified: true
-        ),
-        VetClinic(
+        ),        VetClinic(
             id: "hk-pc-0b601c91533c33d7",
             name: "和泰動物診所",
             address: "香港新界粉嶺聯和墟聯昌街23號地下",
@@ -3672,27 +3380,7 @@ struct MockClinicRepository {
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "community",
             verified: true
-        ),
-        VetClinic(
-            id: "hk-pc-25b64dcce4ec1d31",
-            name: "貝澳獸醫診所",
-            address: "香港大嶼山貝澳新圍村地下",
-            coordinate: ClinicCoordinate(latitude: 22.2833, longitude: 113.9333),
-            phone: "3486 6100",
-            website: nil,
-            openingHours: ["今日": "請致電查詢"],
-            services: ["一般診療"],
-            avgRating: 0.0,
-            reviewCount: 0,
-            priceLevel: 2,
-            images: [],
-            tags: ["獸醫", "離島區"],
-            createdAt: Date(timeIntervalSince1970: 1_749_200_000),
-            updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "community",
-            verified: true
-        ),
-        VetClinic(
+        ),        VetClinic(
             id: "hk-pc-a192cd126f76d1da",
             name: "仁德動物醫院",
             address: "香港新界大埔瑞安街6號地下",
@@ -3748,27 +3436,7 @@ struct MockClinicRepository {
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "community",
             verified: true
-        ),
-        VetClinic(
-            id: "hk-pc-e158fdbd0eff8d86",
-            name: "動物獸醫中心-安健獸醫中心",
-            address: "香港新界大埔仁興街54號地下",
-            coordinate: ClinicCoordinate(latitude: 22.45, longitude: 114.1667),
-            phone: "2656 1168",
-            website: nil,
-            openingHours: ["今日": "請致電查詢"],
-            services: ["一般診療"],
-            avgRating: 0.0,
-            reviewCount: 0,
-            priceLevel: 2,
-            images: [],
-            tags: ["獸醫", "大埔區"],
-            createdAt: Date(timeIntervalSince1970: 1_749_200_000),
-            updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "community",
-            verified: true
-        ),
-        VetClinic(
+        ),        VetClinic(
             id: "hk-pc-31b6e6db64b51b90",
             name: "寶湖動物醫院有限公司",
             address: "香港新界大埔同茂坊7號地下",
@@ -3938,27 +3606,7 @@ struct MockClinicRepository {
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "community",
             verified: true
-        ),
-        VetClinic(
-            id: "hk-pc-a568bff01c1a6f68",
-            name: "紅磡獸醫診所",
-            address: "香港九龍紅磡黃埔新邨德民街27號永華樓地下F舖",
-            coordinate: ClinicCoordinate(latitude: 22.3236, longitude: 114.1895),
-            phone: "2330 7566",
-            website: nil,
-            openingHours: ["今日": "請致電查詢"],
-            services: ["一般診療"],
-            avgRating: 0.0,
-            reviewCount: 0,
-            priceLevel: 2,
-            images: [],
-            tags: ["獸醫", "九龍城區"],
-            createdAt: Date(timeIntervalSince1970: 1_749_200_000),
-            updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "community",
-            verified: true
-        ),
-        VetClinic(
+        ),        VetClinic(
             id: "hk-pc-0c5f50f7172c35e2",
             name: "珍寵東九龍動物醫院",
             address: "香港九龍觀塘通明街9號觀塘戲院大廈A座地下",
@@ -3995,27 +3643,7 @@ struct MockClinicRepository {
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "community",
             verified: true
-        ),
-        VetClinic(
-            id: "hk-pc-343647153c8bb679",
-            name: "雅發動物診所",
-            address: "香港九龍深水埗欽州街65-71號榮業商業大廈4樓4室",
-            coordinate: ClinicCoordinate(latitude: 22.3335, longitude: 114.158),
-            phone: "2708 8973",
-            website: nil,
-            openingHours: ["今日": "請致電查詢"],
-            services: ["一般診療"],
-            avgRating: 0.0,
-            reviewCount: 0,
-            priceLevel: 2,
-            images: [],
-            tags: ["獸醫", "深水埗區"],
-            createdAt: Date(timeIntervalSince1970: 1_749_200_000),
-            updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "community",
-            verified: true
-        ),
-        VetClinic(
+        ),        VetClinic(
             id: "hk-pc-a6b1ce7c4fbe7d75",
             name: "動物醫療學會醫院",
             address: "香港九龍尖沙咀加連威老道100號港晶中心12-17號地舖",
@@ -4033,27 +3661,7 @@ struct MockClinicRepository {
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "community",
             verified: true
-        ),
-        VetClinic(
-            id: "hk-pc-bedf3dc90e726cf1",
-            name: "恩典動物醫院",
-            address: "香港九龍旺角勝利道28-32及36號新勝大樓C舖地下",
-            coordinate: ClinicCoordinate(latitude: 22.3186, longitude: 114.1693),
-            phone: "2711 8482",
-            website: nil,
-            openingHours: ["今日": "請致電查詢"],
-            services: ["一般診療"],
-            avgRating: 0.0,
-            reviewCount: 0,
-            priceLevel: 2,
-            images: [],
-            tags: ["獸醫", "油尖旺區"],
-            createdAt: Date(timeIntervalSince1970: 1_749_200_000),
-            updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "community",
-            verified: true
-        ),
-        VetClinic(
+        ),        VetClinic(
             id: "hk-pc-f20eb4973848fec1",
             name: "The Vet House",
             address: "香港新界西貢西貢道46號地下",
@@ -4109,27 +3717,7 @@ struct MockClinicRepository {
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "community",
             verified: true
-        ),
-        VetClinic(
-            id: "hk-pc-9f6efe233fefdc6e",
-            name: "普益獸醫診所",
-            address: "香港新界大埔普益街19號地下",
-            coordinate: ClinicCoordinate(latitude: 22.45, longitude: 114.1667),
-            phone: "6168 6175",
-            website: nil,
-            openingHours: ["今日": "請致電查詢"],
-            services: ["一般診療"],
-            avgRating: 0.0,
-            reviewCount: 0,
-            priceLevel: 2,
-            images: [],
-            tags: ["獸醫", "大埔區"],
-            createdAt: Date(timeIntervalSince1970: 1_749_200_000),
-            updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "community",
-            verified: true
-        ),
-        VetClinic(
+        ),        VetClinic(
             id: "hk-pc-62474846313edeb5",
             name: "新墟動物醫療中心",
             address: "香港新界屯門新墟德政圍18號海盛大廈10-11號舖3號舖",
@@ -4166,27 +3754,7 @@ struct MockClinicRepository {
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "community",
             verified: true
-        ),
-        VetClinic(
-            id: "hk-pc-28d5d4ad410fe3f6",
-            name: "聯邦動物診所",
-            address: "香港新界大圍積存街46號葵偉樓地下",
-            coordinate: ClinicCoordinate(latitude: 22.38, longitude: 114.19),
-            phone: "2687 0226",
-            website: nil,
-            openingHours: ["今日": "請致電查詢"],
-            services: ["一般診療"],
-            avgRating: 0.0,
-            reviewCount: 0,
-            priceLevel: 2,
-            images: [],
-            tags: ["獸醫", "沙田區"],
-            createdAt: Date(timeIntervalSince1970: 1_749_200_000),
-            updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "community",
-            verified: true
-        ),
-        VetClinic(
+        ),        VetClinic(
             id: "hk-pc-877a55592bad63ab",
             name: "火炭動物醫療中心",
             address: "香港新界火炭坳背灣街27-31號協興工業中心地下B1A號",
@@ -4242,27 +3810,7 @@ struct MockClinicRepository {
             updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
             reportedBy: "community",
             verified: true
-        ),
-        VetClinic(
-            id: "hk-pc-b4aa22f357046230",
-            name: "優活動物診所",
-            address: "香港新界元朗鳳攸東街9號好順意大廈地下36及37號舖",
-            coordinate: ClinicCoordinate(latitude: 22.443, longitude: 114.0275),
-            phone: "2965 9518",
-            website: nil,
-            openingHours: ["今日": "請致電查詢"],
-            services: ["一般診療"],
-            avgRating: 0.0,
-            reviewCount: 0,
-            priceLevel: 2,
-            images: [],
-            tags: ["獸醫", "元朗區"],
-            createdAt: Date(timeIntervalSince1970: 1_749_200_000),
-            updatedAt: Date(timeIntervalSince1970: 1_749_200_000),
-            reportedBy: "community",
-            verified: true
-        ),
-        VetClinic(
+        ),        VetClinic(
             id: "hk-pc-de78f3ff4e710650",
             name: "東方獸醫診所(元朗)",
             address: "香港新界元朗鳳攸北街昌威大廈26-27號地舖",
