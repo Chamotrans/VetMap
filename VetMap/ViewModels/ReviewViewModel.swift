@@ -39,7 +39,7 @@ final class ReviewViewModel {
             !moderation.removedReviewIDs.contains($0.id)
                 && !moderation.blockedUserIDs.contains($0.userId)
         }
-        switch sortOrder {
+        return switch sortOrder {
         case .newest:
             visible.sorted { $0.createdAt > $1.createdAt }
         case .highestRating:
