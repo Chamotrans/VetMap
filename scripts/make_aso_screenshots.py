@@ -28,29 +28,28 @@ OUTPUT_DIR.mkdir(exist_ok=True)
 SCREENSHOT_PLAN = [
     {
         "file": "MAP.png",
-        "headline": "222間獸醫診所\n一圖盡覽",
-        "subline": "台灣 + 香港 · 即時距離 · 一鍵導航",
+        "headline": "香港獸醫診所\n一圖瀏覽",
+        "subline": "地圖位置 · 即時距離 · 一鍵導航",
         "output": "01_hook_map.png",
     },
     {
         "file": "Clinic List.png",
         "headline": "搜尋篩選\n精準搵診所",
-        "subline": "地區 · 價格 · 已驗證 · 關鍵字搜尋",
+        "subline": "地區 · 價格 · 關鍵字搜尋",
         "output": "02_search_filter.png",
     },
     {
-        "file": "Shops.png",
-        "headline": "寵物商戶\n一站瀏覽",
-        "subline": "美容 · 善終 · 用品 · 香港台灣覆蓋",
-        "output": "03_products.png",
+        "file": "Clinic Detail.png",
+        "headline": "診所資料\n清楚查看",
+        "subline": "地址 · 電話 · 路線 · 社群資料",
+        "output": "03_clinic_detail.png",
     },
     {
-        "file": "Insurance.png",
-        "headline": "寵物保險\n輕鬆比較",
-        "subline": "6 間計劃 · 純資訊參考 · 不作投保建議",
-        "output": "04_insurance.png",
+        "file": "Community.png",
+        "headline": "評價報價\n社群分享",
+        "subline": "先審後公開 · 舉報 · 封鎖作者",
+        "output": "04_community.png",
     },
-    # 待補：Clinic Detail（真實評價/費用透明）+ Premium（會員解鎖）
 ]
 
 # Design constants — Warm Clinical brand

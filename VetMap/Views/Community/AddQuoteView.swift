@@ -9,7 +9,6 @@ struct AddQuoteView: View {
     @State private var estimatedCost = ""
     @State private var actualCost = ""
     @State private var isNotTreated = false
-    @State private var currency = "TWD"
     @State private var notes = ""
     @State private var validationMessage: String?
     @State private var isSubmitting = false
@@ -42,7 +41,7 @@ struct AddQuoteView: View {
 
                 Section {
                     HStack {
-                        Text(currency == "TWD" ? "NT$" : "HK$")
+                        Text("HK$")
                             .foregroundStyle(.secondary)
                         TextField("預估費用", text: $estimatedCost)
                             .keyboardType(.decimalPad)
@@ -53,7 +52,7 @@ struct AddQuoteView: View {
 
                     if !isNotTreated {
                         HStack {
-                            Text(currency == "TWD" ? "NT$" : "HK$")
+                            Text("HK$")
                                 .foregroundStyle(.secondary)
                             TextField("實際費用（選填）", text: $actualCost)
                                 .keyboardType(.decimalPad)
@@ -61,11 +60,9 @@ struct AddQuoteView: View {
                         }
                     }
 
-                    Picker("幣別", selection: $currency) {
-                        Text("TWD (新台幣)").tag("TWD")
-                        Text("HKD (港幣)").tag("HKD")
+                    LabeledContent("幣別") {
+                        Text("HKD (港幣)")
                     }
-                    .pickerStyle(.segmented)
                 } header: {
                     Label("費用明細", systemImage: "dollarsign.circle.fill")
                 }
@@ -166,7 +163,7 @@ struct AddQuoteView: View {
             treatmentType: treatmentType,
             estimatedCost: estCost,
             actualCost: actCost,
-            currency: currency,
+            currency: "HKD",
             notes: notes
         )
         isSubmitting = false

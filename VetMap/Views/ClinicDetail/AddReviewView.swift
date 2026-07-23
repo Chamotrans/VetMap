@@ -126,7 +126,7 @@ struct AddReviewView: View {
             }
 
             HStack {
-                Text(clinicName.localizedCaseInsensitiveContains("香港") ? "HKD" : "TWD")
+                Text("HKD")
                     .foregroundStyle(.secondary)
                     .font(.subheadline)
 

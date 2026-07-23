@@ -42,37 +42,6 @@ async function listApproved(collection) {
   return rows.flatMap((row) => row.document ? [row.document] : []);
 }
 
-async function listOfficialCatalog() {
-  const url = new URL(
-    `https://firestore.googleapis.com/v1/projects/${projectId}`
-      + "/databases/(default)/documents:runQuery",
-  );
-  url.searchParams.set("key", apiKeyMatch[1]);
-
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {"content-type": "application/json"},
-    body: JSON.stringify({
-      structuredQuery: {
-        from: [{collectionId: "officialClinicCatalog"}],
-        where: {
-          fieldFilter: {
-            field: {fieldPath: "datasetId"},
-            op: "EQUAL",
-            value: {stringValue: "tw-moa-vet-license-078"},
-          },
-        },
-        limit: 100,
-      },
-    }),
-  });
-  if (!response.ok) {
-    throw new Error(`officialClinicCatalog: HTTP ${response.status}`);
-  }
-  const rows = await response.json();
-  return rows.flatMap((row) => row.document ? [row.document] : []);
-}
-
 async function assertAnonymousQueryDenied(collection) {
   const url = new URL(
     `https://firestore.googleapis.com/v1/projects/${projectId}`
@@ -102,6 +71,7 @@ function decodeValue(value) {
   if ("doubleValue" in value) return value.doubleValue;
   if ("booleanValue" in value) return value.booleanValue;
   if ("timestampValue" in value) return value.timestampValue;
+  if ("geoPointValue" in value) return value.geoPointValue;
   if ("arrayValue" in value) {
     return (value.arrayValue.values ?? []).map(decodeValue);
   }
@@ -128,70 +98,50 @@ function decodeDocument(document) {
   };
 }
 
-for (const collection of ["clinics", "reviews", "quotes"]) {
-  const documents = await listApproved(collection);
+const expectedApprovedCounts = {
+  clinics: 11,
+  reviews: 1,
+  quotes: 1,
+};
 
+for (const [collection, expectedCount] of Object.entries(expectedApprovedCounts)) {
+  const rawDocuments = await listApproved(collection);
+  const documents = rawDocuments.map(decodeDocument);
+  if (documents.length !== expectedCount) {
+    throw new Error(
+      `${collection}: expected ${expectedCount} approved documents, `
+      + `found ${documents.length}`,
+    );
+  }
   console.log(JSON.stringify({
     collection,
     publiclyVisibleApproved: documents.length,
-    documentIDs: documents
-      .map((document) => document.name.split("/").at(-1))
-      .slice(0, 20),
+    documentIDs: documents.map(({id}) => id).slice(0, 20),
   }));
-}
-
-const officialDocuments = (await listOfficialCatalog()).map(decodeDocument);
-const manifest = officialDocuments.find(
-  (document) => document.id === "tw-moa-078-manifest",
-);
-if (
-  !manifest
-  || manifest.status !== "published"
-  || manifest.licenseName !== "OGDL-Taiwan-1.0"
-  || manifest.recordCount <= 0
-  || manifest.shardCount <= 0
-) {
-  throw new Error("Official clinic catalog manifest is missing or invalid");
-}
-
-const officialRecords = [];
-for (let index = 0; index < manifest.shardCount; index += 1) {
-  const id =
-    `tw-moa-078-${manifest.snapshotDate}-shard-`
-    + String(index).padStart(3, "0");
-  const shard = officialDocuments.find((document) => document.id === id);
-  if (
-    !shard
-    || shard.kind !== "shard"
-    || shard.index !== index
-    || shard.snapshotDate !== manifest.snapshotDate
-  ) {
-    throw new Error(`Official clinic catalog shard ${index} is invalid`);
+  if (collection === "clinics") {
+    const hkClinics = documents.filter(
+      (document) =>
+        document.catalogRegion === "HK"
+        && document.migrationId === "hk-v1-normalize-2026-07-24",
+    );
+    if (
+      hkClinics.length !== 10
+      || hkClinics.some(
+        (document) =>
+          document.verified !== false
+          || document.avgRating !== 0
+          || document.reviewCount !== 0
+          || document.priceLevel !== 0
+          || (document.services ?? []).length !== 0
+          || (document.tags ?? []).length !== 0,
+      )
+    ) {
+      throw new Error("The public Hong Kong clinic catalog is not normalized.");
+    }
   }
-  officialRecords.push(...shard.records);
 }
 
-const officialRecordIDs = new Set(officialRecords.map((record) => record.id));
-if (
-  officialRecords.length !== manifest.recordCount
-  || officialRecordIDs.size !== manifest.recordCount
-  || officialRecords.some((record) => "responsibleVeterinarian" in record)
-) {
-  throw new Error("Official clinic catalog record validation failed");
-}
-
-console.log(JSON.stringify({
-  collection: "officialClinicCatalog",
-  publiclyReadable: true,
-  datasetId: manifest.datasetId,
-  snapshotDate: manifest.snapshotDate,
-  licenseName: manifest.licenseName,
-  recordCount: officialRecords.length,
-  shardCount: manifest.shardCount,
-  responsibleVeterinarianExcluded: true,
-}));
-
-for (const collection of ["products", "insurances"]) {
+for (const collection of ["officialClinicCatalog", "products", "insurances"]) {
   await assertAnonymousQueryDenied(collection);
   console.log(JSON.stringify({
     collection,

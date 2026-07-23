@@ -11,22 +11,10 @@ final class AddClinicViewModel {
     }
 
     enum RegionPreset: String, CaseIterable, Identifiable {
-        case taipei = "台北"
         case hongKong = "香港"
         case custom = "手動"
 
         var id: String { rawValue }
-
-        var coordinate: ClinicCoordinate? {
-            switch self {
-            case .taipei:
-                return ClinicCoordinate(latitude: 25.0381, longitude: 121.5432)
-            case .hongKong:
-                return ClinicCoordinate(latitude: 22.3186, longitude: 114.1693)
-            case .custom:
-                return nil
-            }
-        }
     }
 
     var name = ""
@@ -39,7 +27,7 @@ final class AddClinicViewModel {
     }
     var phone = ""
     var website = ""
-    var selectedRegion: RegionPreset = .taipei {
+    var selectedRegion: RegionPreset = .hongKong {
         didSet {
             if selectedRegion != .custom {
                 locationLookupState = .idle
@@ -88,6 +76,10 @@ final class AddClinicViewModel {
         do {
             let result = try await geocodingService.resolve(address: query)
             guard query == trimmed(address) else { return }
+            guard Self.isHongKongCoordinate(result.coordinate) else {
+                locationLookupState = .failed("只接受香港境內的診所位置。")
+                return
+            }
 
             selectedRegion = .custom
             latitude = Self.formatCoordinate(result.coordinate.latitude)
@@ -108,7 +100,7 @@ final class AddClinicViewModel {
         }
 
         guard let coordinate = resolvedCoordinate else {
-            validationMessage = "請輸入有效的經緯度。"
+            validationMessage = "請查找地址或輸入有效的香港經緯度。"
             return nil
         }
 
@@ -133,6 +125,7 @@ final class AddClinicViewModel {
 
         validationMessage = nil
         let now = Date()
+        let normalizedOpeningHours = trimmed(openingHours)
 
         return VetClinic(
             id: "clinic-\(UUID().uuidString)",
@@ -141,7 +134,9 @@ final class AddClinicViewModel {
             coordinate: coordinate,
             phone: trimmed(phone),
             website: websiteURL,
-            openingHours: ["今日": trimmed(openingHours)],
+            openingHours: normalizedOpeningHours.isEmpty
+                ? [:]
+                : ["今日": normalizedOpeningHours],
             services: splitList(services),
             avgRating: 0,
             reviewCount: 0,
@@ -173,20 +168,23 @@ final class AddClinicViewModel {
     }
 
     private var resolvedCoordinate: ClinicCoordinate? {
-        if let presetCoordinate = selectedRegion.coordinate {
-            return presetCoordinate
-        }
-
+        guard selectedRegion == .custom else { return nil }
         guard
             let latitude = Double(trimmed(latitude)),
             let longitude = Double(trimmed(longitude)),
-            (-90...90).contains(latitude),
-            (-180...180).contains(longitude)
+            Self.isHongKongCoordinate(
+                ClinicCoordinate(latitude: latitude, longitude: longitude)
+            )
         else {
             return nil
         }
 
         return ClinicCoordinate(latitude: latitude, longitude: longitude)
+    }
+
+    private static func isHongKongCoordinate(_ coordinate: ClinicCoordinate) -> Bool {
+        (22.1...22.6).contains(coordinate.latitude)
+            && (113.8...114.5).contains(coordinate.longitude)
     }
 
     private static func formatCoordinate(_ value: Double) -> String {

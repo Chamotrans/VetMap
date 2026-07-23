@@ -2,7 +2,7 @@
 
 > **For Hermes:** Use Codex CLI and direct tooling to implement this plan task-by-task.
 
-**Goal:** Build a community-driven vet clinic map iOS app for pet owners in Taiwan/HK.
+**Goal:** Build a community-driven vet clinic map iOS app for pet owners in Hong Kong.
 
 **Core Philosophy:** "願世間再無誤診毛孩" — help pet owners find reliable vets with real reviews, pricing transparency, and community support.
 

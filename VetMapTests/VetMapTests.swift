@@ -92,10 +92,8 @@ final class VetMapModelTests: XCTestCase {
 
     @MainActor
     func testAddClinicViewModelKeepsBlankWebsiteNil() {
-        let viewModel = AddClinicViewModel()
+        let viewModel = makeValidAddClinicViewModel()
         viewModel.name = "空網站診所"
-        viewModel.address = "台北市測試路1號"
-        viewModel.phone = "+886-2-0000-0000"
         viewModel.website = "   "
 
         let clinic = viewModel.makeClinic()
@@ -104,35 +102,33 @@ final class VetMapModelTests: XCTestCase {
     }
 
     @MainActor
-    func testAddClinicViewModelUsesSelectedRegionCoordinate() {
+    func testAddClinicViewModelRequiresResolvedHongKongCoordinate() {
         let viewModel = makeValidAddClinicViewModel()
         viewModel.selectedRegion = .hongKong
 
-        let clinic = viewModel.makeClinic()
-
-        XCTAssertEqual(clinic?.coordinate.latitude, 22.3186)
-        XCTAssertEqual(clinic?.coordinate.longitude, 114.1693)
+        XCTAssertFalse(viewModel.canSubmit)
+        XCTAssertNil(viewModel.makeClinic())
     }
 
     @MainActor
     func testAddClinicViewModelUsesCustomCoordinate() {
         let viewModel = makeValidAddClinicViewModel()
         viewModel.selectedRegion = .custom
-        viewModel.latitude = "24.1477"
-        viewModel.longitude = "120.6736"
+        viewModel.latitude = "22.281123"
+        viewModel.longitude = "114.158988"
 
         let clinic = viewModel.makeClinic()
 
-        XCTAssertEqual(clinic?.coordinate.latitude, 24.1477)
-        XCTAssertEqual(clinic?.coordinate.longitude, 120.6736)
+        XCTAssertEqual(clinic?.coordinate.latitude, 22.281123)
+        XCTAssertEqual(clinic?.coordinate.longitude, 114.158988)
     }
 
     @MainActor
     func testAddClinicViewModelRejectsInvalidCustomCoordinate() {
         let viewModel = makeValidAddClinicViewModel()
         viewModel.selectedRegion = .custom
-        viewModel.latitude = "200"
-        viewModel.longitude = "120.6736"
+        viewModel.latitude = "25.0381"
+        viewModel.longitude = "121.5432"
 
         XCTAssertFalse(viewModel.canSubmit)
         XCTAssertNil(viewModel.makeClinic())
@@ -152,20 +148,25 @@ final class VetMapModelTests: XCTestCase {
         XCTAssertEqual(Set(results.map(\.id)), ["by-name", "by-service", "by-tag"])
     }
 
-    func testClinicSearchFilterCombinesRegionVerificationAndPrice() {
+    func testClinicSearchFilterCombinesRegionAndPriceWithoutVerificationClaims() {
         var filter = ClinicSearchFilter()
         filter.region = .hongKong
-        filter.verifiedOnly = true
         filter.price = .premium
 
         let match = makeClinic(id: "hk-premium", address: "香港中環德輔道中1號", priceLevel: 3, verified: true)
         let unverified = makeClinic(id: "hk-unverified", address: "香港灣仔軒尼詩道2號", priceLevel: 3, verified: false)
         let cheap = makeClinic(id: "hk-cheap", address: "香港旺角彌敦道3號", priceLevel: 2, verified: true)
-        let taipei = makeClinic(id: "tw-premium", address: "台北市信義區市府路4號", priceLevel: 3, verified: true)
+        let overseas = makeClinic(
+            id: "overseas-premium",
+            address: "海外地址",
+            coordinate: ClinicCoordinate(latitude: 25.0381, longitude: 121.5432),
+            priceLevel: 3,
+            verified: true
+        )
 
-        let results = filter.results(from: [taipei, cheap, unverified, match])
+        let results = filter.results(from: [overseas, cheap, unverified, match])
 
-        XCTAssertEqual(results.map(\.id), ["hk-premium"])
+        XCTAssertEqual(Set(results.map(\.id)), ["hk-premium", "hk-unverified"])
     }
 
     @MainActor
@@ -269,7 +270,7 @@ final class VetMapModelTests: XCTestCase {
                 )
             )
         )
-        viewModel.selectedRegion = .taipei
+        viewModel.selectedRegion = .hongKong
 
         await viewModel.lookupAddressLocation()
 
@@ -294,7 +295,28 @@ final class VetMapModelTests: XCTestCase {
 
         XCTAssertEqual(viewModel.selectedRegion, .hongKong)
         XCTAssertEqual(viewModel.locationLookupState, .failed("找不到位置，請手動輸入經緯度。"))
-        XCTAssertTrue(viewModel.canSubmit)
+        XCTAssertFalse(viewModel.canSubmit)
+    }
+
+    @MainActor
+    func testAddClinicViewModelRejectsGeocodedLocationOutsideHongKong() async {
+        let viewModel = makeValidAddClinicViewModel(
+            geocodingService: StubGeocodingService(
+                result: .success(
+                    GeocodingResult(
+                        coordinate: ClinicCoordinate(latitude: 25.0381, longitude: 121.5432),
+                        displayName: "海外診所"
+                    )
+                )
+            )
+        )
+        viewModel.selectedRegion = .hongKong
+
+        await viewModel.lookupAddressLocation()
+
+        XCTAssertEqual(viewModel.selectedRegion, .hongKong)
+        XCTAssertEqual(viewModel.locationLookupState, .failed("只接受香港境內的診所位置。"))
+        XCTAssertFalse(viewModel.canSubmit)
     }
 
     @MainActor
@@ -615,7 +637,7 @@ final class VetMapModelTests: XCTestCase {
         filter.price = .budget
         let results = filter.results(from: MockClinicRepository.hkClinics)
 
-        XCTAssertTrue(results.allSatisfy { $0.priceLevel <= 1 })
+        XCTAssertTrue(results.allSatisfy { $0.priceLevel == 1 })
     }
 
     func testClinicSearchFilterPriceModerate() {
@@ -625,8 +647,9 @@ final class VetMapModelTests: XCTestCase {
         let budget = makeClinic(id: "budget", priceLevel: 1)
         let moderate = makeClinic(id: "moderate", priceLevel: 2)
         let premium = makeClinic(id: "premium", priceLevel: 3)
+        let unknown = makeClinic(id: "unknown", priceLevel: 0)
 
-        let results = filter.results(from: [premium, moderate, budget])
+        let results = filter.results(from: [premium, moderate, budget, unknown])
 
         XCTAssertFalse(results.isEmpty)
         XCTAssertTrue(results.allSatisfy { $0.priceLevel <= 2 })
@@ -662,17 +685,16 @@ final class VetMapModelTests: XCTestCase {
 
     @MainActor
     func testReviewDraftTrimsWhitespace() {
-        let viewModel = AddClinicViewModel()
+        let viewModel = makeValidAddClinicViewModel()
         viewModel.name = "  測試診所  "
         viewModel.address = "  測試地址  "
-        viewModel.phone = "  +886-2-0000-0000  "
-        viewModel.selectedRegion = .taipei
+        viewModel.phone = "  +852 2123 4567  "
 
         let clinic = viewModel.makeClinic()
 
         XCTAssertEqual(clinic?.name, "測試診所")
         XCTAssertEqual(clinic?.address, "測試地址")
-        XCTAssertEqual(clinic?.phone, "+886-2-0000-0000")
+        XCTAssertEqual(clinic?.phone, "+852 2123 4567")
     }
 
     // MARK: - AuthViewModel Tests (Local-Only Mode)
@@ -1285,7 +1307,11 @@ final class VetMapModelTests: XCTestCase {
     private func makeClinic(
         id: String = "clinic-1",
         name: String = "安心動物醫院",
-        address: String = "台北市大安區仁愛路一段1號",
+        address: String = "香港旺角彌敦道1號",
+        coordinate: ClinicCoordinate = ClinicCoordinate(
+            latitude: 22.3193,
+            longitude: 114.1694
+        ),
         services: [String] = ["一般診療", "牙科"],
         tags: [String] = ["貓友善", "急診"],
         priceLevel: Int = 2,
@@ -1295,8 +1321,8 @@ final class VetMapModelTests: XCTestCase {
             id: id,
             name: name,
             address: address,
-            coordinate: ClinicCoordinate(latitude: 25.0330, longitude: 121.5654),
-            phone: "+886-2-1234-5678",
+            coordinate: coordinate,
+            phone: "+852 2123 4567",
             website: URL(string: "https://example.com/clinic"),
             openingHours: ["Mon": "09:00-18:00"],
             services: services,
@@ -1318,8 +1344,11 @@ final class VetMapModelTests: XCTestCase {
     ) -> AddClinicViewModel {
         let viewModel = AddClinicViewModel(geocodingService: geocodingService)
         viewModel.name = "座標測試診所"
-        viewModel.address = "測試地址"
-        viewModel.phone = "+886-2-0000-0000"
+        viewModel.address = "香港測試地址"
+        viewModel.phone = "+852 2123 4567"
+        viewModel.selectedRegion = .custom
+        viewModel.latitude = "22.3193"
+        viewModel.longitude = "114.1694"
         return viewModel
     }
 

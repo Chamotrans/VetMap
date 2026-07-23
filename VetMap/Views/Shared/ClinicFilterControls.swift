@@ -46,7 +46,6 @@ struct ClinicFilterControls: View {
             HStack(spacing: 8) {
                 regionMenu
                 priceMenu
-                verifiedButton
 
                 if filter.isActive {
                     clearButton
@@ -93,21 +92,6 @@ struct ClinicFilterControls: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel("價格篩選")
-    }
-
-    private var verifiedButton: some View {
-        Button {
-            filter.verifiedOnly.toggle()
-        } label: {
-            ClinicFilterChip(
-                title: "已審核",
-                systemImage: filter.verifiedOnly ? "checkmark.seal.fill" : "checkmark.seal",
-                isActive: filter.verifiedOnly,
-                showsChevron: false
-            )
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(filter.verifiedOnly ? "取消只看已審核" : "只看已審核")
     }
 
     private var clearButton: some View {

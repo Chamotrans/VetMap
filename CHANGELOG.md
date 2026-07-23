@@ -1,14 +1,12 @@
 # VetMap Changelog
 
-## v1.0 (June 2026)
+## v1.0 (Release candidate, July 2026)
 
 ### Data
-- 222 real Hong Kong + Taiwan veterinary clinics (ePetPet API + petcircle curation)
-- 127 pet services (用品 51 + 美容 51 + 善終 25)
-- 15 real user reviews across 12 clinics
-- 16 real treatment cost quotes (HK HKD + TW TWD)
-- 6 real pet insurance plans (3 Taiwan + 3 Hong Kong)
-- All data real — zero dummy
+- 10 reviewed Hong Kong clinic directory entries with factual contact/location fields
+- 1 clearly labelled VetMap-owned demo clinic, review and quote for App Review
+- Legacy unapproved content remains hidden
+- New treatment quote submissions use HKD
 
 ### Features
 - MapKit clinic discovery with annotations
@@ -16,11 +14,8 @@
 - Clinic detail (call, website, route, reviews, quotes, services, hours)
 - Add clinic form with address geocoding
 - Review system (star rating, PhotosPicker, helpful voting)
-- Quote sharing (13 treatment types, TWD/HKD)
-- Pet products browse (3 categories: 用品, 美容, 善終) with search
-- Insurance comparison (6 plans, premium sorting)
+- Quote sharing (13 treatment types, HKD)
 - Email/Password + Apple Sign In authentication
-- StoreKit 2 Premium (monthly/yearly)
 - Widget extension (nearby clinics on home screen)
 - iPad split view layout
 - 3-language localization (zh-Hant-HK, zh-Hans, en)

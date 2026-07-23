@@ -153,6 +153,7 @@ extension VetClinic {
     }
 
     var priceLevelText: String {
-        String(repeating: "$", count: max(1, min(priceLevel, 3)))
+        guard priceLevel > 0 else { return "" }
+        return String(repeating: "$", count: min(priceLevel, 3))
     }
 }

@@ -28,6 +28,26 @@ struct ClinicDetailView: View {
         )
     }
 
+    private var visibleAverageRating: Double {
+        guard !viewModel.visibleReviews.isEmpty else { return 0 }
+        let total = viewModel.visibleReviews.reduce(0) { $0 + $1.rating }
+        return Double(total) / Double(viewModel.visibleReviews.count)
+    }
+
+    private var visibleOpeningHours: [(day: String, hours: String)] {
+        clinic.openingHours.compactMap { day, hours in
+            let trimmedDay = day.trimmingCharacters(in: .whitespacesAndNewlines)
+            let trimmedHours = hours.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !trimmedDay.isEmpty, !trimmedHours.isEmpty else { return nil }
+            return (trimmedDay, trimmedHours)
+        }
+        .sorted { $0.day < $1.day }
+    }
+
+    private var trimmedPhone: String {
+        clinic.phone.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     init(clinic: VetClinic) {
         self.clinic = clinic
         _viewModel = State(wrappedValue: ClinicDetailViewModel(clinic: clinic))
@@ -53,10 +73,14 @@ struct ClinicDetailView: View {
                             .transition(.opacity)
                         quoteSection
                             .transition(.opacity)
-                        servicesSection
-                            .transition(.opacity)
-                        openingHoursSection
-                            .transition(.opacity)
+                        if !clinic.services.isEmpty {
+                            servicesSection
+                                .transition(.opacity)
+                        }
+                        if !visibleOpeningHours.isEmpty {
+                            openingHoursSection
+                                .transition(.opacity)
+                        }
                         mapSection
                             .transition(.opacity)
                     }
@@ -134,17 +158,9 @@ struct ClinicDetailView: View {
                     .accessibilityHidden(true)
 
                 VStack(alignment: .leading, spacing: 6) {
-                    HStack(spacing: 6) {
-                        Text(clinic.name)
-                            .font(.title2.weight(.bold))
-                            .fixedSize(horizontal: false, vertical: true)
-
-                        if clinic.verified {
-                            Image(systemName: "checkmark.seal.fill")
-                                .foregroundStyle(AppTheme.primary)
-                                .accessibilityLabel("已審核刊登")
-                        }
-                    }
+                    Text(clinic.name)
+                        .font(.title2.weight(.bold))
+                        .fixedSize(horizontal: false, vertical: true)
 
                     Text(clinic.address)
                         .font(.subheadline)
@@ -154,15 +170,19 @@ struct ClinicDetailView: View {
             }
 
             HStack(spacing: 10) {
-                Label(String(format: "%.1f", clinic.avgRating), systemImage: "star.fill")
-                    .foregroundStyle(AppTheme.warning)
+                if !viewModel.visibleReviews.isEmpty {
+                    Label(String(format: "%.1f", visibleAverageRating), systemImage: "star.fill")
+                        .foregroundStyle(AppTheme.warning)
+                }
 
-                Text("\(clinic.reviewCount) 則評價")
+                Text("\(viewModel.visibleReviews.count) 則評價")
                     .foregroundStyle(.secondary)
 
-                Text(clinic.priceLevelText)
-                    .foregroundStyle(AppTheme.primary)
-                    .accessibilityLabel("價格等級 \(clinic.priceLevel)")
+                if clinic.priceLevel > 0 {
+                    Text(clinic.priceLevelText)
+                        .foregroundStyle(AppTheme.primary)
+                        .accessibilityLabel("價格等級 \(clinic.priceLevel)")
+                }
             }
             .font(.subheadline.weight(.semibold))
         }
@@ -173,18 +193,19 @@ struct ClinicDetailView: View {
 
     private var contactActions: some View {
         LazyVGrid(columns: actionColumns, spacing: 10) {
-            Button {
-                if let phoneURL = URL(string: "tel:\(clinic.phone)") {
-                    openURL(phoneURL)
+            if !trimmedPhone.isEmpty {
+                Button {
+                    if let phoneURL = URL(string: "tel:\(trimmedPhone)") {
+                        openURL(phoneURL)
+                    }
+                } label: {
+                    actionLabel("致電", systemImage: "phone.fill")
                 }
-            } label: {
-                actionLabel("致電", systemImage: "phone.fill")
+                .buttonStyle(.borderedProminent)
+                .buttonBorderShape(.roundedRectangle(radius: AppTheme.cardRadius))
+                .tint(AppTheme.primary)
+                .accessibilityLabel("致電診所")
             }
-            .buttonStyle(.borderedProminent)
-            .buttonBorderShape(.roundedRectangle(radius: AppTheme.cardRadius))
-            .tint(AppTheme.primary)
-            .disabled(clinic.phone.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-            .accessibilityLabel("致電診所")
 
             if let website = clinic.website {
                 Button {
@@ -232,15 +253,17 @@ struct ClinicDetailView: View {
     private var infoSection: some View {
         detailCard(title: "基本資料", systemImage: "info.circle.fill") {
             VStack(alignment: .leading, spacing: 12) {
-                infoRow("電話", clinic.phone, systemImage: "phone")
+                if !trimmedPhone.isEmpty {
+                    infoRow("電話", trimmedPhone, systemImage: "phone")
+                }
                 infoRow("地址", clinic.address, systemImage: "mappin.and.ellipse")
                 if let website = clinic.website {
                     infoRow("網站", website.host() ?? website.absoluteString, systemImage: "safari")
                 }
                 infoRow(
                     "資料狀態",
-                    clinic.verified ? "已通過刊登審核" : "待審核",
-                    systemImage: clinic.verified ? "checkmark.seal" : "exclamationmark.triangle"
+                    "已通過刊登審核",
+                    systemImage: "checkmark.circle"
                 )
             }
         }
@@ -374,7 +397,7 @@ struct ClinicDetailView: View {
     private var openingHoursSection: some View {
         detailCard(title: "營業時間", systemImage: "clock.fill") {
             VStack(alignment: .leading, spacing: 10) {
-                ForEach(clinic.openingHours.sorted(by: { $0.key < $1.key }), id: \.key) { day, hours in
+                ForEach(visibleOpeningHours, id: \.day) { day, hours in
                     HStack {
                         Text(day)
                             .foregroundStyle(.secondary)
@@ -485,7 +508,7 @@ struct ClinicDetailView: View {
     }
 
     private var defaultCurrency: String {
-        clinic.address.localizedCaseInsensitiveContains("香港") ? "HKD" : "TWD"
+        "HKD"
     }
 
     private func detailCard<Content: View>(

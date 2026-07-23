@@ -1,6 +1,6 @@
 # VetMap — 寵物醫院地圖
 
-> **願世間再無誤診毛孩** — Community-driven vet clinic discovery for Taiwan & Hong Kong.
+> **願世間再無誤診毛孩** — 香港獸醫診所地圖與審核制毛孩社群。
 
 ## Stack
 
@@ -12,7 +12,7 @@
 | **Image** | Kingfisher v8 (`#if canImport` → AsyncImage fallback) |
 | **IAP** | StoreKit 2 |
 | **Crash** | Firebase Crashlytics + Analytics (`#if canImport` guarded) |
-| **CI** | GitHub Actions |
+| **CI** | Xcode Cloud |
 
 ## Features
 
@@ -20,12 +20,10 @@
 - **Clinic search** — keyword, region, price, verified filters
 - **Clinic detail** — call, website, Apple Maps route, reviews, quotes
 - **Reviews** — star ratings, PhotosPicker, helpful voting
-- **Quotes** — treatment cost transparency, 13 types, TWD/HKD
+- **Quotes** — treatment cost transparency in HKD
 - **Add clinic** — address geocoding + manual coordinate fallback
-- **Products** — 2-/3-column grid, 4 categories, 10 seed products
-- **Insurance** — 6 TW/HK plans, premium comparison
 - **Auth** — Email/Password + Apple Sign In (+ Keychain persistence)
-- **Premium** — StoreKit 2 monthly/yearly subscriptions
+- **Moderation** — pending-first submissions, report and block controls
 - **Widget** — Nearby clinics home screen widget (iOS 17+)
 - **iPad** — NavigationSplitView sidebar, 3-column product grid
 - **Offline** — NWPathMonitor, offline banner, retry
@@ -42,18 +40,9 @@
 ## Quick Start
 
 ```bash
-# Build
-xcodebuild -project VetMap.xcodeproj -scheme VetMap \
-  -destination 'generic/platform=iOS Simulator' \
-  CODE_SIGNING_ALLOWED=NO build
-
-# Test
-xcodebuild -project VetMap.xcodeproj -scheme VetMap \
-  -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
-  CODE_SIGNING_ALLOWED=NO test
-
-# Archive for TestFlight
-bash scripts/archive.sh
+# Open the project for editing.
+# This Mac runs a beta macOS; build, test and archive through Xcode Cloud only.
+open VetMap.xcodeproj
 ```
 
 ## Docs
@@ -70,11 +59,11 @@ bash scripts/archive.sh
 
 ## App Store Pitch
 
-> "VetMap helps pet owners across Hong Kong and Taiwan find trusted veterinary clinics with real reviews, transparent pricing, and community wisdom. 222 clinics, 127 pet services, all verified."
+> "VetMap helps Hong Kong pet guardians discover veterinary clinics and share moderated reviews and treatment-cost references."
 
 **Keywords for App Store reviewers:**
 - 3-language support (zh-Hant-HK, zh-Hans, en)
-- Real clinic data from ePetPet + petcircle
+- Hong Kong clinic names, addresses, phone numbers and map locations
 - Community reviews with helpful voting
 - Treatment cost transparency
 - Widget + iPad + accessibility

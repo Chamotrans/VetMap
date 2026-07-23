@@ -153,7 +153,7 @@ struct PremiumView: View {
     }
 
     private let features: [(icon: String, text: String)] = [
-        ("checkmark.shield.fill", "完整台灣及香港獸醫診所資料庫"),
+        ("checkmark.shield.fill", "香港獸醫診所地圖與社群"),
         ("magnifyingglass.circle.fill", "無限量診所搜尋及篩選"),
         ("message.fill", "社群報價及評論完整存取"),
         ("eye.slash.fill", "無廣告瀏覽體驗"),

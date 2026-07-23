@@ -1,6 +1,6 @@
 # VetMap — 寵物醫院地圖
 
-> **Mission:** 「願世間再無誤診毛孩」— help pet owners find reliable vets with real reviews, pricing transparency, and community support across Taiwan and Hong Kong.
+> **Mission:** 「願世間再無誤診毛孩」— help Hong Kong pet guardians find veterinary clinics and share moderated reviews and pricing references.
 
 ## Team Structure
 
@@ -118,7 +118,7 @@ VetMap/
 ### Done ✅ (All 10 original tasks + 6 bonus tasks)
 - 7 data models with Codable support
 - MapKit map with clinic annotations + camera positioning
-- Clinic list with keyword search + region/price/verified filters
+- Clinic list with keyword search + Hong Kong region/price filters
 - Clinic detail view with reviews, quotes, action buttons
 - Add clinic form with address geocoding + manual coordinate fallback
 - Full review system with PhotosPicker, star ratings, helpful voting
@@ -133,7 +133,7 @@ VetMap/
 - 72 unit tests (up from original ~20), all passing
 - Tab navigation (Home/Clinics/Products/Profile)
 - Location service with permission handling
-- Seed data: 4 clinics (2 Taipei, 2 HK), 5 reviews, 4 quotes, 10 products, 6 insurance plans
+- Release data: 10 reviewed Hong Kong listings plus clearly labelled App Review fixtures
 - Firebase setup documentation + Firestore/Storage security rules
 - Kingfisher image caching utility (#if canImport fallback to AsyncImage)
 - App Store Connect setup guide
@@ -203,9 +203,10 @@ open VetMap.xcodeproj
   - `en` — English 🇬🇧🇺🇸
   - Use Xcode String Catalog (`.xcstrings`) format
   - Default/development language: `zh-Hant-HK`
-- Support both Taiwan (TWD) and Hong Kong (HKD) regions
+- VetMap 1.0 is Hong Kong-only and uses HKD for new quote submissions
+- This Mac runs a beta macOS; build, test and archive through Xcode Cloud only
 - No third-party map SDK — use MapKit only
-- Firebase config (`GoogleService-Info.plist`) is a placeholder until real backend is ready
+- Firebase config connects to the production `vetmap-app` backend
 - Keep `MockClinicRepository` and `MockCommunityRepository` as fallback/local cache even after Firebase migration
 - **SEED DATA RULE:** All dummy/seed/mock data MUST be explicitly marked. Use one or more of:
   - File-level comment at top: `// MARK: - ⚠️ DUMMY SEED DATA — 僅供開發測試用，上線前需替換為真實資料`

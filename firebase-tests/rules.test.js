@@ -13,6 +13,41 @@ const projectId = "demo-vetmap-rules";
 const bucket = `gs://${projectId}.appspot.com`;
 let testEnv;
 
+function clinicSubmission({
+  submissionId = "submission-clinic-1",
+  authorId = "alice",
+  clinicOverrides = {},
+} = {}) {
+  const now = new Date();
+  return {
+    id: submissionId,
+    type: "clinic",
+    authorId,
+    authorName: "Alice",
+    status: "pending",
+    submittedAt: now,
+    clinic: {
+      id: "client-clinic-1",
+      name: "香港社群投稿診所",
+      address: "香港測試地址",
+      coordinate: {latitude: 22.3193, longitude: 114.1694},
+      phone: "21234567",
+      openingHours: {},
+      services: [],
+      avgRating: 0,
+      reviewCount: 0,
+      priceLevel: 2,
+      images: [],
+      tags: [],
+      createdAt: now,
+      updatedAt: now,
+      reportedBy: authorId,
+      verified: false,
+      ...clinicOverrides,
+    },
+  };
+}
+
 function quoteSubmission({
   submissionId = "submission-quote-1",
   quoteId = "quote-1",
@@ -106,6 +141,22 @@ test("投稿必須登入、綁定本人 UID、pending 並使用近期時間", as
   );
   await assertSucceeds(
     alice.collection("submissions").doc("submission-quote-1").set(quoteSubmission()),
+  );
+  await assertSucceeds(
+    alice.collection("submissions").doc("submission-clinic-1").set(
+      clinicSubmission(),
+    ),
+  );
+  await assertFails(
+    alice.collection("submissions").doc("submission-clinic-curated").set(
+      clinicSubmission({
+        submissionId: "submission-clinic-curated",
+        clinicOverrides: {
+          catalogRegion: "HK",
+          migrationId: "client-claimed-migration",
+        },
+      }),
+    ),
   );
 });
 
@@ -299,33 +350,65 @@ test("用戶 profile 私隱及防止自行提升 admin / premium", async () => {
   await assertFails(alice.collection("users").doc("alice").update({ isPremium: true }));
 });
 
-test("官方診所目錄可公開讀取，但只容許管理員寫入", async () => {
+test("已整理的香港診所可公開查詢，舊台灣目錄維持封鎖", async () => {
   await seedAdmin();
   const anonymous = testEnv.unauthenticatedContext().firestore();
   const alice = testEnv.authenticatedContext("alice").firestore();
   const admin = testEnv.authenticatedContext("admin").firestore();
-  const manifest = {
-    kind: "manifest",
-    datasetId: "tw-moa-vet-license-078",
-    status: "published",
-  };
 
-  await assertFails(
-    alice.collection("officialClinicCatalog").doc("ordinary-write").set(manifest),
+  await assertSucceeds(
+    admin.collection("clinics").doc("hk-curated-1").set({
+      id: "hk-curated-1",
+      name: "香港測試獸醫診所",
+      address: "香港測試地址",
+      coordinate: {latitude: 22.3193, longitude: 114.1694},
+      phone: "21234567",
+      openingHours: {},
+      services: [],
+      avgRating: 0,
+      reviewCount: 0,
+      priceLevel: 0,
+      images: [],
+      tags: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      reportedBy: "epetpet-hk",
+      verified: false,
+      authorId: "vetmap-curation",
+      status: "approved",
+      approvedAt: new Date(),
+      catalogRegion: "HK",
+      migrationId: "hk-v1-normalize-2026-07-24",
+    }),
+  );
+  await testEnv.withSecurityRulesDisabled(async (context) => {
+    await context.firestore()
+      .collection("officialClinicCatalog")
+      .doc("tw-moa-078-manifest")
+      .set({
+        kind: "manifest",
+        datasetId: "tw-moa-vet-license-078",
+        status: "published",
+      });
+  });
+
+  await assertSucceeds(
+    anonymous.collection("clinics").doc("hk-curated-1").get(),
   );
   await assertSucceeds(
-    admin.collection("officialClinicCatalog").doc("tw-moa-078-manifest").set(manifest),
-  );
-  await assertSucceeds(
-    anonymous.collection("officialClinicCatalog").doc("tw-moa-078-manifest").get(),
-  );
-  await assertSucceeds(
-    anonymous.collection("officialClinicCatalog")
-      .where("datasetId", "==", "tw-moa-vet-license-078")
+    anonymous.collection("clinics")
+      .where("status", "==", "approved")
       .get(),
   );
   await assertFails(
-    alice.collection("officialClinicCatalog").doc("tw-moa-078-manifest").delete(),
+    anonymous.collection("officialClinicCatalog").doc("tw-moa-078-manifest").get(),
+  );
+  await assertFails(
+    alice.collection("officialClinicCatalog").doc("ordinary-write").set({
+      kind: "manifest",
+      datasetId: "tw-moa-vet-license-078",
+      status: "published",
+    }),
   );
 });
 

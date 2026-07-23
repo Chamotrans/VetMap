@@ -3,7 +3,6 @@ import Foundation
 struct ClinicSearchFilter: Equatable {
     enum Region: String, CaseIterable, Identifiable {
         case all = "全部地區"
-        case taipei = "台北"
         case hongKong = "香港"
 
         var id: String { rawValue }
@@ -12,21 +11,8 @@ struct ClinicSearchFilter: Equatable {
             switch self {
             case .all:
                 return "地區"
-            case .taipei:
-                return "台北"
             case .hongKong:
                 return "香港"
-            }
-        }
-
-        fileprivate var keywords: [String] {
-            switch self {
-            case .all:
-                return []
-            case .taipei:
-                return ["台北", "臺北"]
-            case .hongKong:
-                return ["香港"]
             }
         }
     }
@@ -56,10 +42,9 @@ struct ClinicSearchFilter: Equatable {
     var query = ""
     var region: Region = .all
     var price: Price = .all
-    var verifiedOnly = false
 
     var isActive: Bool {
-        !trimmedQuery.isEmpty || region != .all || price != .all || verifiedOnly
+        !trimmedQuery.isEmpty || region != .all || price != .all
     }
 
     var activeDescription: String {
@@ -77,10 +62,6 @@ struct ClinicSearchFilter: Equatable {
             parts.append(price.rawValue)
         }
 
-        if verifiedOnly {
-            parts.append("已審核")
-        }
-
         return parts.isEmpty ? "全部診所" : parts.joined(separator: "・")
     }
 
@@ -94,7 +75,6 @@ struct ClinicSearchFilter: Equatable {
         matchesQuery(clinic)
             && matchesRegion(clinic)
             && matchesPrice(clinic)
-            && (!verifiedOnly || clinic.verified)
     }
 
     private var trimmedQuery: String {
@@ -122,12 +102,12 @@ struct ClinicSearchFilter: Equatable {
     }
 
     private func matchesRegion(_ clinic: VetClinic) -> Bool {
-        let keywords = region.keywords
-        guard !keywords.isEmpty else { return true }
-
-        return keywords.contains { keyword in
-            clinic.address.localizedCaseInsensitiveContains(keyword)
-                || clinic.name.localizedCaseInsensitiveContains(keyword)
+        switch region {
+        case .all:
+            return true
+        case .hongKong:
+            return (22.1...22.6).contains(clinic.coordinate.latitude)
+                && (113.8...114.5).contains(clinic.coordinate.longitude)
         }
     }
 
@@ -136,23 +116,15 @@ struct ClinicSearchFilter: Equatable {
         case .all:
             return true
         case .budget:
-            return clinic.priceLevel <= 1
+            return clinic.priceLevel == 1
         case .moderate:
-            return clinic.priceLevel <= 2
+            return (1...2).contains(clinic.priceLevel)
         case .premium:
             return clinic.priceLevel >= 3
         }
     }
 
     private static func sortClinics(_ lhs: VetClinic, _ rhs: VetClinic) -> Bool {
-        if lhs.verified != rhs.verified {
-            return lhs.verified && !rhs.verified
-        }
-
-        if lhs.avgRating != rhs.avgRating {
-            return lhs.avgRating > rhs.avgRating
-        }
-
         return lhs.name.localizedStandardCompare(rhs.name) == .orderedAscending
     }
 }

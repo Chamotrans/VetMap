@@ -40,7 +40,7 @@ service cloud.firestore {
           'id', 'name', 'address', 'coordinate', 'phone', 'website',
           'openingHours', 'services', 'avgRating', 'reviewCount', 'priceLevel',
           'images', 'tags', 'createdAt', 'updatedAt', 'reportedBy', 'verified',
-          'authorId', 'status', 'approvedAt'
+          'authorId', 'status', 'approvedAt', 'catalogRegion', 'migrationId'
         ])
         && validDocumentID(data.id)
         && data.name is string
@@ -68,12 +68,14 @@ service cloud.firestore {
         && data.reviewCount is int
         && data.reviewCount >= 0
         && data.priceLevel is int
-        && data.priceLevel >= 1
+        && data.priceLevel >= 0
         && data.priceLevel <= 3
         && data.createdAt is timestamp
         && data.updatedAt is timestamp
         && data.reportedBy is string
-        && data.verified is bool;
+        && data.verified is bool
+        && (!('catalogRegion' in data) || data.catalogRegion == 'HK')
+        && (!('migrationId' in data) || data.migrationId is string);
     }
 
     function validReview(data) {
@@ -161,6 +163,8 @@ service cloud.firestore {
             && !('authorId' in data.clinic)
             && !('status' in data.clinic)
             && !('approvedAt' in data.clinic)
+            && !('catalogRegion' in data.clinic)
+            && !('migrationId' in data.clinic)
             && data.clinic.reportedBy == request.auth.uid
             && data.clinic.verified == false
             && data.clinic.avgRating == 0
@@ -209,7 +213,7 @@ service cloud.firestore {
           'id', 'name', 'address', 'coordinate', 'phone', 'website',
           'openingHours', 'services', 'avgRating', 'reviewCount', 'priceLevel',
           'images', 'tags', 'createdAt', 'updatedAt', 'reportedBy', 'verified',
-          'authorId', 'status', 'approvedAt'
+          'authorId', 'status', 'approvedAt', 'catalogRegion', 'migrationId'
         ])
         && request.resource.data.authorId is string
         && request.resource.data.status == 'approved'
@@ -384,14 +388,6 @@ service cloud.firestore {
         && request.resource.data.updatedAt is timestamp
         && request.resource.data.updatedBy == request.auth.uid;
       allow delete: if admin();
-    }
-
-    // Versioned, attribution-bearing government open-data snapshots. Only an
-    // administrator can publish or replace catalog shards; the dedicated
-    // collection contains no user data and is publicly readable by the app.
-    match /officialClinicCatalog/{documentId} {
-      allow read: if true;
-      allow create, update, delete: if admin();
     }
 
     match /products/{productId} {

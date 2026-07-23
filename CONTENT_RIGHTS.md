@@ -1,98 +1,79 @@
 # VetMap 1.0 — Content Rights Packet
 
-> Release candidate: `1.0 (8)`
+> Release candidate: pending Hong Kong Xcode Cloud build
 > Audited: 2026-07-24
 > Scope: App Store release bundle and production public content
 
 ## Release decision
 
-Build 8 does not ship the previously bundled unlicensed clinic, merchant,
-insurance, review, quote, or custom-font datasets. It adds a versioned
-production Firestore snapshot of Taiwan's Ministry of Agriculture
-`獸醫師(佐)開業執照` open dataset under OGDL-Taiwan 1.0. The snapshot contains
-2,074 licence records dated 2026-01-12, split across 21 catalog shards.
-Registration, clinic/review/quote submissions, moderation, reporting,
-blocking, and helpful voting remain available.
+VetMap 1.0 is a Hong Kong veterinary clinic map and moderated community.
+Registration, clinic/review/quote submissions, moderation, reporting, blocking,
+helpful voting and in-app account deletion remain enabled.
 
-Public clinics, reviews, and quotes are read only from approved Firestore
-collections. New submissions remain pending until an administrator approves
-them. The Terms of Service contains the contributor licence for user-submitted
-content.
+The wrong Taiwan directory added by Build 9 has been removed from the app
+source. Anonymous Firestore access to `officialClinicCatalog` is denied. Its
+documents remain in Firestore only as a non-public backup and are not referenced
+by the Hong Kong release.
 
-The production review path may include one VetMap-owned demonstration clinic,
-review, and quote. Each item is prominently labelled as non-real App Review
-demo content, uses no third-party business identity or medical claim, and is
-published from a dedicated fixture UID. Its sole purpose is to make the
-Helpful, Report, Block, and moderation paths reachable during review.
+Production public content currently contains:
 
-The repository may still contain historical research files under
-`data_sources/`; they are not Xcode target resources and are not a rights basis
-for publication. They must not be reintroduced without a documented licence or
-direct permission.
+- 10 existing Hong Kong clinic records, normalized in place on 2026-07-24;
+- one VetMap-owned, clearly non-real App Review demo clinic;
+- one VetMap-owned demo review and one demo quote.
 
-## Excluded sources
+The 10 Hong Kong entries retain only factual name, address, phone and map
+coordinate fields. Unverified ratings, review totals, price levels, services,
+opening hours, emergency claims, tags and images were cleared. They are marked
+`verified: false`. The migration preserved the original document IDs and made
+no Taiwan record public.
 
-| Source/content | Build 8 decision | Reason |
+Legacy reviews and quotes remain hidden. New user submissions remain pending
+until an administrator approves them. The Terms of Service contains the
+contributor licence for user-submitted content.
+
+## Production audit boundary
+
+| Content | Public state | Decision |
 |---|---|---|
-| Historical Hong Kong clinic seeds | Excluded | No documented commercial reuse permission |
-| ePetPet / PetCircle-derived records | Excluded | Source links and attribution are not a commercial licence |
-| Taiwan Ministry of Agriculture licence registry | Included from production Firestore | OGDL-Taiwan 1.0 permits commercial reuse with attribution |
-| Merchant/service directory | Excluded and catalog UI hidden | No release-grade rights packet |
-| Insurance plan names, pricing, and coverage | Excluded and catalog UI hidden | No permission; regulated and time-sensitive claims |
-| Seed reviews and quotes | Excluded | No verifiable contributor licence or provenance |
-| Rounded Mplus 1c font files | Removed from target | No bundled licence notice; unused custom font replaced by system font |
+| Normalized Hong Kong clinic entries | 10 approved | Included, factual fields only |
+| VetMap App Review fixtures | 1 clinic, 1 review, 1 quote | Included and labelled non-real |
+| Legacy Taiwan clinics | 17 without approved status | Hidden |
+| Taiwan `officialClinicCatalog` | 22 documents | Anonymous access denied; app reference removed |
+| Legacy reviews | 20 without approved status | Hidden |
+| Legacy quotes | 4 without approved status | Hidden |
+| Products and insurance | Existing records | Admin-only; feature UI disabled |
+| Historical bundled clinic/merchant datasets | Not in Release target | Excluded |
 
-## Official-source research
+Before migration, a complete raw backup of `clinics`, `reviews` and `quotes`
+was saved under `build/backups/` with owner-only file permissions. The
+one-time guarded migration is documented in
+`scripts/restore_hk_firestore_catalog.mjs`.
 
-### Hong Kong
+## Rights evidence and unresolved attestation
 
-The AFCD voluntary Vet Clinics List is incomplete, has no machine-readable
-feed or coordinates, and its copyright notice permits reproduction for
-non-commercial use only. Commercial reproduction requires prior written
-authorization. The Veterinary Surgeons Board register lists individual
-veterinary surgeons and limits use to verification; it is not a clinic-map
-dataset.
+The 10 included clinic records were already present in production Firestore and
+carry the historical source marker `reportedBy: epetpet-hk`. The repository
+does not contain a commercial-reuse licence or direct permission document for
+that source. Limiting publication to factual business identity and contact data
+reduces inaccurate-content risk, but does not by itself prove the account
+holder's legal right to publish it.
 
-- AFCD list:
-  <https://www.pets.gov.hk/english/animal_health_and_welfare/vet_clinics_list.html>
-- AFCD copyright notice:
-  <https://www.pets.gov.hk/english/copyright_notice/copyright.html>
-- VSB register:
-  <https://www.vsbhk.org.hk/english/vsro/vsro.html>
+The account holder must therefore confirm and retain the applicable permission,
+licence or other legal basis before accepting App Store Connect's Content
+Rights attestation. If that confirmation cannot be made, the 10 records must be
+hidden again before submission.
 
-No Hong Kong official dataset is approved for Build 8 ingestion.
-
-### Taiwan
-
-The Ministry of Agriculture `獸醫師(佐)開業執照` dataset is released under
-OGDL-Taiwan 1.0 and permits commercial reuse with mandatory attribution. It
-contains licence status, institution name, phone, and address, but no
-coordinates, opening hours, services, website, or emergency status.
-
-- Dataset: <https://data.gov.tw/dataset/8705>
-- Licence: <https://data.gov.tw/license>
-
-Build 8 includes the 2026-01-12 snapshot in the dedicated public-read,
-admin-write `officialClinicCatalog` collection. VetMap:
-
-1. Preserves the licence number, licence type/status, source URL, snapshot
-   date, raw address, and agency attribution.
-2. Displays the dataset and OGDL licence links in the official directory.
-3. Does not store or invent coordinates. The source contains no coordinates;
-   the Apple Maps action performs an address search only when the user opens it.
-4. Does not display the responsible veterinarian field.
-5. Does not claim “open now”, ratings, services, independent verification, or
-   VetMap endorsement for official records.
-
-Production public audit on 2026-07-24 verified 2,074 unique records, 21 shards,
-the expected OGDL manifest, and no responsible-veterinarian field in the
-published records.
+The public Terms grant VetMap a non-exclusive licence to store, display,
+moderate and operate user-submitted content. This covers future submissions
+made under those Terms, but does not retroactively prove rights to the existing
+clinic catalog.
 
 ## App Store Connect declaration
 
-The app contains third-party content because it can display approved
-user-generated content. The correct first answer is therefore **Yes**.
+VetMap contains or accesses third-party content because it displays business
+directory facts and can display approved user-generated content. The correct
+first answer is therefore **Yes**.
 
-Checking the separate legal attestation that the account holder has all
+Accepting the separate legal attestation that the account holder has all
 necessary rights remains an account-holder decision. Automation must stop
 before that attestation unless the account holder expressly confirms it.

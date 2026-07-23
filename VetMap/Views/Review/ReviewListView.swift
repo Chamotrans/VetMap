@@ -10,9 +10,7 @@ struct ReviewListView: View {
         _viewModel = State(wrappedValue: ReviewViewModel(clinicId: clinic.id))
     }
 
-    private var currency: String {
-        clinic.address.localizedCaseInsensitiveContains("香港") ? "HKD" : "TWD"
-    }
+    private let currency = "HKD"
 
     var body: some View {
         ScrollView {

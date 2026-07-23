@@ -6,17 +6,11 @@ import Foundation
 final class ClinicsViewModel {
     var filter = ClinicSearchFilter()
     private(set) var clinics: [VetClinic] = []
-    private(set) var officialClinics: [OfficialClinicRecord] = []
-    private(set) var officialManifest: OfficialClinicCatalogManifest?
     private(set) var storageError: String?
-    private(set) var officialError: String?
     private(set) var pinnedIDs: Set<String> = []
     private(set) var removedIDs: Set<String> = []
     var isLoading = false
-    var isLoadingOfficial = false
     var networkError: String?
-    var officialQuery = ""
-    var officialCity = "全部縣市"
 
     private let firebase: FirebaseService
     @ObservationIgnored private var cancellables: Set<AnyCancellable> = []
@@ -37,60 +31,14 @@ final class ClinicsViewModel {
         return pinned + rest
     }
 
-    var officialCities: [String] {
-        ["全部縣市"] + Set(officialClinics.map(\.city)).sorted {
-            $0.localizedStandardCompare($1) == .orderedAscending
-        }
-    }
-
-    var filteredOfficialClinics: [OfficialClinicRecord] {
-        let tokens = officialQuery
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-            .split(whereSeparator: \.isWhitespace)
-            .map(String.init)
-
-        return officialClinics.filter { clinic in
-            let matchesCity = officialCity == "全部縣市" || clinic.city == officialCity
-            let haystack = [
-                clinic.institutionName,
-                clinic.address,
-                clinic.city,
-                clinic.phone,
-                clinic.licenseNumber,
-                clinic.licenseType,
-                clinic.licenseStatus
-            ].joined(separator: " ")
-            return matchesCity && tokens.allSatisfy {
-                haystack.localizedCaseInsensitiveContains($0)
-            }
-        }
-    }
-
-    var officialFilterDescription: String {
-        var parts: [String] = []
-        let query = officialQuery.trimmingCharacters(in: .whitespacesAndNewlines)
-        if !query.isEmpty {
-            parts.append("「\(query)」")
-        }
-        if officialCity != "全部縣市" {
-            parts.append(officialCity)
-        }
-        return parts.isEmpty ? "全部官方登記" : parts.joined(separator: "・")
-    }
-
     func isPinned(_ clinicID: String) -> Bool {
         pinnedIDs.contains(clinicID)
     }
 
     func loadClinics() async {
         isLoading = true
-        isLoadingOfficial = true
         networkError = nil
-        officialError = nil
-        defer {
-            isLoading = false
-            isLoadingOfficial = false
-        }
+        defer { isLoading = false }
 
         await ModerationStore.shared.refreshPublicState()
         refreshModerationState()
@@ -102,19 +50,6 @@ final class ClinicsViewModel {
             networkError = "雲端診所資料暫時無法載入：\(error.localizedDescription)"
             storageError = networkError
             CrashReporting.recordError(error, domain: "ClinicsViewModel.loadClinics")
-        }
-
-        do {
-            let catalog = try await firebase.fetchOfficialClinicCatalog()
-            officialClinics = catalog.records
-            officialManifest = catalog.manifest
-            officialError = nil
-        } catch {
-            officialError = error.localizedDescription
-            CrashReporting.recordError(
-                error,
-                domain: "ClinicsViewModel.loadOfficialClinicCatalog"
-            )
         }
     }
 

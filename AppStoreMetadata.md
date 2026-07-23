@@ -12,13 +12,13 @@
 
 ## Description (zh-Hant-HK)
 
-VetMap 係一個專為毛孩家長設計嘅獸醫診所地圖同社群 App。
+VetMap 係一個專為香港毛孩家長而設嘅獸醫診所地圖同社群 App。
 
 **搵診所**
-- 搜尋台灣農業部「獸醫師(佐)開業執照」官方登記資料
-- 瀏覽經管理員審核後公開嘅社群地圖診所
-- 用關鍵字同縣市篩選器尋找合適資料
-- 診所詳情可包括電話、網站、導航同營業時間
+- 瀏覽經整理及審核後公開嘅香港獸醫診所
+- 用關鍵字、地區及服務項目搜尋
+- 查看地址、電話及地圖位置
+- 營業時間、服務、評分及費用只會喺有可靠資料或經審核後顯示
 
 **睇評價**
 - 已審核嘅社群評價同評分
@@ -28,19 +28,48 @@ VetMap 係一個專為毛孩家長設計嘅獸醫診所地圖同社群 App。
 **費用透明**
 - 治療報價分享系統
 - 預估費用 vs 實際費用
-- TWD / HKD 雙幣支援
+- 以 HKD 分享香港診療費用資料
 
 **社群貢獻**
 - 登入／註冊後可新增診所、評價及治療報價
 - 所有投稿先進入人工審核，批准後先會公開
 - 可直接喺 App 內刪除帳戶及相關用戶內容
 
-VetMap 首版嘅台灣官方目錄來自農業部／動植物防疫檢疫署 2026-01-12 資料快照，依 OGDL-Taiwan 1.0 使用並於 App 內列明來源及授權。官方來源冇提供座標、營業時間、服務或評分，因此 App 唔會推算或冒充呢啲資料。未經授權嘅香港診所、商戶、保險、seed 評價及報價資料均不會公開。
+VetMap 首版只顯示香港診所。診所目錄以名稱、地址、電話及地圖位置為主；未重新核實嘅星級、價錢、營業時間、服務及醫療聲稱不會公開。
 
 診所、評價及費用資料只供一般參考，不構成獸醫診斷或治療建議；緊急情況請直接聯絡合資格獸醫診所。
 
+## Description (en-GB)
+
+VetMap is a Hong Kong veterinary clinic map and moderated community for pet guardians.
+
+**Find clinics**
+- Browse Hong Kong veterinary clinics published after review
+- Search by keyword, area and service
+- View addresses, phone numbers and map locations
+- Hours, services, ratings and costs are shown only when reliable or approved
+
+**Community reviews**
+- Read approved ratings and reviews
+- Mark a review as helpful once per account
+- Report inappropriate content and block its author
+
+**Treatment quotes**
+- Share treatment quote information
+- Compare estimated and actual costs
+- Share Hong Kong cost information in HKD
+
+**Contribute**
+- Sign in or create an account to submit clinics, reviews and treatment quotes
+- Every submission remains pending until manually approved
+- Delete your account and associated user content in the app
+
+VetMap 1.0 displays Hong Kong clinics only. Directory entries focus on factual names, addresses, phone numbers and map locations. Unverified ratings, prices, opening hours, services and medical claims are not published.
+
+Clinic, review and cost information is for general reference only and is not veterinary diagnosis or treatment advice. In an emergency, contact a qualified veterinary clinic directly.
+
 ## Keywords (100 chars)
-獸醫,診所,寵物,狗,貓,毛孩,動物醫院,vet,pet,clinic,review,報價,社群,香港,台灣
+獸醫,診所,寵物,狗,貓,毛孩,動物醫院,vet,pet,clinic,review,報價,社群,香港,地圖
 
 ## Category
 - Primary: Medical
@@ -51,9 +80,9 @@ VetMap 首版嘅台灣官方目錄來自農業部／動植物防疫檢疫署 202
 
 ## Screenshots
 
-舊有 4 張 iPhone 及 4 張 iPad 截圖包含已移除內容，不可重用。Build 8 必須以真實 App 畫面重新截取：
+舊有 4 張 iPhone 及 4 張 iPad 截圖包含已移除內容，不可重用。必須以香港修正版 Xcode Cloud build 的真實 App 畫面重新截取：
 
-1. Taiwan official registry / community map
+1. Hong Kong clinic map / list
 2. Clinic detail
 3. Moderated review / quote submission
 4. Report / block / account controls
