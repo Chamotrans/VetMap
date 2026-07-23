@@ -12,18 +12,14 @@ final class ClinicsViewModel {
     var isLoading = false
     var networkError: String?
 
-    private let seedRepository: MockClinicRepository
     private let firebase: FirebaseService
     @ObservationIgnored private var cancellables: Set<AnyCancellable> = []
 
     init(
-        repository: MockClinicRepository = MockClinicRepository(),
+        repository _: MockClinicRepository = MockClinicRepository(),
         firebase: FirebaseService = .shared
     ) {
-        self.seedRepository = repository
         self.firebase = firebase
-        self.clinics = repository.fetchClinics()
-        observeRepositoryChanges()
         observeModerationChanges()
         Task { await loadClinics() }
     }
@@ -44,17 +40,13 @@ final class ClinicsViewModel {
         networkError = nil
         defer { isLoading = false }
 
-        let seeds = seedRepository.fetchClinics()
         await ModerationStore.shared.refreshPublicState()
         refreshModerationState()
 
         do {
-            let cloud = try await firebase.fetchClinics()
-            let cloudIDs = Set(cloud.map(\.id))
-            clinics = cloud + seeds.filter { !cloudIDs.contains($0.id) }
+            clinics = try await firebase.fetchClinics()
             storageError = nil
         } catch {
-            clinics = seeds
             networkError = "雲端診所資料暫時無法載入：\(error.localizedDescription)"
             storageError = networkError
             CrashReporting.recordError(error, domain: "ClinicsViewModel.loadClinics")
@@ -105,13 +97,4 @@ final class ClinicsViewModel {
             .store(in: &cancellables)
     }
 
-    private func observeRepositoryChanges() {
-        NotificationCenter.default.publisher(for: .vetClinicRepositoryDidChange)
-            .sink { [weak self] _ in
-                Task { @MainActor in
-                    await self?.loadClinics()
-                }
-            }
-            .store(in: &cancellables)
-    }
 }

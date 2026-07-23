@@ -2,9 +2,9 @@ import SwiftUI
 
 struct EmptyStateView: View {
     let icon: String
-    let title: String
-    let subtitle: String
-    var action: (label: String, action: () -> Void)?
+    let title: LocalizedStringKey
+    let subtitle: LocalizedStringKey
+    var action: (label: LocalizedStringKey, action: () -> Void)?
 
     var body: some View {
         VStack(spacing: 12) {

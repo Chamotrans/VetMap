@@ -115,7 +115,14 @@ struct ClinicMapView: View {
 
     @ViewBuilder
     private var clinicCarousel: some View {
-        if viewModel.filteredClinics.isEmpty {
+        if viewModel.isLoading && viewModel.clinics.isEmpty {
+            ProgressView("正在載入診所資料")
+                .frame(maxWidth: .infinity)
+                .padding(20)
+                .liquidGlass(cornerRadius: AppTheme.cardRadius)
+                .padding(.horizontal, 16)
+                .frame(height: 132)
+        } else if viewModel.filteredClinics.isEmpty {
             mapEmptyState
                 .padding(.horizontal, 16)
                 .frame(height: 132)
@@ -162,18 +169,44 @@ struct ClinicMapView: View {
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text("沒有符合條件")
-                    .font(.subheadline.weight(.semibold))
+                Group {
+                    if viewModel.networkError != nil {
+                        Text("無法載入診所資料")
+                    } else if viewModel.clinics.isEmpty {
+                        Text("暫未有已審核診所")
+                    } else {
+                        Text("沒有符合條件")
+                    }
+                }
+                .font(.subheadline.weight(.semibold))
 
-                Text(viewModel.filter.activeDescription)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
+                Group {
+                    if viewModel.networkError != nil {
+                        Text("請檢查網絡連線後重試")
+                    } else if viewModel.clinics.isEmpty {
+                        Text("請到「診所」分頁提交資料")
+                    } else {
+                        Text(viewModel.filter.activeDescription)
+                    }
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .lineLimit(2)
             }
 
             Spacer()
 
-            if viewModel.filter.isActive {
+            if viewModel.networkError != nil {
+                Button {
+                    viewModel.retryLoad()
+                } label: {
+                    Text("重試")
+                        .font(.subheadline.weight(.semibold))
+                }
+                .buttonStyle(.bordered)
+                .buttonBorderShape(.roundedRectangle(radius: AppTheme.cardRadius))
+                .tint(AppTheme.primary)
+            } else if viewModel.filter.isActive {
                 Button {
                     viewModel.clearFilters()
                 } label: {

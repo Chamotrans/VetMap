@@ -28,11 +28,6 @@
 	<false/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>VetMap 會使用你的位置來顯示附近獸醫診所與距離。</string>
-	<key>UIAppFonts</key>
-	<array>
-		<string>RoundedMplus1c-Bold.ttf</string>
-		<string>RoundedMplus1c-Regular.ttf</string>
-	</array>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchScreen</key>

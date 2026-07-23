@@ -257,7 +257,10 @@ final class FirebaseService {
         var payload: [String: Any]
         switch submission.type {
         case .clinic:
-            guard let clinic = submission.clinic else { throw FirebaseError.invalidSubmission }
+            guard var clinic = submission.clinic else { throw FirebaseError.invalidSubmission }
+            // This means the listing passed VetMap's publication review; it is
+            // not a claim that every business fact was independently certified.
+            clinic.verified = true
             payload = try publishedData(clinic, authorId: submission.authorId, approvedAt: Date())
         case .review:
             guard let review = submission.review else { throw FirebaseError.invalidSubmission }

@@ -19,7 +19,7 @@ struct ClinicListRowView: View {
                             if clinic.verified {
                                 Image(systemName: "checkmark.seal.fill")
                                     .foregroundStyle(AppTheme.primary)
-                                    .accessibilityLabel("已驗證")
+                                    .accessibilityLabel("已審核刊登")
                             }
                         }
 
@@ -63,7 +63,7 @@ struct ClinicListRowView: View {
                     .foregroundStyle(AppTheme.primary)
                     .background(Circle().fill(Color(.systemBackground)).frame(width: 14, height: 14))
                     .offset(x: 4, y: -2)
-                    .accessibilityLabel("已驗證")
+                    .accessibilityLabel("已審核刊登")
             }
         }
     }

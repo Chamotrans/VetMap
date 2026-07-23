@@ -1,6 +1,374 @@
 {
   "sourceLanguage": "zh-Hant",
   "strings": {
+    "VetMap 社群": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VetMap Community"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VetMap 社区"
+          }
+        }
+      }
+    },
+    "取消只看已審核": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show all clinics"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消只看已审核"
+          }
+        }
+      }
+    },
+    "只看已審核": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show reviewed clinics only"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "只看已审核"
+          }
+        }
+      }
+    },
+    "你可以提交診所資料，經管理員審核後會公開。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can submit clinic information for an administrator to review and publish."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你可以提交诊所资料，经管理员审核后会公开。"
+          }
+        }
+      }
+    },
+    "已審核": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reviewed"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已审核"
+          }
+        }
+      }
+    },
+    "已審核刊登": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Approved for listing"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已审核刊登"
+          }
+        }
+      }
+    },
+    "已通過刊登審核": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Approved for listing"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已通过刊登审核"
+          }
+        }
+      }
+    },
+    "待審核": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pending review"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "待审核"
+          }
+        }
+      }
+    },
+    "收藏的診所將顯示在此。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved clinics will appear here."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "收藏的诊所将显示在这里。"
+          }
+        }
+      }
+    },
+    "暫未有已審核診所": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No reviewed clinics yet"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂无已审核诊所"
+          }
+        }
+      }
+    },
+    "正在載入診所資料": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading clinic data"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在载入诊所资料"
+          }
+        }
+      }
+    },
+    "找不到相關診所": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No matching clinics"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "找不到相关诊所"
+          }
+        }
+      }
+    },
+    "無法載入診所資料": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unable to load clinic data"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法载入诊所资料"
+          }
+        }
+      }
+    },
+    "社群投稿會安全送到雲端，經管理員審核後公開。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Community submissions are securely sent to the cloud and published after administrator review."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "社区投稿会安全发送到云端，经管理员审核后公开。"
+          }
+        }
+      }
+    },
+    "資料由社群投稿，經管理員審核後公開": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Community submissions are published after administrator review"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "资料由社区提交，经管理员审核后公开"
+          }
+        }
+      }
+    },
+    "資料狀態": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listing status"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "资料状态"
+          }
+        }
+      }
+    },
+    "試試放寬篩選，或改用地區、服務項目搜尋。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try broader filters, or search by district or service."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尝试放宽筛选，或改用地区、服务项目搜索。"
+          }
+        }
+      }
+    },
+    "請到「診所」分頁提交資料": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Submit clinic information from the Clinics tab"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请到“诊所”分页提交资料"
+          }
+        }
+      }
+    },
+    "請檢查網絡連線後重試": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check your network connection and try again"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请检查网络连接后重试"
+          }
+        }
+      }
+    },
+    "重試": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retry"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重试"
+          }
+        }
+      }
+    },
+    "開啟 VetMap 投稿診所資料": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open VetMap to submit clinic information"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开 VetMap 投稿诊所资料"
+          }
+        }
+      }
+    },
+    "離線模式 — 雲端資料可能未更新": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Offline — cloud data may be outdated"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "离线模式 — 云端资料可能未更新"
+          }
+        }
+      }
+    },
+    "快速開啟獸醫診所社群": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quick access to the veterinary clinic community"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "快速打开兽医诊所社区"
+          }
+        }
+      }
+    },
     "%@ 評價": {
       "comment": "The title of the reviews screen, with the clinic name.",
       "isCommentAutoGenerated": true,
@@ -1955,20 +2323,20 @@
         }
       }
     },
-    "收藏診所、管理會員訂閱、分享報價": {
+    "收藏診所、投稿評論、分享報價": {
       "comment": "A description of the benefits of being logged in.",
       "isCommentAutoGenerated": true,
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Save clinics, manage subscriptions, share quotes"
+            "value": "Save clinics, post reviews, share quotes"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "收藏诊所、管理会员订阅、分享报价"
+            "value": "收藏诊所、发布评论、分享报价"
           }
         }
       }

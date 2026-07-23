@@ -78,7 +78,7 @@ struct ClinicSearchFilter: Equatable {
         }
 
         if verifiedOnly {
-            parts.append("已驗證")
+            parts.append("已審核")
         }
 
         return parts.isEmpty ? "全部診所" : parts.joined(separator: "・")

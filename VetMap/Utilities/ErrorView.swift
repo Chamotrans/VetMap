@@ -59,9 +59,9 @@ struct ErrorBanner: View {
 
 struct ErrorRetryView: View {
     let icon: String
-    let title: String
-    let message: String
-    var retryLabel: String = "重試"
+    let title: LocalizedStringKey
+    let message: LocalizedStringKey
+    var retryLabel: LocalizedStringKey = "重試"
     var onRetry: (() -> Void)?
 
     var body: some View {

@@ -2,7 +2,7 @@
 
 > App Store Connect ID: `6777361219`
 > Bundle ID: `com.vetmap.app`
-> Release candidate: `1.0 (6)`
+> Release candidate: `1.0 (7)`
 > 最後核對：2026-07-23
 
 本表只記錄可驗證的目前狀態。正式按下 App Store Connect「提交以供審核」不在自動執行範圍內。
@@ -25,6 +25,8 @@
 - [x] Release target 已移除 Firebase Analytics；首版不收集產品行為分析資料
 - [x] 相片投稿未完成的介面及相機／相簿權限聲明已移除
 - [x] Premium／IAP 首版 feature flag 關閉，不列入 1.0 送審功能
+- [x] 商戶／產品／保險 catalog 關閉；未有 rights packet 的 seed data 不進 Release build
+- [x] 未有 bundled licence notice 的第三方字型已從 target 移除並改用系統字型
 
 ## Firebase production
 
@@ -34,25 +36,26 @@
 - [x] 部署 `functions/` 的 `purgeUserData`；Node.js 22、`asia-east1`、ACTIVE
 - [x] 部署 `public/` 的私隱政策、使用條款及支援頁，三個 production URL 均回應 HTTP 200
 - [x] 未登入直接呼叫 `purgeUserData` 會回應 `UNAUTHENTICATED`
-- [x] production 公開 approved 查詢為 clinics 0、reviews 0、quotes 0；舊資料已隔離
-- [ ] 驗證 Firebase Authentication 的 Email/Password provider 已啟用
-- [ ] 驗證 Firebase Authentication 的 Apple provider OAuth code flow 已正確設定
-- [ ] 建立或確認管理員帳戶，並在 `users/{uid}` 設定 `role: admin`
-- [ ] 建立不需 2FA 的 App Review 電郵／密碼帳戶
+- [x] production 公開 approved 查詢為 clinics 1、reviews 1、quotes 1；三項均為 VetMap 自有、清楚標示非真實的 App Review 示範內容
+- [x] 驗證 Firebase Authentication 的 Email/Password provider 已啟用
+- [x] 驗證 Firebase Authentication 的 Apple provider OAuth code flow 已正確設定
+- [x] 建立獨立管理員帳戶，並在 `users/{uid}` 設定 `role: admin`
+- [x] 建立不需 2FA 的普通、刪除測試及 fixture App Review 電郵／密碼帳戶
+- [x] 以專用 fixture UID 建立 rights-cleared 示範診所、評價及報價，令 Helpful／Report／Block 路徑可達
 
-注意：production 目前的 27 項 clinics、20 項 reviews、4 項 quotes 均沒有 `status`。這些舊資料不會被擅自標成已審核；新規則部署後會先隔離，App 仍保留內置診所目錄及完整投稿功能。
+注意：production 公開 approved 查詢目前各有 1 項 VetMap 示範內容，名稱及內文均明確表示並非真實商戶、評價或醫療報價。舊資料不會被擅自標成已審核；Build 7 不再保留未授權內置目錄，但完整投稿及審核功能保留。
 
 ## 待完成：Xcode Cloud / TestFlight
 
-- [ ] Git 只提交本次送審相關變更並推送至 GitHub `main`
-- [ ] 在 Xcode Cloud 建立 `main` workflow
-- [ ] Workflow 使用共用 `VetMap` scheme
-- [ ] 設定 secret `GOOGLE_SERVICE_INFO_PLIST_BASE64`
-- [ ] 將 Xcode Cloud 下一個 build number 設為 `6`
-- [ ] 執行 Test → Archive → TestFlight Internal Testing
-- [ ] Xcode Cloud build `1.0 (6)` 成功且無 App Store validation error
+- [x] 已把安全／合規修正分批提交並推送至 GitHub `main`
+- [x] 在 Xcode Cloud 建立 `main` workflow
+- [x] Workflow 使用共用 `VetMap` scheme
+- [x] 設定 secret `GOOGLE_SERVICE_INFO_PLIST_BASE64`
+- [x] Xcode Cloud build `1.0 (6)` 成功並分發至 App Store Connect
+- [ ] 提交並推送 Build 7 權利安全修正
+- [ ] Xcode Cloud build `1.0 (7)` 成功且無 App Store validation error
 - [ ] 在 TestFlight 真機完成登入、投稿、批核、公開、舉報、封鎖及帳戶刪除 smoke test
-- [ ] 將 build 6 掛接至 App Store Connect iOS 1.0
+- [ ] 將 build 7 掛接至 App Store Connect iOS 1.0
 
 本機舊 archive 及 Build 5 不能作為今次 release proof；本機是 macOS Beta，正式 build 只以 Xcode Cloud 結果為準。
 
@@ -60,16 +63,18 @@
 
 - [x] App record、iOS 1.0 版本、描述、keywords 及現有 screenshots 已建立
 - [x] App 定價為免費，175 個地區可用
-- [ ] Support URL：`https://vetmap-app.web.app/support`
-- [ ] Privacy Policy URL：`https://vetmap-app.web.app`
-- [ ] Copyright：`2026 Chamotrans`
-- [ ] 「需要登入」保留勾選，填入 App Review 電郵及密碼
-- [ ] 填寫 App Review Notes，說明待審投稿、舉報、封鎖、帳戶刪除及測試路徑
-- [ ] 完成 App Privacy 問卷，答案須與 `VetMap/PrivacyInfo.xcprivacy` 一致
-- [ ] 完成年齡分級問卷
-- [ ] 完成 regulated medical device 聲明：本 App 是資料目錄／社群工具，不作診斷或醫療裝置用途
-- [ ] 完成 Content Rights。App 顯示第三方診所／商戶資料及用戶內容，必須如實選擇；提交者須確認擁有或獲授權使用相關資料
-- [ ] 將 build 6 加入 iOS 1.0 review draft
+- [x] Support URL：`https://vetmap-app.web.app/support`
+- [x] Privacy Policy URL：`https://vetmap-app.web.app`
+- [x] Copyright：`2026 Chamotrans`
+- [x] 「需要登入」保留勾選，填入 App Review 電郵及密碼
+- [x] 填寫 App Review Notes，說明待審投稿、舉報、封鎖、帳戶刪除及測試路徑
+- [x] 完成並 Publish App Privacy 問卷
+- [x] 完成年齡分級問卷；結果 16+
+- [x] 完成 regulated medical device 聲明：No
+- [ ] 以 Build 7 真實畫面取代所有舊 screenshots
+- [ ] 把 App Store 描述／subtitle 改為 [AppStoreMetadata.md](AppStoreMetadata.md) 的 community-first 版本
+- [ ] 完成 Content Rights。App 會顯示經批准的用戶內容，必須如實選擇 Yes；提交者須確認擁有或獲授權使用相關內容
+- [ ] 將 build 7 加入 iOS 1.0 review draft
 - [ ] 最後逐頁核對沒有紅色缺漏或矛盾
 - [ ] 停在「提交以供審核」按鈕前，交由帳戶持有人作最後確認
 

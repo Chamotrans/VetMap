@@ -163,6 +163,6 @@ struct QuoteListView: View {
 
 #Preview {
     NavigationStack {
-        QuoteListView(clinicId: "taipei-anxin", clinicName: "安心動物醫院")
+        QuoteListView(clinicId: "debug-clinic", clinicName: "VetMap 測試診所")
     }
 }

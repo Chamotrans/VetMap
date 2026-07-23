@@ -100,14 +100,14 @@ struct ClinicFilterControls: View {
             filter.verifiedOnly.toggle()
         } label: {
             ClinicFilterChip(
-                title: "已驗證",
+                title: "已審核",
                 systemImage: filter.verifiedOnly ? "checkmark.seal.fill" : "checkmark.seal",
                 isActive: filter.verifiedOnly,
                 showsChevron: false
             )
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(filter.verifiedOnly ? "取消只看已驗證" : "只看已驗證")
+        .accessibilityLabel(filter.verifiedOnly ? "取消只看已審核" : "只看已審核")
     }
 
     private var clearButton: some View {

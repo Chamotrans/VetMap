@@ -177,7 +177,7 @@ struct ClinicListView: View {
             .padding(.top, 12)
             .padding(.bottom, 24)
 
-            Text("最近更新：2026年6月")
+            Text("資料由社群投稿，經管理員審核後公開")
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
                 .frame(maxWidth: .infinity, alignment: .center)
@@ -262,8 +262,18 @@ struct ClinicListView: View {
 
     @ViewBuilder
     private var clinicRows: some View {
-        if viewModel.clinics.isEmpty && !viewModel.isLoading {
-            dataMissingView
+        if viewModel.clinics.isEmpty && viewModel.isLoading {
+            ProgressView("正在載入診所資料")
+                .frame(maxWidth: .infinity)
+                .padding(32)
+                .appCard()
+                .padding(.top, 20)
+        } else if viewModel.clinics.isEmpty {
+            if let networkError = viewModel.networkError {
+                dataLoadErrorView(networkError)
+            } else {
+                noApprovedClinicsView
+            }
         } else if viewModel.filteredClinics.isEmpty {
             emptyState
         } else {
@@ -316,11 +326,21 @@ struct ClinicListView: View {
             .accessibilitySortPriority(1)
     }
 
-    private var dataMissingView: some View {
+    private var noApprovedClinicsView: some View {
+        EmptyStateView(
+            icon: "cross.case.fill",
+            title: "暫未有已審核診所",
+            subtitle: "你可以提交診所資料，經管理員審核後會公開。",
+            action: ("新增診所", { isAddingClinic = true })
+        )
+        .padding(.top, 20)
+    }
+
+    private func dataLoadErrorView(_ message: String) -> some View {
         ErrorRetryView(
-            icon: "exclamationmark.triangle.fill",
+            icon: "wifi.slash",
             title: "無法載入診所資料",
-            message: "請檢查網絡連線後重試。",
+            message: LocalizedStringKey(message),
             retryLabel: "重試",
             onRetry: { Task { await viewModel.retryLoad() } }
         )
@@ -357,7 +377,7 @@ private struct ClinicSlimRow: View {
                         Image(systemName: "checkmark.seal.fill")
                             .font(.caption2)
                             .foregroundStyle(AppTheme.primary)
-                            .accessibilityLabel("已驗證")
+                            .accessibilityLabel("已審核刊登")
                     }
                 }
                 Text(clinic.address)
@@ -403,7 +423,7 @@ private struct ClinicGridCard: View {
                         .font(.caption)
                         .foregroundStyle(AppTheme.primary)
                         .padding(4)
-                        .accessibilityLabel("已驗證")
+                        .accessibilityLabel("已審核刊登")
                 }
             }
 

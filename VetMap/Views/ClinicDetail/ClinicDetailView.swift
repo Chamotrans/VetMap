@@ -142,7 +142,7 @@ struct ClinicDetailView: View {
                         if clinic.verified {
                             Image(systemName: "checkmark.seal.fill")
                                 .foregroundStyle(AppTheme.primary)
-                                .accessibilityLabel("已驗證")
+                                .accessibilityLabel("已審核刊登")
                         }
                     }
 
@@ -237,7 +237,11 @@ struct ClinicDetailView: View {
                 if let website = clinic.website {
                     infoRow("網站", website.host() ?? website.absoluteString, systemImage: "safari")
                 }
-                infoRow("資料狀態", clinic.verified ? "社群已驗證" : "待更多社群回報", systemImage: clinic.verified ? "checkmark.seal" : "exclamationmark.triangle")
+                infoRow(
+                    "資料狀態",
+                    clinic.verified ? "已通過刊登審核" : "待審核",
+                    systemImage: clinic.verified ? "checkmark.seal" : "exclamationmark.triangle"
+                )
             }
         }
     }

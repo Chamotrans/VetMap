@@ -59,11 +59,11 @@ struct ClinicAvatarSmall: View {
 
 #Preview {
     HStack(spacing: 16) {
-        ClinicAvatar(name: "安心動物醫院")
-        ClinicAvatar(name: "維多利寵物診所")
-        ClinicAvatar(name: "Pets Central")
-        ClinicAvatar(name: "九龍動物醫院")
-        ClinicAvatar(name: " Creature Comforts")
+        ClinicAvatar(name: "VetMap 測試診所 A")
+        ClinicAvatar(name: "VetMap 測試診所 B")
+        ClinicAvatar(name: "VetMap Preview Clinic")
+        ClinicAvatar(name: "VetMap 測試診所 C")
+        ClinicAvatar(name: "VetMap Preview Centre")
     }
     .padding()
 }

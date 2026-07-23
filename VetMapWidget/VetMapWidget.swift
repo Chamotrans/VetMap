@@ -35,15 +35,23 @@ struct VetMapWidgetEntryView: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Image(systemName: "pawprint.fill").foregroundStyle(.teal)
-                Text("附近診所").font(.headline)
+                Text("VetMap 社群").font(.headline)
                 Spacer()
             }
-            ForEach(entry.clinics) { clinic in
-                HStack {
-                    Text(clinic.name).font(.caption).lineLimit(1)
-                    Spacer()
-                    Label(String(format: "%.1f", clinic.rating), systemImage: "star.fill")
-                        .font(.caption2).foregroundStyle(.orange)
+
+            if entry.clinics.isEmpty {
+                Text("開啟 VetMap 投稿診所資料")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            } else {
+                ForEach(entry.clinics) { clinic in
+                    HStack {
+                        Text(clinic.name).font(.caption).lineLimit(1)
+                        Spacer()
+                        Label(String(format: "%.1f", clinic.rating), systemImage: "star.fill")
+                            .font(.caption2).foregroundStyle(.orange)
+                    }
                 }
             }
         }
@@ -57,8 +65,8 @@ struct VetMapWidget: Widget {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             VetMapWidgetEntryView(entry: entry)
         }
-        .configurationDisplayName("附近診所")
-        .description("顯示附近獸醫診所")
+        .configurationDisplayName("VetMap 社群")
+        .description("快速開啟獸醫診所社群")
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }

@@ -1,11 +1,11 @@
 # VetMap iOS 1.0 — Release Candidate Notes
 
-> 目前狀態：準備 Xcode Cloud build `1.0 (6)`；尚未正式提交 App Review。
+> 目前狀態：準備權利安全的 Xcode Cloud build `1.0 (7)`；Build 6 已成功但不可送審；尚未正式提交 App Review。
 > 本文件不以舊本機 archive、舊 commit 數或未部署設定冒充 release proof。
 
 ## 首版範圍
 
-- 香港及台灣獸醫診所地圖、列表、搜尋、篩選、電話、網站及導航
+- 已審核獸醫診所的地圖、列表、搜尋、篩選、電話、網站及導航
 - 電郵／密碼註冊及登入
 - Sign in with Apple
 - 新增診所、評價及治療報價
@@ -14,11 +14,11 @@
 - 封鎖評價／報價作者
 - 每帳戶一次的評價「有用」標記
 - App 內帳戶及相關用戶資料刪除
-- 寵物用品／服務及寵物保險資料瀏覽
 
 ## 明確不在 1.0 公開範圍
 
 - Premium 訂閱及 IAP：程式碼仍保留作後續版本，但 `FeatureFlags.premiumEnabled` 為 `false`
+- 商戶／產品／保險目錄：沒有 release-grade rights packet，`FeatureFlags.catalogEnabled` 為 `false`
 - 評價相片：上載流程未達 release 標準，相關 UI 及相機／相簿權限已移除
 - Firebase Analytics：release target 已移除；首版不收集搜尋字或產品互動事件
 - Widget：不列作 1.0 承諾功能
@@ -49,10 +49,12 @@
 
 ## 資料及內容邊界
 
-- 內置診所／商戶／保險資料是目錄資料；不要再使用「ALL REAL」、「全部已驗證」等無法證明的宣傳字眼。
+- Build 7 不包含內置診所、商戶、保險、評價或報價資料；不要再使用「ALL REAL」、「全部已驗證」等無法證明的宣傳字眼。
 - production 舊 cloud 文件缺少 moderation 狀態，會在新規則下先被隔離，不會直接冒充已批准內容。
-- 內置 seed reviews／quotes 已停止作公開社群內容顯示；新社群內容必須經雲端待審流程。
+- 第三方自訂字型已從 target 移除並改用系統字型。
+- 新社群內容必須經雲端待審流程。
 - Content Rights 仍需帳戶持有人確認第三方資料的合法使用權，不能由程式碼或自動化代為作法律聲明。
+- 詳細證據及來源邊界見 [CONTENT_RIGHTS.md](CONTENT_RIGHTS.md)。
 
 ## 私隱
 

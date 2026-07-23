@@ -18,18 +18,15 @@ final class MapViewModel {
     var isLoading = false
     var networkError: String?
 
-    private let repository: MockClinicRepository
     private let firebase: FirebaseService
     @ObservationIgnored private var cancellables: Set<AnyCancellable> = []
 
     init(
-        repository: MockClinicRepository = MockClinicRepository(),
+        repository _: MockClinicRepository = MockClinicRepository(),
         firebase: FirebaseService = .shared
     ) {
-        self.repository = repository
         self.firebase = firebase
         self.cameraPosition = .region(Self.defaultRegion)
-        self.clinics = repository.fetchClinics()
         observeRepositoryChanges()
         loadClinics()
     }
@@ -57,14 +54,10 @@ final class MapViewModel {
         isLoading = true
         networkError = nil
         let previousSelectedClinicID = selectedClinicID
-        let seeds = repository.fetchClinics()
         await ModerationStore.shared.refreshPublicState()
         do {
-            let cloud = try await firebase.fetchClinics()
-            let cloudIDs = Set(cloud.map(\.id))
-            clinics = cloud + seeds.filter { !cloudIDs.contains($0.id) }
+            clinics = try await firebase.fetchClinics()
         } catch {
-            clinics = seeds
             networkError = "雲端診所資料暫時無法載入：\(error.localizedDescription)"
             CrashReporting.recordError(error, domain: "MapViewModel.loadClinics")
         }
@@ -105,8 +98,8 @@ final class MapViewModel {
     }
 
     static let defaultRegion = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 25.0381, longitude: 121.5432),
-        span: MKCoordinateSpan(latitudeDelta: 0.08, longitudeDelta: 0.08)
+        center: CLLocationCoordinate2D(latitude: 22.3193, longitude: 114.1694),
+        span: MKCoordinateSpan(latitudeDelta: 0.24, longitudeDelta: 0.24)
     )
 
     private func observeRepositoryChanges() {

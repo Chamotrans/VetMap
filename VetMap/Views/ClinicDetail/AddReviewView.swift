@@ -233,5 +233,5 @@ struct AddReviewView: View {
 }
 
 #Preview {
-    AddReviewView(clinicName: "安心動物醫院") { _ in nil }
+    AddReviewView(clinicName: "VetMap 測試診所") { _ in nil }
 }

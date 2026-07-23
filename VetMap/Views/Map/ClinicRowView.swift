@@ -21,7 +21,7 @@ struct ClinicRowView: View {
                         if clinic.verified {
                             Image(systemName: "checkmark.seal.fill")
                                 .foregroundStyle(AppTheme.primary)
-                                .accessibilityLabel("已驗證")
+                                .accessibilityLabel("已審核刊登")
                         }
                     }
 

@@ -26,6 +26,12 @@ struct ContentView: View {
         }
     }
 
+    private static var visibleTabs: [SidebarTab] {
+        SidebarTab.allCases.filter { tab in
+            tab != .products || FeatureFlags.catalogEnabled
+        }
+    }
+
     var body: some View {
         ZStack(alignment: .top) {
             if horizontalSizeClass == .regular {
@@ -35,7 +41,7 @@ struct ContentView: View {
             }
 
             if !networkMonitor.isConnected {
-                Text("離線模式 — 顯示本機資料")
+                Text("離線模式 — 雲端資料可能未更新")
                     .font(.caption.weight(.medium))
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
@@ -100,12 +106,14 @@ struct ContentView: View {
                 .tag(SidebarTab.clinics)
                 .accessibilityLabel("診所")
 
-            ProductsTab()
-                .tabItem {
-                    Label("好物", systemImage: "shippingbox.fill")
-                }
-                .tag(SidebarTab.products)
-                .accessibilityLabel("好物")
+            if FeatureFlags.catalogEnabled {
+                ProductsTab()
+                    .tabItem {
+                        Label("好物", systemImage: "shippingbox.fill")
+                    }
+                    .tag(SidebarTab.products)
+                    .accessibilityLabel("好物")
+            }
 
             ProfileTab()
                 .tabItem {
@@ -120,7 +128,7 @@ struct ContentView: View {
     private var ipadLayout: some View {
         NavigationSplitView {
             List(selection: $selectedTab) {
-                ForEach(SidebarTab.allCases, id: \.self) { tab in
+                ForEach(Self.visibleTabs, id: \.self) { tab in
                     Label(tab.rawValue, systemImage: tab.systemImage)
                         .tag(tab)
                 }
@@ -171,7 +179,9 @@ enum AppLaunchFlags {
     static var initialTab: ContentView.SidebarTab {
         switch screenshotScreen {
         case "02-Clinics", "03-ClinicDetail": .clinics
-        case "04-Products": .products
+        case "04-Community": .clinics
+        case "04-Products":
+            preconditionFailure("04-Products is not a supported Build 7 screenshot route")
         case "05-Profile": .profile
         default: .home
         }

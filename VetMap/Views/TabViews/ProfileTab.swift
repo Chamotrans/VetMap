@@ -5,6 +5,9 @@ import SwiftUI
 /// `true` once IAP products are live and the first subscription is in review.
 enum FeatureFlags {
     static let premiumEnabled = false
+    /// The bundled merchant and insurance catalog has no release-grade rights
+    /// packet yet, so it must not be exposed in the App Store build.
+    static let catalogEnabled = false
 }
 
 struct ProfileTab: View {
@@ -69,7 +72,7 @@ struct ProfileTab: View {
                 Text("登入以解鎖完整功能")
                     .font(.title3.weight(.semibold))
 
-                Text("收藏診所、管理會員訂閱、分享報價")
+                Text("收藏診所、投稿評論、分享報價")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -108,21 +111,23 @@ struct ProfileTab: View {
                 NavigationLink {
                     ComingSoonView(
                         title: "我的收藏",
-                        subtitle: "收藏的診所與好物將顯示在此。",
+                        subtitle: "收藏的診所將顯示在此。",
                         systemImage: "heart.fill"
                     )
                 } label: {
                     Label("收藏診所", systemImage: "building.2.fill")
                 }
 
-                NavigationLink {
-                    ComingSoonView(
-                        title: "我的收藏",
-                        subtitle: "收藏的好物將顯示在此。",
-                        systemImage: "heart.fill"
-                    )
-                } label: {
-                    Label("收藏好物", systemImage: "shippingbox.fill")
+                if FeatureFlags.catalogEnabled {
+                    NavigationLink {
+                        ComingSoonView(
+                            title: "我的收藏",
+                            subtitle: "收藏的好物將顯示在此。",
+                            systemImage: "heart.fill"
+                        )
+                    } label: {
+                        Label("收藏好物", systemImage: "shippingbox.fill")
+                    }
                 }
             }
 

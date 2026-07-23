@@ -1,27 +1,21 @@
 import SwiftUI
 
-// MARK: - 自訂字體工具
-// 使用 Rounded Mplus 1c (圓體) 作為 display/heading 字體
-// Body/Caption 保持 San Francisco 確保可讀性
+// MARK: - 字體工具
+// 使用系統 rounded design，避免在 release bundle 夾帶未有 rights packet
+// 及 license notice 的第三方字型。
 
 enum VetMapFont {
-    /// 大標題專用 — Rounded Mplus 1c Bold
-    static let display: Font = {
-        let size: CGFloat = UIFont.preferredFont(forTextStyle: .largeTitle).pointSize
-        return .custom("Rounded Mplus 1c", size: size, relativeTo: .largeTitle)
-    }()
+    /// 大標題專用
+    static let display: Font = .system(.largeTitle, design: .rounded).weight(.bold)
 
-    /// 次標題 — Rounded Mplus 1c Regular
-    static let heading: Font = {
-        let size: CGFloat = UIFont.preferredFont(forTextStyle: .title2).pointSize
-        return .custom("Rounded Mplus 1c", size: size, relativeTo: .title2)
-    }()
+    /// 次標題
+    static let heading: Font = .system(.title2, design: .rounded)
 }
 
 extension View {
-    /// 在 display/heading 層級使用自訂圓體字型
+    /// 在 display/heading 層級使用系統圓體字型
     func vetMapDisplayFont() -> some View {
-        self.font(.custom("Rounded Mplus 1c", size: UIFont.preferredFont(forTextStyle: .largeTitle).pointSize, relativeTo: .largeTitle))
+        self.font(VetMapFont.display)
     }
 }
 

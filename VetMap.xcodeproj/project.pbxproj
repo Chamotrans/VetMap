@@ -92,8 +92,7 @@
 		'WGT006E5A6B7C8D9E0F1A2B3C4' = {isa = PBXBuildFile; fileRef = 73A1B1C2D3E4F5A6B7C8D9E0 /* MockClinicRepository.swift */; };
 		'WGT007E5A6B7C8D9E0F1A2B3C4' = {isa = PBXBuildFile; fileRef = 0DA1B1C2D3E4F5A6B7C8D9E0 /* VetClinic.swift */; };
 		'WGT008E5A6B7C8D9E0F1A2B3C4' = {isa = PBXBuildFile; fileRef = 0BA1B1C2D3E4F5A6B7C8D9E0 /* ClinicCoordinate.swift */; };
-		9A07AB813AA248939013B4C6 /* RoundedMplus1c-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0E733C5418CC49B982B2F5B5 /* RoundedMplus1c-Bold.ttf */; };
-		FECE471E776541A2BB985BDD /* RoundedMplus1c-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E81C09EABBEB4E09AF91A0B2 /* RoundedMplus1c-Regular.ttf */; };
+		'WGT009E5A6B7C8D9E0F1A2B3C4' = {isa = PBXBuildFile; fileRef = 6E44DE5024594496B1268FB7 /* Localizable.xcstrings */; };
 		95C3E8FA567F420A84AB7DF2 /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D14029358344E08500C36F /* Fonts.swift */; };
 		1E54A4853EFD4796B31D1B11 /* ClinicAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6015AB6F314D4136B3551537 /* ClinicAvatar.swift */; };
 		A652A0C6596F44A2A6704ED0 /* OrganicTexture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20890FFF848345828DC4DD8A /* OrganicTexture.swift */; };
@@ -245,8 +244,6 @@
 		'WGT002E5A6B7C8D9E0F1A2B3C4' = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VetMapWidgetBundle.swift; sourceTree = "<group>"; };
 		'WGT003E5A6B7C8D9E0F1A2B3C4' = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		'WGT021E5A6B7C8D9E0F1A2B3C4' = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = VetMapWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		0E733C5418CC49B982B2F5B5 /* RoundedMplus1c-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "RoundedMplus1c-Bold.ttf"; path = VetMap/Resources/Fonts/RoundedMplus1c-Bold.ttf; sourceTree = SOURCE_ROOT; };
-		E81C09EABBEB4E09AF91A0B2 /* RoundedMplus1c-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "RoundedMplus1c-Regular.ttf"; path = VetMap/Resources/Fonts/RoundedMplus1c-Regular.ttf; sourceTree = SOURCE_ROOT; };
 		07D14029358344E08500C36F /* Fonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Fonts.swift; path = VetMap/Utilities/Fonts.swift; sourceTree = SOURCE_ROOT; };
 		6015AB6F314D4136B3551537 /* ClinicAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ClinicAvatar.swift; path = VetMap/Utilities/ClinicAvatar.swift; sourceTree = SOURCE_ROOT; };
 		20890FFF848345828DC4DD8A /* OrganicTexture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OrganicTexture.swift; path = VetMap/Utilities/OrganicTexture.swift; sourceTree = SOURCE_ROOT; };
@@ -325,8 +322,6 @@
 				06A1B1C2D3E4F5A6B7C8D9E0 /* Assets.xcassets */,
 				08A1B1C2D3E4F5A6B7C8D9E0 /* GoogleService-Info.plist */,
 				D5481FD47C3A4ED49B05ED87 /* PrivacyInfo.xcprivacy */,
-				0E733C5418CC49B982B2F5B5 /* RoundedMplus1c-Bold.ttf */,
-				E81C09EABBEB4E09AF91A0B2 /* RoundedMplus1c-Regular.ttf */,
 				7C3248EBBB054C3331F5F81F /* Utilities */,
 			);
 			path = VetMap;
@@ -680,8 +675,6 @@
 				CAD0F0515DB14FBAAF2B67DB /* Localizable.xcstrings in Resources */,
 				773984603C98419AA192DDC2 /* PrivacyInfo.xcprivacy in Resources */,
 				F96F9CD1F1A049BC966DE388 /* Assets.xcassets in Resources */,
-				9A07AB813AA248939013B4C6 /* RoundedMplus1c-Bold.ttf in Resources */,
-				FECE471E776541A2BB985BDD /* RoundedMplus1c-Regular.ttf in Resources */,
 				B7E2A91F4C0D48E1A3F56789 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -697,6 +690,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				'WGT009E5A6B7C8D9E0F1A2B3C4' /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -876,7 +870,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = VetMap/VetMap.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = 637V678N3Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -906,7 +900,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = VetMap/VetMap.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = 637V678N3Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -935,7 +929,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -958,7 +952,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -980,7 +974,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = 637V678N3Q;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = VetMapWidget/Info.plist;
@@ -1004,7 +998,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = 637V678N3Q;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = VetMapWidget/Info.plist;
