@@ -299,6 +299,57 @@ test("用戶 profile 私隱及防止自行提升 admin / premium", async () => {
   await assertFails(alice.collection("users").doc("alice").update({ isPremium: true }));
 });
 
+test("官方診所目錄可公開讀取，但只容許管理員寫入", async () => {
+  await seedAdmin();
+  const anonymous = testEnv.unauthenticatedContext().firestore();
+  const alice = testEnv.authenticatedContext("alice").firestore();
+  const admin = testEnv.authenticatedContext("admin").firestore();
+  const manifest = {
+    kind: "manifest",
+    datasetId: "tw-moa-vet-license-078",
+    status: "published",
+  };
+
+  await assertFails(
+    alice.collection("officialClinicCatalog").doc("ordinary-write").set(manifest),
+  );
+  await assertSucceeds(
+    admin.collection("officialClinicCatalog").doc("tw-moa-078-manifest").set(manifest),
+  );
+  await assertSucceeds(
+    anonymous.collection("officialClinicCatalog").doc("tw-moa-078-manifest").get(),
+  );
+  await assertSucceeds(
+    anonymous.collection("officialClinicCatalog")
+      .where("datasetId", "==", "tw-moa-vet-license-078")
+      .get(),
+  );
+  await assertFails(
+    alice.collection("officialClinicCatalog").doc("tw-moa-078-manifest").delete(),
+  );
+});
+
+test("未推出的產品及保險資料只限管理員存取", async () => {
+  await seedAdmin();
+  await testEnv.withSecurityRulesDisabled(async (context) => {
+    await context.firestore().collection("products").doc("legacy-product").set({
+      name: "未授權舊產品",
+    });
+    await context.firestore().collection("insurances").doc("legacy-plan").set({
+      name: "未授權舊保險",
+    });
+  });
+
+  const anonymous = testEnv.unauthenticatedContext().firestore();
+  const alice = testEnv.authenticatedContext("alice").firestore();
+  const admin = testEnv.authenticatedContext("admin").firestore();
+
+  await assertFails(anonymous.collection("products").doc("legacy-product").get());
+  await assertFails(alice.collection("insurances").doc("legacy-plan").get());
+  await assertSucceeds(admin.collection("products").doc("legacy-product").get());
+  await assertSucceeds(admin.collection("insurances").doc("legacy-plan").get());
+});
+
 test("Storage 待審圖片只限本人及圖片 MIME/大小", async () => {
   await seedAdmin();
   const aliceStorage = testEnv.authenticatedContext("alice").storage(bucket);

@@ -64,6 +64,113 @@ final class FirebaseService {
         return try snapshot.documents.map { try decodeDocument($0, as: Quote.self) }
     }
 
+    /// Fetches the versioned Taiwan Ministry of Agriculture licence directory.
+    ///
+    /// The catalog is stored in a small number of Firestore shard documents so
+    /// a launch does not require thousands of individual document reads. Every
+    /// field is validated before anything is returned to the presentation
+    /// layer; a partial or mismatched upload therefore fails closed.
+    func fetchOfficialClinicCatalog() async throws -> OfficialClinicCatalog {
+        let datasetID = "tw-moa-vet-license-078"
+        let manifestDocumentID = "tw-moa-078-manifest"
+        let expectedLicense = "OGDL-Taiwan-1.0"
+
+        let snapshot = try await resolveFirestore()
+            .collection("officialClinicCatalog")
+            .whereField("datasetId", isEqualTo: datasetID)
+            .getDocuments()
+
+        guard let manifestDocument = snapshot.documents.first(where: {
+            $0.documentID == manifestDocumentID
+        }) else {
+            throw FirebaseError.invalidOfficialCatalog("找不到官方資料 manifest。")
+        }
+
+        let manifest = try decodeDocument(
+            manifestDocument,
+            as: OfficialClinicCatalogManifest.self
+        )
+        guard manifest.kind == "manifest",
+              manifest.datasetId == datasetID,
+              manifest.licenseName == expectedLicense,
+              manifest.status == "published",
+              manifest.recordCount > 0,
+              manifest.recordCount <= 10_000,
+              manifest.shardCount > 0,
+              manifest.shardCount <= 100,
+              isISODate(manifest.snapshotDate),
+              isHTTPSURL(manifest.sourceURL),
+              isHTTPSURL(manifest.licenseURL) else {
+            throw FirebaseError.invalidOfficialCatalog("官方資料 manifest 驗證失敗。")
+        }
+
+        var records: [OfficialClinicRecord] = []
+        records.reserveCapacity(manifest.recordCount)
+
+        for index in 0..<manifest.shardCount {
+            let shardID = String(
+                format: "tw-moa-078-%@-shard-%03d",
+                manifest.snapshotDate,
+                index
+            )
+            guard let document = snapshot.documents.first(where: {
+                $0.documentID == shardID
+            }) else {
+                throw FirebaseError.invalidOfficialCatalog(
+                    "官方資料缺少第 \(index + 1) 個分片。"
+                )
+            }
+
+            let shard = try decodeDocument(
+                document,
+                as: OfficialClinicCatalogShard.self
+            )
+            guard shard.kind == "shard",
+                  shard.datasetId == manifest.datasetId,
+                  shard.snapshotDate == manifest.snapshotDate,
+                  shard.index == index,
+                  !shard.records.isEmpty else {
+                throw FirebaseError.invalidOfficialCatalog(
+                    "官方資料第 \(index + 1) 個分片驗證失敗。"
+                )
+            }
+            records.append(contentsOf: shard.records)
+        }
+
+        guard records.count == manifest.recordCount else {
+            throw FirebaseError.invalidOfficialCatalog(
+                "官方資料筆數與 manifest 不一致。"
+            )
+        }
+
+        var recordIDs = Set<String>()
+        for record in records {
+            guard !record.id.isEmpty,
+                  recordIDs.insert(record.id).inserted,
+                  !record.city.isEmpty,
+                  !record.licenseNumber.isEmpty,
+                  !record.licenseType.isEmpty,
+                  !record.licenseStatus.isEmpty,
+                  !record.institutionName.isEmpty,
+                  !record.address.isEmpty else {
+                throw FirebaseError.invalidOfficialCatalog(
+                    "官方資料包含重複或不完整記錄。"
+                )
+            }
+        }
+
+        return OfficialClinicCatalog(
+            manifest: manifest,
+            records: records.sorted {
+                if $0.city != $1.city {
+                    return $0.city.localizedStandardCompare($1.city) == .orderedAscending
+                }
+                return $0.institutionName.localizedStandardCompare($1.institutionName)
+                    == .orderedAscending
+            }
+        )
+    }
+
     /// Legacy repository entry points. Firestore rules only allow an admin to
     /// publish directly; user-facing flows must use `submit*` below.
     func addClinic(_ clinic: VetClinic) async throws {
@@ -636,6 +743,19 @@ final class FirebaseService {
             && !value.unicodeScalars.contains(where: CharacterSet.controlCharacters.contains)
     }
 
+    private func isISODate(_ value: String) -> Bool {
+        value.range(
+            of: #"^\d{4}-\d{2}-\d{2}$"#,
+            options: .regularExpression
+        ) != nil
+    }
+
+    private func isHTTPSURL(_ value: String) -> Bool {
+        guard let components = URLComponents(string: value) else { return false }
+        return components.scheme?.lowercased() == "https"
+            && components.host?.isEmpty == false
+    }
+
     private func isAdmin(uid: String) async throws -> Bool {
         let document = try await resolveFirestore().collection("users").document(uid).getDocument()
         return document.data()?["role"] as? String == "admin"
@@ -686,6 +806,7 @@ enum FirebaseError: Error {
     case invalidReportTarget
     case invalidReviewID
     case cannotBlockSelf
+    case invalidOfficialCatalog(String)
     case encodingFailed(Error)
     case decodingFailed(Error)
 }
@@ -715,6 +836,8 @@ extension FirebaseError: LocalizedError {
             "評價識別碼無效，未能標記為有用。"
         case .cannotBlockSelf:
             "不能封鎖自己的帳戶。"
+        case .invalidOfficialCatalog(let reason):
+            "台灣官方診所資料暫時無法使用：\(reason)"
         case .encodingFailed(let error):
             "資料編碼失敗：\(error.localizedDescription)"
         case .decodingFailed(let error):

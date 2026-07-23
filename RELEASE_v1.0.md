@@ -1,11 +1,12 @@
 # VetMap iOS 1.0 — Release Candidate Notes
 
-> 目前狀態：準備權利安全的 Xcode Cloud build `1.0 (7)`；Build 6 已成功但不可送審；尚未正式提交 App Review。
+> 目前狀態：準備包含授權官方目錄的 Xcode Cloud build `1.0 (8)`；Build 7 已成功並暫掛 iOS 1.0；尚未正式提交 App Review。
 > 本文件不以舊本機 archive、舊 commit 數或未部署設定冒充 release proof。
 
 ## 首版範圍
 
 - 已審核獸醫診所的地圖、列表、搜尋、篩選、電話、網站及導航
+- 台灣農業部官方開業執照目錄、縣市／關鍵字搜尋、電話及地址搜尋
 - 電郵／密碼註冊及登入
 - Sign in with Apple
 - 新增診所、評價及治療報價
@@ -34,6 +35,7 @@
 | `reports/{id}` | 舉報 | 只可建立自己的 pending 舉報 |
 | `users/{uid}/blockedUsers/{blockedUid}` | 私人封鎖名單 | 只限本人 |
 | `reviewEngagement/{reviewId}/voters/{uid}` | 每人一次「有用」標記 | 只可建立自己的 vote |
+| `officialClinicCatalog/{id}` | OGDL 官方資料 manifest／shards | 公開唯讀 |
 
 公開 collection 只有管理員可以建立或刪除。管理員批准投稿時，以 batch 同步建立公開文件及更新 submission 狀態。
 
@@ -49,7 +51,9 @@
 
 ## 資料及內容邊界
 
-- Build 7 不包含內置診所、商戶、保險、評價或報價資料；不要再使用「ALL REAL」、「全部已驗證」等無法證明的宣傳字眼。
+- Build 8 不包含未授權的內置香港診所、商戶、保險、評價或報價資料；不要再使用「ALL REAL」、「全部已驗證」等無法證明的宣傳字眼。
+- 台灣官方目錄使用農業部／動植物防疫檢疫署 `獸醫師(佐)開業執照` 2026-01-12 快照，共 2,074 筆，依 OGDL-Taiwan 1.0 使用並在 App 內顯名。
+- 官方來源沒有座標、營業時間、服務或評分；App 不推算這些欄位，Apple 地圖只在用戶操作時以地址搜尋。
 - production 舊 cloud 文件缺少 moderation 狀態，會在新規則下先被隔離，不會直接冒充已批准內容。
 - 第三方自訂字型已從 target 移除並改用系統字型。
 - 新社群內容必須經雲端待審流程。
@@ -67,7 +71,7 @@
 ## 已完成的本機非 build 驗證
 
 - Swift 語法 parse：通過
-- Firestore／Storage Rules emulator：9/9 通過
+- Firestore／Storage Rules emulator：11/11 通過
 - Firebase Functions ESLint：通過
 - Firebase Functions module load：通過
 - plist、Xcode project 及共用 scheme XML：通過

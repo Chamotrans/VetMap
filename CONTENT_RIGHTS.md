@@ -1,15 +1,18 @@
 # VetMap 1.0 — Content Rights Packet
 
-> Release candidate: `1.0 (7)`
-> Audited: 2026-07-23
+> Release candidate: `1.0 (8)`
+> Audited: 2026-07-24
 > Scope: App Store release bundle and production public content
 
 ## Release decision
 
-Build 7 does not ship the previously bundled clinic, merchant, insurance,
-review, quote, or custom-font datasets. Registration, clinic/review/quote
-submissions, moderation, reporting, blocking, and helpful voting remain
-available.
+Build 8 does not ship the previously bundled unlicensed clinic, merchant,
+insurance, review, quote, or custom-font datasets. It adds a versioned
+production Firestore snapshot of Taiwan's Ministry of Agriculture
+`獸醫師(佐)開業執照` open dataset under OGDL-Taiwan 1.0. The snapshot contains
+2,074 licence records dated 2026-01-12, split across 21 catalog shards.
+Registration, clinic/review/quote submissions, moderation, reporting,
+blocking, and helpful voting remain available.
 
 Public clinics, reviews, and quotes are read only from approved Firestore
 collections. New submissions remain pending until an administrator approves
@@ -29,10 +32,11 @@ direct permission.
 
 ## Excluded sources
 
-| Source/content | Build 7 decision | Reason |
+| Source/content | Build 8 decision | Reason |
 |---|---|---|
 | Historical Hong Kong clinic seeds | Excluded | No documented commercial reuse permission |
 | ePetPet / PetCircle-derived records | Excluded | Source links and attribution are not a commercial licence |
+| Taiwan Ministry of Agriculture licence registry | Included from production Firestore | OGDL-Taiwan 1.0 permits commercial reuse with attribution |
 | Merchant/service directory | Excluded and catalog UI hidden | No release-grade rights packet |
 | Insurance plan names, pricing, and coverage | Excluded and catalog UI hidden | No permission; regulated and time-sensitive claims |
 | Seed reviews and quotes | Excluded | No verifiable contributor licence or provenance |
@@ -56,7 +60,7 @@ dataset.
 - VSB register:
   <https://www.vsbhk.org.hk/english/vsro/vsro.html>
 
-No Hong Kong official dataset is approved for Build 7 ingestion.
+No Hong Kong official dataset is approved for Build 8 ingestion.
 
 ### Taiwan
 
@@ -68,13 +72,21 @@ coordinates, opening hours, services, website, or emergency status.
 - Dataset: <https://data.gov.tw/dataset/8705>
 - Licence: <https://data.gov.tw/license>
 
-It is not included in Build 7. Before a later release ingests it, VetMap must:
+Build 8 includes the 2026-01-12 snapshot in the dedicated public-read,
+admin-write `officialClinicCatalog` collection. VetMap:
 
-1. Preserve the licence number, source URL, snapshot date, and raw address.
-2. Display the required agency/dataset/licence attribution in-app.
-3. Use a separately licensed geocoder and review low-confidence coordinates.
-4. Avoid claims such as “open now” or “verified by VetMap” that the source
-   cannot support.
+1. Preserves the licence number, licence type/status, source URL, snapshot
+   date, raw address, and agency attribution.
+2. Displays the dataset and OGDL licence links in the official directory.
+3. Does not store or invent coordinates. The source contains no coordinates;
+   the Apple Maps action performs an address search only when the user opens it.
+4. Does not display the responsible veterinarian field.
+5. Does not claim “open now”, ratings, services, independent verification, or
+   VetMap endorsement for official records.
+
+Production public audit on 2026-07-24 verified 2,074 unique records, 21 shards,
+the expected OGDL manifest, and no responsible-veterinarian field in the
+published records.
 
 ## App Store Connect declaration
 

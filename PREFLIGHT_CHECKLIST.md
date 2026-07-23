@@ -2,8 +2,8 @@
 
 > App Store Connect ID: `6777361219`
 > Bundle ID: `com.vetmap.app`
-> Release candidate: `1.0 (7)`
-> 最後核對：2026-07-23
+> Release candidate: `1.0 (8)`
+> 最後核對：2026-07-24
 
 本表只記錄可驗證的目前狀態。正式按下 App Store Connect「提交以供審核」不在自動執行範圍內。
 
@@ -16,7 +16,7 @@
 - [x] 評價、報價及診所均可舉報；評價及報價作者可被封鎖
 - [x] 「有用」標記改為每個 Firebase UID 對每項評價一次
 - [x] App 內提供帳戶刪除、重新驗證、Apple token 撤銷及伺服器資料清除
-- [x] Firestore／Storage 規則 emulator 測試：9/9 通過
+- [x] Firestore／Storage 規則 emulator 測試：11/11 通過
 - [x] Firebase Functions lint 及載入檢查通過
 - [x] 全部 Swift 檔案 `swiftc -parse` 通過
 - [x] App、Widget、Privacy manifest、Xcode scheme 及 project 檔案語法檢查通過
@@ -42,8 +42,12 @@
 - [x] 建立獨立管理員帳戶，並在 `users/{uid}` 設定 `role: admin`
 - [x] 建立不需 2FA 的普通、刪除測試及 fixture App Review 電郵／密碼帳戶
 - [x] 以專用 fixture UID 建立 rights-cleared 示範診所、評價及報價，令 Helpful／Report／Block 路徑可達
+- [x] 建立 `officialClinicCatalog` 公開唯讀／管理員寫入規則並部署 production
+- [x] 從農業部 OGDL-Taiwan 1.0 官方來源發佈 2026-01-12 快照：2,074 筆、21 shards
+- [x] production 匿名查詢驗證官方 manifest、授權、筆數、shards 及無負責獸醫欄位
+- [x] 未推出產品及保險 collection 已改為管理員專用；production 匿名查詢回 403
 
-注意：production 公開 approved 查詢目前各有 1 項 VetMap 示範內容，名稱及內文均明確表示並非真實商戶、評價或醫療報價。舊資料不會被擅自標成已審核；Build 7 不再保留未授權內置目錄，但完整投稿及審核功能保留。
+注意：production 公開 approved 社群查詢目前各有 1 項 VetMap 示範內容，名稱及內文均明確表示並非真實商戶、評價或醫療報價；另有 2,074 筆台灣官方開業執照登記。舊有未授權資料不會被擅自標成已審核；Build 8 完整保留投稿、審核及社群互動。
 
 ## 待完成：Xcode Cloud / TestFlight
 
@@ -52,10 +56,13 @@
 - [x] Workflow 使用共用 `VetMap` scheme
 - [x] 設定 secret `GOOGLE_SERVICE_INFO_PLIST_BASE64`
 - [x] Xcode Cloud build `1.0 (6)` 成功並分發至 App Store Connect
-- [ ] 提交並推送 Build 7 權利安全修正
-- [ ] Xcode Cloud build `1.0 (7)` 成功且無 App Store validation error
+- [x] 提交並推送 Build 7 權利安全修正
+- [x] Xcode Cloud build `1.0 (7)` 成功且無 App Store validation error
+- [ ] 提交並推送 Build 8 官方資料目錄修正
+- [ ] Xcode Cloud build `1.0 (8)` 成功且無 App Store validation error
 - [ ] 在 TestFlight 真機完成登入、投稿、批核、公開、舉報、封鎖及帳戶刪除 smoke test
-- [ ] 將 build 7 掛接至 App Store Connect iOS 1.0
+- [x] 將 build 7 掛接至 App Store Connect iOS 1.0 作暫時 release candidate
+- [ ] 以 build 8 取代 iOS 1.0 暫掛 build
 
 本機舊 archive 及 Build 5 不能作為今次 release proof；本機是 macOS Beta，正式 build 只以 Xcode Cloud 結果為準。
 
@@ -71,10 +78,11 @@
 - [x] 完成並 Publish App Privacy 問卷
 - [x] 完成年齡分級問卷；結果 16+
 - [x] 完成 regulated medical device 聲明：No
-- [ ] 以 Build 7 真實畫面取代所有舊 screenshots
-- [ ] 把 App Store 描述／subtitle 改為 [AppStoreMetadata.md](AppStoreMetadata.md) 的 community-first 版本
+- [ ] 以 Build 8 真實畫面取代所有舊 screenshots
+- [ ] 把 App Store 描述改為 [AppStoreMetadata.md](AppStoreMetadata.md) 的官方資料＋community 版本
 - [ ] 完成 Content Rights。App 會顯示經批准的用戶內容，必須如實選擇 Yes；提交者須確認擁有或獲授權使用相關內容
-- [ ] 將 build 7 加入 iOS 1.0 review draft
+- [x] 將 build 7 加入 iOS 1.0 review draft
+- [ ] build 8 驗證後更新 review draft 所掛 build
 - [ ] 最後逐頁核對沒有紅色缺漏或矛盾
 - [ ] 停在「提交以供審核」按鈕前，交由帳戶持有人作最後確認
 
