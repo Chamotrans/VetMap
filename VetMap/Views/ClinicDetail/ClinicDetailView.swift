@@ -8,8 +8,12 @@ struct ClinicDetailView: View {
     @State private var viewModel: ClinicDetailViewModel
     @State private var isAddingReview = false
     @State private var safariURL: URL?
+    @State private var showPendingNotice = false
+    @State private var showClinicReport = false
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
+
+    static let reportReasons = ["資料不實", "重複條目", "已結業", "冒犯內容", "其他"]
 
     private let actionColumns = [
         GridItem(.flexible(), spacing: 10),
@@ -63,12 +67,24 @@ struct ClinicDetailView: View {
                 .animation(.easeInOut(duration: 0.3), value: viewModel.isLoading)
             }
             .background(AppTheme.screenBackground)
+            .refreshable {
+                await viewModel.loadCommunityData()
+            }
             .navigationTitle("診所詳情")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    ShareLink(item: "VetMap - " + clinic.name + " - " + clinic.address) {
-                        Image(systemName: "square.and.arrow.up")
+                    Menu {
+                        ShareLink(item: "VetMap - " + clinic.name + " - " + clinic.address) {
+                            Label("分享", systemImage: "square.and.arrow.up")
+                        }
+                        Button(role: .destructive) {
+                            showClinicReport = true
+                        } label: {
+                            Label("舉報診所", systemImage: "flag")
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
@@ -79,8 +95,26 @@ struct ClinicDetailView: View {
             }
             .sheet(isPresented: $isAddingReview) {
                 AddReviewView(clinicName: clinic.name) { draft in
-                    viewModel.addReview(draft)
+                    let succeeded = await viewModel.submitReviewForModeration(draft)
+                    if succeeded {
+                        showPendingNotice = true
+                        return nil
+                    }
+                    return viewModel.storageError ?? "暫時無法提交評價。"
                 }
+            }
+            .alert("已送出", isPresented: $showPendingNotice) {
+                Button("好", role: .cancel) {}
+            } message: {
+                Text("評價已提交，待管理員審核後顯示。")
+            }
+            .confirmationDialog("舉報此診所", isPresented: $showClinicReport, titleVisibility: .visible) {
+                ForEach(Self.reportReasons, id: \.self) { reason in
+                    Button(reason) {
+                        Task { _ = await viewModel.reportClinic(reason: reason) }
+                    }
+                }
+                Button("取消", role: .cancel) {}
             }
             .sheet(isPresented: Binding(
                 get: { safariURL != nil },
@@ -211,7 +245,7 @@ struct ClinicDetailView: View {
     private var reviewsSection: some View {
         detailCard(title: "社群評價", systemImage: "text.bubble.fill") {
             HStack(alignment: .center) {
-                Label("\(viewModel.reviews.count) 則近期回報", systemImage: "person.2.fill")
+                Label("\(viewModel.visibleReviews.count) 則近期回報", systemImage: "person.2.fill")
                     .font(.footnote.weight(.medium))
                     .foregroundStyle(.secondary)
 
@@ -228,15 +262,23 @@ struct ClinicDetailView: View {
                 .tint(AppTheme.primary)
             }
 
-            if viewModel.reviews.isEmpty {
+            if viewModel.visibleReviews.isEmpty {
                 emptyCommunityState("暫時未有評價")
             } else {
                 VStack(spacing: 10) {
-                    ForEach(viewModel.reviews.prefix(2)) { review in
+                    ForEach(viewModel.visibleReviews.prefix(2)) { review in
                         ReviewRowView(
                             review: review,
                             currency: defaultCurrency,
-                            onMarkHelpful: { viewModel.markHelpful(review.id) }
+                            onMarkHelpful: {
+                                Task { await viewModel.markHelpful(review.id) }
+                            },
+                            onReport: { reason in
+                                Task { _ = await viewModel.reportReview(review, reason: reason) }
+                            },
+                            onBlockAuthor: {
+                                Task { _ = await viewModel.blockUser(review.userId) }
+                            }
                         )
                     }
 
@@ -244,7 +286,7 @@ struct ClinicDetailView: View {
                         ReviewListView(clinic: clinic)
                     } label: {
                         HStack {
-                            Text("查看全部 \(viewModel.reviews.count) 則評價")
+                            Text("查看全部 \(viewModel.visibleReviews.count) 則評價")
                                 .font(.subheadline.weight(.medium))
                                 .foregroundStyle(AppTheme.primary)
 
@@ -266,11 +308,30 @@ struct ClinicDetailView: View {
     @ViewBuilder
     private var quoteSection: some View {
         detailCard(title: "費用報價", systemImage: "dollarsign.circle.fill") {
-            if viewModel.quotes.isEmpty {
-                emptyCommunityState("暫無報價記錄")
+            if viewModel.visibleQuotes.isEmpty {
+                VStack(spacing: 12) {
+                    emptyCommunityState("暫無報價記錄")
+
+                    NavigationLink {
+                        QuoteListView(clinicId: clinic.id, clinicName: clinic.name)
+                    } label: {
+                        Label("分享第一筆報價", systemImage: "plus.circle.fill")
+                            .font(.subheadline.weight(.semibold))
+                            .frame(maxWidth: .infinity)
+                            .padding(12)
+                            .background(
+                                AppTheme.primary.opacity(0.12),
+                                in: RoundedRectangle(
+                                    cornerRadius: AppTheme.cardRadius,
+                                    style: .continuous
+                                )
+                            )
+                    }
+                    .buttonStyle(.plain)
+                }
             } else {
                 VStack(spacing: 12) {
-                    ForEach(viewModel.quotes.prefix(2)) { quote in
+                    ForEach(viewModel.visibleQuotes.prefix(2)) { quote in
                         quoteRow(quote)
                     }
 
@@ -278,7 +339,7 @@ struct ClinicDetailView: View {
                         QuoteListView(clinicId: clinic.id, clinicName: clinic.name)
                     } label: {
                         HStack {
-                            Text("查看全部 \(viewModel.quotes.count) 筆報價")
+                            Text("查看全部 \(viewModel.visibleQuotes.count) 筆報價")
                                 .font(.subheadline.weight(.semibold))
                             Spacer()
                             Image(systemName: "chevron.right")
@@ -367,6 +428,25 @@ struct ClinicDetailView: View {
                     Text("估算")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                }
+
+                Menu {
+                    Button(role: .destructive) {
+                        Task {
+                            _ = await viewModel.reportQuote(quote, reason: "內容不實或不當")
+                        }
+                    } label: {
+                        Label("舉報報價", systemImage: "flag")
+                    }
+                    Button(role: .destructive) {
+                        Task { _ = await viewModel.blockUser(quote.userId) }
+                    } label: {
+                        Label("封鎖作者", systemImage: "person.crop.circle.badge.xmark")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
                 }
             }
         }

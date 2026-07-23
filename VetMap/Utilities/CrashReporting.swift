@@ -17,10 +17,4 @@ enum CrashReporting {
         #endif
         print("[Crashlytics][\(domain)] Error: \(error.localizedDescription)")
     }
-
-    static func setUserID(_ userID: String?) {
-        #if canImport(FirebaseCrashlytics)
-        Crashlytics.crashlytics().setUserID(userID ?? "")
-        #endif
-    }
 }

@@ -38,6 +38,9 @@ struct SignUpView: View {
         .background(AppTheme.screenBackground)
         .navigationTitle("註冊")
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            authViewModel.clearError()
+        }
     }
 
     // MARK: - Branding
@@ -193,7 +196,7 @@ struct SignUpView: View {
         }
         .foregroundStyle(.white)
         .background(AppTheme.primary, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-        .disabled(isLoading)
+        .disabled(isLoading || authViewModel.isAuthenticating)
         .padding(.horizontal, 16)
         .accessibilityLabel("註冊")
         .accessibilityHint("建立新帳戶")
@@ -248,6 +251,6 @@ struct SignUpView: View {
 
 #Preview {
     NavigationStack {
-        SignUpView(authViewModel: AuthViewModel())
+        SignUpView(authViewModel: .shared)
     }
 }

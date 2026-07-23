@@ -1,9 +1,9 @@
 import SwiftUI
-import PhotosUI
 
 struct AddReviewView: View {
     let clinicName: String
-    var onSubmit: (ReviewDraft) -> Bool
+    /// Returns nil on confirmed cloud success, or a user-facing error.
+    var onSubmit: (ReviewDraft) async -> String?
 
     @Environment(\.dismiss) private var dismiss
     @FocusState private var focusedField: Field?
@@ -13,17 +13,14 @@ struct AddReviewView: View {
     @State private var treatmentType = "一般診療"
     @State private var cost = ""
     @State private var validationMessage: String?
+    @State private var isSubmitting = false
 
-    @State private var selectedPhotoItems: [PhotosPickerItem] = []
-    @State private var selectedPhotoData: [Data] = []
     @State private var showConfetti = false
 
     private let treatmentTypes = [
         "疫苗接種", "一般診療", "外科手術", "牙科",
         "皮膚科", "影像檢查", "夜間門診", "初診", "其他"
     ]
-
-    private let maxPhotos = 3
 
     private enum Field: Hashable {
         case title
@@ -37,7 +34,6 @@ struct AddReviewView: View {
                 ratingSection
                 contentSection
                 treatmentSection
-                photoSection
                 validationSection
             }
             .scrollContentBackground(.hidden)
@@ -48,12 +44,21 @@ struct AddReviewView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("取消") { dismiss() }
+                        .disabled(isSubmitting)
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("提交") { submit() }
+                    Button {
+                        Task { await submit() }
+                    } label: {
+                        if isSubmitting {
+                            ProgressView()
+                        } else {
+                            Text("提交")
+                        }
+                    }
                         .fontWeight(.semibold)
-                        .disabled(!canSubmit)
+                        .disabled(!canSubmit || isSubmitting)
                 }
 
                 ToolbarItemGroup(placement: .keyboard) {
@@ -142,71 +147,6 @@ struct AddReviewView: View {
         }
     }
 
-    private var photoSection: some View {
-        Section {
-            if !selectedPhotoData.isEmpty {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 10) {
-                        ForEach(Array(selectedPhotoData.enumerated()), id: \.offset) { index, data in
-                            photoThumbnail(data: data, index: index)
-                        }
-                    }
-                }
-            }
-
-            if selectedPhotoItems.count < maxPhotos {
-                PhotosPicker(
-                    selection: $selectedPhotoItems,
-                    maxSelectionCount: maxPhotos,
-                    matching: .images
-                ) {
-                    Label(
-                        "新增照片 (\(selectedPhotoItems.count)/\(maxPhotos))",
-                        systemImage: "photo.on.rectangle.angled"
-                    )
-                }
-            }
-        } header: {
-            Label("照片", systemImage: "photo")
-        } footer: {
-            // Firebase Storage upload will be added in a future update.
-            Text("照片將儲存於本機，稍後將支援雲端備份。")
-        }
-        .onChange(of: selectedPhotoItems) { _, items in
-            Task {
-                selectedPhotoData = []
-                for item in items {
-                    if let data = try? await item.loadTransferable(type: Data.self) {
-                        selectedPhotoData.append(data)
-                    }
-                }
-            }
-        }
-    }
-
-    private func photoThumbnail(data: Data, index: Int) -> some View {
-        ZStack(alignment: .topTrailing) {
-            if let uiImage = UIImage(data: data) {
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 80, height: 80)
-                    .clipShape(RoundedRectangle(cornerRadius: AppTheme.compactRadius))
-            }
-
-            Button {
-                selectedPhotoData.remove(at: index)
-                selectedPhotoItems.remove(at: index)
-            } label: {
-                Image(systemName: "xmark.circle.fill")
-                    .font(.body.weight(.semibold))
-                    .foregroundStyle(.white)
-                    .background(Circle().fill(.black.opacity(0.55)))
-            }
-            .offset(x: 6, y: -6)
-        }
-    }
-
     @ViewBuilder
     private var validationSection: some View {
         if let validationMessage {
@@ -246,7 +186,7 @@ struct AddReviewView: View {
 
     // MARK: - Submission
 
-    private func submit() {
+    private func submit() async {
         guard !trimmed(title).isEmpty else {
             validationMessage = "請填寫評價標題。"
             return
@@ -275,10 +215,14 @@ struct AddReviewView: View {
             cost: parsedCost
         )
 
-        if onSubmit(draft) {
-            dismiss()
+        isSubmitting = true
+        let errorMessage = await onSubmit(draft)
+        isSubmitting = false
+
+        if let errorMessage {
+            validationMessage = errorMessage
         } else {
-            validationMessage = "提交失敗，請稍後再試。"
+            dismiss()
         }
     }
 
@@ -286,26 +230,8 @@ struct AddReviewView: View {
         value.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    // Firebase Storage upload will be added in a future update.
-    private func savePhotosLocally() -> [URL] {
-        let directory = FileManager.default
-            .urls(for: .cachesDirectory, in: .userDomainMask)[0]
-            .appending(path: "review-photos", directoryHint: .isDirectory)
-
-        try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-
-        return selectedPhotoData.compactMap { data in
-            let url = directory.appending(path: "\(UUID().uuidString).jpg")
-            do {
-                try data.write(to: url)
-                return url
-            } catch {
-                return nil
-            }
-        }
-    }
 }
 
 #Preview {
-    AddReviewView(clinicName: "安心動物醫院") { _ in true }
+    AddReviewView(clinicName: "安心動物醫院") { _ in nil }
 }

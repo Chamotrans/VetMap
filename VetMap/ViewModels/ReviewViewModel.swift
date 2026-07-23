@@ -10,63 +10,119 @@ enum ReviewSortOrder: String, CaseIterable {
 @MainActor
 @Observable
 final class ReviewViewModel {
-    var reviews: [Review] = []
+    private(set) var reviews: [Review] = []
     var sortOrder: ReviewSortOrder = .newest
+    private(set) var storageError: String?
+    private(set) var isLoading = false
 
     private let clinicId: String
-    private let repository: MockCommunityRepository
+    private let seedRepository: MockCommunityRepository
+    private let firebase: FirebaseService
     @ObservationIgnored private var cancellables: Set<AnyCancellable> = []
 
     init(
         clinicId: String,
-        repository: MockCommunityRepository = MockCommunityRepository()
+        repository: MockCommunityRepository = MockCommunityRepository(),
+        firebase: FirebaseService = .shared
     ) {
         self.clinicId = clinicId
-        self.repository = repository
+        self.seedRepository = repository
+        self.firebase = firebase
+        self.reviews = []
         observeRepositoryChanges()
-        loadReviews()
+        Task { await loadReviews() }
     }
 
     var sortedReviews: [Review] {
+        let moderation = ModerationStore.shared
+        let visible = reviews.filter {
+            !moderation.removedReviewIDs.contains($0.id)
+                && !moderation.blockedUserIDs.contains($0.userId)
+        }
         switch sortOrder {
         case .newest:
-            reviews.sorted { $0.createdAt > $1.createdAt }
+            visible.sorted { $0.createdAt > $1.createdAt }
         case .highestRating:
-            reviews.sorted { $0.rating > $1.rating }
+            visible.sorted { $0.rating > $1.rating }
         case .mostHelpful:
-            reviews.sorted { $0.helpfulCount > $1.helpfulCount }
+            visible.sorted { $0.helpfulCount > $1.helpfulCount }
         }
     }
 
-    func loadReviews() {
-        reviews = repository.fetchReviews(for: clinicId)
+    func loadReviews() async {
+        isLoading = true
+        defer { isLoading = false }
+        let seeds: [Review] = []
+        await ModerationStore.shared.refreshPublicState()
+
+        do {
+            let cloud = try await firebase.fetchReviews(for: clinicId)
+            let cloudIDs = Set(cloud.map(\.id))
+            let helpfulCounts = (try? await firebase.fetchReviewHelpfulCounts()) ?? [:]
+            reviews = (cloud + seeds.filter { !cloudIDs.contains($0.id) }).map { review in
+                var review = review
+                review.helpfulCount += helpfulCounts[review.id, default: 0]
+                return review
+            }
+            storageError = nil
+        } catch {
+            reviews = seeds
+            storageError = "雲端評價暫時無法載入：\(error.localizedDescription)"
+            CrashReporting.recordError(error, domain: "ReviewViewModel.loadReviews")
+        }
     }
 
-    func markHelpful(_ reviewId: String) {
-        guard let index = reviews.firstIndex(where: { $0.id == reviewId }) else { return }
-
-        var updated = reviews[index]
-        updated.helpfulCount += 1
-
-        // Update in-memory immediately
-        reviews[index] = updated
-
-        // Persist (best-effort)
+    func markHelpful(_ reviewId: String) async {
         do {
-            try repository.addReview(updated)
+            try await firebase.markReviewHelpful(reviewId: reviewId)
+            if let index = reviews.firstIndex(where: { $0.id == reviewId }) {
+                reviews[index].helpfulCount += 1
+            }
+            storageError = nil
         } catch {
-            // In-memory update already applied, persistence can retry later
+            storageError = error.localizedDescription
+            CrashReporting.recordError(error, domain: "ReviewViewModel.markHelpful")
+        }
+    }
+
+    func report(_ review: Review, reason: String) async -> Bool {
+        do {
+            try await ModerationStore.shared.submitReport(
+                targetType: .review,
+                targetId: review.id,
+                targetTitle: review.title,
+                clinicId: clinicId,
+                reason: reason
+            )
+            storageError = nil
+            Haptics.medium()
+            return true
+        } catch {
+            storageError = error.localizedDescription
+            return false
+        }
+    }
+
+    func blockAuthor(of review: Review) async -> Bool {
+        do {
+            try await ModerationStore.shared.blockUser(review.userId)
+            storageError = nil
+            Haptics.medium()
+            return true
+        } catch {
+            storageError = error.localizedDescription
+            return false
         }
     }
 
     private func observeRepositoryChanges() {
         NotificationCenter.default.publisher(for: .vetCommunityRepositoryDidChange)
+            .merge(with: NotificationCenter.default.publisher(for: .vetModerationDidChange))
             .sink { [weak self] notification in
                 let changedID = notification.userInfo?[MockCommunityRepository.changedClinicIDUserInfoKey] as? String
-
                 Task { @MainActor in
                     guard let self, changedID == nil || changedID == self.clinicId else { return }
-                    self.loadReviews()
+                    await self.loadReviews()
                 }
             }
             .store(in: &cancellables)

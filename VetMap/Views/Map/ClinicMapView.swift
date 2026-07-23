@@ -45,7 +45,8 @@ struct ClinicMapView: View {
         .onAppear {
             viewModel.loadClinics()
             // 只在過咗 onboarding 先請求定位，避免權限對話框蓋住 onboarding
-            if hasSeenOnboarding {
+            // 截圖模式唔請求定位，避免權限彈窗蓋住自動截圖
+            if hasSeenOnboarding && !AppLaunchFlags.isScreenshotMode {
                 applyInitialLocation()
             }
         }

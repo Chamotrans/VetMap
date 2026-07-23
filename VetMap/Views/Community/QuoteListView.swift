@@ -10,7 +10,9 @@ struct QuoteListView: View {
     init(clinicId: String, clinicName: String) {
         self.clinicId = clinicId
         self.clinicName = clinicName
-        _viewModel = State(wrappedValue: QuoteViewModel(clinicId: clinicId))
+        _viewModel = State(
+            wrappedValue: QuoteViewModel(clinicId: clinicId, clinicName: clinicName)
+        )
     }
 
     var body: some View {
@@ -25,10 +27,10 @@ struct QuoteListView: View {
                         .appCard(fill: AppTheme.warning.opacity(0.12), stroke: AppTheme.warning.opacity(0.22))
                 }
 
-                if viewModel.quotes.isEmpty {
+                if viewModel.visibleQuotes.isEmpty {
                     emptyState
                 } else {
-                    ForEach(viewModel.quotes) { quote in
+                    ForEach(viewModel.visibleQuotes) { quote in
                         quoteCard(quote)
                     }
                 }
@@ -36,6 +38,9 @@ struct QuoteListView: View {
             .padding(16)
         }
         .background(AppTheme.screenBackground)
+        .refreshable {
+            await viewModel.loadQuotes()
+        }
         .navigationTitle("\(clinicName) 費用報價")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -89,6 +94,24 @@ struct QuoteListView: View {
                         tint: quote.currency == "TWD" ? AppTheme.primary : AppTheme.accent,
                         isFilled: true
                     )
+
+                Menu {
+                    ForEach(["資料不實", "冒犯內容", "廣告或垃圾訊息", "其他"], id: \.self) { reason in
+                        Button {
+                            Task { _ = await viewModel.report(quote, reason: reason) }
+                        } label: {
+                            Text("舉報：\(reason)")
+                        }
+                    }
+                    Button(role: .destructive) {
+                        Task { _ = await viewModel.blockAuthor(of: quote) }
+                    } label: {
+                        Label("封鎖作者", systemImage: "person.crop.circle.badge.xmark")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                        .foregroundStyle(.tertiary)
+                }
             }
 
             if !quote.notes.isEmpty {

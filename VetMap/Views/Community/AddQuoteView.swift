@@ -12,6 +12,8 @@ struct AddQuoteView: View {
     @State private var currency = "TWD"
     @State private var notes = ""
     @State private var validationMessage: String?
+    @State private var isSubmitting = false
+    @State private var showSubmittedNotice = false
 
     private let treatmentTypes = [
         "疫苗接種", "一般診療", "外科手術", "牙科", "腫瘤諮詢",
@@ -95,19 +97,31 @@ struct AddQuoteView: View {
             .background(AppTheme.screenBackground)
             .navigationTitle("新增報價")
             .navigationBarTitleDisplayMode(.inline)
+            .alert("已送出", isPresented: $showSubmittedNotice) {
+                Button("好") { dismiss() }
+            } message: {
+                Text("報價已提交，待管理員審核後公開。")
+            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("取消") {
                         dismiss()
                     }
+                    .disabled(isSubmitting)
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("提交") {
-                        submit()
+                    Button {
+                        Task { await submit() }
+                    } label: {
+                        if isSubmitting {
+                            ProgressView()
+                        } else {
+                            Text("提交")
+                        }
                     }
                     .fontWeight(.semibold)
-                    .disabled(!canSubmit)
+                    .disabled(!canSubmit || isSubmitting)
                 }
 
                 ToolbarItemGroup(placement: .keyboard) {
@@ -139,7 +153,7 @@ struct AddQuoteView: View {
         return Decimal(string: value)
     }
 
-    private func submit() {
+    private func submit() async {
         guard let estCost = parsedEstimatedCost else {
             validationMessage = "請輸入有效的預估費用。"
             return
@@ -147,14 +161,18 @@ struct AddQuoteView: View {
 
         let actCost = isNotTreated ? nil : parsedActualCost
 
-        if viewModel.addQuote(
+        isSubmitting = true
+        let succeeded = await viewModel.addQuote(
             treatmentType: treatmentType,
             estimatedCost: estCost,
             actualCost: actCost,
             currency: currency,
             notes: notes
-        ) {
-            dismiss()
+        )
+        isSubmitting = false
+
+        if succeeded {
+            showSubmittedNotice = true
         } else {
             validationMessage = viewModel.storageError ?? "暫時無法提交報價。"
         }

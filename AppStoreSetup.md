@@ -1,233 +1,166 @@
-# App Store Connect 上架準備指南
+# VetMap App Store Connect 送審設定
 
-## 一、建立 App Store Connect 應用程式記錄
+> App ID: `6777361219`
+> Bundle ID: `com.vetmap.app`
+> Version: `1.0`
+> Target build: Xcode Cloud `6`
 
-### 1.1 登入 App Store Connect
+此文件是今次免費首版的實際填表基線；Premium／IAP 不屬於 1.0。最後必須停在正式「提交以供審核」按鈕前。
 
-前往 [App Store Connect](https://appstoreconnect.apple.com/)，使用 Apple Developer 帳號登入。
+## Version Information
 
-### 1.2 新增 App
+使用 [AppStoreMetadata.md](AppStoreMetadata.md) 的描述、subtitle 及 keywords。
 
-1. 點擊 **「App」** → 左上角 **「+」按鈕** → **「新增 App」**
-2. 填寫以下資訊：
+必填：
 
-| 欄位 | 值 |
-|---|---|
-| **平台** | iOS |
-| **名稱** | VetMap - 寵物醫院地圖 |
-| **主要語言** | 繁體中文（zh-Hant-HK） |
-| **套裝 ID（Bundle ID）** | `com.vetmap.app` |
-| **SKU** | `com.vetmap.app` |
-| **使用者存取權** | 完整存取 |
+- Support URL：`https://vetmap-app.web.app/support`
+- Privacy Policy URL：`https://vetmap-app.web.app`
+- Copyright：`2026 Chamotrans`
+- Primary category：Medical
+- Secondary category：Lifestyle
+- Price：Free
 
-3. 點擊 **「建立」**
+描述須保留醫療免責聲明：
 
----
+> 診所、評價、保險及費用資料只供一般參考，不構成獸醫診斷或治療建議；緊急情況請直接聯絡合資格獸醫診所。
 
-## 二、App 資訊設定
+## Screenshots
 
-### 2.1 類別設定
+App Store Connect 現時有 4 張 iPhone 及 4 張 iPad 截圖。掛接 Build 6 前逐張確認：
 
-| 欄位 | 值 |
-|---|---|
-| **主要類別** | Medical（醫療） |
-| **次要類別** | Lifestyle（生活風格） |
+- 仍與 Build 6 的 UI 及功能相符；
+- 不顯示已移除的相片上載或已隱藏的 Premium；
+- 不聲稱未經證明的資料數量、驗證狀態或醫療結果；
+- 至少一張清楚展示社群投稿／審核，另一張展示舉報／封鎖或帳戶控制。
 
-### 2.2 年齡分級
+## App Review Information
 
-在 **「App 資訊」** → **「年齡分級」** 點擊編輯，填寫問卷。
+「需要登入」保持勾選，填入一個穩定、無 2FA 的普通 Email/Password 帳戶。另準備一個可刪除的測試帳戶，避免 reviewer 刪除主要帳戶後不能繼續。
 
-建議設定：**4+**（不含使用者生成內容的過濾機制則設定為 **12+**，因本 App 具備評論與社群功能，建議設定為 **12+**）
+不要把 reviewer password 提交到 Git。
 
-常見問卷回答：
+Review Notes：
 
-| 問題 | 回答 |
-|---|---|
-| 不受限制的網路存取 | 無 |
-| 使用者生成內容／社群功能 | **是** |
-| 內購 | **是**（Premium 訂閱） |
-| 位置資訊 | **是**（地圖功能） |
+```text
+VetMap is a veterinary clinic directory and moderated community platform.
+It does not diagnose, monitor, prevent, or treat medical conditions and is
+not a regulated medical device.
 
-### 2.3 定價
+Test account:
+Email: <REVIEW_EMAIL>
+Password: <REVIEW_PASSWORD>
 
-在 **「App 資訊」** → **「定價與供應狀況」** 設定：
+Test paths:
+1. My → Login / Sign Up.
+2. Clinics → + to submit a clinic.
+3. Open a clinic → Add Review or Add Quote.
+4. Open an approved review/quote → Helpful / Report / Block Author.
+5. My → Account Settings → Delete Account.
 
-| 設定 | 值 |
-|---|---|
-| **價格排程** | 免費（Free） |
-| **供應地區** | 所有地區 / 或指定：台灣、香港、澳門 |
+All new clinic, review, and quote submissions remain Pending until manually
+reviewed by an administrator. No IAP or subscription UI is exposed in v1.0.
+Location permission is optional and precise location is processed on device
+only to center the map and calculate distance.
 
----
+Disposable deletion-test account:
+Email: <DELETE_TEST_EMAIL>
+Password: <DELETE_TEST_PASSWORD>
 
-## 三、App 內購買項目（IAP）設定
+Support: https://vetmap-app.web.app/support
+```
 
-### 3.1 建立訂閱群組
+Review 帳戶登入後必須已看得到由另一個 UID 發佈的 approved review／quote，讓 reviewer 實際測試 Helpful、Report 及 Block。
 
-1. 在 App Store Connect 左側選單點擊 **「訂閱項目」**（若左側無此選項，先點擊 App 進入 → **「App 內購買」** 分頁）
-2. 點擊 **「建立」** → 選擇 **「自動續訂型訂閱」**
+## App Privacy
 
-### 3.2 建立月費方案
+Tracking：No。
 
-| 欄位 | 值 |
-|---|---|
-| **類型** | 自動續訂型訂閱 |
-| **參考名稱** | VetMap Premium 月費 |
-| **產品 ID** | `com.vetmap.premium.monthly` |
-| **訂閱群組** | 新建「VetMap Premium」群組，群組參考名稱：`premium` |
+| Data Type | Linked to User | Tracking | Purpose |
+|---|---:|---:|---|
+| Name | Yes | No | App Functionality |
+| Email Address | Yes | No | App Functionality |
+| User ID | Yes | No | App Functionality |
+| Other User Content | Yes | No | App Functionality |
+| Crash Data | No | No | App Functionality |
+| Other Diagnostic Data | No | No | App Functionality, Analytics |
+| Other Data Types | No | No | App Functionality |
 
-價格設定：
+不要勾選：
 
-| 設定 | 值 |
-|---|---|
-| **訂閱持續時間** | 1 個月 |
-| **價格** | TWD 80（新台幣），HKD 20（港幣） |
-| **試用期** | 無（或可選：1 週免費試用） |
+- Precise Location：目前位置只在裝置處理；
+- Photos or Videos：1.0 沒有相片投稿；
+- Purchase History：1.0 沒有公開 IAP；
+- Product Interaction／Search History：Firebase Analytics 已移除；
+- Advertising Data：沒有廣告；
+- Data Used to Track You：沒有跨 App／網站追蹤。
 
-### 3.3 建立年費方案
+問卷答案必須 Publish，不能只儲存草稿。
 
-| 欄位 | 值 |
-|---|---|
-| **類型** | 自動續訂型訂閱 |
-| **參考名稱** | VetMap Premium 年費 |
-| **產品 ID** | `com.vetmap.premium.yearly` |
-| **訂閱群組** | `premium` |
+## Age Rating
 
-價格設定：
+按 App Store Connect 當日顯示的現行問卷如實作答，讓 Apple 計算結果；不要手動猜 4+／12+。
 
-| 設定 | 值 |
-|---|---|
-| **訂閱持續時間** | 1 年 |
-| **價格** | TWD 1,000（新台幣），HKD 250（港幣） |
-| **試用期** | 無（或可選：1 個月免費試用） |
+以目前功能作保守基線：
 
-### 3.4 對應 Products.storekit
+- User-Generated Content：Yes
+- Social／community interaction：Yes
+- Messaging or Chat：Yes（現行問卷如把公開投稿列入）
+- Under-13 social controls：No（沒有 Declared Age Range API）
+- Unrestricted Web Access：Yes（clinic URL 透過 in-app Safari 開啟）
+- Advertising：No，前提是商戶列表沒有收費推廣
+- Medical／Treatment Information：Infrequent or Mild
+- Gambling、Loot Boxes、Dating、Violence、Sexual Content、Drugs：No
 
-確認 `VetMap/Resources/Products.storekit` 檔案中已包含這兩個產品 ID，用於本地 StoreKit 測試。
+如 ASC 問卷字眼或選項有更新，以畫面原文及真實功能為準。
 
-目前的 storekit 檔案僅為空殼，需在 Xcode 中開啟此檔案並手動加入兩個產品：
+## Regulated Medical Device
 
-1. 在 Xcode 專案導覽器中點擊 `Products.storekit`
-2. 點擊左下角 **「+」** → 新增 **「Auto-Renewable Subscription」**
-3. 參考名稱填入 `VetMap Premium Monthly`，產品 ID 為 `com.vetmap.premium.monthly`
-4. 重複步驟，新增 `VetMap Premium Yearly`，產品 ID 為 `com.vetmap.premium.yearly`
+選擇 `No`。VetMap 是診所目錄及社群資料工具，不診斷、監測、預防或治療疾病，也不控制醫療裝置。
 
----
+這項聲明與 Primary Category 是 Medical 無衝突，但 Review Notes 及描述必須一致。
 
-## 四、螢幕截圖規格
+## Content Rights
 
-### 4.1 必須提交的螢幕尺寸
+不能再回答「No third-party content」。VetMap 顯示第三方診所／商戶／保險目錄及用戶內容：
 
-| 尺寸 | 對應機型 | 解析度（直向） | 最少張數 |
-|---|---|---|---|
-| **6.9 吋** | iPhone 16 Pro Max, iPhone 15 Pro Max | 1320 x 2868 | 3 張 |
-| **6.5 吋** | iPhone 11 Pro Max, iPhone XS Max | 1242 x 2688 | 3 張 |
-| **5.5 吋** | iPhone 8 Plus, iPhone 7 Plus | 1242 x 2208 | 3 張 |
+1. 回答 App contains, shows, or accesses third-party content：`Yes`。
+2. 勾選「擁有必要權利」前，由帳戶持有人確認並保存 license、permission 或其他合法使用依據。
+3. 用戶新投稿由 Terms of Service 的內容授權條款涵蓋。
+4. repo 註解、來源連結或「資料真實」並不是授權證據。
+5. 如無法證明既有第三方 dataset 的使用權，先移除／隱藏該批資料或改用有明確開放授權的來源。
 
-> **提示**: 可以只上傳 6.9 吋截圖，並在 App Store Connect 中勾選「使用 6.9 吋截圖」來自動套用到其他尺寸。但建議三種尺寸都準備以獲得最佳呈現效果。
+此項是法律聲明，不能由自動化代替帳戶持有人確認。
 
-### 4.2 截圖內容建議
+## In-App Purchases
 
-每組截圖建議包含以下畫面：
+1.0 不提供 Premium 或 subscription UI：
 
-1. **地圖主畫面** — 顯示附近獸醫診所的地圖標記
-2. **診所詳情頁** — 包含評價、報價、聯絡資訊
-3. **社群報價／評價列表** — 展示使用者互動功能
-4. **搜尋與篩選** — 展示地區／價格篩選
-5. **Premium 方案頁** — 展示付費功能（若有）
+- `FeatureFlags.premiumEnabled = false`
+- 不把任何 IAP 加入本次 review draft
+- Metadata、screenshots 及 Review Notes 均不得宣傳 Premium
 
-### 4.3 截圖規範
+StoreKit 程式碼及測試產品留作後續版本，不代表今次需要建立或提交 IAP。
 
-- 無狀態列（或隱藏狀態列中的時間／電信商資訊）
-- 畫面必須為直向（Portrait）
-- 不得包含模擬機邊框
-- 文字必須清晰可讀
-- 背景避免過於複雜
+## Build and TestFlight
 
----
+本機是 macOS Beta，不用本機 archive 作送審 build。
 
-## 五、隱私權標籤
+1. 推送 release commit 至 GitHub `main`。
+2. Xcode Cloud 使用共用 `VetMap` scheme。
+3. 設定 `GOOGLE_SERVICE_INFO_PLIST_BASE64` secret。
+4. 下一個 build number 設為 `6`。
+5. Workflow 執行 tests、Release Archive 及 TestFlight Internal Testing。
+6. 安裝同一 Build 6 作真機 UGC／account deletion smoke test。
+7. 將 processing 完成的 Build 6 掛接至 iOS 1.0。
 
-Apple 要求所有 App 提交時填寫隱私權營養標籤。
+## 最後核對
 
-### 5.1 本 App 使用的資料類型
-
-| 資料類型 | 用途 | 是否追蹤 |
-|---|---|---|
-| **聯絡資訊（電子郵件、姓名）** | App 功能：使用者登入與個人檔案 | 否 |
-| **位置（精確位置）** | App 功能：顯示附近診所 | 否 |
-| **使用者內容（評價、評論內容、照片）** | App 功能：社群功能 | 否 |
-| **識別碼（使用者 ID）** | App 功能：帳號關聯 | 否 |
-| **購買項目** | App 功能：Premium 訂閱管理 | 否 |
-
-### 5.2 填寫方式
-
-在 App Store Connect → App → **「App 隱私權」** 分頁 → 點擊 **「開始使用」**，依序回答問卷。
-
-### 5.3 隱私權政策 URL
-
-必須提供一個公開的隱私權政策網址。若暫無獨立頁面，可使用 [GitHub Pages](https://pages.github.com/) 或 [Notion 公開頁面](https://www.notion.so/) 暫代。
-
----
-
-## 六、TestFlight 設定步驟
-
-### 6.1 前置條件
-
-- App Store Connect 應用程式記錄已建立
-- App 至少上傳過一個通過審核的建置版本
-- Apple Developer Program 會籍有效（年費已繳）
-
-### 6.2 上傳建置版本
-
-1. 在 Xcode 中選擇 **Any iOS Device (arm64)** 作為執行目標
-2. 選單列 → **Product** → **Archive**
-3. Archives 視窗開啟後，選擇剛產生的 archive → **Distribute App**
-4. 選擇 **App Store Connect** → **Upload**
-5. 勾選 **Manage Version and Build Number** 與 **Strip Swift symbols**（建議）
-6. 等待上傳完成
-
-### 6.3 建立測試群組
-
-1. 前往 App Store Connect → **「App」** → 選擇 VetMap → **「TestFlight」** 分頁
-2. 在 **「內部測試」** 區域，點擊 **「+」** 新增測試人員（Apple ID 郵箱）
-3. 可建立 **「外部測試群組」** 邀請公開測試人員（最多 10,000 人，需通過 Beta App Review）
-4. 上傳的建置版本會自動出現在 TestFlight 可選列表中
-5. 設定測試資訊：
-   - **測試內容說明（What to Test）**: 填寫本版本的測試重點
-   - **測試回饋信箱**: 填寫開發團隊聯絡信箱
-   - **Beta App 描述**: 對外公開的測試版說明
-
-### 6.4 內部測試 vs 外部測試
-
-| 特性 | 內部測試 | 外部測試 |
-|---|---|---|
-| 人數上限 | 100 人 | 10,000 人 |
-| Beta 審核 | 不需要 | 需要（首次提交時） |
-| 建置立即可用 | 是 | 需審核通過後 |
-| 適用情境 | 開發團隊內部 | 種子用戶、公測 |
-
-### 6.5 測試人員操作
-
-測試人員會收到 Apple 的邀請郵件，點擊「View in TestFlight」後：
-
-1. 在 iOS 裝置上安裝 TestFlight App
-2. 接受邀請並安裝 Beta 版
-3. 每次有新版本時自動收到更新通知
-4. 可透過 TestFlight App 直接提交回饋（含螢幕截圖）
-
----
-
-## 七、提交審核前檢查清單
-
-- [ ] App 圖示（1024x1024 無圓角 PNG）
-- [ ] 至少一組截圖（6.9 吋，最少 3 張）
-- [ ] 隱私權政策 URL
-- [ ] 隱私權標籤填寫完成
-- [ ] 年齡分級問卷完成
-- [ ] IAP 產品建立並狀態為「已核准」
-- [ ] IAP 產品已加入 App 的 IAP 列表並顯示為「Ready to Submit」
-- [ ] 建置版本已上傳且處理完成
-- [ ] TestFlight 內部測試已通過基本驗證
-- [ ] 版權資訊：`Copyright © 2025 VetMap. All rights reserved.`
-- [ ] 沒有使用非公開 API
-- [ ] 符合 App Store Review Guidelines
+- 所有 metadata 已保存，沒有紅色 required-field 警告
+- App Privacy 已 Publish
+- Age Rating 已完成
+- Medical Device 已選 No
+- Content Rights 已由帳戶持有人確認
+- Reviewer credentials 及 Review Notes 已填
+- Build 6 已掛接
+- Review draft 只包含 iOS 1.0 及正確 build，沒有 IAP
+- 停在「提交以供審核」前，交由帳戶持有人最後確認

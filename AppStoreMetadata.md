@@ -20,9 +20,9 @@ VetMap 係一個專為台灣同香港毛孩家長設計嘅獸醫診所地圖 App
 - 診所詳情：電話、網站、導航、營業時間
 
 **睇評價**
-- 真實用戶評價同評分
-- 上傳診所相片
-- 「有用」投票系統
+- 已審核嘅社群評價同評分
+- 每個帳戶只可投一次嘅「有用」標記
+- 舉報不當內容及封鎖相關用戶
 
 **費用透明**
 - 治療報價分享系統
@@ -30,24 +30,18 @@ VetMap 係一個專為台灣同香港毛孩家長設計嘅獸醫診所地圖 App
 - TWD / HKD 雙幣支援
 
 **社群貢獻**
-- 新增診所：地址地理編碼
-- 新增評價：星星評分 + 相片上傳
-- 報價分享：13 種治療類型
-
-**Premium 會員**
-- 完整診所資料庫
-- 無廣告體驗
-- 優先客戶支援
+- 登入／註冊後可新增診所、評價及治療報價
+- 所有投稿先進入人工審核，批准後先會公開
+- 可直接喺 App 內刪除帳戶及相關用戶內容
 
 **寵物好物**
-- 食品、玩具、保健、藥品瀏覽
-- 香港台灣雙市場產品覆蓋
+- 香港寵物用品、美容及善終服務資訊
 
 **寵物保險**
 - 台灣 3 間 + 香港 3 間保險比較
 - 保費、保障範圍、排除條款一覽
 
-VetMap — 願世間再無誤診毛孩。
+診所、評價、保險及費用資料只供一般參考，不構成獸醫診斷或治療建議；緊急情況請直接聯絡合資格獸醫診所。
 
 ## Keywords (100 chars)
 獸醫,診所,寵物,狗,貓,毛孩,動物醫院,vet,pet,clinic,review,insurance,台灣,香港,Taiwan,Hong Kong
@@ -57,22 +51,22 @@ VetMap — 願世間再無誤診毛孩。
 - Secondary: Lifestyle
 
 ## Rating
-17+
+由 App Store Connect 年齡分級問卷計算；提交前須完成。
 
 ## Screenshots
-6.7" (iPhone 17 Pro Max) + 6.5" (iPhone 17 Pro):
-1. Map view — clinic annotations
-2. Clinic list — search + filters
-3. Clinic detail — reviews + quotes
-4. Add review — star rating
-5. Products — grid browse
-6. Insurance — plan comparison
+
+App Store Connect 現時已有 4 張 iPhone 及 4 張 iPad 截圖。Build 6 完成後須逐張確認畫面仍與實際功能一致，尤其是：
+
+1. Map / clinic directory
+2. Clinic detail
+3. Moderated review / quote submission
+4. Report / block / account controls
 
 ## Support URL
-https://github.com/Chamotrans/VetMap/issues
+https://vetmap-app.web.app/support
 
 ## Privacy Policy URL
-(To be created — use a simple GitHub Pages or Firebase Hosting page)
+https://vetmap-app.web.app
 
 ## Copyright
-© 2026 VetMap
+2026 Chamotrans

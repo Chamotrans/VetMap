@@ -1,7 +1,15 @@
 import SwiftUI
 
+/// App-wide feature flags. Premium/IAP is hidden for the free v1 launch because
+/// no subscription products are configured in App Store Connect yet. Flip to
+/// `true` once IAP products are live and the first subscription is in review.
+enum FeatureFlags {
+    static let premiumEnabled = false
+}
+
 struct ProfileTab: View {
-    @StateObject private var authViewModel = AuthViewModel()
+    @ObservedObject private var authViewModel = AuthViewModel.shared
+    @ObservedObject private var admin = AdminViewModel.shared
     @State private var showLogin = false
     @State private var showSignOutAlert = false
 
@@ -27,6 +35,10 @@ struct ProfileTab: View {
             if newState == .signedIn {
                 showLogin = false
             }
+            admin.refresh(uid: authViewModel.user?.uid)
+        }
+        .onAppear {
+            admin.refresh(uid: authViewModel.user?.uid)
         }
     }
 
@@ -114,35 +126,59 @@ struct ProfileTab: View {
                 }
             }
 
-            Section("Premium 會員") {
-                NavigationLink {
-                    PremiumView()
-                } label: {
-                    Label("升級 Premium", systemImage: "crown.fill")
+            if admin.isAdmin {
+                Section("管理") {
+                    NavigationLink {
+                        AdminPortalView()
+                    } label: {
+                        Label {
+                            HStack {
+                                Text("管理後台")
+                                if ModerationStore.shared.totalPendingCount > 0 {
+                                    Spacer()
+                                    Text("\(ModerationStore.shared.totalPendingCount)")
+                                        .font(.caption.weight(.bold))
+                                        .foregroundStyle(.white)
+                                        .padding(.horizontal, 7)
+                                        .padding(.vertical, 2)
+                                        .background(AppTheme.warning, in: Capsule())
+                                }
+                            }
+                        } icon: {
+                            Image(systemName: "shield.lefthalf.filled")
+                        }
+                    }
+                    .accessibilityLabel("管理後台")
                 }
-                .accessibilityLabel("升級 Premium")
-                .accessibilityHint("查看 Premium 會員方案")
+            }
 
-                NavigationLink {
-                    PremiumView()
-                } label: {
-                    Label("訂閱管理", systemImage: "creditcard.fill")
+            if FeatureFlags.premiumEnabled {
+                Section("Premium 會員") {
+                    NavigationLink {
+                        PremiumView()
+                    } label: {
+                        Label("升級 Premium", systemImage: "crown.fill")
+                    }
+                    .accessibilityLabel("升級 Premium")
+                    .accessibilityHint("查看 Premium 會員方案")
+
+                    NavigationLink {
+                        PremiumView()
+                    } label: {
+                        Label("訂閱管理", systemImage: "creditcard.fill")
+                    }
                 }
             }
 
             Section("顯示") {
-                    Toggle(isOn: .constant(false)) {
-                        Label("高對比模式", systemImage: "circle.lefthalf.filled")
-                    }
+                Toggle(isOn: .constant(false)) {
+                    Label("高對比模式", systemImage: "circle.lefthalf.filled")
                 }
+            }
 
-                Section("設定") {
+            Section("設定") {
                 NavigationLink {
-                    ComingSoonView(
-                        title: "設定",
-                        subtitle: "設定功能即將推出。",
-                        systemImage: "gearshape.fill"
-                    )
+                    AccountSettingsView(authViewModel: authViewModel)
                 } label: {
                     Label("帳號設定", systemImage: "gearshape.fill")
                 }
@@ -161,6 +197,15 @@ struct ProfileTab: View {
                     Label("關於 VetMap", systemImage: "info.circle.fill")
                 }
             }
+
+            #if DEBUG
+            Section("開發者") {
+                Toggle(isOn: $admin.debugAdminOverride) {
+                    Label("模擬管理員身分", systemImage: "hammer.fill")
+                }
+                .tint(AppTheme.primary)
+            }
+            #endif
 
             Section {
                 Button(role: .destructive) {

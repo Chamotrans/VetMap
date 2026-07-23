@@ -19,11 +19,17 @@ final class MapViewModel {
     var networkError: String?
 
     private let repository: MockClinicRepository
+    private let firebase: FirebaseService
     @ObservationIgnored private var cancellables: Set<AnyCancellable> = []
 
-    init(repository: MockClinicRepository = MockClinicRepository()) {
+    init(
+        repository: MockClinicRepository = MockClinicRepository(),
+        firebase: FirebaseService = .shared
+    ) {
         self.repository = repository
+        self.firebase = firebase
         self.cameraPosition = .region(Self.defaultRegion)
+        self.clinics = repository.fetchClinics()
         observeRepositoryChanges()
         loadClinics()
     }
@@ -34,22 +40,34 @@ final class MapViewModel {
     }
 
     var filteredClinics: [VetClinic] {
-        filter.results(from: clinics)
+        filter.results(from: clinics).filter {
+            !ModerationStore.shared.removedClinicIDs.contains($0.id)
+        }
     }
 
     func loadClinics() {
-        loadClinics(focusingOn: nil)
+        Task { await loadClinics(focusingOn: nil) }
     }
 
     func retryLoad() {
         loadClinics()
     }
 
-    private func loadClinics(focusingOn clinicID: String?) {
+    private func loadClinics(focusingOn clinicID: String?) async {
         isLoading = true
         networkError = nil
         let previousSelectedClinicID = selectedClinicID
-        clinics = repository.fetchClinics()
+        let seeds = repository.fetchClinics()
+        await ModerationStore.shared.refreshPublicState()
+        do {
+            let cloud = try await firebase.fetchClinics()
+            let cloudIDs = Set(cloud.map(\.id))
+            clinics = cloud + seeds.filter { !cloudIDs.contains($0.id) }
+        } catch {
+            clinics = seeds
+            networkError = "雲端診所資料暫時無法載入：\(error.localizedDescription)"
+            CrashReporting.recordError(error, domain: "MapViewModel.loadClinics")
+        }
 
         if let clinicID, let clinic = filteredClinics.first(where: { $0.id == clinicID }) {
             focus(on: clinic)
@@ -93,10 +111,11 @@ final class MapViewModel {
 
     private func observeRepositoryChanges() {
         NotificationCenter.default.publisher(for: .vetClinicRepositoryDidChange)
+            .merge(with: NotificationCenter.default.publisher(for: .vetModerationDidChange))
             .sink { [weak self] notification in
                 let clinicID = notification.userInfo?[MockClinicRepository.changedClinicIDUserInfoKey] as? String
                 Task { @MainActor in
-                    self?.loadClinics(focusingOn: clinicID)
+                    await self?.loadClinics(focusingOn: clinicID)
                 }
             }
             .store(in: &cancellables)

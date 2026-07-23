@@ -19,6 +19,18 @@ struct ReviewListView: View {
             VStack(alignment: .leading, spacing: 14) {
                 sortPicker
 
+                if let error = viewModel.storageError {
+                    Label(error, systemImage: "icloud.slash")
+                        .font(.footnote)
+                        .foregroundStyle(AppTheme.warning)
+                        .padding(12)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .appCard(
+                            fill: AppTheme.warning.opacity(0.12),
+                            stroke: AppTheme.warning.opacity(0.22)
+                        )
+                }
+
                 if viewModel.sortedReviews.isEmpty {
                     emptyState
                 } else {
@@ -29,7 +41,15 @@ struct ReviewListView: View {
                             ReviewRowView(
                                 review: review,
                                 currency: currency,
-                                onMarkHelpful: { viewModel.markHelpful(review.id) }
+                                onMarkHelpful: {
+                                    Task { await viewModel.markHelpful(review.id) }
+                                },
+                                onReport: { reason in
+                                    Task { _ = await viewModel.report(review, reason: reason) }
+                                },
+                                onBlockAuthor: {
+                                    Task { _ = await viewModel.blockAuthor(of: review) }
+                                }
                             )
                         }
                     }
@@ -41,7 +61,7 @@ struct ReviewListView: View {
         }
         .background(AppTheme.screenBackground)
         .refreshable {
-            viewModel.loadReviews()
+            await viewModel.loadReviews()
         }
         .navigationTitle("\(clinic.name) 評價")
         .navigationBarTitleDisplayMode(.inline)
@@ -66,7 +86,7 @@ struct ReviewListView: View {
 
     private var reviewCountSummary: some View {
         HStack {
-            Label("共 \(viewModel.reviews.count) 則評價", systemImage: "text.bubble.fill")
+            Label("共 \(viewModel.sortedReviews.count) 則評價", systemImage: "text.bubble.fill")
                 .font(.footnote.weight(.medium))
                 .foregroundStyle(.secondary)
 

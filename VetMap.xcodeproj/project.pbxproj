@@ -34,6 +34,11 @@
 		70A1B1C2D3E4F5A6B7C8D9E0 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71A1B1C2D3E4F5A6B7C8D9E0 /* LocationService.swift */; };
 		712A4F6194CF774A7F4DB6B9 /* QuoteListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82F4A8EA14EF69F59941560 /* QuoteListView.swift */; };
 		72A1B1C2D3E4F5A6B7C8D9E0 /* MockClinicRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73A1B1C2D3E4F5A6B7C8D9E0 /* MockClinicRepository.swift */; };
+		AAAA0002D3E4F5A6B7C8D9E0 /* Moderation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA0001D3E4F5A6B7C8D9E0 /* Moderation.swift */; };
+		AAAA0004D3E4F5A6B7C8D9E0 /* ModerationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA0003D3E4F5A6B7C8D9E0 /* ModerationStore.swift */; };
+		AAAA0006D3E4F5A6B7C8D9E0 /* AdminViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA0005D3E4F5A6B7C8D9E0 /* AdminViewModel.swift */; };
+		AAAA0008D3E4F5A6B7C8D9E0 /* AdminPortalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAAA0007D3E4F5A6B7C8D9E0 /* AdminPortalView.swift */; };
+		AACC0002D3E4F5A6B7C8D9E0 /* AccountSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACC0001D3E4F5A6B7C8D9E0 /* AccountSettingsView.swift */; };
 		74A1B1C2D3E4F5A6B7C8D9E0 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A1B1C2D3E4F5A6B7C8D9E0 /* MapViewModel.swift */; };
 		76A1B1C2D3E4F5A6B7C8D9E0 /* ClinicMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77A1B1C2D3E4F5A6B7C8D9E0 /* ClinicMapView.swift */; };
 		78A1B1C2D3E4F5A6B7C8D9E0 /* ClinicRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79A1B1C2D3E4F5A6B7C8D9E0 /* ClinicRowView.swift */; };
@@ -71,8 +76,8 @@
 		CCB24D8F2FD3628E00336660 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = A6C7846A49244BC688FA0232 /* FirebaseCore */; };
 		CCB24D902FD3628E00336660 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 0B9CF923C657467E8D2CD69E /* FirebaseFirestore */; };
 		CCB24D912FD3628E00336660 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 020D4CC395C943D7947AF887 /* FirebaseStorage */; };
-		CCB24D982FD3636100336660 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = CCB24D972FD3636100336660 /* FirebaseAnalytics */; };
 		CCB24DA82FD3636100336660 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = CCB24DA72FD3636100336660 /* FirebaseCrashlytics */; };
+		F1A2B3C4D5E6F78901234567 /* FirebaseFunctions in Frameworks */ = {isa = PBXBuildFile; productRef = F2A2B3C4D5E6F78901234567 /* FirebaseFunctions */; };
 		D6754446904665F8D575A07D /* InsuranceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C846DD91B86E206479EC1E /* InsuranceDetailView.swift */; };
 		E20D4A6EB05F3AB0E028D97E /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4F6407283E8485DC459A810 /* LoginView.swift */; };
 		E64F4C3D9C6229DF3F6A46C1 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 387A4EEC83D190FCAA87F293 /* LoadingView.swift */; };
@@ -175,6 +180,11 @@
 		6E9C4E74B1AA5A72DBAB5762 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = KeychainService.swift; path = VetMap/Utilities/KeychainService.swift; sourceTree = SOURCE_ROOT; };
 		71A1B1C2D3E4F5A6B7C8D9E0 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		73A1B1C2D3E4F5A6B7C8D9E0 /* MockClinicRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockClinicRepository.swift; sourceTree = "<group>"; };
+		AAAA0001D3E4F5A6B7C8D9E0 /* Moderation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Moderation.swift; path = VetMap/Models/Moderation.swift; sourceTree = SOURCE_ROOT; };
+		AAAA0003D3E4F5A6B7C8D9E0 /* ModerationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ModerationStore.swift; path = VetMap/Services/ModerationStore.swift; sourceTree = SOURCE_ROOT; };
+		AAAA0005D3E4F5A6B7C8D9E0 /* AdminViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AdminViewModel.swift; path = VetMap/ViewModels/AdminViewModel.swift; sourceTree = SOURCE_ROOT; };
+		AAAA0007D3E4F5A6B7C8D9E0 /* AdminPortalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AdminPortalView.swift; path = VetMap/Views/Admin/AdminPortalView.swift; sourceTree = SOURCE_ROOT; };
+		AACC0001D3E4F5A6B7C8D9E0 /* AccountSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AccountSettingsView.swift; path = VetMap/Views/Profile/AccountSettingsView.swift; sourceTree = SOURCE_ROOT; };
 		75A1B1C2D3E4F5A6B7C8D9E0 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		77A1B1C2D3E4F5A6B7C8D9E0 /* ClinicMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClinicMapView.swift; sourceTree = "<group>"; };
 		79A1B1C2D3E4F5A6B7C8D9E0 /* ClinicRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClinicRowView.swift; sourceTree = "<group>"; };
@@ -250,11 +260,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CCB24D982FD3636100336660 /* FirebaseAnalytics in Frameworks */,
 				CCB24D912FD3628E00336660 /* FirebaseStorage in Frameworks */,
 				CCB24D902FD3628E00336660 /* FirebaseFirestore in Frameworks */,
 				CCB24D8F2FD3628E00336660 /* FirebaseCore in Frameworks */,
 				CCB24D8E2FD3628E00336660 /* FirebaseAuth in Frameworks */,
+				F1A2B3C4D5E6F78901234567 /* FirebaseFunctions in Frameworks */,
 				CCB24DA82FD3636100336660 /* FirebaseCrashlytics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -345,6 +355,7 @@
 				16A1B1C2D3E4F5A6B7C8D9E0 /* Quote.swift */,
 				18A1B1C2D3E4F5A6B7C8D9E0 /* Insurance.swift */,
 				B1A1B1C2D3E4F5A6B7C8D9E0 /* ClinicSearchFilter.swift */,
+				AAAA0001D3E4F5A6B7C8D9E0 /* Moderation.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -398,6 +409,7 @@
 				833C4D2A90BEEDC09E4BB2DB /* MockProductRepository.swift */,
 				FA8843DBB25F0CDC6A05AC8E /* CommunityRepository.swift */,
 				7DE84471B3DE037336B1B5AF /* FirebaseService.swift */,
+				AAAA0003D3E4F5A6B7C8D9E0 /* ModerationStore.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -421,6 +433,7 @@
 				A3F743DAA74116CE8BC60A40 /* AuthViewModel.swift */,
 				6D774C02ABA52311EDF6B848 /* InsuranceViewModel.swift */,
 				2661467A8AD35EE0F31439D0 /* ProductViewModel.swift */,
+				AAAA0005D3E4F5A6B7C8D9E0 /* AdminViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -438,6 +451,7 @@
 				F9834A679BC2747C2795C1D3 /* Profile */,
 				3B28418C93E4B5418D2860D9 /* Review */,
 				186142839E7E79CCD3D53F48 /* Products */,
+				AAAA0007D3E4F5A6B7C8D9E0 /* AdminPortalView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -533,6 +547,7 @@
 		F9834A679BC2747C2795C1D3 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				AACC0001D3E4F5A6B7C8D9E0 /* AccountSettingsView.swift */,
 				C4F6407283E8485DC459A810 /* LoginView.swift */,
 				4C374418B1CD8FD71EF37BD9 /* PremiumView.swift */,
 				A54147BD87315AD622A78B1F /* SignUpView.swift */,
@@ -577,7 +592,7 @@
 				A6C7846A49244BC688FA0232 /* FirebaseCore */,
 				0B9CF923C657467E8D2CD69E /* FirebaseFirestore */,
 				020D4CC395C943D7947AF887 /* FirebaseStorage */,
-				CCB24D972FD3636100336660 /* FirebaseAnalytics */,
+				F2A2B3C4D5E6F78901234567 /* FirebaseFunctions */,
 				CCB24DA72FD3636100336660 /* FirebaseCrashlytics */,
 			);
 			productName = VetMap;
@@ -631,7 +646,7 @@
 			};
 			buildConfigurationList = 51A1B1C2D3E4F5A6B7C8D9E0 /* Build configuration list for PBXProject "VetMap" */;
 			compatibilityVersion = "Xcode 14.0";
-			developmentRegion = "en-US";
+			developmentRegion = "zh-Hant";
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				"en-US",
@@ -692,6 +707,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AACC0002D3E4F5A6B7C8D9E0 /* AccountSettingsView.swift in Sources */,
+				AAAA0002D3E4F5A6B7C8D9E0 /* Moderation.swift in Sources */,
+				AAAA0004D3E4F5A6B7C8D9E0 /* ModerationStore.swift in Sources */,
+				AAAA0006D3E4F5A6B7C8D9E0 /* AdminViewModel.swift in Sources */,
+				AAAA0008D3E4F5A6B7C8D9E0 /* AdminPortalView.swift in Sources */,
 				E94CA13CC0A34BFEBDC7AD17 /* ConfettiView.swift in Sources */,
 				C913330B60864C46A8A2B21E /* FavoriteButton.swift in Sources */,
 				01A1B1C2D3E4F5A6B7C8D9E0 /* VetMapApp.swift in Sources */,
@@ -856,7 +876,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = VetMap/VetMap.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 637V678N3Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -886,7 +906,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = VetMap/VetMap.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 637V678N3Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -915,7 +935,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 6;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -938,7 +958,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 6;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -960,7 +980,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 637V678N3Q;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = VetMapWidget/Info.plist;
@@ -984,7 +1004,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 637V678N3Q;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = VetMapWidget/Info.plist;
@@ -1085,11 +1105,6 @@
 			package = 82342F183B79497AAE938DB7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCore;
 		};
-		CCB24D972FD3636100336660 /* FirebaseAnalytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 82342F183B79497AAE938DB7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalytics;
-		};
 		CCB24DA72FD3636100336660 /* FirebaseCrashlytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 82342F183B79497AAE938DB7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
@@ -1099,6 +1114,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 82342F183B79497AAE938DB7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;
+		};
+		F2A2B3C4D5E6F78901234567 /* FirebaseFunctions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 82342F183B79497AAE938DB7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFunctions;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

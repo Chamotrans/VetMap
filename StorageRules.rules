@@ -2,50 +2,45 @@ rules_version = '2';
 
 service firebase.storage {
   match /b/{bucket}/o {
-
-    // ── Public clinic photos ──────────────────────────────────────
-    //
-    // Anyone can view clinic photos.
-    // Authenticated users can upload clinic photos (max 10 MB per file).
-    // Only the uploader or admin can delete.
-    //
-    match /clinics/{clinicId}/{allPaths=**} {
-      allow read: if true;
-      allow create: if request.auth != null
-                    && request.resource.size < 10 * 1024 * 1024
-                    && request.resource.contentType.matches('image/.*');
-      allow delete: if request.auth != null
-                    && (
-                      // Uploader owns the file, OR user is authenticated (for admin cleanup)
-                      request.auth.uid in [
-                        // For now, any authenticated user can delete clinic photos
-                        // to keep initial rules simple. Tighten this in production.
-                      ]
-                    );
+    function signedIn() {
+      return request.auth != null;
     }
 
-    // ── User-uploaded content (review photos, quote screenshots) ──
-    //
-    // Files are organized under the user's UID.
-    // Anyone can view. Only the owner can upload or delete.
-    //
-    match /users/{userId}/{allPaths=**} {
-      allow read: if true;
-      allow create, delete: if request.auth != null
-                             && request.auth.uid == userId
-                             && request.resource.size < 10 * 1024 * 1024;
+    function admin() {
+      return signedIn()
+        && firestore.exists(
+          /databases/(default)/documents/users/$(request.auth.uid)
+        )
+        && firestore.get(
+          /databases/(default)/documents/users/$(request.auth.uid)
+        ).data.role == 'admin';
     }
 
-    // ── Product images (admin-managed) ────────────────────────────
-    //
-    // Public read. Write restricted — managed via Firebase Console or admin SDK.
-    //
-    match /products/{allPaths=**} {
-      allow read: if true;
-      allow create, update, delete: if false;
+    function validImage() {
+      return request.resource.size > 0
+        && request.resource.size <= 10 * 1024 * 1024
+        && request.resource.contentType.matches('image/(jpeg|png|heic|heif|webp)');
     }
 
-    // ── Deny everything else ──────────────────────────────────────
+    // Pending uploads are private to the author and moderators. A user cannot
+    // overwrite another user's file or place a pending image in a public path.
+    match /submissionUploads/{userId}/{submissionId}/{fileName} {
+      allow read: if signedIn() && (request.auth.uid == userId || admin());
+      allow create: if signedIn()
+        && request.auth.uid == userId
+        && validImage();
+      allow update: if false;
+      allow delete: if signedIn() && (request.auth.uid == userId || admin());
+    }
+
+    // Only an admin approval workflow may publish an image. Public content is
+    // readable without exposing private user folders.
+    match /public/{contentType}/{contentId}/{fileName} {
+      allow read: if true;
+      allow create, update: if admin() && validImage();
+      allow delete: if admin();
+    }
+
     match /{allPaths=**} {
       allow read, write: if false;
     }

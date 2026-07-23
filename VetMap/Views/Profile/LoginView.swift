@@ -34,6 +34,9 @@ struct LoginView: View {
                 .padding(.vertical, 32)
             }
             .background(AppTheme.screenBackground)
+            .onAppear {
+                authViewModel.clearError()
+            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button {
@@ -150,7 +153,12 @@ struct LoginView: View {
         }
         .foregroundStyle(.white)
         .background(AppTheme.primary, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-        .disabled(isLoading)
+        .disabled(
+            isLoading
+                || authViewModel.isAuthenticating
+                || email.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                || password.isEmpty
+        )
         .padding(.horizontal, 16)
         .accessibilityLabel("登入")
         .accessibilityHint("使用電子郵件和密碼登入")
@@ -158,15 +166,16 @@ struct LoginView: View {
 
     private var appleSignInButton: some View {
         SignInWithAppleButton(.signIn) { request in
-            request.requestedScopes = [.fullName, .email]
+            authViewModel.prepareAppleRequest(request, purpose: .signIn)
         } onCompletion: { result in
-            authViewModel.processAppleSignIn(result: result)
+            authViewModel.processAppleAuthorization(result: result, purpose: .signIn)
         }
         .signInWithAppleButtonStyle(.black)
         .frame(maxWidth: .infinity)
         .frame(height: 48)
         .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
         .padding(.horizontal, 16)
+        .disabled(isLoading || authViewModel.isAuthenticating)
         .accessibilityLabel("使用 Apple 登入")
     }
 
@@ -190,5 +199,5 @@ struct LoginView: View {
 }
 
 #Preview {
-    LoginView(authViewModel: AuthViewModel())
+    LoginView(authViewModel: .shared)
 }

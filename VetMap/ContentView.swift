@@ -2,10 +2,12 @@ import SwiftUI
 import UserNotifications
 
 struct ContentView: View {
+    @StateObject private var authViewModel = AuthViewModel.shared
     @State private var networkMonitor = NetworkMonitor()
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @State private var selectedTab: SidebarTab? = .home
+    @State private var selectedTab: SidebarTab? = AppLaunchFlags.initialTab
+    @State private var phoneTab: SidebarTab = AppLaunchFlags.initialTab
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
 
     enum SidebarTab: String, CaseIterable {
@@ -41,6 +43,7 @@ struct ContentView: View {
                     .background(AppTheme.warning)
             }
         }
+        .environmentObject(authViewModel)
         .fullScreenCover(isPresented: Binding(
             get: { !hasSeenOnboarding },
             set: { if !$0 { hasSeenOnboarding = true } }
@@ -65,6 +68,7 @@ struct ContentView: View {
 
     private func triggerLaunchPrompts() {
         guard !didTriggerLaunchPrompts else { return }
+        guard !AppLaunchFlags.isScreenshotMode else { return }
         didTriggerLaunchPrompts = true
         RatingPrompt.requestReviewIfAppropriate()
         requestNotificationPermission()
@@ -81,29 +85,33 @@ struct ContentView: View {
     }
 
     private var iphoneLayout: some View {
-        TabView {
+        TabView(selection: $phoneTab) {
             HomeTab()
                 .tabItem {
                     Label("首頁", systemImage: "map.fill")
                 }
-                                .accessibilityLabel("首頁")
+                .tag(SidebarTab.home)
+                .accessibilityLabel("首頁")
 
             ClinicsTab()
                 .tabItem {
                     Label("診所", systemImage: "cross.case.fill")
                 }
-                                .accessibilityLabel("診所")
+                .tag(SidebarTab.clinics)
+                .accessibilityLabel("診所")
 
             ProductsTab()
                 .tabItem {
                     Label("好物", systemImage: "shippingbox.fill")
                 }
-                                .accessibilityLabel("好物")
+                .tag(SidebarTab.products)
+                .accessibilityLabel("好物")
 
             ProfileTab()
                 .tabItem {
                     Label("我的", systemImage: "person.fill")
                 }
+                .tag(SidebarTab.profile)
                 .accessibilityLabel("我的")
         }
         .tint(AppTheme.primary)
@@ -146,6 +154,30 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+}
+
+/// 截圖模式（傳入 `-UITestSuppressPrompts`）：抑制系統權限／評分彈窗，
+/// 令 ASO 自動截圖唔會俾對話框蓋住。
+/// `-screenshotScreen <id>` 直接開指定畫面，俾 simctl 逐張截圖（毋須 UITest target）。
+enum AppLaunchFlags {
+    static let isScreenshotMode = ProcessInfo.processInfo.arguments.contains("-UITestSuppressPrompts")
+
+    static var screenshotScreen: String? {
+        let args = ProcessInfo.processInfo.arguments
+        guard let i = args.firstIndex(of: "-screenshotScreen"), i + 1 < args.count else { return nil }
+        return args[i + 1]
+    }
+
+    static var initialTab: ContentView.SidebarTab {
+        switch screenshotScreen {
+        case "02-Clinics", "03-ClinicDetail": .clinics
+        case "04-Products": .products
+        case "05-Profile": .profile
+        default: .home
+        }
+    }
+
+    static var autoPresentClinic: Bool { screenshotScreen == "03-ClinicDetail" }
 }
 
 enum AppTheme {

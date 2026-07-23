@@ -52,7 +52,6 @@ final class AddClinicViewModel {
     var tags = "社群回報"
     var openingHours = "09:00-18:00"
     var priceLevel = 2
-    var verified = false
     var validationMessage: String?
     private(set) var locationLookupState: LocationLookupState = .idle
 
@@ -113,6 +112,25 @@ final class AddClinicViewModel {
             return nil
         }
 
+        guard let uid = AuthViewModel.shared.user?.uid, !uid.isEmpty else {
+            validationMessage = "請先登入後再提交診所資料。"
+            return nil
+        }
+
+        do {
+            try ContentSafety.validate([
+                name,
+                address,
+                phone,
+                services,
+                tags,
+                openingHours
+            ])
+        } catch {
+            validationMessage = error.localizedDescription
+            return nil
+        }
+
         validationMessage = nil
         let now = Date()
 
@@ -132,8 +150,8 @@ final class AddClinicViewModel {
             tags: splitList(tags),
             createdAt: now,
             updatedAt: now,
-            reportedBy: "local-user",
-            verified: verified
+            reportedBy: uid,
+            verified: false
         )
     }
 

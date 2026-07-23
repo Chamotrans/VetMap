@@ -34,6 +34,14 @@ struct MockCommunityRepository {
             .sorted { $0.createdAt > $1.createdAt }
     }
 
+    func findReview(id: String) -> Review? {
+        (Self.seedReviews + fetchLocalReviews()).first { $0.id == id }
+    }
+
+    func findQuote(id: String) -> Quote? {
+        (Self.seedQuotes + fetchLocalQuotes()).first { $0.id == id }
+    }
+
     func addQuote(_ quote: Quote) throws {
         var localQuotes = fetchLocalQuotes()
 

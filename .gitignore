@@ -1,4 +1,6 @@
 .DS_Store
+node_modules/
+*-debug.log
 /.build
 /Packages
 xcuserdata/
@@ -8,7 +10,6 @@ DerivedData/
 .netrc
 GoogleService-Info.plist
 screenshots/
-public/
 build/
 data_sources/
 .firebase/

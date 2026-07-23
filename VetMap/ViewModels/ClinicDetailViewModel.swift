@@ -10,44 +10,69 @@ final class ClinicDetailViewModel {
     private(set) var isLoading = true
 
     private let clinic: VetClinic
-    private let repository: MockCommunityRepository
+    private let seedRepository: MockCommunityRepository
+    private let firebase: FirebaseService
     @ObservationIgnored private var cancellables: Set<AnyCancellable> = []
 
     init(
         clinic: VetClinic,
-        repository: MockCommunityRepository = MockCommunityRepository()
+        repository: MockCommunityRepository = MockCommunityRepository(),
+        firebase: FirebaseService = .shared
     ) {
         self.clinic = clinic
-        self.repository = repository
+        self.seedRepository = repository
+        self.firebase = firebase
+        self.reviews = []
+        self.quotes = []
         observeCommunityChanges()
-        loadCommunityData()
-        isLoading = false
+        Task { await loadCommunityData() }
     }
 
-    func loadCommunityData() {
-        reviews = repository.fetchReviews(for: clinic.id)
-        quotes = repository.fetchQuotes(for: clinic.id)
-        Analytics.clinicViewed(clinic.name)
-    }
-
-    func markHelpful(_ reviewId: String) {
-        guard let original = reviews.first(where: { $0.id == reviewId }) else { return }
-
-        var updated = original
-        updated.helpfulCount += 1
-
-        do {
-            try repository.addReview(updated)
-            loadCommunityData()
-            Haptics.medium()
-        } catch {
-            if let index = reviews.firstIndex(where: { $0.id == reviewId }) {
-                reviews[index].helpfulCount += 1
-            }
+    var visibleReviews: [Review] {
+        let moderation = ModerationStore.shared
+        return reviews.filter {
+            !moderation.removedReviewIDs.contains($0.id)
+                && !moderation.blockedUserIDs.contains($0.userId)
         }
     }
 
-    func addReview(_ draft: ReviewDraft) -> Bool {
+    var visibleQuotes: [Quote] {
+        let moderation = ModerationStore.shared
+        return quotes.filter {
+            !moderation.removedQuoteIDs.contains($0.id)
+                && !moderation.blockedUserIDs.contains($0.userId)
+        }
+    }
+
+    func loadCommunityData() async {
+        isLoading = true
+        defer { isLoading = false }
+
+        await ModerationStore.shared.refreshPublicState()
+        let seedReviews: [Review] = []
+        let seedQuotes: [Quote] = []
+
+        do {
+            let fetchedReviews = try await firebase.fetchReviews(for: clinic.id)
+            let fetchedQuotes = try await firebase.fetchQuotes(for: clinic.id)
+            let helpfulCounts = (try? await firebase.fetchReviewHelpfulCounts()) ?? [:]
+            reviews = Self.merge(cloud: fetchedReviews, seeds: seedReviews).map { review in
+                var review = review
+                review.helpfulCount += helpfulCounts[review.id, default: 0]
+                return review
+            }
+            quotes = Self.merge(cloud: fetchedQuotes, seeds: seedQuotes)
+            storageError = nil
+        } catch {
+            reviews = seedReviews
+            quotes = seedQuotes
+            storageError = "雲端社群資料暫時無法載入：\(error.localizedDescription)"
+            CrashReporting.recordError(error, domain: "ClinicDetail.loadCommunityData")
+        }
+        Analytics.clinicViewed(clinic.name)
+    }
+
+    func submitReviewForModeration(_ draft: ReviewDraft) async -> Bool {
         let title = trimmed(draft.title)
         let content = trimmed(draft.content)
         let treatmentType = trimmed(draft.treatmentType)
@@ -57,35 +82,37 @@ final class ClinicDetailViewModel {
             return false
         }
 
-        let now = Date()
-        let review = Review(
-            id: "review-\(UUID().uuidString)",
-            clinicId: clinic.id,
-            userId: "local-user",
-            userName: "本機用戶",
-            rating: draft.rating,
-            title: title,
-            content: content,
-            treatmentType: treatmentType.isEmpty ? nil : treatmentType,
-            cost: draft.cost,
-            images: nil,
-            createdAt: now,
-            updatedAt: now,
-            helpfulCount: 0
-        )
-
-        do {
-            try repository.addReview(review)
-            storageError = nil
-            loadCommunityData()
-            Haptics.success()
-        } catch {
-            storageError = "評價已加入目前畫面，但暫時無法儲存到本機。"
-            CrashReporting.recordError(error, domain: "ClinicDetail")
-            reviews.insert(review, at: 0)
+        guard let user = AuthViewModel.shared.user, let uid = user.uid, !uid.isEmpty else {
+            storageError = "請先登入後再提交評價。"
+            return false
         }
 
-        return true
+        do {
+            try ContentSafety.validate([title, content, treatmentType])
+            let now = Date()
+            let review = Review(
+                id: "review-\(UUID().uuidString)",
+                clinicId: clinic.id,
+                userId: uid,
+                userName: normalizedDisplayName(user.displayName),
+                rating: draft.rating,
+                title: title,
+                content: content,
+                treatmentType: treatmentType.isEmpty ? nil : treatmentType,
+                cost: draft.cost,
+                images: nil,
+                createdAt: now,
+                updatedAt: now,
+                helpfulCount: 0
+            )
+            try await ModerationStore.shared.submitReview(review, clinicName: clinic.name)
+            storageError = nil
+            Haptics.success()
+            return true
+        } catch {
+            storageError = error.localizedDescription
+            return false
+        }
     }
 
     func addQuote(
@@ -94,37 +121,121 @@ final class ClinicDetailViewModel {
         actualCost: Decimal?,
         currency: String,
         notes: String
-    ) -> Bool {
-        let trimmedType = trimmed(treatmentType)
-        let trimmedNotes = trimmed(notes)
+    ) async -> Bool {
+        let type = trimmed(treatmentType)
+        let cleanNotes = trimmed(notes)
 
-        guard !trimmedType.isEmpty, estimatedCost > 0 else {
+        guard !type.isEmpty, estimatedCost > 0 else {
             storageError = "請填寫治療類型和預估費用。"
             return false
         }
-
-        let quote = Quote(
-            id: "quote-\(UUID().uuidString)",
-            clinicId: clinic.id,
-            userId: "local-user",
-            treatmentType: trimmedType,
-            estimatedCost: estimatedCost,
-            actualCost: actualCost,
-            currency: currency,
-            notes: trimmedNotes,
-            createdAt: Date()
-        )
-
-        do {
-            try repository.addQuote(quote)
-            storageError = nil
-            loadCommunityData()
-        } catch {
-            storageError = "報價已加入目前畫面，但暫時無法儲存到本機。"
-            quotes.insert(quote, at: 0)
+        guard let uid = AuthViewModel.shared.user?.uid, !uid.isEmpty else {
+            storageError = "請先登入後再提交報價。"
+            return false
         }
 
-        return true
+        do {
+            try ContentSafety.validate([type, cleanNotes])
+            let quote = Quote(
+                id: "quote-\(UUID().uuidString)",
+                clinicId: clinic.id,
+                userId: uid,
+                treatmentType: type,
+                estimatedCost: estimatedCost,
+                actualCost: actualCost,
+                currency: currency,
+                notes: cleanNotes,
+                createdAt: Date()
+            )
+            try await ModerationStore.shared.submitQuote(quote, clinicName: clinic.name)
+            storageError = nil
+            Haptics.success()
+            return true
+        } catch {
+            storageError = error.localizedDescription
+            return false
+        }
+    }
+
+    func reportReview(_ review: Review, reason: String) async -> Bool {
+        await report(
+            type: .review,
+            id: review.id,
+            title: review.title,
+            reason: reason
+        )
+    }
+
+    func reportClinic(reason: String) async -> Bool {
+        await report(
+            type: .clinic,
+            id: clinic.id,
+            title: clinic.name,
+            reason: reason
+        )
+    }
+
+    func reportQuote(_ quote: Quote, reason: String) async -> Bool {
+        await report(
+            type: .quote,
+            id: quote.id,
+            title: quote.treatmentType,
+            reason: reason
+        )
+    }
+
+    func blockUser(_ userID: String) async -> Bool {
+        do {
+            try await ModerationStore.shared.blockUser(userID)
+            storageError = nil
+            Haptics.medium()
+            return true
+        } catch {
+            storageError = error.localizedDescription
+            return false
+        }
+    }
+
+    func markHelpful(_ reviewId: String) async {
+        do {
+            try await firebase.markReviewHelpful(reviewId: reviewId)
+            if let index = reviews.firstIndex(where: { $0.id == reviewId }) {
+                reviews[index].helpfulCount += 1
+            }
+            storageError = nil
+            Haptics.medium()
+        } catch {
+            storageError = error.localizedDescription
+            CrashReporting.recordError(error, domain: "ClinicDetail.markHelpful")
+        }
+    }
+
+    private func report(
+        type: ReportTargetType,
+        id: String,
+        title: String,
+        reason: String
+    ) async -> Bool {
+        do {
+            try await ModerationStore.shared.submitReport(
+                targetType: type,
+                targetId: id,
+                targetTitle: title,
+                clinicId: clinic.id,
+                reason: reason
+            )
+            storageError = nil
+            Haptics.medium()
+            return true
+        } catch {
+            storageError = error.localizedDescription
+            return false
+        }
+    }
+
+    private func normalizedDisplayName(_ value: String?) -> String {
+        let name = value?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return name.isEmpty ? "VetMap 用戶" : name
     }
 
     private func trimmed(_ value: String) -> String {
@@ -133,14 +244,22 @@ final class ClinicDetailViewModel {
 
     private func observeCommunityChanges() {
         NotificationCenter.default.publisher(for: .vetCommunityRepositoryDidChange)
+            .merge(with: NotificationCenter.default.publisher(for: .vetModerationDidChange))
             .sink { [weak self] notification in
                 let clinicID = notification.userInfo?[MockCommunityRepository.changedClinicIDUserInfoKey] as? String
-
                 Task { @MainActor in
                     guard let self, clinicID == nil || clinicID == self.clinic.id else { return }
-                    self.loadCommunityData()
+                    await self.loadCommunityData()
                 }
             }
             .store(in: &cancellables)
+    }
+
+    private static func merge<T: Identifiable>(
+        cloud: [T],
+        seeds: [T]
+    ) -> [T] where T.ID: Hashable {
+        let cloudIDs = Set(cloud.map(\.id))
+        return cloud + seeds.filter { !cloudIDs.contains($0.id) }
     }
 }

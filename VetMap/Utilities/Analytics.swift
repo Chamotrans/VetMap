@@ -1,14 +1,10 @@
 import Foundation
-#if canImport(FirebaseAnalytics)
-import FirebaseAnalytics
-#endif
 
 enum Analytics {
     static func logEvent(_ name: String, parameters: [String: Any]? = nil) {
-        #if canImport(FirebaseAnalytics)
-        FirebaseAnalytics.Analytics.logEvent(name, parameters: parameters)
+        #if DEBUG
+        print("[Local analytics] \(name) \(parameters ?? [:])")
         #endif
-        print("[Analytics] \(name) \(parameters ?? [:])")
     }
 
     // Pre-defined events

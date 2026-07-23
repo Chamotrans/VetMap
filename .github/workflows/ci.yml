@@ -1,4 +1,4 @@
-name: CI
+name: Backend and Config Validation
 
 on:
   push:
@@ -9,37 +9,45 @@ on:
       - main
 
 jobs:
-  build:
-    name: "Build"
-    runs-on: macos-latest
-    timeout-minutes: 20
+  validate:
+    name: "Firebase rules and functions"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Show available Xcodes
-        run: ls /Applications/Xcode*.app/Contents/Developer
-
-      - name: Cache SPM
-        uses: actions/cache@v4
+      - uses: actions/setup-node@v4
         with:
-          path: ~/Library/Developer/Xcode/DerivedData/**/SourcePackages
-          key: ${{ runner.os }}-spm-${{ hashFiles('Package.swift', 'VetMap.xcodeproj/project.pbxproj') }}
-          restore-keys: ${{ runner.os }}-spm-
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: |
+            functions/package-lock.json
+            firebase-tests/package-lock.json
 
-      - name: Build
-        run: |
-          xcodebuild -project VetMap.xcodeproj \
-            -scheme VetMap \
-            -destination 'generic/platform=iOS Simulator' \
-            CODE_SIGNING_ALLOWED=NO \
-            build
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
 
-      - name: Test (allow failure — Firebase SPM linker)
-        continue-on-error: true
+      - name: Install dependencies
         run: |
-          xcodebuild -project VetMap.xcodeproj \
-            -scheme VetMap \
-            -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
-            CODE_SIGNING_ALLOWED=NO \
-            test 2>&1 | tail -20
+          npm ci --prefix functions
+          npm ci --prefix firebase-tests
+
+      - name: Validate Functions
+        run: |
+          npm run lint --prefix functions
+          node -e "require('./functions/index.js')"
+
+      - name: Test Firestore and Storage rules
+        run: >
+          npx --yes firebase-tools@15.19.0 emulators:exec
+          --project demo-vetmap-rules
+          --only firestore,storage
+          "npm test --prefix firebase-tests"
+
+      - name: Check patch hygiene
+        run: git diff --check
+
+# The signed iOS Test/Archive release proof is produced by Xcode Cloud.

@@ -4,6 +4,10 @@ struct ReviewRowView: View {
     let review: Review
     let currency: String
     var onMarkHelpful: (() -> Void)?
+    var onReport: ((String) -> Void)?
+    var onBlockAuthor: (() -> Void)?
+
+    private static let reportReasons = ["不實內容", "冒犯性言論", "廣告或垃圾訊息", "其他"]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -82,17 +86,36 @@ struct ReviewRowView: View {
                 Text("評分 \(review.rating)/5")
                     .font(.caption)
                     .foregroundStyle(.tertiary)
+
+                if onReport != nil || onBlockAuthor != nil {
+                    Menu {
+                        if let onReport {
+                            ForEach(Self.reportReasons, id: \.self) { reason in
+                                Button {
+                                    onReport(reason)
+                                } label: {
+                                    Text("舉報：\(reason)")
+                                }
+                            }
+                        }
+                        if let onBlockAuthor {
+                            Button(role: .destructive) {
+                                onBlockAuthor()
+                            } label: {
+                                Label("封鎖作者", systemImage: "person.crop.circle.badge.xmark")
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                            .font(.caption)
+                    }
+                    .foregroundStyle(.tertiary)
+                    .accessibilityLabel("評價操作")
+                }
             }
         }
         .padding(14)
         .appCard()
-        .swipeActions(edge: .trailing) {
-            Button(role: .destructive) {
-                // Delete review — needs ViewModel integration
-            } label: {
-                Label("刪除", systemImage: "trash")
-            }
-        }
     }
 
     private var starRatingView: some View {

@@ -1,191 +1,172 @@
-# Firebase Setup for VetMap
+# VetMap Firebase Production Setup
 
-This guide walks through setting up the Firebase backend for the VetMap iOS app.
+> Project ID: `vetmap-app`
+> iOS bundle ID: `com.vetmap.app`
+> App Store ID: `6777361219`
+> Primary Firestore／Functions region: `asia-east1`
 
----
+Firebase 是 VetMap 1.0 的必要後端。註冊、登入、投稿、審核、舉報、封鎖及帳戶刪除均不應以本機 mock 當作 production fallback。
 
-## 1. Create a Firebase Project
+## 1. iOS app registration
 
-1. Go to [Firebase Console](https://console.firebase.google.com/)
-2. Click **Add project** (or **Create a project**)
-3. Enter project name: `VetMap`
-4. Choose whether to enable Google Analytics (recommended: yes)
-5. Accept the terms and click **Create project**
-6. Wait for provisioning to complete, then click **Continue**
+Firebase Console 的 iOS app 必須同時符合：
 
----
+- Bundle ID：`com.vetmap.app`
+- App Store ID：`6777361219`
+- 本機 plist 路徑：`VetMap/GoogleService-Info.plist`
+- `GoogleService-Info.plist` 不得提交到 Git
 
-## 2. Register the iOS App
+Xcode project 已連結：
 
-1. In the Firebase Console, open your VetMap project
-2. Click the iOS icon (**+ Add app** → **iOS**)
-3. Fill in the form:
-   - **iOS bundle ID**: `com.vetmap.app` (must match the bundle ID in Xcode)
-   - **App nickname**: `VetMap`
-   - **App Store ID**: leave blank for now
-4. Click **Register app**
-5. Download **GoogleService-Info.plist**
-6. Move the downloaded file to:
-   ```
-   VetMap/VetMap/Resources/GoogleService-Info.plist
-   ```
-   (Replace the placeholder that is already there)
-7. In Xcode, verify the file is added to the VetMap target (it should be auto-detected)
-8. Skip the "Add Firebase SDK" step in the console wizard — we use Swift Package Manager instead (see section 6)
-9. Click **Next** then **Continue to Console**
+- `FirebaseCore`
+- `FirebaseAuth`
+- `FirebaseFirestore`
+- `FirebaseStorage`
+- `FirebaseFunctions`
+- `FirebaseCrashlytics`
 
----
+`FirebaseAnalytics` 不屬於 1.0 release target。
 
-## 3. Enable Authentication
+## 2. Authentication
 
-### 3.1 Email/Password Authentication
+### Email/Password
 
-1. In Firebase Console, go to **Authentication** (left sidebar under "Build")
-2. Click **Get started**
-3. Go to the **Sign-in method** tab
-4. Click **Email/Password**
-5. Toggle **Enable** to ON
-6. Click **Save**
+Firebase Console → Authentication → Sign-in method → Email/Password：
 
-### 3.2 Apple Sign In
+- Email/Password：Enabled
+- Email link：可保持 Disabled
 
-1. Still in the **Sign-in method** tab
-2. Click **Apple**
-3. Toggle **Enable** to ON
-4. Configure:
-   - OAuth code flow configuration: leave defaults
-   - You will need to set up **Sign in with Apple** in Xcode under
-     **Signing & Capabilities** → **+ Capability** → **Sign In With Apple**
-5. Click **Save**
+### Sign in with Apple
 
-### 3.3 (Optional) Add Test Users via Console
+必須同時完成 Apple Developer 及 Firebase 設定：
 
-1. Go to **Authentication** → **Users** tab
-2. Click **Add user**
-3. Enter email and password for a test account
-4. Click **Add user**
+1. App ID `com.vetmap.app` 啟用 Sign in with Apple。
+2. Apple Developer 建立／確認 Services ID。
+3. 建立 Sign in with Apple key，保存 Team ID、Key ID 及 `.p8` private key。
+4. Firebase Authentication → Apple provider 啟用。
+5. 填入 Services ID、Team ID、Key ID 及 private key，完成 OAuth code flow。
+6. 不把 `.p8`、secret 或 reviewer password 寫入 repo。
+7. 以真實 Apple 帳戶測試登入、重新驗證、撤銷 token 及刪除帳戶。
 
----
+只在 Xcode 加 capability 而沒有完成 Firebase Apple provider OAuth 設定並不足夠。
 
-## 4. Enable Firestore Database
+## 3. Firestore data model
 
-1. In Firebase Console, go to **Firestore Database** (under "Build")
-2. Click **Create database**
-3. Choose a location:
-   - For Taiwan users: `asia-east1` (Taiwan)
-   - For Hong Kong users: `asia-east2` (Hong Kong)
-   - For mixed audiences: `asia-east1` is a safe default
-4. Choose **Start in test mode** (we will lock it down with rules in section 8)
-5. Click **Enable**
+| 路徑 | 用途 |
+|---|---|
+| `users/{uid}` | 私人 profile、role、premium 狀態 |
+| `users/{uid}/blockedUsers/{blockedUid}` | 私人封鎖名單 |
+| `submissions/{id}` | clinic／review／quote 待審 payload |
+| `clinics/{id}` | 只放 `status: approved` 的公開診所 |
+| `reviews/{id}` | 只放 `status: approved` 的公開評價 |
+| `quotes/{id}` | 只放 `status: approved` 的公開報價 |
+| `reports/{id}` | pending／resolved 舉報 |
+| `reviewEngagement/{reviewId}` | 「有用」總數 |
+| `reviewEngagement/{reviewId}/voters/{uid}` | 每 UID 一票 |
 
----
+普通用戶只可：
 
-## 5. Enable Firebase Storage
+- 建立及讀取自己的 pending submission；
+- 建立自己的 pending report；
+- 管理自己的 blockedUsers；
+- 對每項評價建立一次 helpful vote；
+- 讀取 approved 公開內容。
 
-1. In Firebase Console, go to **Storage** (under "Build")
-2. Click **Get started**
-3. Choose **Start in test mode** (we will lock it down with rules in section 9)
-4. Choose a storage location (same region as Firestore is recommended)
-5. Click **Done**
+只有 `users/{uid}.role == "admin"` 的帳戶可批核、駁回、公開或下架內容。
 
----
+## 4. Storage model
 
-## 6. Add Firebase SDK via Swift Package Manager
+| 路徑 | 權限 |
+|---|---|
+| `submissionUploads/{uid}/{submissionId}/{file}` | 只限作者及管理員；圖片 MIME／10 MB 上限 |
+| `public/{contentType}/{contentId}/{file}` | 公開讀；只限管理員建立／刪除 |
 
-1. In Xcode, open the VetMap project
-2. Go to **File** → **Add Package Dependencies...**
-3. Enter the Firebase iOS SDK URL:
-   ```
-   https://github.com/firebase/firebase-ios-sdk
-   ```
-4. Click **Add Package**
-5. Select the following libraries:
-   - `FirebaseAuth`
-   - `FirebaseFirestore`
-   - `FirebaseStorage`
-6. Ensure the target is **VetMap**
-7. Click **Add Package**
+VetMap 1.0 的相片投稿 UI 已移除，但規則仍採 deny-by-default，避免日後路徑被誤用。
 
-Once these packages are linked, the `#if canImport(Firebase)` conditional compilation gates will activate and the app will attempt to connect to your Firebase backend.
+## 5. Account deletion function
 
-> **Note:** The app is designed to compile and run **without** Firebase SPM linked. It falls back to local mock data seamlessly.
+`functions/index.js` 提供 `asia-east1` callable function `purgeUserData`：
 
----
+- 要求 Firebase Auth；
+- 要求 `auth_time` 在最近 5 分鐘；
+- 清除 authored submissions、reviews、quotes、clinics、reports；
+- 清除 blockedUsers、helpful vote 參照及 user profile；
+- 清除 `submissionUploads` 等用戶 Storage prefixes。
 
-## 7. Create Firestore Collections (Optional)
+2026-07-23 已啟用所需 APIs 並成功部署 Node.js 22 `purgeUserData`；狀態為 ACTIVE。Artifact Registry container image cleanup policy 設為 1 日。
 
-The app auto-creates documents as users interact, but you can seed initial data:
+如日後 Console 要求新的付費計劃或額外付費服務，仍必須由帳戶持有人先明確批准，不能自動新增支出。
 
-| Collection | Document ID convention | Purpose |
-|------------|----------------------|---------|
-| `clinics` | `clinic-{region}-{name}` | Vet clinic listings |
-| `reviews` | `review-{region}-{clinic}-{n}` | User reviews |
-| `quotes` | `quote-{region}-{clinic}-{n}` | Treatment cost quotes |
-| `products` | `product-{id}` | Pet products (e-commerce) |
-| `insurances` | `insurance-{id}` | Pet insurance plans |
+## 6. Local rules and function verification
 
----
+這些測試不等於 iOS build；正式 App build 只使用 Xcode Cloud。
 
-## 8. Set Up Firestore Security Rules
+```bash
+JAVA_HOME='/Applications/Android Studio.app/Contents/jbr/Contents/Home' \
+firebase emulators:exec \
+  --project demo-vetmap-rules \
+  --only firestore,storage \
+  "npm test --prefix firebase-tests"
 
-Copy the contents of `FirestoreRules.rules` (in this directory) into:
-
-1. Firebase Console → **Firestore Database** → **Rules** tab
-2. Replace the existing rules
-3. Click **Publish**
-
-These rules enforce:
-- Public read access for clinics, products, and insurances
-- Authenticated users can create reviews and quotes
-- Users can only edit/delete their own content (field `authorId` must match `request.auth.uid`)
-- Direct writes to the `clinics` collection are restricted (clinic creation goes through review first)
-
----
-
-## 9. Set Up Storage Security Rules
-
-Copy the contents of `StorageRules.rules` (in this directory) into:
-
-1. Firebase Console → **Storage** → **Rules** tab
-2. Replace the existing rules
-3. Click **Publish**
-
-These rules enforce:
-- Public read access for all files
-- Authenticated users can upload files up to 10 MB
-- Uploads are organized by user ID: `/{userId}/{filename}`
-- Users can only delete files they own
-
----
-
-## 10. Verify the Setup
-
-1. Build and run the app on a physical device (not simulator — Firebase configure is skipped on simulator by design; see `VetMapApp.swift` line 18)
-2. Check the Xcode console — you should see NO "Firebase SDK not linked" or "GoogleService-Info.plist not found" messages
-3. Try signing up with an email/password in the Profile tab
-4. Check Firebase Console → **Authentication** → **Users** to confirm the user was created
-5. Add a review or quote — check Firestore to confirm the document was written
-
----
-
-## Troubleshooting
-
-| Symptom | Likely Cause | Fix |
-|---------|-------------|-----|
-| "Firebase: GoogleService-Info.plist not found" | File missing or not in target | Check file is in Resources folder and added to VetMap target |
-| "Firebase SDK not linked" | SPM packages not added | Follow section 6 |
-| Auth error: "invalid-email" | Email format issue | Verify email is valid |
-| Auth error: "weak-password" | Password too short | Use at least 6 characters |
-| Firestore write fails silently | Security rules block it | Check rules in Firebase Console → Firestore → Rules |
-| Simulator skips Firebase | By design | Use a physical device, or remove the simulator guard in `VetMapApp.swift` line 18 |
-| `FirebaseApp.configure()` called twice | Duplicate configure call | Only `VetMapApp.init()` calls configure — check for accidental duplicate |
-
----
-
-## Files to Add to .gitignore
-
-```
-GoogleService-Info.plist
+npm run lint --prefix functions
+node -e "require('./functions/index.js')"
 ```
 
-The placeholder plist in the repo is safe to commit (it has no real keys). The real plist downloaded from Firebase Console must NOT be committed.
+目前基線：Rules tests 9/9、Functions lint 及 module load 通過。
+
+## 7. Production deployment
+
+由 repo root 執行：
+
+```bash
+firebase deploy \
+  --project vetmap-app \
+  --only firestore:rules,firestore:indexes,storage,functions,hosting
+```
+
+部署後逐項驗證：
+
+```bash
+firebase functions:list --project vetmap-app
+firebase hosting:channel:list --project vetmap-app
+node scripts/audit_firestore_public.mjs
+```
+
+並直接開啟：
+
+- `https://vetmap-app.web.app`
+- `https://vetmap-app.web.app/tos`
+- `https://vetmap-app.web.app/support`
+
+production 舊資料目前均沒有 `status: approved`。新規則部署後它們會被隔離；不要未經權利及內容審核就 bulk backfill 為 approved。
+
+## 8. Xcode Cloud secret
+
+Xcode Cloud workflow 必須建立 secret：
+
+```text
+GOOGLE_SERVICE_INFO_PLIST_BASE64
+```
+
+值是 production `VetMap/GoogleService-Info.plist` 的 base64 內容。`ci_scripts/ci_post_clone.sh` 會：
+
+1. 以權限 `077` 寫入 plist；
+2. 用 `plutil` 驗證；
+3. 驗證 `BUNDLE_ID == com.vetmap.app`。
+
+secret 必須標記為 Secret，不能在 log、commit 或 review notes 顯示原文。
+
+## 9. Production smoke test
+
+至少用兩個普通帳戶及一個 admin 帳戶驗證：
+
+1. Email signup／login。
+2. Apple login。
+3. 三類投稿進入 pending。
+4. Admin 批准後第二帳戶可見。
+5. Helpful、report、block 按預期生效。
+6. Admin 下架後普通帳戶不可見。
+7. Email account deletion。
+8. Apple account deletion 及 authorization revocation。
+
+全部完成後才可在 [PREFLIGHT_CHECKLIST.md](PREFLIGHT_CHECKLIST.md) 勾選 Firebase production 項目。

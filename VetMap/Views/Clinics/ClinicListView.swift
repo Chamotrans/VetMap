@@ -1,10 +1,50 @@
 import SwiftUI
 
+private enum ClinicBrowseMode: String, CaseIterable {
+    case list, grid, detail
+
+    var next: ClinicBrowseMode {
+        let all = Self.allCases
+        return all[(all.firstIndex(of: self)! + 1) % all.count]
+    }
+
+    var icon: String {
+        switch self {
+        case .list:   "list.bullet"
+        case .grid:   "square.grid.2x2"
+        case .detail: "rectangle.stack"
+        }
+    }
+
+    var label: String {
+        switch self {
+        case .list:   "列表"
+        case .grid:   "格覽"
+        case .detail: "詳細"
+        }
+    }
+}
+
+private enum ClinicSubmissionError: LocalizedError {
+    case failed(String)
+
+    var errorDescription: String? {
+        switch self {
+        case .failed(let message): message
+        }
+    }
+}
+
 struct ClinicListView: View {
     @State private var viewModel = ClinicsViewModel()
     @State private var clinicForDetail: VetClinic?
     @State private var isAddingClinic = false
+    @AppStorage("clinicViewMode") private var rawViewMode = ClinicBrowseMode.detail.rawValue
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    private var viewMode: ClinicBrowseMode {
+        ClinicBrowseMode(rawValue: rawViewMode) ?? .detail
+    }
 
     var body: some View {
         if horizontalSizeClass == .regular {
@@ -14,47 +54,60 @@ struct ClinicListView: View {
         }
     }
 
+    // MARK: - Layouts
+
     private var iphoneLayout: some View {
         NavigationStack {
             clinicListContent
-                .navigationTitle("獸醫診所 (\(MockClinicRepository().fetchClinics().count))")
+                .navigationTitle("獸醫診所 (\(viewModel.filteredClinics.count))")
                 .navigationBarTitleDisplayMode(.large)
                 .searchable(text: $viewModel.filter.query, prompt: "搜尋診所、地區、服務")
-            .onSubmit(of: .search) { Analytics.searchPerformed(viewModel.filter.query) }
+                .onSubmit(of: .search) { Analytics.searchPerformed(viewModel.filter.query) }
                 .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
+                    ToolbarItem(placement: .topBarLeading) {
                         Button {
-                            isAddingClinic = true
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                rawViewMode = viewMode.next.rawValue
+                            }
                         } label: {
+                            Image(systemName: viewMode.next.icon)
+                        }
+                        .accessibilityLabel("切換為\(viewMode.next.label)模式")
+                    }
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button { isAddingClinic = true } label: {
                             Image(systemName: "plus")
                         }
                         .accessibilityLabel("新增診所")
                     }
                 }
-                
-            .overlay(alignment: .bottomTrailing) {
-                Button {
-                    isAddingClinic = true
-                } label: {
-                    Image(systemName: "plus")
-                        .font(.title2.weight(.bold))
-                        .foregroundStyle(.white)
-                        .frame(width: 56, height: 56)
-                        .background(AppTheme.primary, in: Circle())
-                        .clipShape(Circle())
-                        .liquidGlassCapsule(tint: AppTheme.primary)
-                        .shadow(color: .black.opacity(0.2), radius: 8, y: 4)
+                .overlay(alignment: .bottomTrailing) {
+                    Button { isAddingClinic = true } label: {
+                        Image(systemName: "plus")
+                            .font(.title2.weight(.bold))
+                            .foregroundStyle(.white)
+                            .frame(width: 56, height: 56)
+                            .background(AppTheme.primary, in: Circle())
+                            .clipShape(Circle())
+                            .liquidGlassCapsule(tint: AppTheme.primary)
+                            .shadow(color: .black.opacity(0.2), radius: 8, y: 4)
+                    }
+                    .padding(.trailing, 20)
+                    .padding(.bottom, 20)
+                    .accessibilityLabel("新增診所")
                 }
-                .padding(.trailing, 20)
-                .padding(.bottom, 20)
-                .accessibilityLabel("新增診所")
-            }
-        .sheet(item: $clinicForDetail) { clinic in
+                .sheet(item: $clinicForDetail) { clinic in
                     ClinicDetailView(clinic: clinic)
                 }
                 .sheet(isPresented: $isAddingClinic) {
-                    AddClinicView { clinic in
-                        viewModel.addClinic(clinic)
+                    AddClinicView(
+                        successMessage: "已送出，待審核"
+                    ) { clinic in
+                        guard await viewModel.submitClinicForModeration(clinic) else {
+                            throw ClinicSubmissionError.failed(
+                                viewModel.storageError ?? "暫時無法提交診所資料。"
+                            )
+                        }
                     }
                 }
         }
@@ -63,30 +116,42 @@ struct ClinicListView: View {
     private var ipadLayout: some View {
         NavigationSplitView {
             clinicListContent
-                .navigationTitle("獸醫診所 (\(MockClinicRepository().fetchClinics().count))")
+                .navigationTitle("獸醫診所 (\(viewModel.filteredClinics.count))")
                 .navigationBarTitleDisplayMode(.large)
                 .searchable(text: $viewModel.filter.query, prompt: "搜尋診所、地區、服務")
-            .onSubmit(of: .search) { Analytics.searchPerformed(viewModel.filter.query) }
+                .onSubmit(of: .search) { Analytics.searchPerformed(viewModel.filter.query) }
                 .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
+                    ToolbarItem(placement: .topBarLeading) {
                         Button {
-                            isAddingClinic = true
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                rawViewMode = viewMode.next.rawValue
+                            }
                         } label: {
+                            Image(systemName: viewMode.next.icon)
+                        }
+                        .accessibilityLabel("切換為\(viewMode.next.label)模式")
+                    }
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button { isAddingClinic = true } label: {
                             Image(systemName: "plus")
                         }
                         .accessibilityLabel("新增診所")
                     }
                 }
                 .sheet(isPresented: $isAddingClinic) {
-                    AddClinicView { clinic in
-                        viewModel.addClinic(clinic)
+                    AddClinicView(
+                        successMessage: "已送出，待審核"
+                    ) { clinic in
+                        guard await viewModel.submitClinicForModeration(clinic) else {
+                            throw ClinicSubmissionError.failed(
+                                viewModel.storageError ?? "暫時無法提交診所資料。"
+                            )
+                        }
                     }
                 }
         } detail: {
             if let clinic = clinicForDetail {
-                NavigationStack {
-                    ClinicDetailView(clinic: clinic)
-                }
+                NavigationStack { ClinicDetailView(clinic: clinic) }
             } else {
                 ContentUnavailableView(
                     "選擇診所",
@@ -96,6 +161,8 @@ struct ClinicListView: View {
             }
         }
     }
+
+    // MARK: - Content
 
     private var clinicListContent: some View {
         ScrollView {
@@ -116,14 +183,19 @@ struct ClinicListView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.top, 8)
         }
-        .refreshable {
-            viewModel.retryLoad()
-        }
+        .refreshable { await viewModel.retryLoad() }
         .organicBackground()
         .onAppear {
-            viewModel.loadClinics()
+            Task {
+                await viewModel.loadClinics()
+                if AppLaunchFlags.autoPresentClinic, clinicForDetail == nil {
+                    clinicForDetail = viewModel.filteredClinics.first
+                }
+            }
         }
     }
+
+    // MARK: - Subviews
 
     private var header: some View {
         HStack(spacing: 12) {
@@ -133,12 +205,10 @@ struct ClinicListView: View {
                 .frame(width: 46, height: 46)
                 .background(AppTheme.primary, in: RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous))
                 .accessibilityHidden(true)
-
             VStack(alignment: .leading, spacing: 4) {
                 Text("社群回報")
                     .font(.headline.weight(.semibold))
-
-                Text("已驗證資料優先顯示，新增後會保存在本機。")
+                Text("社群投稿會安全送到雲端，經管理員審核後公開。")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -161,9 +231,7 @@ struct ClinicListView: View {
             Text(resultCountText)
                 .font(.footnote.weight(.semibold))
                 .foregroundStyle(.secondary)
-
             Spacer()
-
             Text(viewModel.filter.activeDescription)
                 .font(.footnote)
                 .foregroundStyle(.secondary)
@@ -173,17 +241,15 @@ struct ClinicListView: View {
     }
 
     private var resultCountText: String {
-        if viewModel.filter.isActive {
-            return "\(viewModel.filteredClinics.count) / \(viewModel.clinics.count) 間診所"
-        }
-
-        return "\(viewModel.filteredClinics.count) 間診所"
+        viewModel.filter.isActive
+            ? "\(viewModel.filteredClinics.count) / \(viewModel.clinics.count) 間診所"
+            : "\(viewModel.filteredClinics.count) 間診所"
     }
 
     @ViewBuilder
     private var storageErrorBanner: some View {
-        if let storageError = viewModel.storageError {
-            Label(storageError, systemImage: "externaldrive.badge.exclamationmark")
+        if let err = viewModel.storageError {
+            Label(err, systemImage: "externaldrive.badge.exclamationmark")
                 .font(.footnote.weight(.medium))
                 .foregroundStyle(AppTheme.warning)
                 .padding(12)
@@ -192,6 +258,8 @@ struct ClinicListView: View {
         }
     }
 
+    // MARK: - Clinic Rows (3 modes)
+
     @ViewBuilder
     private var clinicRows: some View {
         if viewModel.clinics.isEmpty && !viewModel.isLoading {
@@ -199,21 +267,53 @@ struct ClinicListView: View {
         } else if viewModel.filteredClinics.isEmpty {
             emptyState
         } else {
-            LazyVStack(spacing: 10) {
-                ForEach(viewModel.filteredClinics) { clinic in
-                    Button {
-                        clinicForDetail = clinic
-                    } label: {
-                        ClinicListRowView(clinic: clinic)
+            Group {
+                switch viewMode {
+                case .list:
+                    LazyVStack(spacing: 8) {
+                        ForEach(viewModel.filteredClinics) { clinic in
+                            clinicButton(clinic) { ClinicSlimRow(clinic: clinic) }
+                        }
                     }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("\(clinic.name), 評分 \(String(format: "%.1f", clinic.avgRating))")
-                    .accessibilityHint("開啟診所詳情")
-                    .accessibilitySortPriority(1)
+                case .grid:
+                    LazyVGrid(
+                        columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)],
+                        spacing: 12
+                    ) {
+                        ForEach(viewModel.filteredClinics) { clinic in
+                            clinicButton(clinic) { ClinicGridCard(clinic: clinic) }
+                        }
+                    }
+                case .detail:
+                    LazyVStack(spacing: 10) {
+                        ForEach(viewModel.filteredClinics) { clinic in
+                            clinicButton(clinic) { ClinicListRowView(clinic: clinic) }
+                        }
+                    }
                 }
             }
             .animation(.default, value: viewModel.filteredClinics)
         }
+    }
+
+    @ViewBuilder
+    private func clinicButton<Label: View>(_ clinic: VetClinic, @ViewBuilder label: () -> Label) -> some View {
+        Button { clinicForDetail = clinic } label: { label() }
+            .buttonStyle(.plain)
+            .overlay(alignment: .topLeading) {
+                if viewModel.isPinned(clinic.id) {
+                    Image(systemName: "pin.fill")
+                        .font(.caption2.weight(.bold))
+                        .foregroundStyle(.white)
+                        .padding(5)
+                        .background(AppTheme.primary, in: Circle())
+                        .offset(x: 6, y: 6)
+                        .accessibilityLabel("已置頂")
+                }
+            }
+            .accessibilityLabel("\(clinic.name), 評分 \(String(format: "%.1f", clinic.avgRating))")
+            .accessibilityHint("開啟診所詳情")
+            .accessibilitySortPriority(1)
     }
 
     private var dataMissingView: some View {
@@ -222,22 +322,112 @@ struct ClinicListView: View {
             title: "無法載入診所資料",
             message: "請檢查網絡連線後重試。",
             retryLabel: "重試",
-            onRetry: { viewModel.retryLoad() }
+            onRetry: { Task { await viewModel.retryLoad() } }
         )
         .padding(.top, 20)
     }
 
     private var emptyState: some View {
-        VStack(spacing: 14) {
-            EmptyStateView(
-                icon: "magnifyingglass",
-                title: "找不到相關診所",
-                subtitle: "試試放寬篩選，或改用地區、服務項目搜尋。",
-                action: viewModel.filter.isActive
-                    ? ("清除篩選", { viewModel.filter = ClinicSearchFilter() })
-                    : nil
-            )
+        EmptyStateView(
+            icon: "magnifyingglass",
+            title: "找不到相關診所",
+            subtitle: "試試放寬篩選，或改用地區、服務項目搜尋。",
+            action: viewModel.filter.isActive
+                ? ("清除篩選", { viewModel.filter = ClinicSearchFilter() })
+                : nil
+        )
+    }
+}
+
+// MARK: - List mode: slim row
+
+private struct ClinicSlimRow: View {
+    let clinic: VetClinic
+
+    var body: some View {
+        HStack(spacing: 10) {
+            ClinicAvatar(name: clinic.name, size: 36, font: .subheadline)
+
+            VStack(alignment: .leading, spacing: 2) {
+                HStack(spacing: 4) {
+                    Text(clinic.name)
+                        .font(.subheadline.weight(.semibold))
+                        .lineLimit(1)
+                    if clinic.verified {
+                        Image(systemName: "checkmark.seal.fill")
+                            .font(.caption2)
+                            .foregroundStyle(AppTheme.primary)
+                            .accessibilityLabel("已驗證")
+                    }
+                }
+                Text(clinic.address)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
+
+            Spacer(minLength: 4)
+
+            VStack(alignment: .trailing, spacing: 2) {
+                Label(String(format: "%.1f", clinic.avgRating), systemImage: "star.fill")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(AppTheme.warning)
+                Text(clinic.priceLevelText)
+                    .font(.caption2)
+                    .foregroundStyle(AppTheme.primary)
+            }
+
+            Image(systemName: "chevron.forward")
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(.tertiary)
         }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .appCard()
+    }
+}
+
+// MARK: - Grid mode: compact card
+
+private struct ClinicGridCard: View {
+    let clinic: VetClinic
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            ZStack(alignment: .topTrailing) {
+                ClinicAvatar(name: clinic.name, size: 48, font: .title3)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.top, 4)
+                if clinic.verified {
+                    Image(systemName: "checkmark.seal.fill")
+                        .font(.caption)
+                        .foregroundStyle(AppTheme.primary)
+                        .padding(4)
+                        .accessibilityLabel("已驗證")
+                }
+            }
+
+            Text(clinic.name)
+                .font(.caption.weight(.semibold))
+                .lineLimit(2)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            HStack(spacing: 4) {
+                Image(systemName: "star.fill")
+                    .font(.caption2)
+                    .foregroundStyle(AppTheme.warning)
+                Text(String(format: "%.1f", clinic.avgRating))
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Text(clinic.priceLevelText)
+                    .font(.caption2)
+                    .foregroundStyle(AppTheme.primary)
+            }
+        }
+        .padding(10)
+        .frame(maxWidth: .infinity)
+        .appCard()
     }
 }
 

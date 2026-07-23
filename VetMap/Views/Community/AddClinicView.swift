@@ -1,12 +1,14 @@
 import SwiftUI
 
 struct AddClinicView: View {
-    var onSubmit: (VetClinic) -> Void
+    var successMessage: LocalizedStringKey = "新增成功"
+    var onSubmit: (VetClinic) async throws -> Void
 
     @Environment(\.dismiss) private var dismiss
     @FocusState private var focusedField: Field?
     @State private var viewModel = AddClinicViewModel()
     @State private var showSuccess = false
+    @State private var isSubmitting = false
 
     private enum Field: Hashable {
         case name
@@ -120,8 +122,9 @@ struct AddClinicView: View {
                         }
                     }
 
-                    Toggle("已由社群驗證", isOn: $viewModel.verified)
-                        .tint(AppTheme.primary)
+                    Label("提交後由管理員人工審核", systemImage: "person.badge.shield.checkmark")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
                 } header: {
                     Label("分類", systemImage: "slider.horizontal.3")
                 }
@@ -149,14 +152,21 @@ struct AddClinicView: View {
                     Button("取消") {
                         dismiss()
                     }
+                    .disabled(isSubmitting)
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("提交") {
-                        submit()
+                    Button {
+                        Task { await submit() }
+                    } label: {
+                        if isSubmitting {
+                            ProgressView()
+                        } else {
+                            Text("提交")
+                        }
                     }
                     .fontWeight(.semibold)
-                    .disabled(!viewModel.canSubmit)
+                    .disabled(!viewModel.canSubmit || isSubmitting)
                     .accessibilityLabel("提交診所資料")
                 }
 
@@ -186,7 +196,7 @@ struct AddClinicView: View {
                     .font(.system(size: 56))
                     .foregroundStyle(AppTheme.primary)
 
-                Text("新增成功")
+                Text(successMessage)
                     .font(.title3.weight(.semibold))
                     .foregroundStyle(.primary)
             }
@@ -197,15 +207,21 @@ struct AddClinicView: View {
         }
     }
 
-    private func submit() {
+    private func submit() async {
         guard let clinic = viewModel.makeClinic() else { return }
-        Analytics.clinicAdded(clinic.name)
-        Haptics.success()
-        showSuccess = true
-        onSubmit(clinic)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+        isSubmitting = true
+        defer { isSubmitting = false }
+
+        do {
+            try await onSubmit(clinic)
+            Analytics.clinicAdded(clinic.name)
+            Haptics.success()
+            showSuccess = true
+            try? await Task.sleep(for: .milliseconds(800))
             showSuccess = false
             dismiss()
+        } catch {
+            viewModel.validationMessage = error.localizedDescription
         }
     }
 

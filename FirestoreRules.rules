@@ -2,95 +2,446 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // ── Helper functions ──────────────────────────────────────────
-
-    // True if the request comes from an authenticated user
-    function isSignedIn() {
+    function signedIn() {
       return request.auth != null;
     }
 
-    // True if the document's authorId field matches the requesting user
-    function isAuthor() {
-      return resource.data.authorId == request.auth.uid;
+    function admin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
 
-    // ── Clinics ───────────────────────────────────────────────────
-    //
-    // Anyone can read clinic listings.
-    // Only authenticated users can create (add) a clinic.
-    // Updates and deletes require the original author.
-    //
+    function recentClientTimestamp(value) {
+      return value is timestamp
+        && value <= request.time + duration.value(5, 'm')
+        && value >= request.time - duration.value(10, 'm');
+    }
+
+    function notFutureTimestamp(value) {
+      return value is timestamp
+        && value <= request.time + duration.value(5, 'm');
+    }
+
+    function validDocumentID(value) {
+      return value is string
+        && value.size() > 0
+        && value.size() <= 200
+        && value.matches('^[A-Za-z0-9][A-Za-z0-9._-]*$');
+    }
+
+    function validClinic(data) {
+      return data.keys().hasAll([
+          'id', 'name', 'address', 'coordinate', 'phone', 'openingHours',
+          'services', 'avgRating', 'reviewCount', 'priceLevel', 'images',
+          'tags', 'createdAt', 'updatedAt', 'reportedBy', 'verified'
+        ])
+        && data.keys().hasOnly([
+          'id', 'name', 'address', 'coordinate', 'phone', 'website',
+          'openingHours', 'services', 'avgRating', 'reviewCount', 'priceLevel',
+          'images', 'tags', 'createdAt', 'updatedAt', 'reportedBy', 'verified',
+          'authorId', 'status', 'approvedAt'
+        ])
+        && validDocumentID(data.id)
+        && data.name is string
+        && data.name.size() > 0
+        && data.name.size() <= 200
+        && data.address is string
+        && data.address.size() > 0
+        && data.address.size() <= 500
+        && data.coordinate is map
+        && data.coordinate.keys().hasAll(['latitude', 'longitude'])
+        && data.coordinate.keys().hasOnly(['latitude', 'longitude'])
+        && data.coordinate.latitude is number
+        && data.coordinate.latitude >= -90
+        && data.coordinate.latitude <= 90
+        && data.coordinate.longitude is number
+        && data.coordinate.longitude >= -180
+        && data.coordinate.longitude <= 180
+        && data.phone is string
+        && (!('website' in data) || data.website is string)
+        && data.openingHours is map
+        && data.services is list
+        && data.images is list
+        && data.tags is list
+        && data.avgRating is number
+        && data.reviewCount is int
+        && data.reviewCount >= 0
+        && data.priceLevel is int
+        && data.priceLevel >= 1
+        && data.priceLevel <= 3
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp
+        && data.reportedBy is string
+        && data.verified is bool;
+    }
+
+    function validReview(data) {
+      return data.keys().hasAll([
+          'id', 'clinicId', 'userId', 'userName', 'rating', 'title', 'content',
+          'createdAt', 'updatedAt', 'helpfulCount'
+        ])
+        && data.keys().hasOnly([
+          'id', 'clinicId', 'userId', 'userName', 'rating', 'title', 'content',
+          'treatmentType', 'cost', 'images', 'createdAt', 'updatedAt',
+          'helpfulCount', 'authorId', 'status', 'approvedAt'
+        ])
+        && validDocumentID(data.id)
+        && validDocumentID(data.clinicId)
+        && validDocumentID(data.userId)
+        && data.userName is string
+        && data.rating is int
+        && data.rating >= 1
+        && data.rating <= 5
+        && data.title is string
+        && data.title.size() > 0
+        && data.title.size() <= 200
+        && data.content is string
+        && data.content.size() > 0
+        && data.content.size() <= 4000
+        && (!('treatmentType' in data) || data.treatmentType is string)
+        && (!('cost' in data) || data.cost is number)
+        && (!('images' in data) || data.images is list)
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp
+        && data.helpfulCount is int
+        && data.helpfulCount >= 0;
+    }
+
+    function validQuote(data) {
+      return data.keys().hasAll([
+          'id', 'clinicId', 'userId', 'treatmentType', 'estimatedCost',
+          'currency', 'notes', 'createdAt'
+        ])
+        && data.keys().hasOnly([
+          'id', 'clinicId', 'userId', 'treatmentType', 'estimatedCost',
+          'actualCost', 'currency', 'notes', 'createdAt',
+          'authorId', 'status', 'approvedAt'
+        ])
+        && validDocumentID(data.id)
+        && validDocumentID(data.clinicId)
+        && validDocumentID(data.userId)
+        && data.treatmentType is string
+        && data.treatmentType.size() > 0
+        && data.treatmentType.size() <= 200
+        && data.estimatedCost is number
+        && data.estimatedCost > 0
+        && (!('actualCost' in data) || data.actualCost is number)
+        && data.currency in ['TWD', 'HKD']
+        && data.notes is string
+        && data.notes.size() <= 4000
+        && data.createdAt is timestamp;
+    }
+
+    function validSubmission(data, submissionId) {
+      return data.keys().hasAll([
+          'id', 'type', 'authorId', 'authorName', 'status', 'submittedAt'
+        ])
+        && data.keys().hasOnly([
+          'id', 'type', 'authorId', 'authorName', 'status', 'submittedAt',
+          'clinicName', 'clinic', 'review', 'quote', 'reviewedAt', 'reviewedBy'
+        ])
+        && data.id == submissionId
+        && validDocumentID(data.id)
+        && data.type in ['clinic', 'review', 'quote']
+        && data.authorId == request.auth.uid
+        && data.authorName is string
+        && data.authorName.size() > 0
+        && data.authorName.size() <= 200
+        && data.status == 'pending'
+        && recentClientTimestamp(data.submittedAt)
+        && !('reviewedAt' in data)
+        && !('reviewedBy' in data)
+        && (
+          (data.type == 'clinic'
+            && data.keys().hasAll(['clinic'])
+            && !('review' in data)
+            && !('quote' in data)
+            && validClinic(data.clinic)
+            && !('authorId' in data.clinic)
+            && !('status' in data.clinic)
+            && !('approvedAt' in data.clinic)
+            && data.clinic.reportedBy == request.auth.uid
+            && data.clinic.verified == false
+            && data.clinic.avgRating == 0
+            && data.clinic.reviewCount == 0
+            && notFutureTimestamp(data.clinic.createdAt)
+            && notFutureTimestamp(data.clinic.updatedAt)
+            && data.clinic.updatedAt >= data.clinic.createdAt)
+          ||
+          (data.type == 'review'
+            && data.keys().hasAll(['review', 'clinicName'])
+            && !('clinic' in data)
+            && !('quote' in data)
+            && data.clinicName is string
+            && validReview(data.review)
+            && !('authorId' in data.review)
+            && !('status' in data.review)
+            && !('approvedAt' in data.review)
+            && data.review.userId == request.auth.uid
+            && data.review.helpfulCount == 0
+            && notFutureTimestamp(data.review.createdAt)
+            && notFutureTimestamp(data.review.updatedAt)
+            && data.review.updatedAt >= data.review.createdAt)
+          ||
+          (data.type == 'quote'
+            && data.keys().hasAll(['quote', 'clinicName'])
+            && !('clinic' in data)
+            && !('review' in data)
+            && data.clinicName is string
+            && validQuote(data.quote)
+            && !('authorId' in data.quote)
+            && !('status' in data.quote)
+            && !('approvedAt' in data.quote)
+            && data.quote.userId == request.auth.uid
+            && notFutureTimestamp(data.quote.createdAt))
+        );
+    }
+
+    // Public content can only be published by an admin after queue approval.
     match /clinics/{clinicId} {
-      allow read: if true;
-      allow create: if isSignedIn()
-                    && request.resource.data.name is string
-                    && request.resource.data.name.size() > 0
-                    && request.resource.data.address is string;
-      allow update: if isSignedIn() && isAuthor();
-      allow delete: if isSignedIn() && isAuthor();
+      allow read: if resource.data.status == 'approved' || admin();
+      allow create: if admin()
+        && request.resource.data.id == clinicId
+        && validClinic(request.resource.data)
+        && request.resource.data.keys().hasAll(['authorId', 'status', 'approvedAt'])
+        && request.resource.data.keys().hasOnly([
+          'id', 'name', 'address', 'coordinate', 'phone', 'website',
+          'openingHours', 'services', 'avgRating', 'reviewCount', 'priceLevel',
+          'images', 'tags', 'createdAt', 'updatedAt', 'reportedBy', 'verified',
+          'authorId', 'status', 'approvedAt'
+        ])
+        && request.resource.data.authorId is string
+        && request.resource.data.status == 'approved'
+        && request.resource.data.approvedAt is timestamp;
+      // Queue approval is create-only. This prevents a crafted submission ID
+      // from overwriting an existing curated or previously approved clinic.
+      allow update: if false;
+      allow delete: if admin();
     }
 
-    // ── Reviews ───────────────────────────────────────────────────
-    //
-    // Anyone can read reviews.
-    // Only authenticated users can create reviews.
-    // Users can only update/delete their own reviews.
-    //
     match /reviews/{reviewId} {
-      allow read: if true;
-      allow create: if isSignedIn()
-                    && request.resource.data.authorId == request.auth.uid
-                    && request.resource.data.clinicId is string
-                    && request.resource.data.content is string;
-      allow update: if isSignedIn() && isAuthor();
-      allow delete: if isSignedIn() && isAuthor();
+      allow read: if resource.data.status == 'approved' || admin();
+      allow create: if admin()
+        && request.resource.data.id == reviewId
+        && validReview(request.resource.data)
+        && request.resource.data.keys().hasAll(['authorId', 'status', 'approvedAt'])
+        && request.resource.data.keys().hasOnly([
+          'id', 'clinicId', 'userId', 'userName', 'rating', 'title', 'content',
+          'treatmentType', 'cost', 'images', 'createdAt', 'updatedAt',
+          'helpfulCount', 'authorId', 'status', 'approvedAt'
+        ])
+        && request.resource.data.authorId == request.resource.data.userId
+        && request.resource.data.status == 'approved'
+        && request.resource.data.approvedAt is timestamp;
+      allow update: if false;
+      allow delete: if admin();
     }
 
-    // ── Quotes ────────────────────────────────────────────────────
-    //
-    // Anyone can read treatment cost quotes.
-    // Only authenticated users can create quotes.
-    // Users can only update/delete their own quotes.
-    //
+    // Helpful votes live separately so both bundled seed reviews and cloud
+    // reviews support one durable vote per Firebase UID.
+    match /reviewEngagement/{reviewId} {
+      allow read: if true;
+      allow create: if signedIn()
+        && validDocumentID(reviewId)
+        && request.resource.data.keys().hasAll([
+          'reviewId', 'helpfulCount', 'updatedAt'
+        ])
+        && request.resource.data.keys().hasOnly([
+          'reviewId', 'helpfulCount', 'updatedAt'
+        ])
+        && request.resource.data.reviewId == reviewId
+        && request.resource.data.helpfulCount == 1
+        && request.resource.data.updatedAt == request.time
+        && !exists(
+          /databases/$(database)/documents/reviewEngagement/$(reviewId)/voters/$(request.auth.uid)
+        )
+        && existsAfter(
+          /databases/$(database)/documents/reviewEngagement/$(reviewId)/voters/$(request.auth.uid)
+        );
+      allow update: if signedIn()
+        && request.resource.data.reviewId == resource.data.reviewId
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['helpfulCount', 'updatedAt'])
+        && request.resource.data.helpfulCount == resource.data.helpfulCount + 1
+        && request.resource.data.updatedAt == request.time
+        && !exists(
+          /databases/$(database)/documents/reviewEngagement/$(reviewId)/voters/$(request.auth.uid)
+        )
+        && existsAfter(
+          /databases/$(database)/documents/reviewEngagement/$(reviewId)/voters/$(request.auth.uid)
+        );
+      allow delete: if admin();
+
+      match /voters/{userId} {
+        allow read: if signedIn() && (request.auth.uid == userId || admin());
+        allow create: if signedIn()
+          && request.auth.uid == userId
+          && request.resource.data.keys().hasAll(['userId', 'createdAt'])
+          && request.resource.data.keys().hasOnly(['userId', 'createdAt'])
+          && request.resource.data.userId == userId
+          && request.resource.data.createdAt == request.time;
+        allow update: if false;
+        allow delete: if admin();
+      }
+    }
+
     match /quotes/{quoteId} {
-      allow read: if true;
-      allow create: if isSignedIn()
-                    && request.resource.data.authorId == request.auth.uid
-                    && request.resource.data.clinicId is string
-                    && request.resource.data.procedure is string;
-      allow update: if isSignedIn() && isAuthor();
-      allow delete: if isSignedIn() && isAuthor();
+      allow read: if resource.data.status == 'approved' || admin();
+      allow create: if admin()
+        && request.resource.data.id == quoteId
+        && validQuote(request.resource.data)
+        && request.resource.data.keys().hasAll(['authorId', 'status', 'approvedAt'])
+        && request.resource.data.keys().hasOnly([
+          'id', 'clinicId', 'userId', 'treatmentType', 'estimatedCost',
+          'actualCost', 'currency', 'notes', 'createdAt',
+          'authorId', 'status', 'approvedAt'
+        ])
+        && request.resource.data.authorId == request.resource.data.userId
+        && request.resource.data.status == 'approved'
+        && request.resource.data.approvedAt is timestamp;
+      allow update: if false;
+      allow delete: if admin();
     }
 
-    // ── Products ──────────────────────────────────────────────────
-    //
-    // Public read. Admin-managed (write via Firebase Console or admin SDK only).
-    //
+    match /submissions/{submissionId} {
+      allow create: if signedIn() && validSubmission(request.resource.data, submissionId);
+      allow read: if admin()
+        || (signedIn() && resource.data.authorId == request.auth.uid);
+      allow update: if admin()
+        && resource.data.status == 'pending'
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['status', 'reviewedAt', 'reviewedBy'])
+        && request.resource.data.status in ['approved', 'rejected']
+        && request.resource.data.reviewedAt == request.time
+        && request.resource.data.reviewedBy == request.auth.uid;
+      allow delete: if admin();
+    }
+
+    match /reports/{reportId} {
+      allow create: if signedIn()
+        && request.resource.data.keys().hasAll([
+          'id', 'targetType', 'targetId', 'targetTitle', 'reason',
+          'reporterId', 'createdAt', 'status'
+        ])
+        && request.resource.data.keys().hasOnly([
+          'id', 'targetType', 'targetId', 'targetTitle', 'clinicId',
+          'reason', 'reporterId', 'createdAt', 'status',
+          'resolvedAt', 'resolvedBy'
+        ])
+        && request.resource.data.id == reportId
+        && validDocumentID(request.resource.data.id)
+        && request.resource.data.targetType in ['clinic', 'review', 'quote']
+        && validDocumentID(request.resource.data.targetId)
+        && request.resource.data.targetTitle is string
+        && request.resource.data.targetTitle.size() > 0
+        && request.resource.data.targetTitle.size() <= 200
+        && request.resource.data.id
+          == request.resource.data.targetType + '-'
+            + request.resource.data.targetId + '-' + request.auth.uid
+        && (
+          !('clinicId' in request.resource.data)
+          || validDocumentID(request.resource.data.clinicId)
+        )
+        && request.resource.data.reason is string
+        && request.resource.data.reason.size() > 0
+        && request.resource.data.reason.size() <= 500
+        && request.resource.data.reporterId == request.auth.uid
+        && recentClientTimestamp(request.resource.data.createdAt)
+        && request.resource.data.status == 'pending'
+        && !('resolvedAt' in request.resource.data)
+        && !('resolvedBy' in request.resource.data);
+      allow read: if admin()
+        || (signedIn() && resource.data.reporterId == request.auth.uid);
+      allow update: if admin()
+        && resource.data.status == 'pending'
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['status', 'resolvedAt', 'resolvedBy'])
+        && request.resource.data.status in ['approved', 'rejected']
+        && request.resource.data.resolvedAt == request.time
+        && request.resource.data.resolvedBy == request.auth.uid;
+      allow delete: if admin();
+    }
+
+    // Public state also hides bundled seed records after a moderator take-down.
+    match /contentStates/{stateId} {
+      allow read: if true;
+      allow create, update: if admin()
+        && request.resource.data.keys().hasAll([
+          'id', 'type', 'targetId', 'isRemoved', 'isPinned',
+          'updatedAt', 'updatedBy'
+        ])
+        && request.resource.data.keys().hasOnly([
+          'id', 'type', 'targetId', 'isRemoved', 'isPinned',
+          'updatedAt', 'updatedBy'
+        ])
+        && request.resource.data.id == stateId
+        && validDocumentID(request.resource.data.id)
+        && request.resource.data.type in ['clinic', 'review', 'quote']
+        && validDocumentID(request.resource.data.targetId)
+        && request.resource.data.isRemoved is bool
+        && request.resource.data.isPinned is bool
+        && request.resource.data.updatedAt is timestamp
+        && request.resource.data.updatedBy == request.auth.uid;
+      allow delete: if admin();
+    }
+
     match /products/{productId} {
       allow read: if true;
-      allow write: if false;
+      allow write: if admin();
     }
 
-    // ── Insurances ────────────────────────────────────────────────
-    //
-    // Public read. Admin-managed (write via Firebase Console or admin SDK only).
-    //
     match /insurances/{insuranceId} {
       allow read: if true;
-      allow write: if false;
+      allow write: if admin();
     }
 
-    // ── User Profiles (for future use) ────────────────────────────
-    //
+    // User records are private. Public UGC carries a display name, never a
+    // readable user profile document.
     match /users/{userId} {
-      allow read: if true;
-      allow create: if isSignedIn() && request.auth.uid == userId;
-      allow update: if isSignedIn() && request.auth.uid == userId;
-      allow delete: if isSignedIn() && request.auth.uid == userId;
+      allow read: if signedIn() && (request.auth.uid == userId || admin());
+      allow create: if signedIn()
+        && request.auth.uid == userId
+        && request.resource.data.keys().hasAll([
+          'uid', 'displayName', 'email', 'providerIDs', 'createdAt',
+          'updatedAt', 'isPremium', 'favoriteClinics', 'savedProducts'
+        ])
+        && request.resource.data.keys().hasOnly([
+          'uid', 'displayName', 'email', 'providerIDs', 'createdAt',
+          'updatedAt', 'isPremium', 'favoriteClinics', 'savedProducts'
+        ])
+        && request.resource.data.uid == userId
+        && request.resource.data.isPremium == false;
+      allow update: if admin()
+        || (
+          signedIn()
+          && request.auth.uid == userId
+          && request.resource.data.keys().hasOnly([
+            'uid', 'displayName', 'email', 'providerIDs', 'createdAt',
+            'updatedAt', 'isPremium', 'favoriteClinics', 'savedProducts', 'role'
+          ])
+          && request.resource.data.uid == userId
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'displayName', 'email', 'providerIDs', 'updatedAt',
+            'favoriteClinics', 'savedProducts'
+          ])
+        );
+      allow delete: if signedIn() && (request.auth.uid == userId || admin());
+
+      match /blockedUsers/{blockedUserId} {
+        allow read: if signedIn() && request.auth.uid == userId;
+        allow create: if signedIn()
+          && request.auth.uid == userId
+          && blockedUserId != request.auth.uid
+          && request.resource.data.keys().hasAll(['blockedUserId', 'createdAt'])
+          && request.resource.data.keys().hasOnly(['blockedUserId', 'createdAt'])
+          && request.resource.data.blockedUserId == blockedUserId
+          && request.resource.data.createdAt == request.time;
+        allow update: if false;
+        allow delete: if signedIn() && request.auth.uid == userId;
+      }
     }
 
-    // ── Deny everything else by default ───────────────────────────
     match /{document=**} {
       allow read, write: if false;
     }

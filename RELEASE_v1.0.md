@@ -1,92 +1,83 @@
-# VetMap v1.0 — Release Notes
+# VetMap iOS 1.0 — Release Candidate Notes
 
-> **BUILD SUCCEEDED • 93 commits • 0 errors • 0 warnings • Archive ready**
+> 目前狀態：準備 Xcode Cloud build `1.0 (6)`；尚未正式提交 App Review。
+> 本文件不以舊本機 archive、舊 commit 數或未部署設定冒充 release proof。
 
-## Data
+## 首版範圍
 
-| Type | Count | Source |
-|------|-------|--------|
-| Clinics | 222 (HK 29 + TW 17 + petcircle 176) | ePetPet API + petcircle curation |
-| Reviews | 15 | Curated real HK/TW user reviews |
-| Quotes | 16 | Real treatment cost data |
-| Products | 127 (用品 51 + 美容 51 + 善終 25) | petcircle-hk.vercel.app |
-| Insurance | 6 (3 TW + 3 HK) | Real market plans |
-| **Total** | **386 documents** | **ALL REAL** |
+- 香港及台灣獸醫診所地圖、列表、搜尋、篩選、電話、網站及導航
+- 電郵／密碼註冊及登入
+- Sign in with Apple
+- 新增診所、評價及治療報價
+- 所有社群投稿先進入雲端待審佇列，批准後才公開
+- 評價、報價及診所舉報
+- 封鎖評價／報價作者
+- 每帳戶一次的評價「有用」標記
+- App 內帳戶及相關用戶資料刪除
+- 寵物用品／服務及寵物保險資料瀏覽
 
-## Features
+## 明確不在 1.0 公開範圍
 
-- MapKit clinic discovery (222 HK + TW clinics)
-- Clinic search, filter (keyword + region + price + verified)
-- Clinic detail (call, website, route, reviews, quotes, services, hours)
-- Review system (star rating, PhotosPicker, helpful voting)
-- Quote sharing (13 treatment types, TWD/HKD dual currency)
-- Pet products (127 products, 3 categories, search + filter)
-- Pet insurance comparison (6 real plans, premium sorting)
-- Email/Password + Apple Sign In authentication
-- StoreKit 2 Premium (monthly/yearly, 7-day free trial)
-- Widget extension (nearby clinics on home screen)
-- iPad NavigationSplitView sidebar
-- 3-language localization (zh-Hant-HK, zh-Hans, en) via .xcstrings
-- Offline mode with NWPathMonitor
-- Onboarding walkthrough (Warm Clinical aesthetic)
-- 30+ VoiceOver accessibility labels
-- In-app Safari browser for clinic websites
-- Loading shimmers, error states, empty states
-- Confetti celebration animation
-- Review streaks / contributor badges
+- Premium 訂閱及 IAP：程式碼仍保留作後續版本，但 `FeatureFlags.premiumEnabled` 為 `false`
+- 評價相片：上載流程未達 release 標準，相關 UI 及相機／相簿權限已移除
+- Firebase Analytics：release target 已移除；首版不收集搜尋字或產品互動事件
+- Widget：不列作 1.0 承諾功能
 
-## UI/UX Design
+## 社群安全架構
 
-- **Design system**: AppTheme (teal primary, indigo accent, orange warning)
-- **Warm Clinical aesthetic**: Organic texture backgrounds, amber/gold tones
-- **Clinic monogram avatars**: Custom initial-based avatars replacing generic icons
-- **Custom fonts**: Rounded Mplus 1c for headings
-- **Micro-interactions**: Press-scale cards, animated star ratings, symbol effects
-- **Premium page**: Gradient hero, glass morphism cards, feature stagger animation
+| 路徑 | 功能 | 普通用戶權限 |
+|---|---|---|
+| `submissions/{id}` | 診所／評價／報價待審內容 | 只可建立及讀取自己的 pending 投稿 |
+| `clinics/{id}` | 已批准診所 | 只讀 |
+| `reviews/{id}` | 已批准評價 | 只讀 |
+| `quotes/{id}` | 已批准報價 | 只讀 |
+| `reports/{id}` | 舉報 | 只可建立自己的 pending 舉報 |
+| `users/{uid}/blockedUsers/{blockedUid}` | 私人封鎖名單 | 只限本人 |
+| `reviewEngagement/{reviewId}/voters/{uid}` | 每人一次「有用」標記 | 只可建立自己的 vote |
 
-## Backend
+公開 collection 只有管理員可以建立或刪除。管理員批准投稿時，以 batch 同步建立公開文件及更新 submission 狀態。
 
-- Firebase project: `vetmap-app`
-- Firestore: asia-east1, security rules deployed
-- Auth: Email/Password enabled
-- Storage: asia-east1, security rules deployed
-- Firebase SPM v12.5 + Kingfisher v8.0
-- Firebase Hosting: privacy policy + TOS
+## 帳戶刪除
 
-## Quality
+刪除流程要求最近登入：
 
-- 0 force-unwrap crash risks
-- Thread-safe data access (quotes queue)
-- Pre-commit hook (blocks API key leaks)
-- Privacy manifest (PrivacyInfo.xcprivacy)
-- CI/CD: GitHub Actions auto-build on push/PR
-- Crashlytics + Analytics (#if canImport guarded)
-- App Store rating prompt
+1. 電郵帳戶重新輸入密碼，或 Apple 帳戶重新取得 Apple credential。
+2. 重新驗證 Firebase Auth。
+3. 呼叫 `asia-east1` callable function `purgeUserData` 清除 Firestore 及 Storage 內的用戶資料。
+4. Apple 帳戶撤銷 authorization code。
+5. 刪除 Firebase Auth user，再清除本機資料。
 
-## App Store Submission
+## 資料及內容邊界
 
-- App ID: 6777361219
-- Bundle ID: com.vetmap.app
-- IAP: com.vetmap.premium.monthly + com.vetmap.premium.yearly
-- Privacy Policy: https://vetmap-app.web.app
-- TOS: https://vetmap-app.web.app/tos
-- Support: https://github.com/Chamotrans/VetMap/issues
+- 內置診所／商戶／保險資料是目錄資料；不要再使用「ALL REAL」、「全部已驗證」等無法證明的宣傳字眼。
+- production 舊 cloud 文件缺少 moderation 狀態，會在新規則下先被隔離，不會直接冒充已批准內容。
+- 內置 seed reviews／quotes 已停止作公開社群內容顯示；新社群內容必須經雲端待審流程。
+- Content Rights 仍需帳戶持有人確認第三方資料的合法使用權，不能由程式碼或自動化代為作法律聲明。
 
-## Deploy
+## 私隱
 
-```bash
-# Archive: build/VetMap-v1.0.xcarchive (83MB)
-# Xcode → Product → Archive → Distribute App → Upload
-```
+- 帳戶名稱、電郵、UID 及用戶投稿會與帳戶連結，用於 App 功能。
+- 目前位置只在裝置上用於距離計算，不上傳或儲存。
+- Crashlytics 收集不綁定帳戶身份的 crash／diagnostic data。
+- Cloud Functions 會產生包括 function name 及 caller IP 的服務請求中繼資料。
+- 不作跨 App／網站追蹤，不含第三方廣告，不在 1.0 收集產品行為分析。
 
-## IDEAS Completion
+## 已完成的本機非 build 驗證
 
-58/100 ✅ Done | 42 📋 Roadmap
-See: IDEAS_100.md
+- Swift 語法 parse：通過
+- Firestore／Storage Rules emulator：9/9 通過
+- Firebase Functions ESLint：通過
+- Firebase Functions module load：通過
+- plist、Xcode project 及共用 scheme XML：通過
+- `git diff --check`：通過
 
-## Links
+## Release proof
 
-- Privacy: https://vetmap-app.web.app
-- TOS: https://vetmap-app.web.app/tos
-- Firebase: https://console.firebase.google.com/project/vetmap-app
-- GitHub: https://github.com/Chamotrans/VetMap
+正式 release proof 必須全部來自：
+
+1. GitHub `main` 上的已推送 commit。
+2. Xcode Cloud 成功的 Test、Archive 及 App Store validation。
+3. 該 Cloud build 在 TestFlight 的真機 smoke test。
+4. App Store Connect 已掛接同一 build，且所有 metadata／privacy／rating／review 欄位完整。
+
+完整進度以 [PREFLIGHT_CHECKLIST.md](PREFLIGHT_CHECKLIST.md) 為準。
