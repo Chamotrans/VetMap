@@ -235,8 +235,7 @@ struct AdminPendingClinicsView: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                         Text(
-                            "座標：\(pending.clinic.coordinate.latitude, specifier: "%.5f"), "
-                                + "\(pending.clinic.coordinate.longitude, specifier: "%.5f")"
+                            "座標：\(pending.clinic.coordinate.latitude, specifier: "%.5f"), \(pending.clinic.coordinate.longitude, specifier: "%.5f")"
                         )
                         .font(.caption2.monospacedDigit())
                         .foregroundStyle(.tertiary)
