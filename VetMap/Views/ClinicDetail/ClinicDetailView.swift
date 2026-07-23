@@ -48,6 +48,19 @@ struct ClinicDetailView: View {
         clinic.phone.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
+    private var callablePhone: String? {
+        guard
+            let firstNumber = trimmedPhone
+                .split(whereSeparator: { "/,;|".contains($0) })
+                .first
+        else {
+            return nil
+        }
+
+        let normalized = firstNumber.filter { $0.isNumber || $0 == "+" }
+        return normalized.isEmpty ? nil : normalized
+    }
+
     init(clinic: VetClinic) {
         self.clinic = clinic
         _viewModel = State(wrappedValue: ClinicDetailViewModel(clinic: clinic))
@@ -193,9 +206,9 @@ struct ClinicDetailView: View {
 
     private var contactActions: some View {
         LazyVGrid(columns: actionColumns, spacing: 10) {
-            if !trimmedPhone.isEmpty {
+            if let callablePhone {
                 Button {
-                    if let phoneURL = URL(string: "tel:\(trimmedPhone)") {
+                    if let phoneURL = URL(string: "tel:\(callablePhone)") {
                         openURL(phoneURL)
                     }
                 } label: {
