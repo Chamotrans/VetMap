@@ -1,12 +1,14 @@
 # VetMap iOS 1.0 — Release Candidate Notes
 
-> 目前狀態：準備香港 Firestore 修正版的 Xcode Cloud build；Build 9 因錯誤加入台灣目錄不可送審；尚未正式提交 App Review。
+> 目前狀態：production 已恢復完整授權香港診所庫，準備下一個 Xcode Cloud build；尚未正式提交 App Review。
 > 本文件不以舊本機 archive、舊 commit 數或未部署設定冒充 release proof。
 
 ## 首版範圍
 
 - 已審核獸醫診所的地圖、列表、搜尋、篩選、電話、網站及導航
-- 10 間已整理香港診所的名稱、地址、電話及地圖位置
+- 179 間已授權香港診所；161 間有可靠地圖位置、18 間安全地只作列表顯示
+- 124 項香港寵物用品／美容／善終服務目錄
+- 3 個香港寵物保險官方產品入口
 - 電郵／密碼註冊及登入
 - Sign in with Apple
 - 新增診所、評價及治療報價
@@ -19,7 +21,6 @@
 ## 明確不在 1.0 公開範圍
 
 - Premium 訂閱及 IAP：程式碼仍保留作後續版本，但 `FeatureFlags.premiumEnabled` 為 `false`
-- 商戶／產品／保險目錄：沒有 release-grade rights packet，`FeatureFlags.catalogEnabled` 為 `false`
 - 評價相片：上載流程未達 release 標準，相關 UI 及相機／相簿權限已移除
 - Firebase Analytics：release target 已移除；首版不收集搜尋字或產品互動事件
 - Widget：不列作 1.0 承諾功能
@@ -50,15 +51,18 @@
 
 ## 資料及內容邊界
 
-- 香港修正版不包含舊內置 PetCircle／台灣／商戶／保險／評價／報價資料；不要使用「ALL REAL」、「全部已驗證」等無法證明的宣傳字眼。
-- production 10 間香港診所已原位整理，只保留名稱、地址、電話及香港座標，並標記 `verified: false`。
+- 香港修正版不載入舊台灣／未批准評價／未批准報價資料；不要使用「ALL REAL」、「全部已驗證」等無法證明的宣傳字眼。
+- production 179 間香港診所來自我方建立或已獲授權的原有 VetMap 資料庫，只保留名稱、地址、電話及可靠香港座標，並標記 `verified: false`。
+- 176 筆主資料及 29 筆補充資料均有唯一 lineage；兩對同名同址重複紀錄合併後仍保留全部來源 ID 及電話。
+- 161 間有可靠座標；18 間仍可搜尋及查看聯絡資料，但不顯示假 pin、距離或導航。
+- 124 項香港服務目錄不顯示未有來源的價格、評分或營業時間；3 項保險只連到供應商官方頁，不複製價錢或保障聲稱。
 - 舊星級、價錢、營業時間、服務、急診聲稱、tags 及圖片已清除；舊 reviews／quotes 保持隔離。
 - 台灣 17 間舊診所及 `officialClinicCatalog` 不會公開；App 亦不再載入或顯示台灣目錄。
 - 第三方自訂字型已從 target 移除並改用系統字型。
 - 新社群內容必須經雲端待審流程。
 - `verified` 不作獨立核實聲稱；列表／地圖不顯示未有可靠同步機制的舊 aggregate 星級或評價數，詳情只以實際公開評價即時計算。
 - 新診所投稿必須使用香港境內的 geocode 或手動座標；未知價錢不會歸入平價篩選。
-- Content Rights 仍需帳戶持有人確認第三方資料的合法使用權，不能由程式碼或自動化代為作法律聲明。
+- 帳戶持有人已確認原有診所庫由我方建立或已獲授權；完整 ASC Content Rights（包括服務目錄、官方保險連結及用戶投稿）仍需另行明確確認。
 - 詳細證據及來源邊界見 [CONTENT_RIGHTS.md](CONTENT_RIGHTS.md)。
 
 ## 私隱

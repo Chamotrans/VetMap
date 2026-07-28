@@ -20,6 +20,11 @@ VetMap 係一個專為香港毛孩家長而設嘅獸醫診所地圖同社群 App
 - 查看地址、電話及地圖位置
 - 營業時間、服務、評分及費用只會喺有可靠資料或經審核後顯示
 
+**寵物服務**
+- 瀏覽香港寵物用品、美容及善終服務目錄
+- 查看商戶地址及聯絡資料
+- 直接前往香港寵物保險供應商官方產品頁
+
 **睇評價**
 - 已審核嘅社群評價同評分
 - 每個帳戶只可投一次嘅「有用」標記
@@ -37,6 +42,8 @@ VetMap 係一個專為香港毛孩家長而設嘅獸醫診所地圖同社群 App
 
 VetMap 首版只顯示香港診所。診所目錄以名稱、地址、電話及地圖位置為主；未重新核實嘅星級、價錢、營業時間、服務及醫療聲稱不會公開。
 
+部分診所地址尚未有可靠地圖座標，仍會保留喺列表及搜尋結果，但不會顯示虛構位置、距離或導航。
+
 診所、評價及費用資料只供一般參考，不構成獸醫診斷或治療建議；緊急情況請直接聯絡合資格獸醫診所。
 
 ## Description (en-GB)
@@ -48,6 +55,11 @@ VetMap is a Hong Kong veterinary clinic map and moderated community for pet guar
 - Search by keyword, area and service
 - View addresses, phone numbers and map locations
 - Hours, services, ratings and costs are shown only when reliable or approved
+
+**Pet services**
+- Browse Hong Kong pet supplies, grooming and aftercare directories
+- View business addresses and contact details
+- Open official Hong Kong pet-insurance provider pages
 
 **Community reviews**
 - Read approved ratings and reviews
@@ -66,6 +78,8 @@ VetMap is a Hong Kong veterinary clinic map and moderated community for pet guar
 
 VetMap 1.0 displays Hong Kong clinics only. Directory entries focus on factual names, addresses, phone numbers and map locations. Unverified ratings, prices, opening hours, services and medical claims are not published.
 
+Clinics without a reliable map coordinate remain available in the list and search results, but are not given fabricated pins, distances or routes.
+
 Clinic, review and cost information is for general reference only and is not veterinary diagnosis or treatment advice. In an emergency, contact a qualified veterinary clinic directly.
 
 ## Keywords (100 chars)
@@ -80,12 +94,12 @@ Clinic, review and cost information is for general reference only and is not vet
 
 ## Screenshots
 
-舊有 4 張 iPhone 及 4 張 iPad 截圖包含已移除內容，不可重用。必須以香港修正版 Xcode Cloud build 的真實 App 畫面重新截取：
+舊有 4 張 iPhone 及 4 張 iPad 截圖包含錯誤地區或過時內容，不可重用。必須以香港修正版 Xcode Cloud build 的真實 App 畫面重新截取：
 
 1. Hong Kong clinic map / list
 2. Clinic detail
-3. Moderated review / quote submission
-4. Report / block / account controls
+3. Hong Kong pet-service / insurance directory
+4. Moderated review / quote submission and account controls
 
 ## Support URL
 https://vetmap-app.web.app/support

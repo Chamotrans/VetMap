@@ -13,6 +13,25 @@ final class VetMapModelTests: XCTestCase {
         try assertRoundTrip(makeInsurance())
     }
 
+    func testClinicWithoutCoordinateRoundTripsAndHasNoMapLocation() throws {
+        let clinic = makeClinic(id: "directory-only-clinic", coordinate: nil)
+
+        try assertRoundTrip(clinic)
+        XCTAssertNil(clinic.mapCoordinate)
+        XCTAssertEqual(clinic.distanceText(from: nil), "位置待確認")
+    }
+
+    func testClinicOutsideHongKongNeverBecomesMapLocation() {
+        let clinic = makeClinic(
+            id: "invalid-map-clinic",
+            coordinate: ClinicCoordinate(latitude: 25.0381, longitude: 121.5432)
+        )
+
+        XCTAssertFalse(clinic.hasReliableHongKongCoordinate)
+        XCTAssertNil(clinic.mapCoordinate)
+        XCTAssertEqual(clinic.distanceText(from: nil), "位置待確認")
+    }
+
     func testClinicRepositoryPersistsLocalClinics() throws {
         let fileURL = FileManager.default.temporaryDirectory
             .appending(path: UUID().uuidString, directoryHint: .isDirectory)
@@ -119,8 +138,8 @@ final class VetMapModelTests: XCTestCase {
 
         let clinic = viewModel.makeClinic()
 
-        XCTAssertEqual(clinic?.coordinate.latitude, 22.281123)
-        XCTAssertEqual(clinic?.coordinate.longitude, 114.158988)
+        XCTAssertEqual(clinic?.coordinate?.latitude, 22.281123)
+        XCTAssertEqual(clinic?.coordinate?.longitude, 114.158988)
     }
 
     @MainActor
@@ -167,6 +186,19 @@ final class VetMapModelTests: XCTestCase {
         let results = filter.results(from: [overseas, cheap, unverified, match])
 
         XCTAssertEqual(Set(results.map(\.id)), ["hk-premium", "hk-unverified"])
+    }
+
+    func testHongKongFilterKeepsCuratedDirectoryEntryWithoutCoordinate() {
+        var filter = ClinicSearchFilter()
+        filter.region = .hongKong
+        let directoryOnly = makeClinic(
+            id: "directory-only-clinic",
+            address: "香港九龍測試地址",
+            coordinate: nil,
+            catalogRegion: "HK"
+        )
+
+        XCTAssertEqual(filter.results(from: [directoryOnly]).map(\.id), [directoryOnly.id])
     }
 
     @MainActor
@@ -280,8 +312,9 @@ final class VetMapModelTests: XCTestCase {
         XCTAssertEqual(viewModel.locationLookupState, .resolved("已找到：中環動物醫院"))
 
         let clinic = try XCTUnwrap(viewModel.makeClinic())
-        XCTAssertEqual(clinic.coordinate.latitude, 22.281123, accuracy: 0.000001)
-        XCTAssertEqual(clinic.coordinate.longitude, 114.158988, accuracy: 0.000001)
+        let coordinate = try XCTUnwrap(clinic.coordinate)
+        XCTAssertEqual(coordinate.latitude, 22.281123, accuracy: 0.000001)
+        XCTAssertEqual(coordinate.longitude, 114.158988, accuracy: 0.000001)
     }
 
     @MainActor
@@ -521,61 +554,76 @@ final class VetMapModelTests: XCTestCase {
     // MARK: - ProductViewModel Tests
 
     @MainActor
-    func testProductViewModelLoadsAllProducts() {
+    func testProductViewModelHasNoBundledProductionCatalog() {
         let viewModel = ProductViewModel()
 
-        XCTAssertFalse(viewModel.products.isEmpty)
-        XCTAssertGreaterThan(viewModel.products.count, 0)
+        XCTAssertTrue(viewModel.products.isEmpty)
+        XCTAssertFalse(viewModel.isLoading)
+        XCTAssertNil(viewModel.errorMessage)
     }
 
     @MainActor
     func testProductViewModelFiltersByCategory() {
         let viewModel = ProductViewModel()
+        var matching = makeProduct()
+        matching.category = "用品"
+        var other = makeProduct()
+        other.name = "寵物美容服務"
+        other.category = "美容"
+        viewModel.products = [matching, other]
         viewModel.selectedCategory = "用品"
 
         let filtered = viewModel.filteredProducts
-        XCTAssertFalse(filtered.isEmpty)
+        XCTAssertEqual(filtered.count, 1)
         XCTAssertTrue(filtered.allSatisfy { $0.category == "用品" })
     }
 
     // MARK: - InsuranceViewModel Tests
 
     @MainActor
-    func testInsuranceViewModelLoadsAllPlans() {
+    func testInsuranceViewModelHasNoBundledProductionCatalog() {
         let viewModel = InsuranceViewModel()
 
-        XCTAssertFalse(viewModel.plans.isEmpty)
-        XCTAssertGreaterThan(viewModel.plans.count, 0)
+        XCTAssertTrue(viewModel.plans.isEmpty)
+        XCTAssertFalse(viewModel.isLoading)
+        XCTAssertNil(viewModel.errorMessage)
     }
 
     @MainActor
     func testInsuranceViewModelSortsByPremiumLowToHigh() {
         let viewModel = InsuranceViewModel()
+        let officialQuote = makeInsurance(id: "insurance-official-quote", monthlyPremium: 0)
+        let publishedPremium = makeInsurance(
+            id: "insurance-published-premium",
+            monthlyPremium: 500
+        )
+        viewModel.plans = [publishedPremium, officialQuote]
         viewModel.sortOrder = .lowToHigh
         let sorted = viewModel.sortedPlans
 
-        guard sorted.count >= 2 else {
-            XCTFail("Expected at least 2 plans for sorting test")
-            return
-        }
-        for i in 0..<(sorted.count - 1) {
-            XCTAssertLessThanOrEqual(sorted[i].monthlyPremium, sorted[i + 1].monthlyPremium)
-        }
+        XCTAssertEqual(sorted.map(\.monthlyPremium), [0, 500])
     }
 
     @MainActor
     func testInsuranceViewModelSortsByPremiumHighToLow() {
         let viewModel = InsuranceViewModel()
+        let officialQuote = makeInsurance(id: "insurance-official-quote", monthlyPremium: 0)
+        let publishedPremium = makeInsurance(
+            id: "insurance-published-premium",
+            monthlyPremium: 500
+        )
+        viewModel.plans = [officialQuote, publishedPremium]
         viewModel.sortOrder = .highToLow
         let sorted = viewModel.sortedPlans
 
-        guard sorted.count >= 2 else {
-            XCTFail("Expected at least 2 plans for sorting test")
-            return
-        }
-        for i in 0..<(sorted.count - 1) {
-            XCTAssertGreaterThanOrEqual(sorted[i].monthlyPremium, sorted[i + 1].monthlyPremium)
-        }
+        XCTAssertEqual(sorted.map(\.monthlyPremium), [500, 0])
+    }
+
+    @MainActor
+    func testInsuranceViewModelShowsOfficialQuoteForZeroPremium() {
+        let viewModel = InsuranceViewModel()
+
+        XCTAssertEqual(viewModel.formattedPremium(0), "官方報價")
     }
 
     // MARK: - MockCommunityRepository Quote Persistence
@@ -1132,13 +1180,19 @@ final class VetMapModelTests: XCTestCase {
     @MainActor
     func testProductViewModelAllCategoryReturnsUnfilteredProducts() {
         let viewModel = ProductViewModel()
-        viewModel.selectedCategory = "保健"
-        let filteredCount = viewModel.filteredProducts.count
+        var supplies = makeProduct()
+        supplies.category = "用品"
+        var grooming = makeProduct()
+        grooming.name = "寵物美容服務"
+        grooming.category = "美容"
+        viewModel.products = [supplies, grooming]
+        viewModel.selectedCategory = "美容"
+
+        XCTAssertEqual(viewModel.filteredProducts.map(\.category), ["美容"])
 
         viewModel.selectedCategory = "全部"
 
-        XCTAssertEqual(viewModel.filteredProducts.count, viewModel.products.count)
-        XCTAssertGreaterThan(viewModel.filteredProducts.count, filteredCount)
+        XCTAssertEqual(viewModel.filteredProducts.count, 2)
     }
 
     @MainActor
@@ -1165,6 +1219,11 @@ final class VetMapModelTests: XCTestCase {
     @MainActor
     func testProductViewModelEachProductHasValidCategory() {
         let viewModel = ProductViewModel()
+        var supplies = makeProduct()
+        supplies.category = "用品"
+        var grooming = makeProduct()
+        grooming.category = "美容"
+        viewModel.products = [supplies, grooming]
 
         for product in viewModel.products {
             XCTAssertTrue(
@@ -1177,60 +1236,41 @@ final class VetMapModelTests: XCTestCase {
     @MainActor
     func testProductViewModelFilteredByFoodCategory() {
         let viewModel = ProductViewModel()
+        viewModel.products = [makeProduct()]
         viewModel.selectedCategory = "食品"
 
         let filtered = viewModel.filteredProducts
 
-        // Seed data has no 食品 products; filter mechanism should return empty, not crash
         XCTAssertTrue(filtered.isEmpty)
     }
 
     @MainActor
     func testProductViewModelFilteredByMedicineCategory() {
         let viewModel = ProductViewModel()
+        viewModel.products = [makeProduct()]
         viewModel.selectedCategory = "藥品"
 
         let filtered = viewModel.filteredProducts
 
-        // Seed data has no 藥品 products; filter mechanism should return empty, not crash
         XCTAssertTrue(filtered.isEmpty)
     }
 
     // MARK: - InsuranceViewModel Additional Tests
 
     @MainActor
-    func testInsuranceViewModelCurrencyForHKProviderReturnsHKD() {
+    func testInsuranceViewModelUsesHongKongCurrency() {
         let viewModel = InsuranceViewModel()
-        guard let hkPlan = viewModel.plans.first(where: {
-            $0.website.absoluteString.contains(".hk")
-        }) else {
-            XCTFail("No HK plan found for currency test")
-            return
-        }
+        let plan = makeInsurance()
 
-        XCTAssertEqual(viewModel.currency(for: hkPlan), "HKD")
-    }
-
-    @MainActor
-    func testInsuranceViewModelCurrencyForTWProviderReturnsTWD() {
-        let viewModel = InsuranceViewModel()
-        guard let twPlan = viewModel.plans.first(where: {
-            !$0.website.absoluteString.contains(".hk")
-        }) else {
-            XCTFail("No TW plan found for currency test")
-            return
-        }
-
-        XCTAssertEqual(viewModel.currency(for: twPlan), "TWD")
+        XCTAssertEqual(viewModel.currency(for: plan), "HKD")
     }
 
     @MainActor
     func testInsuranceViewModelPlansWithSimilarPremiumExcludesSelf() {
         let viewModel = InsuranceViewModel()
-        guard let firstPlan = viewModel.plans.first else {
-            XCTFail("No plans loaded")
-            return
-        }
+        let firstPlan = makeInsurance(id: "insurance-1", monthlyPremium: 0)
+        let secondPlan = makeInsurance(id: "insurance-2", monthlyPremium: 300)
+        viewModel.plans = [firstPlan, secondPlan]
 
         let similar = viewModel.plansWithSimilarPremium(to: firstPlan, count: 3)
 
@@ -1240,44 +1280,48 @@ final class VetMapModelTests: XCTestCase {
     @MainActor
     func testInsuranceViewModelPlansWithSimilarPremiumRespectsCount() {
         let viewModel = InsuranceViewModel()
-        guard let firstPlan = viewModel.plans.first else {
-            XCTFail("No plans loaded")
-            return
-        }
+        let firstPlan = makeInsurance(id: "insurance-1", monthlyPremium: 0)
+        viewModel.plans = [
+            firstPlan,
+            makeInsurance(id: "insurance-2", monthlyPremium: 100),
+            makeInsurance(id: "insurance-3", monthlyPremium: 200),
+            makeInsurance(id: "insurance-4", monthlyPremium: 300)
+        ]
 
         let similar = viewModel.plansWithSimilarPremium(to: firstPlan, count: 2)
 
-        XCTAssertLessThanOrEqual(similar.count, 2)
+        XCTAssertEqual(similar.count, 2)
     }
 
     @MainActor
     func testInsuranceViewModelSortedPlansAreInCorrectPremiumOrder() {
         let viewModel = InsuranceViewModel()
+        viewModel.plans = [
+            makeInsurance(id: "insurance-1", monthlyPremium: 300),
+            makeInsurance(id: "insurance-2", monthlyPremium: 0),
+            makeInsurance(id: "insurance-3", monthlyPremium: 200)
+        ]
 
         viewModel.sortOrder = .lowToHigh
         let lowToHigh = viewModel.sortedPlans
-        for i in 0..<(lowToHigh.count - 1) {
-            XCTAssertLessThanOrEqual(lowToHigh[i].monthlyPremium, lowToHigh[i + 1].monthlyPremium)
-        }
+        XCTAssertEqual(lowToHigh.map(\.monthlyPremium), [0, 200, 300])
 
         viewModel.sortOrder = .highToLow
         let highToLow = viewModel.sortedPlans
-        for i in 0..<(highToLow.count - 1) {
-            XCTAssertGreaterThanOrEqual(highToLow[i].monthlyPremium, highToLow[i + 1].monthlyPremium)
-        }
+        XCTAssertEqual(highToLow.map(\.monthlyPremium), [300, 200, 0])
     }
 
     @MainActor
-    func testInsuranceViewModelAllPlansHaveRequiredFields() {
-        let viewModel = InsuranceViewModel()
+    func testInsuranceOfficialDirectoryPlanAllowsQuoteOnlyFields() {
+        let plan = makeInsurance()
 
-        for plan in viewModel.plans {
-            XCTAssertFalse(plan.id.isEmpty, "Plan missing id")
-            XCTAssertFalse(plan.providerName.isEmpty, "Plan \(plan.id) missing providerName")
-            XCTAssertFalse(plan.planName.isEmpty, "Plan \(plan.id) missing planName")
-            XCTAssertGreaterThan(plan.monthlyPremium, 0, "Plan \(plan.id) has non-positive premium")
-            XCTAssertFalse(plan.coverage.isEmpty, "Plan \(plan.id) has no coverage")
-        }
+        XCTAssertFalse(plan.id.isEmpty)
+        XCTAssertFalse(plan.providerName.isEmpty)
+        XCTAssertFalse(plan.planName.isEmpty)
+        XCTAssertEqual(plan.monthlyPremium, 0)
+        XCTAssertTrue(plan.coverage.isEmpty)
+        XCTAssertTrue(plan.exclusions.isEmpty)
+        XCTAssertTrue(plan.contactPhone.isEmpty)
     }
 
     // MARK: - ClinicCoordinate Tests
@@ -1308,10 +1352,11 @@ final class VetMapModelTests: XCTestCase {
         id: String = "clinic-1",
         name: String = "安心動物醫院",
         address: String = "香港旺角彌敦道1號",
-        coordinate: ClinicCoordinate = ClinicCoordinate(
+        coordinate: ClinicCoordinate? = ClinicCoordinate(
             latitude: 22.3193,
             longitude: 114.1694
         ),
+        catalogRegion: String? = nil,
         services: [String] = ["一般診療", "牙科"],
         tags: [String] = ["貓友善", "急診"],
         priceLevel: Int = 2,
@@ -1322,6 +1367,7 @@ final class VetMapModelTests: XCTestCase {
             name: name,
             address: address,
             coordinate: coordinate,
+            catalogRegion: catalogRegion,
             phone: "+852 2123 4567",
             website: URL(string: "https://example.com/clinic"),
             openingHours: ["Mon": "09:00-18:00"],
@@ -1391,15 +1437,15 @@ final class VetMapModelTests: XCTestCase {
     private func makeProduct() -> PetProduct {
         PetProduct(
             id: "product-1",
-            name: "腸胃保健粉",
-            description: "日常腸胃保健補充品。",
-            category: "保健",
-            price: 320,
-            currency: "TWD",
-            clinicId: "clinic-1",
-            affiliateURL: URL(string: "https://example.com/product"),
-            imageURL: URL(string: "https://example.com/product.jpg"),
-            tags: ["犬貓適用"],
+            name: "香港寵物用品服務",
+            description: "香港寵物用品服務目錄。",
+            category: "用品",
+            price: 0,
+            currency: "HKD",
+            clinicId: nil,
+            affiliateURL: nil,
+            imageURL: nil,
+            tags: [],
             createdAt: date
         )
     }
@@ -1422,18 +1468,21 @@ final class VetMapModelTests: XCTestCase {
         )
     }
 
-    private func makeInsurance() -> Insurance {
+    private func makeInsurance(
+        id: String = "insurance-1",
+        monthlyPremium: Decimal = 0
+    ) -> Insurance {
         Insurance(
-            id: "insurance-1",
-            providerName: "PetCare",
-            planName: "基本醫療",
-            description: "門診及手術保障。",
-            monthlyPremium: 280,
-            annualPremium: 3_000,
-            coverage: ["手術", "住院"],
-            exclusions: ["既有疾病"],
-            website: URL(string: "https://example.com/insurance")!,
-            contactPhone: "+886-2-2222-3333"
+            id: id,
+            providerName: "香港寵物保險供應商",
+            planName: "官方方案目錄",
+            description: "詳情以供應商官方資料及報價為準。",
+            monthlyPremium: monthlyPremium,
+            annualPremium: 0,
+            coverage: [],
+            exclusions: [],
+            website: URL(string: "https://www.example.com.hk/pet-insurance")!,
+            contactPhone: ""
         )
     }
 }

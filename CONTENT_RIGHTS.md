@@ -1,7 +1,7 @@
 # VetMap 1.0 — Content Rights Packet
 
-> Release candidate: pending Hong Kong Xcode Cloud build
-> Audited: 2026-07-24
+> Release candidate: pending next Hong Kong Xcode Cloud build
+> Audited: 2026-07-29
 > Scope: App Store release bundle and production public content
 
 ## Release decision
@@ -17,15 +17,21 @@ by the Hong Kong release.
 
 Production public content currently contains:
 
-- 10 existing Hong Kong clinic records, normalized in place on 2026-07-24;
+- 179 Hong Kong clinic directory entries from the VetMap-authorized database;
 - one VetMap-owned, clearly non-real App Review demo clinic;
-- one VetMap-owned demo review and one demo quote.
+- one VetMap-owned demo review and one demo quote;
+- 124 Hong Kong pet-service directory entries (50 supplies, 50 grooming,
+  24 aftercare); and
+- three links to official Hong Kong pet-insurance provider pages.
 
-The 10 Hong Kong entries retain only factual name, address, phone and map
-coordinate fields. Unverified ratings, review totals, price levels, services,
-opening hours, emergency claims, tags and images were cleared. They are marked
-`verified: false`. The migration preserved the original document IDs and made
-no Taiwan record public.
+The 179 Hong Kong clinic entries retain only factual name, address and phone
+fields. 161 have a reliable Hong Kong coordinate from either the authorized
+source or the HKSAR Digital Policy Office Address Lookup Service. The remaining
+18 are intentionally list-only: they are searchable and retain their address
+and phone, but do not receive a fabricated map pin, distance or route.
+Unverified ratings, review totals, price levels, services, opening hours,
+emergency claims, tags and images are cleared. They are marked
+`verified: false`. The migration made no Taiwan record public.
 
 Legacy reviews and quotes remain hidden. New user submissions remain pending
 until an administrator approves them. The Terms of Service contains the
@@ -35,38 +41,48 @@ contributor licence for user-submitted content.
 
 | Content | Public state | Decision |
 |---|---|---|
-| Normalized Hong Kong clinic entries | 10 approved | Included, factual fields only |
+| Authorized Hong Kong clinic entries | 179 approved | Included; 161 mappable, 18 list-only |
 | VetMap App Review fixtures | 1 clinic, 1 review, 1 quote | Included and labelled non-real |
 | Legacy Taiwan clinics | 17 without approved status | Hidden |
 | Taiwan `officialClinicCatalog` | 22 documents | Anonymous access denied; app reference removed |
 | Legacy reviews | 20 without approved status | Hidden |
 | Legacy quotes | 4 without approved status | Hidden |
-| Products and insurance | Existing records | Admin-only; feature UI disabled |
+| Hong Kong pet-service directory | 124 approved | Included; no invented prices, ratings or hours |
+| Hong Kong insurance directory | 3 approved | Official provider links only; no copied coverage or price claims |
+| Legacy products and insurance | Existing records | Hidden from anonymous clients |
 | Historical bundled clinic/merchant datasets | Not in Release target | Excluded |
 
-Before migration, a complete raw backup of `clinics`, `reviews` and `quotes`
-was saved under `build/backups/` with owner-only file permissions. The
-one-time guarded migration is documented in
-`scripts/restore_hk_firestore_catalog.mjs`.
+Before each production migration, a complete raw backup of the affected
+collections was saved under `build/backups/` with owner-only file permissions.
+The guarded clinic migration is documented in
+`scripts/restore_hk_clinic_catalog_v2.mjs`.
 
-## Rights evidence and unresolved attestation
+## Clinic database attestation and provenance
 
-The 10 included clinic records were already present in production Firestore and
-carry the historical source marker `reportedBy: epetpet-hk`. The repository
-does not contain a commercial-reuse licence or direct permission document for
-that source. Limiting publication to factual business identity and contact data
-reduces inaccurate-content risk, but does not by itself prove the account
-holder's legal right to publish it.
+On 2026-07-29 the account holder stated:
 
-The account holder must therefore confirm and retain the applicable permission,
-licence or other legal basis before accepting App Store Connect's Content
-Rights attestation. If that confirmation cannot be made, the 10 records must be
-hidden again before submission.
+> 原有 VetMap 診所 database 由我方建立或已獲授權使用
+
+The generated manifest covers every input record: 176/176 main catalog rows
+and 29/29 supplemental rows, represented by 205 unique lineage identifiers.
+Two exact same-name/same-address duplicate pairs are published as one directory
+entry each; both source identifiers and both phone numbers are retained.
+Explicit moved/superseded seed records retain lineage to the current entry.
+
+Part of the coordinate layer uses the HKSAR Digital Policy Office Address
+Lookup Service under DATA.GOV.HK terms. The App's About screen identifies the
+source, acknowledges Government and relevant-organisation ownership, links to
+the dataset and terms, and states that Government does not endorse VetMap.
 
 The public Terms grant VetMap a non-exclusive licence to store, display,
 moderate and operate user-submitted content. This covers future submissions
-made under those Terms, but does not retroactively prove rights to the existing
-clinic catalog.
+made under those Terms.
+
+The clinic-database confirmation above does not by itself approve the broader
+live App Store Connect legal declaration for every other category. Before
+automation changes Content Rights, the account holder must still expressly
+confirm the complete declaration covering the clinic database, Hong Kong
+service catalog, official insurance links and user-submitted content.
 
 ## App Store Connect declaration
 

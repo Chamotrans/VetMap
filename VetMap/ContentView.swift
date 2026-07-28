@@ -13,14 +13,14 @@ struct ContentView: View {
     enum SidebarTab: String, CaseIterable {
         case home = "首頁"
         case clinics = "診所"
-        case products = "好物"
+        case products = "服務"
         case profile = "我的"
 
         var systemImage: String {
             switch self {
             case .home: "map.fill"
             case .clinics: "cross.case.fill"
-            case .products: "shippingbox.fill"
+            case .products: "storefront.fill"
             case .profile: "person.fill"
             }
         }
@@ -109,10 +109,10 @@ struct ContentView: View {
             if FeatureFlags.catalogEnabled {
                 ProductsTab()
                     .tabItem {
-                        Label("好物", systemImage: "shippingbox.fill")
+                        Label("服務", systemImage: "storefront.fill")
                     }
                     .tag(SidebarTab.products)
-                    .accessibilityLabel("好物")
+                    .accessibilityLabel("寵物服務及保險")
             }
 
             ProfileTab()
@@ -180,8 +180,7 @@ enum AppLaunchFlags {
         switch screenshotScreen {
         case "02-Clinics", "03-ClinicDetail": .clinics
         case "04-Community": .clinics
-        case "04-Products":
-            preconditionFailure("04-Products is not a supported Build 7 screenshot route")
+        case "04-Products": .products
         case "05-Profile": .profile
         default: .home
         }

@@ -2,7 +2,6 @@ import SwiftUI
 
 struct ProductDetailView: View {
     let product: PetProduct
-    @State private var showNoURLAler = false
 
     var body: some View {
         ScrollView {
@@ -13,34 +12,33 @@ struct ProductDetailView: View {
                     Text(product.name)
                         .font(.title3.weight(.bold))
 
-                    Text(product.description)
-                        .font(.body)
-                        .foregroundStyle(.secondary)
-                        .lineSpacing(3)
-                        .fixedSize(horizontal: false, vertical: true)
+                    if !product.description.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                        Text(product.description)
+                            .font(.body)
+                            .foregroundStyle(.secondary)
+                            .lineSpacing(3)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
 
                     tagsSection
                 }
                 .padding(.horizontal, 16)
 
-                if let clinic = clinicName {
-                    clinicSection(clinicName: clinic)
+                if let officialURL = product.affiliateURL {
+                    officialLinkButton(officialURL)
                         .padding(.horizontal, 16)
                 }
 
-                purchaseButton
+                Text("服務資料及外部連結只供目錄與參考，最新內容以服務供應商官方資料為準。")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
                     .padding(.horizontal, 16)
                     .padding(.bottom, 24)
             }
         }
         .background(AppTheme.screenBackground)
-        .navigationTitle("商戶詳情")
+        .navigationTitle("服務詳情")
         .navigationBarTitleDisplayMode(.inline)
-        .alert("無法開啟連結", isPresented: $showNoURLAler) {
-            Button("確定", role: .cancel) {}
-        } message: {
-            Text("此商戶目前沒有連結，請聯繫相關診所查詢。")
-        }
     }
 
     private var imagePlaceholder: some View {
@@ -70,34 +68,11 @@ struct ProductDetailView: View {
         }
     }
 
-    private func clinicSection(clinicName: String) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("適用診所")
-                .font(.headline)
-
-            HStack(spacing: 8) {
-                Image(systemName: "cross.case.fill")
-                    .foregroundStyle(AppTheme.primary)
-                Text(clinicName)
-                    .font(.subheadline.weight(.medium))
-                Spacer()
-            }
-            .padding(12)
-            .appCard(fill: AppTheme.primary.opacity(0.08), stroke: AppTheme.primary.opacity(0.2))
-        }
-    }
-
-    private var purchaseButton: some View {
-        Button {
-            if let url = product.affiliateURL {
-                UIApplication.shared.open(url)
-            } else {
-                showNoURLAler = true
-            }
-        } label: {
+    private func officialLinkButton(_ url: URL) -> some View {
+        Link(destination: url) {
             HStack {
-                Image(systemName: "storefront.fill")
-                Text("前往商戶")
+                Image(systemName: "globe")
+                Text("查看官方資料")
             }
             .font(.headline)
             .foregroundStyle(.white)
@@ -106,11 +81,6 @@ struct ProductDetailView: View {
             .background(AppTheme.primary, in: RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous))
         }
         .buttonStyle(.plain)
-    }
-
-    private var clinicName: String? {
-        guard let clinicId = product.clinicId else { return nil }
-        return MockClinicRepository.hkClinics.first { $0.id == clinicId }?.name
     }
 
     private var categoryColor: Color {
@@ -129,15 +99,15 @@ struct ProductDetailView: View {
         ProductDetailView(
             product: PetProduct(
                 id: "preview",
-                name: "皇家F32理想體態貓糧",
-                description: "專為成貓設計的均衡營養配方。",
-                category: "食品",
-                price: Decimal(1200),
-                currency: "TWD",
-                clinicId: "taipei-anxin",
+                name: "香港寵物美容服務",
+                description: "提供寵物美容及護理服務。",
+                category: "美容",
+                price: .zero,
+                currency: "HKD",
+                clinicId: nil,
                 affiliateURL: URL(string: "https://example.com"),
                 imageURL: nil,
-                tags: ["貓糧", "成貓"],
+                tags: ["寵物美容"],
                 createdAt: Date()
             )
         )

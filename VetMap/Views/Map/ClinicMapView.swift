@@ -14,15 +14,17 @@ struct ClinicMapView: View {
             Map(position: $viewModel.cameraPosition, selection: $viewModel.selectedClinicID) {
                 UserAnnotation()
 
-                ForEach(viewModel.filteredClinics) { clinic in
-                    Annotation(coordinate: clinic.mapCoordinate) {
-                    Image(systemName: "cross.case.fill")
-                        .foregroundStyle(AppTheme.primary)
-                } label: {
-                    Text(clinic.name)
-                }
+                ForEach(viewModel.mappableClinics) { clinic in
+                    if let coordinate = clinic.mapCoordinate {
+                        Annotation(coordinate: coordinate) {
+                            Image(systemName: "cross.case.fill")
+                                .foregroundStyle(AppTheme.primary)
+                        } label: {
+                            Text(clinic.name)
+                        }
                         .tint(AppTheme.primary)
                         .tag(clinic.id)
+                    }
                 }
             }
             .mapStyle(.standard(elevation: .realistic))
@@ -107,10 +109,10 @@ struct ClinicMapView: View {
 
     private var resultCountText: String {
         if viewModel.filter.isActive {
-            return "\(viewModel.filteredClinics.count) / \(viewModel.clinics.count) 間診所"
+            return "目錄 \(viewModel.filteredClinics.count) / \(viewModel.directoryClinics.count) 間・地圖 \(viewModel.mappableClinics.count) 個標記"
         }
 
-        return "\(viewModel.clinics.count) 間診所"
+        return "目錄 \(viewModel.directoryClinics.count) 間・地圖 \(viewModel.mappableClinics.count) 個標記"
     }
 
     @ViewBuilder

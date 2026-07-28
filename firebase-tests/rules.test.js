@@ -11,6 +11,7 @@ import "firebase/compat/storage";
 
 const projectId = "demo-vetmap-rules";
 const bucket = `gs://${projectId}.appspot.com`;
+const catalogExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
 let testEnv;
 
 function clinicSubmission({
@@ -93,6 +94,61 @@ function report({
   };
 }
 
+function catalogMetadata({
+  status = "approved",
+  catalogRegion = "HK",
+  region = "HK",
+  expiresAt = catalogExpiry,
+} = {}) {
+  return {
+    status,
+    catalogRegion,
+    region,
+    sourceName: "VetMap 測試目錄",
+    sourceURL: "https://vetmap-app.web.app",
+    rightsBasis: "existing VetMap operator-supplied catalog",
+    verifiedAt: new Date(),
+    expiresAt,
+    migrationId: "hk-commercial-v1-2026-07-28",
+  };
+}
+
+function catalogProduct(overrides = {}) {
+  return {
+    id: "hk-service-sup-001",
+    name: "香港寵物用品測試商戶",
+    description: "香港寵物用品商戶目錄資料。",
+    category: "用品",
+    price: 0,
+    currency: "HKD",
+    clinicId: null,
+    affiliateURL: null,
+    imageURL: null,
+    tags: [],
+    createdAt: new Date(),
+    ...catalogMetadata(),
+    ...overrides,
+  };
+}
+
+function catalogInsurance(overrides = {}) {
+  return {
+    id: "insurance-hk-fwd",
+    providerName: "FWD",
+    planName: "毛孩寵物保",
+    description: "香港寵物保險官方產品目錄。",
+    monthlyPremium: 0,
+    annualPremium: 0,
+    coverage: [],
+    exclusions: [],
+    website: "https://www.fwd.com.hk/online-insurance/pets-insurance/",
+    contactPhone: "",
+    ...catalogMetadata({}),
+    rightsBasis: "official provider website",
+    ...overrides,
+  };
+}
+
 async function seedAdmin() {
   await testEnv.withSecurityRulesDisabled(async (context) => {
     await context.firestore().collection("users").doc("admin").set({
@@ -145,6 +201,16 @@ test("投稿必須登入、綁定本人 UID、pending 並使用近期時間", as
   await assertSucceeds(
     alice.collection("submissions").doc("submission-clinic-1").set(
       clinicSubmission(),
+    ),
+  );
+  await assertFails(
+    alice.collection("submissions").doc("submission-clinic-non-hk").set(
+      clinicSubmission({
+        submissionId: "submission-clinic-non-hk",
+        clinicOverrides: {
+          coordinate: {latitude: 25.033, longitude: 121.5654},
+        },
+      }),
     ),
   );
   await assertFails(
@@ -412,25 +478,109 @@ test("已整理的香港診所可公開查詢，舊台灣目錄維持封鎖", as
   );
 });
 
-test("未推出的產品及保險資料只限管理員存取", async () => {
+test("只有已批准、香港及未過期的產品與保險目錄可公開讀取", async () => {
   await seedAdmin();
   await testEnv.withSecurityRulesDisabled(async (context) => {
     await context.firestore().collection("products").doc("legacy-product").set({
       name: "未授權舊產品",
     });
+    await context.firestore().collection("products").doc("tw-product").set(
+      catalogProduct({
+        id: "tw-product",
+        catalogRegion: "TW",
+        region: "TW",
+      }),
+    );
+    await context.firestore().collection("products").doc("region-mismatch").set(
+      catalogProduct({
+        id: "region-mismatch",
+        region: "TW",
+      }),
+    );
+    await context.firestore().collection("products").doc("pending-product").set(
+      catalogProduct({
+        id: "pending-product",
+        status: "pending",
+      }),
+    );
+    await context.firestore().collection("products").doc("expired-product").set(
+      catalogProduct({
+        id: "expired-product",
+        expiresAt: new Date(Date.now() - 60 * 1000),
+      }),
+    );
+    await context.firestore().collection("products").doc("hk-service-sup-001").set(
+      catalogProduct(),
+    );
     await context.firestore().collection("insurances").doc("legacy-plan").set({
-      name: "未授權舊保險",
+      planName: "未授權舊保險",
     });
+    await context.firestore().collection("insurances").doc("insurance-hk-fwd").set(
+      catalogInsurance(),
+    );
   });
 
   const anonymous = testEnv.unauthenticatedContext().firestore();
   const alice = testEnv.authenticatedContext("alice").firestore();
   const admin = testEnv.authenticatedContext("admin").firestore();
 
+  await assertSucceeds(
+    anonymous.collection("products").doc("hk-service-sup-001").get(),
+  );
+  await assertSucceeds(
+    alice.collection("insurances").doc("insurance-hk-fwd").get(),
+  );
   await assertFails(anonymous.collection("products").doc("legacy-product").get());
+  await assertFails(anonymous.collection("products").doc("tw-product").get());
+  await assertFails(anonymous.collection("products").doc("region-mismatch").get());
+  await assertFails(anonymous.collection("products").doc("pending-product").get());
+  await assertFails(anonymous.collection("products").doc("expired-product").get());
   await assertFails(alice.collection("insurances").doc("legacy-plan").get());
+
+  // Firestore rules are not filters. A caller first reads one known current
+  // catalog document, then uses its exact shared expiry in collection queries.
+  // A moving `expiresAt > Date()` query cannot prove `expiresAt > request.time`
+  // to the rules engine, while exact equality can.
+  await assertFails(
+    anonymous.collection("products")
+      .where("status", "==", "approved")
+      .where("catalogRegion", "==", "HK")
+      .where("region", "==", "HK")
+      .get(),
+  );
+  await assertSucceeds(
+    anonymous.collection("products")
+      .where("status", "==", "approved")
+      .where("catalogRegion", "==", "HK")
+      .where("region", "==", "HK")
+      .where("expiresAt", "==", catalogExpiry)
+      .get(),
+  );
+  await assertSucceeds(
+    anonymous.collection("insurances")
+      .where("status", "==", "approved")
+      .where("catalogRegion", "==", "HK")
+      .where("region", "==", "HK")
+      .where("expiresAt", "==", catalogExpiry)
+      .get(),
+  );
+
   await assertSucceeds(admin.collection("products").doc("legacy-product").get());
   await assertSucceeds(admin.collection("insurances").doc("legacy-plan").get());
+  await assertFails(
+    alice.collection("products").doc("ordinary-write").set(catalogProduct()),
+  );
+  await assertSucceeds(
+    admin.collection("products").doc("admin-write").set(
+      catalogProduct({id: "admin-write"}),
+    ),
+  );
+  await assertSucceeds(
+    admin.collection("products").doc("admin-write").update({name: "管理員更新"}),
+  );
+  await assertSucceeds(
+    admin.collection("products").doc("admin-write").delete(),
+  );
 });
 
 test("Storage 待審圖片只限本人及圖片 MIME/大小", async () => {

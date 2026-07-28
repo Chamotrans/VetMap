@@ -106,8 +106,12 @@ struct ClinicSearchFilter: Equatable {
         case .all:
             return true
         case .hongKong:
-            return (22.1...22.6).contains(clinic.coordinate.latitude)
-                && (113.8...114.5).contains(clinic.coordinate.longitude)
+            if clinic.catalogRegion?.caseInsensitiveCompare("HK") == .orderedSame {
+                return true
+            }
+            guard let coordinate = clinic.coordinate else { return false }
+            return (22.1...22.6).contains(coordinate.latitude)
+                && (113.8...114.5).contains(coordinate.longitude)
         }
     }
 

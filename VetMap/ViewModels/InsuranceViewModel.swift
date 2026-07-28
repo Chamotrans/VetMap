@@ -5,6 +5,8 @@ import Foundation
 final class InsuranceViewModel {
     var plans: [Insurance] = []
     var sortOrder: SortOrder = .lowToHigh
+    var isLoading = false
+    var errorMessage: String?
 
     enum SortOrder: String, CaseIterable {
         case lowToHigh = "保費由低至高"
@@ -21,7 +23,18 @@ final class InsuranceViewModel {
     }
 
     func currency(for plan: Insurance) -> String {
-        plan.website.absoluteString.contains(".hk") ? "HKD" : "TWD"
+        "HKD"
+    }
+
+    func formattedPremium(_ amount: Decimal) -> String {
+        guard amount > .zero else { return "官方報價" }
+
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = 0
+        let value = formatter.string(from: amount as NSDecimalNumber) ?? "\(amount)"
+        return "HK$\(value)"
     }
 
     func plansWithSimilarPremium(to plan: Insurance, count: Int = 3) -> [Insurance] {
@@ -30,11 +43,16 @@ final class InsuranceViewModel {
             .prefix(count))
     }
 
-    init() {
-        loadPlans()
-    }
+    func loadPlans() async {
+        guard !isLoading else { return }
+        isLoading = true
+        errorMessage = nil
+        defer { isLoading = false }
 
-    func loadPlans() {
-        plans = MockInsuranceRepository.seedPlans
+        do {
+            plans = try await FirebaseService.shared.fetchInsurances()
+        } catch {
+            errorMessage = "暫時無法載入香港寵物保險目錄，請稍後再試。"
+        }
     }
 }

@@ -11,11 +11,17 @@ struct InsuranceDetailView: View {
 
                 premiumSection
 
-                coverageSection
+                if !plan.coverage.isEmpty {
+                    coverageSection
+                }
 
-                exclusionsSection
+                if !plan.exclusions.isEmpty {
+                    exclusionsSection
+                }
 
-                contactSection
+                if !plan.contactPhone.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    contactSection
+                }
 
                 websiteButton
 
@@ -40,12 +46,14 @@ struct InsuranceDetailView: View {
             Text(plan.planName)
                 .font(.title2.weight(.bold))
 
-            Text(plan.description)
-                .font(.body)
-                .foregroundStyle(.secondary)
-                .lineSpacing(3)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.top, 4)
+            if !plan.description.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                Text(plan.description)
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+                    .lineSpacing(3)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 4)
+            }
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -67,7 +75,7 @@ struct InsuranceDetailView: View {
             Text(title)
                 .font(.caption)
                 .foregroundStyle(.secondary)
-            Text(formattedCurrency(amount))
+            Text(viewModel.formattedPremium(amount))
                 .font(.title3.weight(.heavy))
                 .foregroundStyle(AppTheme.warning)
         }
@@ -196,7 +204,7 @@ struct InsuranceDetailView: View {
 
             Spacer()
 
-            Text(formattedCurrency(plan.monthlyPremium))
+            Text(viewModel.formattedPremium(plan.monthlyPremium))
                 .font(.subheadline.weight(.bold))
                 .foregroundStyle(AppTheme.warning)
         }
@@ -204,15 +212,6 @@ struct InsuranceDetailView: View {
         .appCard()
     }
 
-    private func formattedCurrency(_ amount: Decimal) -> String {
-        let symbol = viewModel.currency(for: plan) == "HKD" ? "HK$" : "NT$"
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.minimumFractionDigits = 0
-        formatter.maximumFractionDigits = 0
-        let value = formatter.string(from: amount as NSDecimalNumber) ?? "\(amount)"
-        return "\(symbol)\(value)"
-    }
 }
 
 #Preview {

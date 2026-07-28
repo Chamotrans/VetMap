@@ -5,25 +5,48 @@ struct InsuranceListView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            sortPicker
-
-            ScrollView {
-                LazyVStack(spacing: 12) {
-                    ForEach(viewModel.sortedPlans) { plan in
-                        NavigationLink {
-                            InsuranceDetailView(plan: plan, viewModel: viewModel)
-                        } label: {
-                            InsuranceCardView(plan: plan, viewModel: viewModel)
-                        }
-                        .buttonStyle(.plain)
+            if viewModel.isLoading && viewModel.plans.isEmpty {
+                ProgressView("載入香港保險目錄…")
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if let errorMessage = viewModel.errorMessage,
+                      viewModel.plans.isEmpty {
+                ContentUnavailableView {
+                    Label("未能載入保險目錄", systemImage: "wifi.exclamationmark")
+                } description: {
+                    Text(errorMessage)
+                } actions: {
+                    Button("重試") {
+                        Task { await viewModel.loadPlans() }
                     }
+                    .buttonStyle(.borderedProminent)
                 }
-                .padding(.horizontal, 16)
-                .padding(.top, 12)
+            } else if viewModel.plans.isEmpty {
+                ContentUnavailableView(
+                    "暫未有保險資料",
+                    systemImage: "shield",
+                    description: Text("經審核的香港寵物保險資料將會顯示在此。")
+                )
+            } else {
+                sortPicker
 
-                InsuranceDisclaimerView()
+                ScrollView {
+                    LazyVStack(spacing: 12) {
+                        ForEach(viewModel.sortedPlans) { plan in
+                            NavigationLink {
+                                InsuranceDetailView(plan: plan, viewModel: viewModel)
+                            } label: {
+                                InsuranceCardView(plan: plan, viewModel: viewModel)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
                     .padding(.horizontal, 16)
-                    .padding(.bottom, 24)
+                    .padding(.top, 12)
+
+                    InsuranceDisclaimerView()
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 24)
+                }
             }
         }
         .organicBackground()
@@ -99,13 +122,7 @@ private struct InsuranceCardView: View {
     }
 
     private var formattedPremium: String {
-        let symbol = viewModel.currency(for: plan) == "HKD" ? "HK$" : "NT$"
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.minimumFractionDigits = 0
-        formatter.maximumFractionDigits = 0
-        let amount = formatter.string(from: plan.monthlyPremium as NSDecimalNumber) ?? "\(plan.monthlyPremium)"
-        return "\(symbol)\(amount)"
+        viewModel.formattedPremium(plan.monthlyPremium)
     }
 }
 
@@ -116,7 +133,7 @@ struct InsuranceDisclaimerView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .padding(.top, 1)
-            Text("資料僅供參考。VetMap 與各保險公司並無聯繫或利益關係，不構成任何保險或財務建議。投保前請直接向保險公司查詢詳情。")
+            Text("本目錄只提供保險公司官方連結及參考資料，不構成保險或財務建議。保費、保障及條款以供應商最新官方資料及報價為準。")
                 .font(.caption2)
                 .foregroundStyle(.secondary)
                 .lineSpacing(2)

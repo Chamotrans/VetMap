@@ -21,13 +21,6 @@ struct ClinicDetailView: View {
         GridItem(.flexible(), spacing: 10)
     ]
 
-    private var mapRegion: MKCoordinateRegion {
-        MKCoordinateRegion(
-            center: clinic.mapCoordinate,
-            span: MKCoordinateSpan(latitudeDelta: 0.012, longitudeDelta: 0.012)
-        )
-    }
-
     private var visibleAverageRating: Double {
         guard !viewModel.visibleReviews.isEmpty else { return 0 }
         let total = viewModel.visibleReviews.reduce(0) { $0 + $1.rating }
@@ -94,8 +87,10 @@ struct ClinicDetailView: View {
                             openingHoursSection
                                 .transition(.opacity)
                         }
-                        mapSection
-                            .transition(.opacity)
+                        if clinic.mapCoordinate != nil {
+                            mapSection
+                                .transition(.opacity)
+                        }
                     }
                 }
                 .padding(.horizontal, 16)
@@ -231,14 +226,16 @@ struct ClinicDetailView: View {
                 .accessibilityLabel("診所網站")
             }
 
-            Button {
-                openInMaps()
-            } label: {
-                actionLabel("路線", systemImage: "arrow.triangle.turn.up.right.diamond.fill")
+            if clinic.mapCoordinate != nil {
+                Button {
+                    openInMaps()
+                } label: {
+                    actionLabel("路線", systemImage: "arrow.triangle.turn.up.right.diamond.fill")
+                }
+                .buttonStyle(.bordered)
+                .buttonBorderShape(.roundedRectangle(radius: AppTheme.cardRadius))
+                .accessibilityLabel("導航到此診所")
             }
-            .buttonStyle(.bordered)
-            .buttonBorderShape(.roundedRectangle(radius: AppTheme.cardRadius))
-            .accessibilityLabel("導航到此診所")
         }
     }
 
@@ -270,6 +267,9 @@ struct ClinicDetailView: View {
                     infoRow("電話", trimmedPhone, systemImage: "phone")
                 }
                 infoRow("地址", clinic.address, systemImage: "mappin.and.ellipse")
+                if clinic.mapCoordinate == nil {
+                    infoRow("地圖位置", "尚待確認", systemImage: "mappin.slash")
+                }
                 if let website = clinic.website {
                     infoRow("網站", website.host() ?? website.absoluteString, systemImage: "safari")
                 }
@@ -425,23 +425,32 @@ struct ClinicDetailView: View {
     }
 
     private var mapSection: some View {
-        detailCard(title: "位置", systemImage: "map.fill") {
-            Map(initialPosition: .region(mapRegion)) {
-                Marker(clinic.name, systemImage: "cross.case.fill", coordinate: clinic.mapCoordinate)
-                    .tint(.teal)
-            }
-            .frame(height: 180)
-            .clipShape(RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous))
-            .allowsHitTesting(false)
+        Group {
+            if let coordinate = clinic.mapCoordinate {
+                detailCard(title: "位置", systemImage: "map.fill") {
+                    Map(initialPosition: .region(
+                        MKCoordinateRegion(
+                            center: coordinate,
+                            span: MKCoordinateSpan(latitudeDelta: 0.012, longitudeDelta: 0.012)
+                        )
+                    )) {
+                        Marker(clinic.name, systemImage: "cross.case.fill", coordinate: coordinate)
+                            .tint(.teal)
+                    }
+                    .frame(height: 180)
+                    .clipShape(RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous))
+                    .allowsHitTesting(false)
 
-            Button {
-                openInMaps()
-            } label: {
-                Label("在地圖中開啟", systemImage: "map")
-                    .frame(maxWidth: .infinity)
+                    Button {
+                        openInMaps()
+                    } label: {
+                        Label("在地圖中開啟", systemImage: "map")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
+                    .buttonBorderShape(.roundedRectangle(radius: AppTheme.cardRadius))
+                }
             }
-            .buttonStyle(.bordered)
-            .buttonBorderShape(.roundedRectangle(radius: AppTheme.cardRadius))
         }
     }
 
@@ -569,7 +578,8 @@ struct ClinicDetailView: View {
     }
 
     private func openInMaps() {
-        let placemark = MKPlacemark(coordinate: clinic.mapCoordinate)
+        guard let coordinate = clinic.mapCoordinate else { return }
+        let placemark = MKPlacemark(coordinate: coordinate)
         let mapItem = MKMapItem(placemark: placemark)
         mapItem.name = clinic.name
         mapItem.openInMaps(launchOptions: [

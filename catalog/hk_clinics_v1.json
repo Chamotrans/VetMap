@@ -1,0 +1,3687 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-28T21:02:21.599Z",
+  "catalogRegion": "HK",
+  "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+  "expiresAt": "2027-01-28T00:00:00+08:00",
+  "count": 179,
+  "clinics": [
+    {
+      "id": "clinic-hk-vetmap-seed",
+      "name": "豐盈動物腫瘤中心",
+      "address": "香港新界葵涌葵豐街38至42號大鴻輝(葵涌)中心2期地下1號舖",
+      "phone": "34263500",
+      "district": "Kwai Tsing",
+      "coordinate": {
+        "latitude": 22.3555118,
+        "longitude": 114.1253095
+      },
+      "coordinateSource": "VetMap authorized source coordinate",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "seed:hk-69dad98a3b2c2f0a8731:41001aeeb1d6"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.598Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-seed-hong-kong-veterinary-specialty-services",
+      "name": "Hong Kong Veterinary Specialty Services",
+      "address": "Flat A6, 5/F, Block A, Mai Hing Industrial Building, 16-18 Hing Yip St, Kwun Tong, Hong Kong",
+      "phone": "59953070",
+      "district": "Kwun Tong",
+      "coordinate": {
+        "latitude": 22.3088856,
+        "longitude": 114.225174
+      },
+      "coordinateSource": "VetMap authorized source coordinate",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "seed:hk-69dceac485c5cd6a0637:bc4616c1d953"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.598Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-seed-pets-central",
+      "name": "Pets Central 旺角動物醫院",
+      "address": "香港九龍旺角上海街484至488號順明大廈1樓和2樓",
+      "phone": "23092139",
+      "district": "Yau Tsim Mong",
+      "coordinate": {
+        "latitude": 22.3164651,
+        "longitude": 114.168867
+      },
+      "coordinateSource": "VetMap authorized source coordinate",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "seed:hk-69dad9893b2c2f0a8731:e867307aebc1"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.598Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-002",
+      "name": "楓樹珍禽異獸醫院",
+      "address": "香港九龍深水埗楓樹街9至13號1樓",
+      "phone": "3579 4838",
+      "district": "深水埗區",
+      "coordinate": {
+        "latitude": 22.32653,
+        "longitude": 114.16462
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 75.33,
+      "sourceRecordIDs": [
+        "petcircle:vet-002"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-004",
+      "name": "星宇動物醫院",
+      "address": "香港九龍深水埗大南街84號地下",
+      "phone": "2898 7122",
+      "district": "深水埗區",
+      "coordinate": {
+        "latitude": 22.32529,
+        "longitude": 114.16597
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 88.75,
+      "sourceRecordIDs": [
+        "petcircle:vet-004"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-005",
+      "name": "九龍貓醫院",
+      "address": "香港九龍深水埗鴨寮街22號地舖",
+      "phone": "2309 2011",
+      "district": "深水埗區",
+      "coordinate": {
+        "latitude": 22.32721,
+        "longitude": 114.16611
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 82.24,
+      "sourceRecordIDs": [
+        "petcircle:vet-005"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-006",
+      "name": "楓樹獸醫診所",
+      "address": "香港九龍深水埗楓樹街9-13號華楓樓地下",
+      "phone": "3576 3288",
+      "district": "深水埗區",
+      "coordinate": {
+        "latitude": 22.32653,
+        "longitude": 114.16462
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 85,
+      "sourceRecordIDs": [
+        "petcircle:vet-006"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-007",
+      "name": "美孚獸醫診所",
+      "address": "香港九龍茘枝角美孚新邨2-8號恆柏街, N29B2-3舖",
+      "phone": "2743 8885",
+      "district": "深水埗區",
+      "coordinate": {
+        "latitude": 22.33968,
+        "longitude": 114.13939
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 78.72,
+      "sourceRecordIDs": [
+        "petcircle:vet-007"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-008",
+      "name": "Pulsevet 獸醫中心",
+      "address": "香港九龍深水埗大南街207至209號地舖",
+      "phone": "9238 8202",
+      "district": "深水埗區",
+      "coordinate": {
+        "latitude": 22.32748,
+        "longitude": 114.16262
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 79.41,
+      "sourceRecordIDs": [
+        "petcircle:vet-008"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-009",
+      "name": "太僕中心",
+      "address": "香港九龍深水埗福榮街1-3號地下",
+      "phone": "2777 2878",
+      "district": "深水埗區",
+      "coordinate": {
+        "latitude": 22.32894,
+        "longitude": 114.16635
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 77.5,
+      "sourceRecordIDs": [
+        "petcircle:vet-009"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-010",
+      "name": "香港獸醫中心",
+      "address": "香港九龍長沙灣道680號麗新商業中心1樓108B",
+      "phone": "2520 2373",
+      "district": "深水埗區",
+      "coordinate": {
+        "latitude": 22.33908,
+        "longitude": 114.15201
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 91,
+      "sourceRecordIDs": [
+        "petcircle:vet-010"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-011",
+      "name": "毛國界動物醫院",
+      "address": "香港九龍深水埗海壇街229號傲凱地舖",
+      "phone": "2142 3399",
+      "district": "深水埗區",
+      "coordinate": {
+        "latitude": 22.32908,
+        "longitude": 114.15749
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 88.75,
+      "sourceRecordIDs": [
+        "petcircle:vet-011"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-012",
+      "name": "B.A.C. 動物診所",
+      "address": "香港九龍美孚新邨第一期百老匯街15D號平台29A號舖",
+      "phone": "2884 2120",
+      "district": "深水埗區",
+      "coordinate": {
+        "latitude": 22.3364,
+        "longitude": 114.13743
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 79.66,
+      "sourceRecordIDs": [
+        "petcircle:vet-012"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-013",
+      "name": "阿棍屋善行動物診所",
+      "address": "香港九龍深水埗九江街3至5號金海大廈地下B舖",
+      "phone": "2151 9911",
+      "district": "深水埗區",
+      "coordinate": {
+        "latitude": 22.32943,
+        "longitude": 114.15707
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 91,
+      "sourceRecordIDs": [
+        "petcircle:vet-013"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-014",
+      "name": "角落獸醫診所",
+      "address": "香港九龍黃大仙環鳳街68號鑽嶺低層地下01號",
+      "phone": "2662 6232",
+      "district": "黃大仙區",
+      "coordinate": {
+        "latitude": 22.3449174,
+        "longitude": 114.1986224
+      },
+      "coordinateSource": "VetMap authorized source coordinate",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-014",
+        "seed:hk-69dad98a3b2c2f0a8731:db2478d696da"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-015",
+      "name": "新蒲崗動物醫院",
+      "address": "香港九龍新蒲崗景福街77號地下",
+      "phone": "2420 2266",
+      "district": "黃大仙區",
+      "coordinate": {
+        "latitude": 22.33443,
+        "longitude": 114.19738
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 93.46,
+      "sourceRecordIDs": [
+        "petcircle:vet-015"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-016",
+      "name": "海寧動物醫院",
+      "address": "香港九龍新蒲崗彩虹道106號地下",
+      "phone": "2382 8288",
+      "district": "黃大仙區",
+      "coordinate": {
+        "latitude": 22.33631,
+        "longitude": 114.19493
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 97.69,
+      "sourceRecordIDs": [
+        "petcircle:vet-016"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-017",
+      "name": "黃大仙區動物醫院",
+      "address": "香港九龍新蒲崗彩虹道110號地下",
+      "phone": "2336 2682",
+      "district": "黃大仙區",
+      "coordinate": {
+        "latitude": 22.33631,
+        "longitude": 114.19493
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 97.69,
+      "sourceRecordIDs": [
+        "petcircle:vet-017"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-019",
+      "name": "星寵動物醫院",
+      "address": "香港炮台山屈臣道15號維多利中心1樓102號舖",
+      "phone": "2527 1718",
+      "district": "東區",
+      "coordinate": {
+        "latitude": 22.28743,
+        "longitude": 114.19012
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-019"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-021",
+      "name": "選擇獸醫診所",
+      "address": "香港筲箕灣新成街5至7號萬康大廈7號舖",
+      "phone": "2967 1876",
+      "district": "東區",
+      "coordinate": {
+        "latitude": 22.27969,
+        "longitude": 114.22587
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-021"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-022",
+      "name": "港島東小動物及珍禽異獸醫療中心",
+      "address": "香港鰂魚涌英皇道1065號東達中心3樓2室",
+      "phone": "2809 2618",
+      "district": "東區",
+      "coordinate": {
+        "latitude": 22.28493,
+        "longitude": 114.21417
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-022"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-023",
+      "name": "北角動物醫院",
+      "address": "香港北角清華街1-3號UG層",
+      "phone": "2307 6622",
+      "district": "東區",
+      "coordinate": {
+        "latitude": 22.28888,
+        "longitude": 114.19685
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 90,
+      "sourceRecordIDs": [
+        "petcircle:vet-023"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-024",
+      "name": "夏利維動物醫院",
+      "address": "香港天后永興街37號地下",
+      "phone": "2570 6048",
+      "district": "東區",
+      "coordinate": {
+        "latitude": 22.28542,
+        "longitude": 114.19264
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-024"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-025",
+      "name": "健河動物醫院",
+      "address": "香港西灣河筲箕灣道56號地下",
+      "phone": "2560 2721",
+      "district": "東區",
+      "coordinate": {
+        "latitude": 22.28312,
+        "longitude": 114.22092
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 76.43,
+      "sourceRecordIDs": [
+        "petcircle:vet-025"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-026",
+      "name": "西灣河獸醫診所",
+      "address": "香港西灣河街94B號地舖",
+      "phone": "2967 4899",
+      "district": "東區",
+      "coordinate": {
+        "latitude": 22.2809,
+        "longitude": 114.22241
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 86.25,
+      "sourceRecordIDs": [
+        "petcircle:vet-026"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-027",
+      "name": "長康動物醫院",
+      "address": "香港北角堡壘街38號地下",
+      "phone": "2530 0101",
+      "district": "東區",
+      "coordinate": {
+        "latitude": 22.28981,
+        "longitude": 114.19754
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-027"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-028",
+      "name": "梟史丹利獸醫診所",
+      "address": "香港天后永興街2A號地下",
+      "phone": "2380 0612",
+      "district": "東區",
+      "coordinate": {
+        "latitude": 22.28497,
+        "longitude": 114.19121
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-028"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-029",
+      "name": "香港流動獸醫",
+      "address": "香港柴灣安業街1號新華豐中心17樓1701室",
+      "phone": "9796 8990",
+      "district": "東區",
+      "coordinate": {
+        "latitude": 22.2664,
+        "longitude": 114.24653
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-029"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-030",
+      "name": "日朗動物醫院",
+      "address": "香港柴灣連城道26F號地下",
+      "phone": "3575 9832",
+      "district": "東區",
+      "coordinate": {
+        "latitude": 22.26118,
+        "longitude": 114.23612
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 79,
+      "sourceRecordIDs": [
+        "petcircle:vet-030"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-031",
+      "name": "香港愛護動物協會",
+      "address": "香港灣仔運盛街5號",
+      "phone": "2802 0501",
+      "district": "灣仔區",
+      "coordinate": {
+        "latitude": 22.28204,
+        "longitude": 114.17886
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-031"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-032",
+      "name": "快活谷獸醫中心",
+      "address": "香港跑馬地源遠街15號地下",
+      "phone": "2575 2389",
+      "district": "灣仔區",
+      "coordinate": {
+        "latitude": 22.26938,
+        "longitude": 114.18606
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 82.9,
+      "sourceRecordIDs": [
+        "petcircle:vet-032"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-033",
+      "name": "灣仔動物醫院",
+      "address": "香港灣仔交加里7號永成大廈地下及地庫",
+      "phone": "2572 5422",
+      "district": "灣仔區",
+      "coordinate": {
+        "latitude": 22.2766,
+        "longitude": 114.17622
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-033"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-034",
+      "name": "大坑動物診所",
+      "address": "香港大坑浣紗街1-5號浣紗閣地下2號舖",
+      "phone": "2577 5755",
+      "district": "灣仔區",
+      "coordinate": {
+        "latitude": 22.27919,
+        "longitude": 114.19257
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 96.67,
+      "sourceRecordIDs": [
+        "petcircle:vet-034"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-035",
+      "name": "順心動物診所",
+      "address": "香港跑馬地源遠街8號寶成樓地舖",
+      "phone": "2895 6811",
+      "district": "灣仔區",
+      "coordinate": {
+        "latitude": 22.26918,
+        "longitude": 114.1861
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 76.23,
+      "sourceRecordIDs": [
+        "petcircle:vet-035"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-036",
+      "name": "港島獸醫診所",
+      "address": "香港跑馬地成和道67D至E號壹鑾地下1至2號舖",
+      "phone": "2982 0222",
+      "district": "灣仔區",
+      "coordinate": {
+        "latitude": 22.2671,
+        "longitude": 114.18698
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 75,
+      "sourceRecordIDs": [
+        "petcircle:vet-036"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-037",
+      "name": "跑馬地獸醫診所及醫院",
+      "address": "香港跑馬地昌明街4-6號地舖",
+      "phone": "2572 0977",
+      "district": "灣仔區",
+      "coordinate": {
+        "latitude": 22.26849,
+        "longitude": 114.18682
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 75.43,
+      "sourceRecordIDs": [
+        "petcircle:vet-037"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-038",
+      "name": "康迪亞獸醫",
+      "address": "香港跑馬地藍塘道5至7號低座地下及一樓",
+      "phone": "2679 1000",
+      "district": "灣仔區",
+      "sourceRecordIDs": [
+        "petcircle:vet-038"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-039",
+      "name": "動物王國醫院",
+      "address": "香港銅鑼灣威菲路道25至27號佳景大廈2-3號舖",
+      "phone": "2578 0321",
+      "district": "灣仔區",
+      "coordinate": {
+        "latitude": 22.2860011,
+        "longitude": 114.1906908
+      },
+      "coordinateSource": "VetMap authorized source coordinate",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-039",
+        "seed:hk-69dad9893b2c2f0a8731:6ce2d31832a1"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-040",
+      "name": "銅鑼灣動物醫院",
+      "address": "香港銅鑼灣威非路道29號地下",
+      "phone": "2510 0836",
+      "district": "灣仔區",
+      "coordinate": {
+        "latitude": 22.28597,
+        "longitude": 114.19054
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-040"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-041",
+      "name": "葵涌動物診所",
+      "address": "香港新界葵涌葵豐街38至42號大鴻輝(葵涌)中心2期地下2號舖",
+      "phone": "2572 0977",
+      "district": "葵青區",
+      "sourceRecordIDs": [
+        "petcircle:vet-041"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-042",
+      "name": "黎昌生獸醫診所 (跑馬地)",
+      "address": "香港跑馬地山光道1號A意廬小築地下B舖",
+      "phone": "2893 2988",
+      "district": "灣仔區",
+      "coordinate": {
+        "latitude": 22.26901,
+        "longitude": 114.18405
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 78.24,
+      "sourceRecordIDs": [
+        "petcircle:vet-042"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-043",
+      "name": "皇后大道東獸醫診所",
+      "address": "香港灣仔日街2號地舖",
+      "phone": "2865 4320",
+      "district": "灣仔區",
+      "coordinate": {
+        "latitude": 22.27658,
+        "longitude": 114.16858
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-043"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-044",
+      "name": "中央動物醫院",
+      "address": "香港銅鑼灣興發街68H號美城花園大廈地下",
+      "phone": "2508 1083",
+      "district": "灣仔區",
+      "coordinate": {
+        "latitude": 22.28497,
+        "longitude": 114.19119
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 89,
+      "sourceRecordIDs": [
+        "petcircle:vet-044"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-045",
+      "name": "雅各動物醫院",
+      "address": "香港西營盤第二街68-80號地下",
+      "phone": "2540 0228",
+      "district": "中西及南區",
+      "coordinate": {
+        "latitude": 22.286033,
+        "longitude": 114.14156
+      },
+      "coordinateSource": "VetMap authorized source coordinate",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-045",
+        "seed:hk-69dad9893b2c2f0a8731:7ee15c73f63d"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-046",
+      "name": "半山獸醫中心",
+      "address": "香港半山卑利街80至82號地下A舖",
+      "phone": "2140 6581",
+      "district": "中西及南區",
+      "coordinate": {
+        "latitude": 22.28052,
+        "longitude": 114.15123
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 90,
+      "sourceRecordIDs": [
+        "petcircle:vet-046"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-047",
+      "name": "赤柱寵物診所",
+      "address": "香港赤柱黃麻角道10至12號地庫",
+      "phone": "2813 2030",
+      "district": "中西及南區",
+      "coordinate": {
+        "latitude": 22.21788,
+        "longitude": 114.2134
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 80.45,
+      "sourceRecordIDs": [
+        "petcircle:vet-047"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-048",
+      "name": "Southern District Veterinary Centre",
+      "address": "Shop A1-A2, G/F, Happy View Building, 165-167 Ap Lei Chau Main Street,",
+      "phone": "2805 1328",
+      "district": "中西及南區",
+      "coordinate": {
+        "latitude": 22.2436,
+        "longitude": 114.15342
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 83.89,
+      "sourceRecordIDs": [
+        "petcircle:vet-048"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-049",
+      "name": "鴨脷洲獸醫診所",
+      "address": "香港鴨脷洲利枝道138號1號舖",
+      "phone": "2548 7100",
+      "district": "中西及南區",
+      "coordinate": {
+        "latitude": 22.2436051,
+        "longitude": 114.1532428
+      },
+      "coordinateSource": "VetMap authorized source coordinate",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-049",
+        "seed:hk-69dad9893b2c2f0a8731:a63c2bd501a9"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-050",
+      "name": "蘇利宜動物醫院",
+      "address": "香港中環半山堅道130號堅威大廈地下B舖",
+      "phone": "2291 0065",
+      "district": "中西及南區",
+      "coordinate": {
+        "latitude": 22.2827,
+        "longitude": 114.14949
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 99.57,
+      "sourceRecordIDs": [
+        "petcircle:vet-050"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-051",
+      "name": "西區獸醫診所",
+      "address": "香港西營盤皇后大道西303號地下",
+      "phone": "2858 2211",
+      "district": "中西及南區",
+      "sourceRecordIDs": [
+        "petcircle:vet-051"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-052",
+      "name": "方舟動物醫院",
+      "address": "香港西營盤水街25-35A號1號舖",
+      "phone": "2549 2330",
+      "district": "中西及南區",
+      "sourceRecordIDs": [
+        "petcircle:vet-052"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-053",
+      "name": "愛生動物診所",
+      "address": "香港堅尼地城吉席街63號嘉富大廈地下2號舖",
+      "phone": "2818 2333",
+      "district": "中西及南區",
+      "coordinate": {
+        "latitude": 22.28373,
+        "longitude": 114.12757
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-053"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-054",
+      "name": "半山貓醫院",
+      "address": "香港半山般咸道3號般安閣地下A號舖",
+      "phone": "2688 0013",
+      "district": "中西及南區",
+      "coordinate": {
+        "latitude": 22.28384,
+        "longitude": 114.14636
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-054"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-055",
+      "name": "港島西動物醫院",
+      "address": "香港堅尼地城海旁27號城暉大廈3號舖",
+      "phone": "3500 5830",
+      "district": "中西及南區",
+      "coordinate": {
+        "latitude": 22.28489,
+        "longitude": 114.13134
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-055"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-056",
+      "name": "啟德動物醫院",
+      "address": "香港九龍土瓜灣貴州街4N號安慶大廈2號地舖",
+      "phone": "2116 4417",
+      "district": "九龍城區",
+      "coordinate": {
+        "latitude": 22.31708,
+        "longitude": 114.19178
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 91,
+      "sourceRecordIDs": [
+        "petcircle:vet-056"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-057",
+      "name": "柏域獸醫診所",
+      "address": "香港九龍九龍城城南道32號地下",
+      "phone": "2382 0228",
+      "district": "九龍城區",
+      "coordinate": {
+        "latitude": 22.3164,
+        "longitude": 114.18826
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 81,
+      "sourceRecordIDs": [
+        "petcircle:vet-057"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-058",
+      "name": "仁安獸醫診所",
+      "address": "香港九龍何文田自由道9號地鋪",
+      "phone": "2712 0772",
+      "district": "九龍城區",
+      "coordinate": {
+        "latitude": 22.31665,
+        "longitude": 114.17781
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 76.95,
+      "sourceRecordIDs": [
+        "petcircle:vet-058"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-059",
+      "name": "摯愛動物醫院",
+      "address": "香港九龍九龍城打鼓嶺道54號地下",
+      "phone": "2382 3113",
+      "district": "九龍城區",
+      "coordinate": {
+        "latitude": 22.32971,
+        "longitude": 114.19172
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 87.04,
+      "sourceRecordIDs": [
+        "petcircle:vet-059"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-060",
+      "name": "九龍專科獸醫醫院",
+      "address": "香港九龍何文田自由道7號富威花園一樓及地下A及B舖",
+      "phone": "2408 2588",
+      "district": "九龍城區",
+      "coordinate": {
+        "latitude": 22.31889,
+        "longitude": 114.17415
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 91,
+      "sourceRecordIDs": [
+        "petcircle:vet-060"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-061",
+      "name": "梭椏道寵物診所",
+      "address": "香港九龍何文田梭椏道29-33號仁儀苑地舖",
+      "phone": "2760 9663",
+      "district": "九龍城區",
+      "coordinate": {
+        "latitude": 22.31987,
+        "longitude": 114.17467
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 85,
+      "sourceRecordIDs": [
+        "petcircle:vet-061"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-062",
+      "name": "力高動物診所",
+      "address": "香港九龍何文田亞皆老街120號利寶大廈地下F舖",
+      "phone": "2526 8068",
+      "district": "九龍城區",
+      "coordinate": {
+        "latitude": 22.32024,
+        "longitude": 114.17556
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 91,
+      "sourceRecordIDs": [
+        "petcircle:vet-062"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-063",
+      "name": "恩曦獸醫診所",
+      "address": "香港九龍九龍城打鼓嶺道76號",
+      "phone": "2882 4882",
+      "district": "九龍城區",
+      "coordinate": {
+        "latitude": 22.33019,
+        "longitude": 114.19174
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 86.7,
+      "sourceRecordIDs": [
+        "petcircle:vet-063"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-065",
+      "name": "朋友仔珍禽異獸動物醫院",
+      "address": "香港九龍九龍城聯合道38號地舖",
+      "phone": "2362 2382",
+      "district": "九龍城區",
+      "coordinate": {
+        "latitude": 22.31672,
+        "longitude": 114.18842
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 81,
+      "sourceRecordIDs": [
+        "petcircle:vet-065"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-067",
+      "name": "九龍動物醫院",
+      "address": "香港九龍城聯合道2號裕聯大廈地下",
+      "phone": "2382 3300",
+      "district": "九龍城區",
+      "coordinate": {
+        "latitude": 22.32774,
+        "longitude": 114.18713
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 91,
+      "sourceRecordIDs": [
+        "petcircle:vet-067"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-068",
+      "name": "寵心動物診所",
+      "address": "香港九龍紅磡寶其利街73號東禧閣1樓C號舖",
+      "phone": "2877 6780",
+      "district": "九龍城區",
+      "coordinate": {
+        "latitude": 22.30687,
+        "longitude": 114.18594
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 91,
+      "sourceRecordIDs": [
+        "petcircle:vet-068"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-069",
+      "name": "Dr.Shih獸醫診所",
+      "address": "香港九龍土瓜灣馬頭圍道418號地下3號舖",
+      "phone": "2383 8850",
+      "district": "九龍城區",
+      "sourceRecordIDs": [
+        "petcircle:vet-069"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-070",
+      "name": "街坊動物醫院",
+      "address": "香港九龍觀塘曉光街34-36號地下",
+      "phone": "2191 8993",
+      "district": "觀塘區",
+      "sourceRecordIDs": [
+        "petcircle:vet-070"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-071",
+      "name": "寵誠動物醫院",
+      "address": "香港九龍牛頭角馬蹄徑1號寶恩大廈7號地舖",
+      "phone": "3611 2877",
+      "district": "觀塘區",
+      "coordinate": {
+        "latitude": 22.3146811,
+        "longitude": 114.2220301
+      },
+      "coordinateSource": "VetMap authorized source coordinate",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-071",
+        "seed:hk-69dad9893b2c2f0a8731:bfa87895ff4a"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-073",
+      "name": "天心寵物醫院",
+      "address": "香港九龍尖沙咀山林道34號地舖",
+      "phone": "2813 7128",
+      "district": "油尖旺區",
+      "coordinate": {
+        "latitude": 22.30263,
+        "longitude": 114.17381
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 88.29,
+      "sourceRecordIDs": [
+        "petcircle:vet-073"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-076",
+      "name": "勝利動物醫院",
+      "address": "香港九龍旺角窩打老道71B號松園大廈1樓B座",
+      "phone": "2711 0332",
+      "district": "油尖旺區",
+      "coordinate": {
+        "latitude": 22.31904,
+        "longitude": 114.17548
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 87.28,
+      "sourceRecordIDs": [
+        "petcircle:vet-076"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-077",
+      "name": "太子動物醫療診所",
+      "address": "香港九龍太子荔枝角道75號地下",
+      "phone": "2380 8408",
+      "district": "油尖旺區",
+      "coordinate": {
+        "latitude": 22.32416,
+        "longitude": 114.16585
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 75.29,
+      "sourceRecordIDs": [
+        "petcircle:vet-077"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-078",
+      "name": "專寵獸醫診所",
+      "address": "香港九龍太子鴨寮街34號地舖",
+      "phone": "2368 1518",
+      "district": "油尖旺區",
+      "sourceRecordIDs": [
+        "petcircle:vet-078"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-079",
+      "name": "繽紛寵物診所",
+      "address": "香港九龍大角咀大全街20號B地舖",
+      "phone": "2787 2338",
+      "district": "油尖旺區",
+      "coordinate": {
+        "latitude": 22.32206,
+        "longitude": 114.16156
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 75.82,
+      "sourceRecordIDs": [
+        "petcircle:vet-079"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-080",
+      "name": "旺角動物診所",
+      "address": "香港九龍窩打老道66A地下",
+      "phone": "2323 4417",
+      "district": "油尖旺區",
+      "sourceRecordIDs": [
+        "petcircle:vet-080"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-081",
+      "name": "旺角關愛非牟利動物診所",
+      "address": "香港九龍旺角西洋菜北街177號",
+      "phone": "2399 7783",
+      "district": "油尖旺區",
+      "coordinate": {
+        "latitude": 22.32606,
+        "longitude": 114.16841
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 88.75,
+      "sourceRecordIDs": [
+        "petcircle:vet-081"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-082",
+      "name": "安信獸醫診所",
+      "address": "香港九龍旺角亞皆老街124E號怡安閣14號地舖",
+      "phone": "2323 4417",
+      "district": "油尖旺區",
+      "coordinate": {
+        "latitude": 22.32038,
+        "longitude": 114.17636
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 91,
+      "sourceRecordIDs": [
+        "petcircle:vet-082"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-083",
+      "name": "綠十字寵物診所",
+      "address": "香港九龍旺角窩打老道37地下",
+      "phone": "2780 5338",
+      "district": "油尖旺區",
+      "coordinate": {
+        "latitude": 22.31615,
+        "longitude": 114.17343
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 75.64,
+      "sourceRecordIDs": [
+        "petcircle:vet-083"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-084",
+      "name": "西九龍動物醫院",
+      "address": "香港九龍佐敦文苑街2號地舖",
+      "phone": "3500 5800",
+      "district": "油尖旺區",
+      "coordinate": {
+        "latitude": 22.30583,
+        "longitude": 114.17297
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 81.67,
+      "sourceRecordIDs": [
+        "petcircle:vet-084"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-085",
+      "name": "為您動物醫院",
+      "address": "香港九龍旺角窩打老道49號地舖 (近廣華醫院)",
+      "phone": "3480 0150",
+      "district": "油尖旺區",
+      "coordinate": {
+        "latitude": 22.31653,
+        "longitude": 114.17373
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 82.86,
+      "sourceRecordIDs": [
+        "petcircle:vet-085"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-086",
+      "name": "Arca小動物及珍禽異獸醫院",
+      "address": "香港九龍太子通菜街222號地下",
+      "phone": "2887 3200",
+      "district": "油尖旺區",
+      "coordinate": {
+        "latitude": 22.3249,
+        "longitude": 114.16958
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 82.86,
+      "sourceRecordIDs": [
+        "petcircle:vet-086"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-087",
+      "name": "香港社企動物醫院",
+      "address": "香港九龍旺角水渠道44號地下",
+      "phone": "2668 6618",
+      "district": "油尖旺區",
+      "coordinate": {
+        "latitude": 22.32132,
+        "longitude": 114.17058
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 88.75,
+      "sourceRecordIDs": [
+        "petcircle:vet-087"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-088",
+      "name": "柏德獸醫診所",
+      "address": "香港新界屯門青山公路385號嘉喜利大廈12號舖",
+      "phone": "2404 2511",
+      "district": "屯門區",
+      "coordinate": {
+        "latitude": 22.3884598,
+        "longitude": 113.9800707
+      },
+      "coordinateSource": "VetMap authorized source coordinate",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-088",
+        "seed:hk-69dad98a3b2c2f0a8731:20aa3d5401d9"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-089",
+      "name": "置樂動物診所",
+      "address": "香港新界屯門彩華花園地下13號舖",
+      "phone": "2430 1758",
+      "district": "屯門區",
+      "sourceRecordIDs": [
+        "petcircle:vet-089"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-090",
+      "name": "康和動物醫療中心",
+      "address": "香港新界屯門青海圍8號屯景大廈E1號地舖",
+      "phone": "2640 8138",
+      "district": "屯門區",
+      "coordinate": {
+        "latitude": 22.38879,
+        "longitude": 113.97877
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 98,
+      "sourceRecordIDs": [
+        "petcircle:vet-090"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-091",
+      "name": "東方獸醫診所(屯門)",
+      "address": "香港新界屯門良田新村107-108號地下",
+      "phone": "2441 9816",
+      "district": "屯門區",
+      "coordinate": {
+        "latitude": 22.39754,
+        "longitude": 113.97762
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 83.85,
+      "sourceRecordIDs": [
+        "petcircle:vet-091"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-092",
+      "name": "景峰動物醫療中心",
+      "address": "香港新界屯門青山公路青山灣段345號龍成花園地下B號舖",
+      "phone": "2363 1860",
+      "district": "屯門區",
+      "coordinate": {
+        "latitude": 22.38515,
+        "longitude": 113.98065
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 91,
+      "sourceRecordIDs": [
+        "petcircle:vet-092"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-093",
+      "name": "彩虹獸醫診所",
+      "address": "香港新界屯門良田村58號地下",
+      "phone": "2430 9581",
+      "district": "屯門區",
+      "coordinate": {
+        "latitude": 22.39894,
+        "longitude": 113.9776
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 87.03,
+      "sourceRecordIDs": [
+        "petcircle:vet-093"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-094",
+      "name": "葵興獸醫診所",
+      "address": "香港新界葵涌光輝圍27至39號葵景大廈5A號地舖",
+      "phone": "2792 2007",
+      "district": "葵青區",
+      "coordinate": {
+        "latitude": 22.36825,
+        "longitude": 114.1325
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 98,
+      "sourceRecordIDs": [
+        "petcircle:vet-094"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-095",
+      "name": "Harvest Veterinary Specialty & Emergency Hospital",
+      "address": "香港葵涌葵豐街38-42號萬匯廣場2座地下2號舖及9樓",
+      "phone": "3426 3500",
+      "district": "葵青區",
+      "coordinate": {
+        "latitude": 22.35645,
+        "longitude": 114.12504
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 76.79,
+      "sourceRecordIDs": [
+        "petcircle:vet-095"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-096",
+      "name": "馬鞍山動物醫療中心",
+      "address": "香港新界馬鞍山褔安花園地下2及17號舖",
+      "phone": "2633 8506",
+      "district": "沙田區",
+      "sourceRecordIDs": [
+        "petcircle:vet-096"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-097",
+      "name": "仁心動物診所醫療中心",
+      "address": "香港新界沙田大圍城河道5至7號地下",
+      "phone": "2688 0840",
+      "district": "沙田區",
+      "coordinate": {
+        "latitude": 22.37689,
+        "longitude": 114.17916
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 91.29,
+      "sourceRecordIDs": [
+        "petcircle:vet-097"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-098",
+      "name": "大圍珍禽異獸及寵物醫院",
+      "address": "香港新界沙田大圍積信街69至75號",
+      "phone": "2687 1030",
+      "district": "沙田區",
+      "coordinate": {
+        "latitude": 22.37682,
+        "longitude": 114.17901
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 97.69,
+      "sourceRecordIDs": [
+        "petcircle:vet-098"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-099",
+      "name": "沙田動物醫院",
+      "address": "香港新界大圍積存街74-76號慶雲樓地下B號舖",
+      "phone": "2694 1452",
+      "district": "沙田區",
+      "coordinate": {
+        "latitude": 22.37692,
+        "longitude": 114.17875
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 86,
+      "sourceRecordIDs": [
+        "petcircle:vet-099"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-100",
+      "name": "綠十字寵物診所",
+      "address": "香港新界沙田正街希爾頓中心地下5B號舖",
+      "phone": "2601 1219",
+      "district": "沙田區",
+      "coordinate": {
+        "latitude": 22.37928,
+        "longitude": 114.18677
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 82,
+      "sourceRecordIDs": [
+        "petcircle:vet-100"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-101",
+      "name": "沙田圍獸醫診所",
+      "address": "香港新界沙田沙角街8-12號花園城1期地下3A-3F舖",
+      "phone": "2155 2568",
+      "district": "沙田區",
+      "coordinate": {
+        "latitude": 22.37918,
+        "longitude": 114.19746
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 81.82,
+      "sourceRecordIDs": [
+        "petcircle:vet-101"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-102",
+      "name": "聯邦動物診所",
+      "address": "香港新界大圍積存街46號葵偉樓地下",
+      "phone": "2698 2185 / 2687 0226",
+      "district": "沙田區",
+      "coordinate": {
+        "latitude": 22.3767,
+        "longitude": 114.17812
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 98,
+      "sourceRecordIDs": [
+        "petcircle:vet-102",
+        "petcircle:vet-174"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-103",
+      "name": "哈比動物牙科及口腔手術中心",
+      "address": "香港新界沙田大圍積信街69-75地下號A地舖",
+      "phone": "2850 6088",
+      "district": "沙田區",
+      "coordinate": {
+        "latitude": 22.3767729,
+        "longitude": 114.1788858
+      },
+      "coordinateSource": "VetMap authorized source coordinate",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-103",
+        "seed:hk-69dad98a3b2c2f0a8731:fc0d17e9272c"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-104",
+      "name": "西沙路動物醫院",
+      "address": "香港新界馬鞍山鞍駿街1號馬鞍山中心地下A13號",
+      "phone": "2630 5980",
+      "district": "沙田區",
+      "coordinate": {
+        "latitude": 22.42556,
+        "longitude": 114.2327
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 91,
+      "sourceRecordIDs": [
+        "petcircle:vet-104"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-105",
+      "name": "獅樂獸醫醫院",
+      "address": "香港新界元朗俊賢坊8號兆日樓K號地舖",
+      "phone": "3188 8911",
+      "district": "元朗區",
+      "coordinate": {
+        "latitude": 22.44685,
+        "longitude": 114.02316
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 98,
+      "sourceRecordIDs": [
+        "petcircle:vet-105"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-106",
+      "name": "SAA動物醫療中心",
+      "address": "香港新界元朗宏業西街21號雨後4至5號舖",
+      "phone": "2475 2231",
+      "district": "元朗區",
+      "sourceRecordIDs": [
+        "petcircle:vet-106"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-107",
+      "name": "朗晴動物醫院",
+      "address": "香港新界元朗安寧路38號世宙9號地舖",
+      "phone": "2123 9206",
+      "district": "元朗區",
+      "coordinate": {
+        "latitude": 22.447,
+        "longitude": 114.0277
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 88.75,
+      "sourceRecordIDs": [
+        "petcircle:vet-107"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-108",
+      "name": "錦綉動物診所",
+      "address": "香港新界元朗馬田村201號",
+      "phone": "2471 8980",
+      "district": "元朗區",
+      "coordinate": {
+        "latitude": 22.44005,
+        "longitude": 114.02546
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 97.69,
+      "sourceRecordIDs": [
+        "petcircle:vet-108"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-109",
+      "name": "Rurumi 獸醫診所",
+      "address": "香港新界元朗錦綉花園大道20號A舖",
+      "phone": "2366 2600",
+      "district": "元朗區",
+      "coordinate": {
+        "latitude": 22.47311,
+        "longitude": 114.05146
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 97.69,
+      "sourceRecordIDs": [
+        "petcircle:vet-109"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-110",
+      "name": "元朗動物診所",
+      "address": "香港新界元朗又新街39號地下",
+      "phone": "2478 8733",
+      "district": "元朗區",
+      "coordinate": {
+        "latitude": 22.44281,
+        "longitude": 114.03128
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 88.75,
+      "sourceRecordIDs": [
+        "petcircle:vet-110"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-111",
+      "name": "新界動物醫療中心",
+      "address": "香港新界元朗馬田路50號朗景臺1號地舖",
+      "phone": "3708 8770",
+      "district": "元朗區",
+      "coordinate": {
+        "latitude": 22.44103,
+        "longitude": 114.02443
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 97.69,
+      "sourceRecordIDs": [
+        "petcircle:vet-111"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-112",
+      "name": "專一動物診所",
+      "address": "香港新界元朗鳳琴街22號金龍樓地下13號",
+      "phone": "2470 6683",
+      "district": "元朗區",
+      "coordinate": {
+        "latitude": 22.44292,
+        "longitude": 114.03365
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 91,
+      "sourceRecordIDs": [
+        "petcircle:vet-112"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-113",
+      "name": "新界動物福利診所",
+      "address": "香港新界元朗裕榮徑11號好旺洋樓地下9號店",
+      "phone": "2389 2186",
+      "district": "元朗區",
+      "coordinate": {
+        "latitude": 22.44201,
+        "longitude": 114.02603
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 91,
+      "sourceRecordIDs": [
+        "petcircle:vet-113"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-114",
+      "name": "元朗獸醫動物及珍禽異獸醫院",
+      "address": "香港新界元朗屏會街25號福順樓地下2號舖",
+      "phone": "2477 9990",
+      "district": "元朗區",
+      "coordinate": {
+        "latitude": 22.44705,
+        "longitude": 114.02155
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 91,
+      "sourceRecordIDs": [
+        "petcircle:vet-114"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-115",
+      "name": "元朗仁愛獸醫診所",
+      "address": "香港新界元朗福德街30A號地下",
+      "phone": "2394 7300",
+      "district": "元朗區",
+      "sourceRecordIDs": [
+        "petcircle:vet-115"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-116",
+      "name": "博愛動物醫院",
+      "address": "香港新界元朗炮仗坊5號順興樓地下10號舖",
+      "phone": "2476 2988",
+      "district": "元朗區",
+      "coordinate": {
+        "latitude": 22.44584,
+        "longitude": 114.02963
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 98,
+      "sourceRecordIDs": [
+        "petcircle:vet-116"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-117",
+      "name": "維多利24小時寵物醫院",
+      "address": "香港新界元朗民合徑8號幸福樓二期地下11號舖",
+      "phone": "2477 8929",
+      "district": "元朗區",
+      "coordinate": {
+        "latitude": 22.44496,
+        "longitude": 114.02347
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 87.28,
+      "sourceRecordIDs": [
+        "petcircle:vet-117"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-118",
+      "name": "錦田動物醫院",
+      "address": "香港新界錦田錦田市108號地下",
+      "phone": "2475 2851",
+      "district": "元朗區",
+      "coordinate": {
+        "latitude": 22.44013,
+        "longitude": 114.06204
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 88.75,
+      "sourceRecordIDs": [
+        "petcircle:vet-118"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-119",
+      "name": "柏圖獸醫診所",
+      "address": "香港新界元朗元朗泰豐街20-24號普利樓地下D舖",
+      "phone": "2443 9893",
+      "district": "元朗區",
+      "coordinate": {
+        "latitude": 22.44597,
+        "longitude": 114.03046
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 85,
+      "sourceRecordIDs": [
+        "petcircle:vet-119"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-120",
+      "name": "卡素拿動物醫院",
+      "address": "香港新界元朗教育路87-99號鴻發大廈地下G-H舖",
+      "phone": "2982 2181",
+      "district": "元朗區",
+      "coordinate": {
+        "latitude": 22.44285,
+        "longitude": 114.02423
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 82.5,
+      "sourceRecordIDs": [
+        "petcircle:vet-120"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-122",
+      "name": "樊展霆獸醫",
+      "address": "香港新界元朗安寧路38號世宙37號地鋪",
+      "phone": "2885 5220",
+      "district": "元朗區",
+      "coordinate": {
+        "latitude": 22.447,
+        "longitude": 114.0277
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 88.75,
+      "sourceRecordIDs": [
+        "petcircle:vet-122"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-123",
+      "name": "Ginkgo獸醫診所",
+      "address": "香港新界元朗福德街20號地下2號鋪",
+      "phone": "2369 6888",
+      "district": "元朗區",
+      "coordinate": {
+        "latitude": 22.44572,
+        "longitude": 114.02864
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 88.75,
+      "sourceRecordIDs": [
+        "petcircle:vet-123"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-124",
+      "name": "N24社區動物醫院",
+      "address": "香港新界元朗洪水橋德興樓地下4-6號鋪",
+      "phone": "2956 5999",
+      "district": "元朗區",
+      "sourceRecordIDs": [
+        "petcircle:vet-124"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-125",
+      "name": "活泉動物醫療中心",
+      "address": "香港新界荃灣荃樂街1號荃樂大廈地下",
+      "phone": "3481 2781",
+      "district": "荃灣區",
+      "coordinate": {
+        "latitude": 22.36959,
+        "longitude": 114.12029
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 91,
+      "sourceRecordIDs": [
+        "petcircle:vet-125"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-126",
+      "name": "享和珍禽異獸醫療中心",
+      "address": "香港新界荃灣享和街84號安豐大廈地下",
+      "phone": "2493 2178",
+      "district": "荃灣區",
+      "coordinate": {
+        "latitude": 22.37121,
+        "longitude": 114.11228
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 91,
+      "sourceRecordIDs": [
+        "petcircle:vet-126"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-127",
+      "name": "荃灣獸醫寵物醫院",
+      "address": "香港新界荃灣沙咀道168號地下8號舖",
+      "phone": "2573 0028",
+      "district": "荃灣區",
+      "sourceRecordIDs": [
+        "petcircle:vet-127"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-128",
+      "name": "沙咀道獸醫動物及珍禽異獸醫院",
+      "address": "香港新界荃灣沙咀道186號地下",
+      "phone": "2623 5500",
+      "district": "荃灣區",
+      "coordinate": {
+        "latitude": 22.37202,
+        "longitude": 114.11333
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 76.67,
+      "sourceRecordIDs": [
+        "petcircle:vet-128"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-129",
+      "name": "享和動物醫療中心",
+      "address": "香港新界荃灣沙咀道136至138號地下",
+      "phone": "2490 3732",
+      "district": "荃灣區",
+      "sourceRecordIDs": [
+        "petcircle:vet-129"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-130",
+      "name": "Dr. George's 獸醫醫療中心",
+      "address": "香港新界荃灣享和街36號好景樓地舖",
+      "phone": "2498 8102",
+      "district": "荃灣區",
+      "coordinate": {
+        "latitude": 22.371839,
+        "longitude": 114.1112672
+      },
+      "coordinateSource": "VetMap authorized source coordinate",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-130",
+        "seed:hk-69dad98a3b2c2f0a8731:049e7977c846"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-131",
+      "name": "珀麗灣獸醫診所",
+      "address": "香港新界馬灣大街北322號地下",
+      "phone": "6738 3280",
+      "district": "荃灣區",
+      "coordinate": {
+        "latitude": 22.35342,
+        "longitude": 114.05898
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 86.67,
+      "sourceRecordIDs": [
+        "petcircle:vet-131"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-132",
+      "name": "深井深健獸醫診所",
+      "address": "香港新界深井深井村89號地下及1樓",
+      "phone": "2496 9833",
+      "district": "荃灣區",
+      "coordinate": {
+        "latitude": 22.37013,
+        "longitude": 114.05955
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 91.33,
+      "sourceRecordIDs": [
+        "petcircle:vet-132"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-133",
+      "name": "西貢獸醫醫院",
+      "address": "香港新界西貢灰窰下208號地下",
+      "phone": "2792 8555",
+      "district": "西貢區",
+      "coordinate": {
+        "latitude": 22.3801,
+        "longitude": 114.26906
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 88.75,
+      "sourceRecordIDs": [
+        "petcircle:vet-133"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-134",
+      "name": "西貢仁愛獸醫診所",
+      "address": "香港新界西貢宜春街66號2號舖",
+      "phone": "2394 4228",
+      "district": "西貢區",
+      "coordinate": {
+        "latitude": 22.38044,
+        "longitude": 114.2716
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 88.75,
+      "sourceRecordIDs": [
+        "petcircle:vet-134"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-135",
+      "name": "西貢動物醫院",
+      "address": "香港新界西貢萬年街30號地下",
+      "phone": "2792 2206",
+      "district": "西貢區",
+      "sourceRecordIDs": [
+        "petcircle:vet-135"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-137",
+      "name": "將軍澳獸醫中心",
+      "address": "香港新界將軍澳唐俊街21號地下翩匯坊G18號舖",
+      "phone": "2915 7007",
+      "district": "西貢區",
+      "coordinate": {
+        "latitude": 22.3030015,
+        "longitude": 114.2634544
+      },
+      "coordinateSource": "VetMap authorized source coordinate",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-137",
+        "seed:hk-69dad98a3b2c2f0a8731:9a319be013fc"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-138",
+      "name": "坑口獸醫診所",
+      "address": "香港新界將軍澳坑口村第三座地下A室",
+      "phone": "2719 1019",
+      "district": "西貢區",
+      "coordinate": {
+        "latitude": 22.3211,
+        "longitude": 114.26613
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 75,
+      "sourceRecordIDs": [
+        "petcircle:vet-138"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-139",
+      "name": "獸醫村莊",
+      "address": "香港新界西貢翠塘路1A號壹同地下G1舖",
+      "phone": "2323 2933",
+      "district": "西貢區",
+      "coordinate": {
+        "latitude": 22.38026,
+        "longitude": 114.26841
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 84.86,
+      "sourceRecordIDs": [
+        "petcircle:vet-139"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-140",
+      "name": "黎昌生獸醫診所(將軍澳)",
+      "address": "香港新界將軍澳至善街3號G09號舖",
+      "phone": "2244 6898",
+      "district": "西貢區",
+      "coordinate": {
+        "latitude": 22.30575,
+        "longitude": 114.26471
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 88.75,
+      "sourceRecordIDs": [
+        "petcircle:vet-140"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-141",
+      "name": "將軍澳動物醫院",
+      "address": "香港新界將軍澳唐德街9號將軍澳中心B01A鋪",
+      "phone": "2244 6684",
+      "district": "西貢區",
+      "coordinate": {
+        "latitude": 22.3071,
+        "longitude": 114.25819
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 91,
+      "sourceRecordIDs": [
+        "petcircle:vet-141"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-142",
+      "name": "北區動物診所",
+      "address": "香港新界上水新豐路55號地下",
+      "phone": "2311 1707",
+      "district": "北區",
+      "coordinate": {
+        "latitude": 22.50504,
+        "longitude": 114.12707
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 88.75,
+      "sourceRecordIDs": [
+        "petcircle:vet-142"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-143",
+      "name": "粉嶺動物醫院",
+      "address": "香港新界粉嶺聯和墟聯安街31號4號地舖",
+      "phone": "2677 6046",
+      "district": "北區",
+      "coordinate": {
+        "latitude": 22.4998322,
+        "longitude": 114.1432444
+      },
+      "coordinateSource": "VetMap authorized source coordinate",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-143",
+        "seed:hk-69dad98a3b2c2f0a8731:f5a62af08af4"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-144",
+      "name": "和泰動物診所",
+      "address": "香港新界粉嶺聯和墟聯昌街23號地下",
+      "phone": "2675 6899",
+      "district": "北區",
+      "coordinate": {
+        "latitude": 22.49955,
+        "longitude": 114.14276
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 86.32,
+      "sourceRecordIDs": [
+        "petcircle:vet-144"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-145",
+      "name": "上水寵物診所",
+      "address": "香港新界上水新城路8號",
+      "phone": "2639 2229",
+      "district": "北區",
+      "coordinate": {
+        "latitude": 22.50603,
+        "longitude": 114.12747
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 79.56,
+      "sourceRecordIDs": [
+        "petcircle:vet-145"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-146",
+      "name": "東涌動物診所",
+      "address": "香港新界東涌馬灣新村7號地下",
+      "phone": "2988 1534",
+      "district": "離島區",
+      "coordinate": {
+        "latitude": 22.2797,
+        "longitude": 113.94092
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 97.69,
+      "sourceRecordIDs": [
+        "petcircle:vet-146"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-147",
+      "name": "太陽動物醫務所",
+      "address": "香港大嶼山梅窩麻布村31號",
+      "phone": "9855 7529",
+      "district": "離島區",
+      "sourceRecordIDs": [
+        "petcircle:vet-147"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-148",
+      "name": "貝澳獸醫診所",
+      "address": "香港大嶼山貝澳新圍村地下",
+      "phone": "3486 6100",
+      "district": "離島區",
+      "coordinate": {
+        "latitude": 22.245461,
+        "longitude": 113.977841
+      },
+      "coordinateSource": "VetMap authorized source coordinate",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-148",
+        "seed:hk-69dad98a3b2c2f0a8731:475b04519d85"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-149",
+      "name": "仁德動物醫院",
+      "address": "香港新界大埔瑞安街6號地下",
+      "phone": "2638 2869",
+      "district": "大埔區",
+      "coordinate": {
+        "latitude": 22.44926,
+        "longitude": 114.16343
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 78.81,
+      "sourceRecordIDs": [
+        "petcircle:vet-149"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-150",
+      "name": "懷仁動物醫院",
+      "address": "香港新界大埔懷仁街31號地舖",
+      "phone": "2191 5636",
+      "district": "大埔區",
+      "coordinate": {
+        "latitude": 22.44866,
+        "longitude": 114.16594
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 88.75,
+      "sourceRecordIDs": [
+        "petcircle:vet-150"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-151",
+      "name": "白石角動物醫院",
+      "address": "香港新界大埔9號科進路海鑽‧天賦海灣一號地舖",
+      "phone": "2638 2869",
+      "district": "大埔區",
+      "coordinate": {
+        "latitude": 22.43214,
+        "longitude": 114.20392
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 88.75,
+      "sourceRecordIDs": [
+        "petcircle:vet-151"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-152",
+      "name": "動物獸醫中心-安健獸醫中心",
+      "address": "香港新界大埔仁興街54號地下",
+      "phone": "2656 1168",
+      "district": "大埔區",
+      "coordinate": {
+        "latitude": 22.449307,
+        "longitude": 114.1641616
+      },
+      "coordinateSource": "VetMap authorized source coordinate",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-152",
+        "seed:hk-69dad98a3b2c2f0a8731:668e65ab400d"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-153",
+      "name": "寶湖動物醫院有限公司",
+      "address": "香港新界大埔同茂坊7號地下",
+      "phone": "2653 0123",
+      "district": "大埔區",
+      "coordinate": {
+        "latitude": 22.44909,
+        "longitude": 114.16731
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 97.69,
+      "sourceRecordIDs": [
+        "petcircle:vet-153"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-154",
+      "name": "普益獸醫診所",
+      "address": "香港新界大埔普益街19號地下",
+      "phone": "2653 3632 / 6168 6175",
+      "district": "大埔區",
+      "coordinate": {
+        "latitude": 22.44959,
+        "longitude": 114.16625
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 88.75,
+      "sourceRecordIDs": [
+        "petcircle:vet-154",
+        "petcircle:vet-171"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-155",
+      "name": "寵樂動物診所",
+      "address": "香港新界大埔廣褔道149-155號地下B鋪",
+      "phone": "2653 2287",
+      "district": "大埔區",
+      "coordinate": {
+        "latitude": 22.44786,
+        "longitude": 114.16908
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 77.5,
+      "sourceRecordIDs": [
+        "petcircle:vet-155"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-156",
+      "name": "Trinity Vets",
+      "address": "香港天后清風街23號地下",
+      "phone": "2116 5061",
+      "district": "港島東區",
+      "coordinate": {
+        "latitude": 22.28488,
+        "longitude": 114.19251
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-156"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-157",
+      "name": "Paws and Tails Veterinary Hospital",
+      "address": "香港上環普仁街4號",
+      "phone": "2832 2836",
+      "district": "中西及南區",
+      "coordinate": {
+        "latitude": 22.28553,
+        "longitude": 114.14738
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-157"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-158",
+      "name": "香港獸醫急症中心",
+      "address": "香港堅尼地城卑路乍街136-142號聯威新樓地下B2-C舖",
+      "phone": "2334 2334",
+      "district": "中西及南區",
+      "coordinate": {
+        "latitude": 22.28218,
+        "longitude": 114.12708
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 88.21,
+      "sourceRecordIDs": [
+        "petcircle:vet-158"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-159",
+      "name": "Southside Vets",
+      "address": "香港淺水灣海灘道28號 The Pulse 2層206及207號舖",
+      "phone": "2515 3711",
+      "district": "中西及南區",
+      "coordinate": {
+        "latitude": 22.23635,
+        "longitude": 114.19759
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-159"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-160",
+      "name": "維力寵物診所",
+      "address": "香港堅尼地城北街15號昌裕大廈地下",
+      "phone": "2891 2011",
+      "district": "中西及南區",
+      "coordinate": {
+        "latitude": 22.28609,
+        "longitude": 114.13232
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 86.14,
+      "sourceRecordIDs": [
+        "petcircle:vet-160"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-161",
+      "name": "栢衛獸醫診所",
+      "address": "香港九龍紅磡漆咸道北436-450號富運大廈地下2號舖",
+      "phone": "2334 3538",
+      "district": "九龍城區",
+      "coordinate": {
+        "latitude": 22.31183,
+        "longitude": 114.18631
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 85,
+      "sourceRecordIDs": [
+        "petcircle:vet-161"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-163",
+      "name": "珍寵東九龍動物醫院",
+      "address": "香港九龍觀塘通明街9號觀塘戲院大廈A座地下",
+      "phone": "2345 6504",
+      "district": "觀塘區",
+      "coordinate": {
+        "latitude": 22.316,
+        "longitude": 114.22281
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 87.28,
+      "sourceRecordIDs": [
+        "petcircle:vet-163"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-164",
+      "name": "嘉名動物診所",
+      "address": "香港九龍深水埗石硤尾街10號地舖",
+      "phone": "2396 3511",
+      "district": "深水埗區",
+      "coordinate": {
+        "latitude": 22.32823,
+        "longitude": 114.16396
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 88.75,
+      "sourceRecordIDs": [
+        "petcircle:vet-164"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-165",
+      "name": "雅發動物診所",
+      "address": "香港九龍深水埗欽州街65-71號榮業商業大廈4樓4室",
+      "phone": "2708 8973",
+      "district": "深水埗區",
+      "coordinate": {
+        "latitude": 22.3329358,
+        "longitude": 114.1617865
+      },
+      "coordinateSource": "VetMap authorized source coordinate",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-165",
+        "seed:hk-69dad98a3b2c2f0a8731:62c2a761f77b"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-166",
+      "name": "動物醫療學會醫院",
+      "address": "香港九龍尖沙咀加連威老道100號港晶中心12-17號地舖",
+      "phone": "3899 8999",
+      "district": "油尖旺區",
+      "coordinate": {
+        "latitude": 22.30079,
+        "longitude": 114.17824
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 91,
+      "sourceRecordIDs": [
+        "petcircle:vet-166"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-167",
+      "name": "恩典動物醫院",
+      "address": "香港九龍旺角勝利道28-32及36號新勝大樓C舖地下",
+      "phone": "2711 8482",
+      "district": "油尖旺區",
+      "coordinate": {
+        "latitude": 22.319949,
+        "longitude": 114.1744528
+      },
+      "coordinateSource": "VetMap authorized source coordinate",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-167",
+        "seed:hk-69dad9893b2c2f0a8731:5c90477461b2"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-168",
+      "name": "The Vet House",
+      "address": "香港新界西貢西貢道46號地下",
+      "phone": "3613 1259",
+      "district": "西貢區",
+      "coordinate": {
+        "latitude": 22.38018,
+        "longitude": 114.26955
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 82.15,
+      "sourceRecordIDs": [
+        "petcircle:vet-168"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-169",
+      "name": "東涌獸醫中心",
+      "address": "香港新界東涌海濱路8號海堤灣畔地下商場Q2及Q3舖",
+      "phone": "2328 7282",
+      "district": "離島區",
+      "coordinate": {
+        "latitude": 22.29269,
+        "longitude": 113.94267
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 92.5,
+      "sourceRecordIDs": [
+        "petcircle:vet-169"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-170",
+      "name": "Discovery Bay Pet Space",
+      "address": "香港大嶼山愉景灣愉景北商場G38地下",
+      "phone": "2788 1599",
+      "district": "離島區",
+      "coordinate": {
+        "latitude": 22.30604,
+        "longitude": 114.01256
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 75,
+      "sourceRecordIDs": [
+        "petcircle:vet-170"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-172",
+      "name": "新墟動物醫療中心",
+      "address": "香港新界屯門新墟德政圍18號海盛大廈10-11號舖3號舖",
+      "phone": "3460 4325",
+      "district": "屯門區",
+      "coordinate": {
+        "latitude": 22.39529,
+        "longitude": 113.9749
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 98,
+      "sourceRecordIDs": [
+        "petcircle:vet-172"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-173",
+      "name": "獸醫莊園",
+      "address": "香港新界沙田火炭坳背灣街34-36號豐盛工業中心A座3A號地舖",
+      "phone": "3611 6344",
+      "district": "沙田區",
+      "coordinate": {
+        "latitude": 22.39945,
+        "longitude": 114.19311
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 89.07,
+      "sourceRecordIDs": [
+        "petcircle:vet-173"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-175",
+      "name": "火炭動物醫療中心",
+      "address": "香港新界火炭坳背灣街27-31號協興工業中心地下B1A號",
+      "phone": "2156 2086",
+      "district": "沙田區",
+      "coordinate": {
+        "latitude": 22.397,
+        "longitude": 114.19576
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 90,
+      "sourceRecordIDs": [
+        "petcircle:vet-175"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-176",
+      "name": "毛守獸醫中心",
+      "address": "香港新界火炭坳背灣街26-28號富騰工業中心1樓03室",
+      "phone": "2333 4666",
+      "district": "沙田區",
+      "coordinate": {
+        "latitude": 22.39866,
+        "longitude": 114.19425
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 90,
+      "sourceRecordIDs": [
+        "petcircle:vet-176"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-177",
+      "name": "初心珍禽異獸醫療中心",
+      "address": "香港新界大圍積信街29A吉慶樓地舖",
+      "phone": "3613 0934",
+      "district": "沙田區",
+      "coordinate": {
+        "latitude": 22.37619,
+        "longitude": 114.17773
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 79.78,
+      "sourceRecordIDs": [
+        "petcircle:vet-177"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-178",
+      "name": "優活動物診所",
+      "address": "香港新界元朗鳳攸東街9號好順意大廈地下36及37號舖",
+      "phone": "2965 9518",
+      "district": "元朗區",
+      "coordinate": {
+        "latitude": 22.4445376,
+        "longitude": 114.0222076
+      },
+      "coordinateSource": "VetMap authorized source coordinate",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-178",
+        "seed:hk-69dad98a3b2c2f0a8731:f4fd56f65de8"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-179",
+      "name": "東方獸醫診所(元朗)",
+      "address": "香港新界元朗鳳攸北街昌威大廈26-27號地舖",
+      "phone": "2474 7680",
+      "district": "元朗區",
+      "sourceRecordIDs": [
+        "petcircle:vet-179"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-180",
+      "name": "洪水橋獸醫診所",
+      "address": "香港新界元朗洪水橋大街1號德祥樓地下13至14號地舖",
+      "phone": "2420 0728",
+      "district": "元朗區",
+      "coordinate": {
+        "latitude": 22.43275,
+        "longitude": 113.99584
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 91,
+      "sourceRecordIDs": [
+        "petcircle:vet-180"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "hk-69dad9893b2c2f0a8731",
+      "name": "土瓜灣動物醫院",
+      "address": "香港九龍土瓜灣北帝街139號地舖",
+      "phone": "2711 9909",
+      "district": "九龍城區",
+      "coordinate": {
+        "latitude": 22.3236128,
+        "longitude": 114.1894662
+      },
+      "coordinateSource": "VetMap authorized source coordinate",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-066",
+        "seed:hk-69dad9893b2c2f0a8731:f99f351a73e0"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "hk-69dad98a3b2c2f0a8731",
+      "name": "博施寵物綜合醫療中心",
+      "address": "香港九龍荔枝角福華街571號曉悅6至8號地舖",
+      "phone": "2368 6888",
+      "district": "深水埗區",
+      "coordinate": {
+        "latitude": 22.3389556,
+        "longitude": 114.1525377
+      },
+      "coordinateSource": "VetMap authorized source coordinate",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-003",
+        "seed:hk-69dad98a3b2c2f0a8731:dba1a6965aaf"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "hk-69dc64ed544efd16046c",
+      "name": "Once And For All Veterinary Centre",
+      "address": "香港鴨脷洲利榮街2號新海怡廣場10樓1006-1007",
+      "phone": "28828123/62158608",
+      "district": "Southern",
+      "coordinate": {
+        "latitude": 22.2391667,
+        "longitude": 114.1527778
+      },
+      "coordinateSource": "VetMap authorized source coordinate",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "seed:hk-69dc64ed544efd16046c:23a21f8145d8"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.598Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "hk-69dceac485c5cd6a0637",
+      "name": "萊奧動物醫療中心 LEAO Animal Medical Center",
+      "address": "Spring Sea Mansion, Shanghai St, Yau Ma Tei, Hong Kong",
+      "phone": "25925376",
+      "district": "Yau Tsim Mong",
+      "coordinate": {
+        "latitude": 22.3135103,
+        "longitude": 114.1691526
+      },
+      "coordinateSource": "VetMap authorized source coordinate",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "seed:hk-69dceac485c5cd6a0637:727671b432d9"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.598Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "hk-69dcead9f1da3469d949",
+      "name": "東區動物醫院",
+      "address": "香港筲箕灣筲箕灣道256號地下",
+      "phone": "2915 3999",
+      "district": "東區",
+      "coordinate": {
+        "latitude": 22.28016,
+        "longitude": 114.22508
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-018",
+        "seed:hk-69dcead9f1da3469d949:5519e9aa1ae2"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "hk-animal-medical-centre",
+      "name": "動物醫療中心24小時中心",
+      "address": "香港九龍何文田自由道11號 VAU Residence 地下1號舖",
+      "phone": "2713 4155",
+      "district": "九龍城區",
+      "coordinate": {
+        "latitude": 22.318969,
+        "longitude": 114.174559
+      },
+      "coordinateSource": "VetMap authorized source coordinate",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-064",
+        "seed:hk-69dad9893b2c2f0a8731:24bf4b084360",
+        "seed:hk-animal-medical-centre:b766dd5299fa"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "hk-hung-hom-veterinary-clinic",
+      "name": "紅磡獸醫診所",
+      "address": "香港九龍紅磡黃埔新邨德民街27號永華樓地下F舖",
+      "phone": "2330 7566",
+      "district": "九龍城區",
+      "coordinate": {
+        "latitude": 22.30635,
+        "longitude": 114.18808
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 93.78,
+      "sourceRecordIDs": [
+        "petcircle:vet-162",
+        "seed:hk-hung-hom-veterinary-clinic:75f34e798ddd"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.597Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "hk-macpherson-animal-clinic",
+      "name": "麥花臣動物診所",
+      "address": "香港九龍旺角洗衣街26號興業樓地下",
+      "phone": "2781 2386",
+      "district": "油尖旺區",
+      "coordinate": {
+        "latitude": 22.319,
+        "longitude": 114.17
+      },
+      "coordinateSource": "VetMap authorized source coordinate",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-074",
+        "seed:hk-macpherson-animal-clinic:9bfb5c882a27"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "hk-npv-non-profit-vet-services-npv29",
+      "name": "非牟利獸醫診所",
+      "address": "香港九龍太子基隆街22-24號及77號",
+      "phone": "2393 2070",
+      "district": "油尖旺區",
+      "coordinate": {
+        "latitude": 22.32508,
+        "longitude": 114.16713
+      },
+      "coordinateSource": "HKSAR Digital Policy Office Address Lookup Service",
+      "coordinateMatchScore": 81.25,
+      "sourceRecordIDs": [
+        "petcircle:vet-075",
+        "seed:hk-npv-non-profit-vet-services-npv29:4509fd345c4a"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.596Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    },
+    {
+      "id": "hk-peace-avenue-veterinary-clinic---cityu-a",
+      "name": "城大動物醫療中心",
+      "address": "香港九龍深水埗荔枝角道339號丰匯地下至2樓",
+      "phone": "3650 3000",
+      "district": "深水埗區",
+      "coordinate": {
+        "latitude": 22.3335,
+        "longitude": 114.158
+      },
+      "coordinateSource": "VetMap authorized source coordinate",
+      "coordinateMatchScore": 100,
+      "sourceRecordIDs": [
+        "petcircle:vet-001",
+        "seed:hk-peace-avenue-veterinary-clinic---cityu-a:5c67e641f549"
+      ],
+      "sourceName": "VetMap authorized Hong Kong clinic database",
+      "rightsBasis": "Owner confirmed database was created in-house or licensed for use",
+      "rightsConfirmedAt": "2026-07-28T00:00:00+08:00",
+      "verifiedAt": "2026-07-28T21:02:21.595Z",
+      "expiresAt": "2027-01-28T00:00:00+08:00"
+    }
+  ]
+}

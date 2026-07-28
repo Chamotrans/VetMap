@@ -234,11 +234,18 @@ struct AdminPendingClinicsView: View {
                         Text(pending.clinic.address)
                             .font(.caption)
                             .foregroundStyle(.secondary)
-                        Text(
-                            "座標：\(pending.clinic.coordinate.latitude, specifier: "%.5f"), \(pending.clinic.coordinate.longitude, specifier: "%.5f")"
-                        )
-                        .font(.caption2.monospacedDigit())
-                        .foregroundStyle(.tertiary)
+                        if pending.clinic.hasReliableHongKongCoordinate,
+                           let coordinate = pending.clinic.coordinate {
+                            Text(
+                                "座標：\(coordinate.latitude, specifier: "%.5f"), \(coordinate.longitude, specifier: "%.5f")"
+                            )
+                            .font(.caption2.monospacedDigit())
+                            .foregroundStyle(.tertiary)
+                        } else {
+                            Label("缺少可靠座標，不能批准", systemImage: "mappin.slash")
+                                .font(.caption.weight(.medium))
+                                .foregroundStyle(AppTheme.warning)
+                        }
                         if !pending.clinic.services.isEmpty {
                             Text(pending.clinic.services.joined(separator: "、"))
                                 .font(.caption)
@@ -250,6 +257,7 @@ struct AdminPendingClinicsView: View {
                             .foregroundStyle(.tertiary)
 
                         decisionButtons(
+                            approveDisabled: !pending.clinic.hasReliableHongKongCoordinate,
                             onApprove: {
                                 Task {
                                     await store.approveSubmission(id: pending.id)

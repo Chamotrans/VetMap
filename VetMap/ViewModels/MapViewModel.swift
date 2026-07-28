@@ -36,10 +36,20 @@ final class MapViewModel {
         return filteredClinics.first { $0.id == selectedClinicID }
     }
 
-    var filteredClinics: [VetClinic] {
-        filter.results(from: clinics).filter {
+    var directoryClinics: [VetClinic] {
+        clinics.filter {
             !ModerationStore.shared.removedClinicIDs.contains($0.id)
         }
+    }
+
+    var filteredClinics: [VetClinic] {
+        filter.results(from: directoryClinics)
+    }
+
+    /// The directory can contain approved clinics whose addresses have not yet
+    /// been reliably geocoded. Only this subset is safe to render as map pins.
+    var mappableClinics: [VetClinic] {
+        filteredClinics.filter { $0.mapCoordinate != nil }
     }
 
     func loadClinics() {
@@ -74,9 +84,10 @@ final class MapViewModel {
 
     func focus(on clinic: VetClinic) {
         selectedClinicID = clinic.id
+        guard let coordinate = clinic.mapCoordinate else { return }
         cameraPosition = .region(
             MKCoordinateRegion(
-                center: clinic.mapCoordinate,
+                center: coordinate,
                 span: MKCoordinateSpan(latitudeDelta: 0.035, longitudeDelta: 0.035)
             )
         )
@@ -135,14 +146,24 @@ final class MapViewModel {
 }
 
 extension VetClinic {
-    var mapCoordinate: CLLocationCoordinate2D {
-        CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude)
+    var mapCoordinate: CLLocationCoordinate2D? {
+        guard hasReliableHongKongCoordinate, let coordinate else { return nil }
+        let mapCoordinate = CLLocationCoordinate2D(
+            latitude: coordinate.latitude,
+            longitude: coordinate.longitude
+        )
+        guard CLLocationCoordinate2DIsValid(mapCoordinate) else { return nil }
+        return mapCoordinate
     }
 
     func distanceText(from location: CLLocation?) -> String {
+        guard let mapCoordinate else { return "位置待確認" }
         guard let location else { return "距離待定位" }
 
-        let clinicLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        let clinicLocation = CLLocation(
+            latitude: mapCoordinate.latitude,
+            longitude: mapCoordinate.longitude
+        )
         let meters = clinicLocation.distance(from: location)
 
         if meters < 1_000 {

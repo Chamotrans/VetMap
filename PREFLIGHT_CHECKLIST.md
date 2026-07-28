@@ -2,8 +2,8 @@
 
 > App Store Connect ID: `6777361219`
 > Bundle ID: `com.vetmap.app`
-> Release candidate: pending Hong Kong Xcode Cloud build; Build 9 invalid
-> 最後核對：2026-07-24
+> Release candidate: pending next Hong Kong Xcode Cloud build
+> 最後核對：2026-07-29
 
 本表只記錄可驗證的目前狀態。正式按下 App Store Connect「提交以供審核」不在自動執行範圍內。
 
@@ -25,7 +25,7 @@
 - [x] Release target 已移除 Firebase Analytics；首版不收集產品行為分析資料
 - [x] 相片投稿未完成的介面及相機／相簿權限聲明已移除
 - [x] Premium／IAP 首版 feature flag 關閉，不列入 1.0 送審功能
-- [x] 商戶／產品／保險 catalog 關閉；未有 rights packet 的 seed data 不進 Release build
+- [x] 香港服務／保險 catalog 已恢復；只公開 approved、HK、未過期資料，舊台灣項目仍被 rules 隔離
 - [x] 未有 bundled licence notice 的第三方字型已從 target 移除並改用系統字型
 - [x] 新診所投稿只接受 geocode 或手動確認的香港座標，不再使用地區中心假座標
 - [x] 未知價錢不會被歸入平價篩選；未有可靠 aggregate 前，列表／地圖不顯示舊星級或評價數
@@ -40,19 +40,24 @@
 - [x] 部署 `functions/` 的 `purgeUserData`；Node.js 22、`asia-east1`、ACTIVE
 - [x] 部署 `public/` 的私隱政策、使用條款及支援頁，三個 production URL 均回應 HTTP 200
 - [x] 未登入直接呼叫 `purgeUserData` 會回應 `UNAUTHENTICATED`
-- [x] production 公開 approved 查詢為 clinics 11、reviews 1、quotes 1；clinics 包括 10 間已整理香港診所及 1 間 VetMap 示範診所
+- [x] production 公開 approved 查詢為 clinics 180、reviews 1、quotes 1；clinics 包括 179 間授權香港診所及 1 間 VetMap 示範診所
 - [x] 驗證 Firebase Authentication 的 Email/Password provider 已啟用
 - [x] 驗證 Firebase Authentication 的 Apple provider OAuth code flow 已正確設定
 - [x] 建立獨立管理員帳戶，並在 `users/{uid}` 設定 `role: admin`
 - [x] 建立不需 2FA 的普通、刪除測試及 fixture App Review 電郵／密碼帳戶
 - [x] 以專用 fixture UID 建立 rights-cleared 示範診所、評價及報價，令 Helpful／Report／Block 路徑可達
-- [x] migration 前備份 production `clinics`／`reviews`／`quotes`，再精確整理 10 間香港診所
-- [x] 保留名稱、地址、電話、香港座標；清除未核實星級、價錢、營業時間、服務、急診聲稱及 tags
+- [x] 每次 migration 前以 0600 權限備份 production collection，再以 guarded script 寫入 179 間香港診所
+- [x] 對帳 176/176 筆主資料及 29/29 筆補充資料；205 個唯一 lineage ID 全部存在
+- [x] 兩對同名同址重複資料只顯示一間，但保留雙 source ID 及雙電話
+- [x] 保留名稱、地址、電話及可靠香港座標；清除未核實星級、價錢、營業時間、服務、急診聲稱及 tags
+- [x] 161 間有可靠座標；18 間保留完整列表／搜尋／聯絡資料，但不顯示假 pin、距離或導航
 - [x] 台灣 17 間舊診所、舊 reviews／quotes 仍未 approved；沒有被誤公開
 - [x] 移除 App 的台灣目錄引用，production `officialClinicCatalog` 匿名查詢已回 403
-- [x] 未推出產品及保險 collection 已改為管理員專用；production 匿名查詢回 403
+- [x] production 公開 124 項香港寵物服務（50 用品／50 美容／24 善終）及 3 個官方保險入口
+- [x] 舊產品／保險文件及不帶精確 HK publication constraints 的匿名查詢均回 403
+- [x] App「關於 VetMap」已加入香港政府地址搜尋服務及 DATA.GOV.HK attribution／terms 連結
 
-注意：production 目前公開 10 間已整理香港診所及 1 項 VetMap 示範診所／評價／報價。舊台灣及不一致社群資料仍隔離；註冊、投稿、審核及社群互動保持啟用。
+注意：production 目前公開 179 間授權香港診所及 1 項 VetMap 示範診所／評價／報價。舊台灣及不一致社群資料仍隔離；註冊、投稿、審核及社群互動保持啟用。
 
 ## 待完成：Xcode Cloud / TestFlight
 
@@ -64,11 +69,12 @@
 - [x] 提交並推送 Build 7 權利安全修正
 - [x] Xcode Cloud build `1.0 (7)` 成功且無 App Store validation error
 - [x] 確認 Build 9 成功但地區方向錯誤，不可送審
-- [ ] 提交並推送香港 Firestore 恢復及台灣目錄移除修正
+- [x] Xcode Cloud build `1.0 (11)` 成功並已暫掛 iOS 1.0
+- [ ] 提交並推送完整香港診所庫、服務／保險目錄及 attribution 修正
 - [ ] 香港修正版 Xcode Cloud build 成功且無 App Store validation error
 - [ ] 在 TestFlight 真機完成登入、投稿、批核、公開、舉報、封鎖及帳戶刪除 smoke test
-- [x] 將 build 7 掛接至 App Store Connect iOS 1.0 作暫時 release candidate
-- [ ] 以香港修正版取代 iOS 1.0 暫掛的 Build 9
+- [x] 將 build 11 掛接至 App Store Connect iOS 1.0 作暫時 release candidate
+- [ ] 以完整香港目錄修正版取代 iOS 1.0 暫掛 build
 
 本機舊 archive 及 Build 5 不能作為今次 release proof；本機是 macOS Beta，正式 build 只以 Xcode Cloud 結果為準。
 

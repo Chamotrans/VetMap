@@ -30,6 +30,14 @@ service cloud.firestore {
         && value.matches('^[A-Za-z0-9][A-Za-z0-9._-]*$');
     }
 
+    function currentHKCatalogDocument(data) {
+      return data.status == 'approved'
+        && data.catalogRegion == 'HK'
+        && data.region == 'HK'
+        && data.expiresAt is timestamp
+        && data.expiresAt > request.time;
+    }
+
     function validClinic(data) {
       return data.keys().hasAll([
           'id', 'name', 'address', 'coordinate', 'phone', 'openingHours',
@@ -53,11 +61,11 @@ service cloud.firestore {
         && data.coordinate.keys().hasAll(['latitude', 'longitude'])
         && data.coordinate.keys().hasOnly(['latitude', 'longitude'])
         && data.coordinate.latitude is number
-        && data.coordinate.latitude >= -90
-        && data.coordinate.latitude <= 90
+        && data.coordinate.latitude >= 22.1
+        && data.coordinate.latitude <= 22.6
         && data.coordinate.longitude is number
-        && data.coordinate.longitude >= -180
-        && data.coordinate.longitude <= 180
+        && data.coordinate.longitude >= 113.8
+        && data.coordinate.longitude <= 114.5
         && data.phone is string
         && (!('website' in data) || data.website is string)
         && data.openingHours is map
@@ -391,12 +399,12 @@ service cloud.firestore {
     }
 
     match /products/{productId} {
-      allow read: if admin();
+      allow read: if admin() || currentHKCatalogDocument(resource.data);
       allow write: if admin();
     }
 
     match /insurances/{insuranceId} {
-      allow read: if admin();
+      allow read: if admin() || currentHKCatalogDocument(resource.data);
       allow write: if admin();
     }
 

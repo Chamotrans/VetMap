@@ -5,9 +5,9 @@ import SwiftUI
 /// `true` once IAP products are live and the first subscription is in review.
 enum FeatureFlags {
     static let premiumEnabled = false
-    /// The bundled merchant and insurance catalog has no release-grade rights
-    /// packet yet, so it must not be exposed in the App Store build.
-    static let catalogEnabled = false
+    /// Public catalog reads are restricted to moderated Hong Kong records in
+    /// Firestore. There is no bundled production catalog fallback.
+    static let catalogEnabled = true
 }
 
 struct ProfileTab: View {
@@ -93,6 +93,13 @@ struct ProfileTab: View {
             .padding(.horizontal, 40)
             .accessibilityLabel("登入或註冊")
             .accessibilityHint("開啟登入頁面")
+
+            NavigationLink {
+                AboutVetMapView()
+            } label: {
+                Label("關於 VetMap", systemImage: "info.circle")
+                    .font(.subheadline.weight(.semibold))
+            }
 
             Spacer()
         }
@@ -193,11 +200,7 @@ struct ProfileTab: View {
                 }
 
                 NavigationLink {
-                    ComingSoonView(
-                        title: "設定",
-                        subtitle: "關於 VetMap。",
-                        systemImage: "gearshape.fill"
-                    )
+                    AboutVetMapView()
                 } label: {
                     Label("關於 VetMap", systemImage: "info.circle.fill")
                 }
@@ -259,6 +262,43 @@ struct ProfileTab: View {
         }
         .padding(.vertical, 8)
         .accessibilityLabel("用戶資料")
+    }
+}
+
+private struct AboutVetMapView: View {
+    private let addressLookupURL = URL(
+        string: "https://data.gov.hk/tc-data/dataset/hk-dpo-als_01-als"
+    )!
+    private let openDataTermsURL = URL(
+        string: "https://data.gov.hk/tc/terms-and-conditions"
+    )!
+
+    var body: some View {
+        List {
+            Section("VetMap") {
+                Text("香港寵物醫療及服務目錄，讓用戶搜尋診所、投稿資料、分享評價及報價。")
+            }
+
+            Section("診所資料") {
+                Text("診所目錄由 VetMap 建立或經授權使用，並由 VetMap 整理及審核。資料可能隨時間變更，求診前請直接向診所確認。")
+
+                Text("部分地址座標資料來源為香港特別行政區政府數字政策辦公室「地址搜尋服務」。相關資料的知識產權由香港特別行政區政府及有關機構擁有。VetMap 的使用不代表政府認可本 App。")
+
+                Link(destination: addressLookupURL) {
+                    Label("地址搜尋服務", systemImage: "map")
+                }
+
+                Link(destination: openDataTermsURL) {
+                    Label("開放數據使用條款", systemImage: "doc.text")
+                }
+            }
+
+            Section("更正資料") {
+                Text("如發現診所地址、電話或營運狀態有誤，可在診所詳情頁舉報，或提交更新資料供審核。")
+            }
+        }
+        .navigationTitle("關於 VetMap")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

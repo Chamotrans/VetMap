@@ -34,6 +34,11 @@ ZH_DESCRIPTION = """VetMap 係一個專為香港毛孩家長而設嘅獸醫診�
 • 查看地址、電話及地圖位置
 • 營業時間、服務、評分及費用只會喺有可靠資料或經審核後顯示
 
+寵物服務
+• 瀏覽香港寵物用品、美容及善終服務目錄
+• 查看商戶地址及聯絡資料
+• 直接前往香港寵物保險供應商官方產品頁
+
 睇評價
 • 已審核嘅社群評價同評分
 • 每個帳戶只可投一次嘅「有用」標記
@@ -51,6 +56,8 @@ ZH_DESCRIPTION = """VetMap 係一個專為香港毛孩家長而設嘅獸醫診�
 
 VetMap 首版只顯示香港診所。診所目錄以名稱、地址、電話及地圖位置為主；未重新核實嘅星級、價錢、營業時間、服務及醫療聲稱不會公開。
 
+部分診所地址尚未有可靠地圖座標，仍會保留喺列表及搜尋結果，但不會顯示虛構位置、距離或導航。
+
 診所、評價及費用資料只供一般參考，不構成獸醫診斷或治療建議；緊急情況請直接聯絡合資格獸醫診所。"""
 
 EN_DESCRIPTION = """VetMap is a Hong Kong veterinary clinic map and moderated community for pet guardians.
@@ -60,6 +67,11 @@ Find clinics
 • Search by keyword, area and service
 • View addresses, phone numbers and map locations
 • Hours, services, ratings and costs are shown only when reliable or approved
+
+Pet services
+• Browse Hong Kong pet supplies, grooming and aftercare directories
+• View business addresses and contact details
+• Open official Hong Kong pet-insurance provider pages
 
 Community reviews
 • Read approved ratings and reviews
@@ -77,6 +89,8 @@ Contribute
 • Delete your account and associated user content in the app
 
 VetMap 1.0 displays Hong Kong clinics only. Directory entries focus on factual names, addresses, phone numbers and map locations. Unverified ratings, prices, opening hours, services and medical claims are not published.
+
+Clinics without a reliable map coordinate remain available in the list and search results, but are not given fabricated pins, distances or routes.
 
 Clinic, review and cost information is for general reference only and is not veterinary diagnosis or treatment advice. In an emergency, contact a qualified veterinary clinic directly."""
 
@@ -218,7 +232,9 @@ Test paths:
 
 All new clinic, review, and quote submissions remain Pending until manually reviewed by an administrator. No IAP or subscription UI is exposed in v1.0. Location permission is optional and precise location is processed on device only to center the map and calculate distance.
 
-The directory contains ten reviewed Hong Kong entries normalized from the app's existing production Firestore catalog. Only clinic names, addresses, phone numbers and Hong Kong map coordinates are retained. Unverified ratings, prices, opening hours, services and medical claims are not published.
+The clinic directory contains 179 Hong Kong entries from a database created by VetMap or licensed for VetMap's use. All 179 remain searchable. 161 have reliable Hong Kong coordinates; the other 18 are list-only and do not receive fabricated pins, distances or routes. Unverified ratings, prices, opening hours, services and medical claims are not published.
+
+The service directory contains 124 Hong Kong pet-service entries without invented prices, ratings or opening hours. The insurance directory provides three official provider links and does not copy price or coverage claims.
 
 The single demo clinic, review, and quote are VetMap-owned test fixtures. Each is prominently labelled as non-real and contains no third-party business name, medical experience, or real price claim.
 

@@ -3,7 +3,7 @@
 > App ID: `6777361219`
 > Bundle ID: `com.vetmap.app`
 > Version: `1.0`
-> Target build: 待下一個香港修正版 Xcode Cloud build；Build 9 不可送審
+> Target build: 待下一個完整香港目錄 Xcode Cloud build；Build 11 暫掛
 
 此文件是今次免費首版的實際填表基線；Premium／IAP 不屬於 1.0。最後必須停在正式「提交以供審核」按鈕前。
 
@@ -26,14 +26,14 @@
 
 ## Screenshots
 
-App Store Connect 現時的舊截圖包含已移除的商戶、保險及錯誤地區內容，不可重用。香港修正版 Cloud build 必須重新截取：
+App Store Connect 現時的舊截圖包含錯誤地區及過時目錄內容，不可重用。香港修正版 Cloud build 必須重新截取：
 
 - 只展示同一個香港修正版 build 的真實 UI 及功能；
 - 不顯示已移除的相片上載或已隱藏的 Premium；
 - 不聲稱未經證明的資料數量、驗證狀態或醫療結果；
 - 至少一張清楚展示社群投稿／審核，另一張展示舉報／封鎖或帳戶控制。
 
-舊 `04-Products` 自動截圖路徑會明確停止執行，不得再用該檔名或舊產品文案製作 App Store 截圖；新社群畫面使用 `04-Community`。
+產品／服務目錄已恢復，但截圖只可展示本次 HK Firestore 目錄的真實畫面，不得重用舊台灣／假價錢內容。
 
 ## App Review Information
 
@@ -69,10 +69,15 @@ The single demo clinic, review, and quote are VetMap-owned test fixtures. Each
 is prominently labelled as non-real and contains no third-party business name,
 medical experience, or real price claim.
 
-The clinic directory contains ten reviewed Hong Kong entries normalized from
-the app's existing production Firestore catalog. Only the clinic name, address,
-phone number and Hong Kong map coordinate are retained. Unverified ratings,
-prices, opening hours, services and medical claims are not published.
+The clinic directory contains 179 Hong Kong entries from a database created by
+VetMap or licensed for VetMap's use. All 179 entries remain searchable. 161
+have reliable Hong Kong coordinates; the other 18 are shown as list-only
+entries without fabricated pins, distances, or routes. Unverified ratings,
+prices, opening hours, services, and medical claims are not published.
+
+The service directory contains 124 Hong Kong pet-service entries without
+invented prices, ratings, or opening hours. The insurance directory provides
+three official provider links and does not copy price or coverage claims.
 
 Disposable deletion-test account:
 Email: <DELETE_TEST_EMAIL>
@@ -139,9 +144,10 @@ Tracking：No。
 2. 勾選「擁有必要權利」前，由帳戶持有人確認並保存 license、permission 或其他合法使用依據。
 3. 用戶新投稿由 Terms of Service 的內容授權條款涵蓋。
 4. repo 註解、來源連結或「資料真實」並不是授權證據。
-5. 現時 10 間香港診所的 production 來源標記為 `epetpet-hk`；repo 未有商業重用 permission 檔案，因此帳戶持有人仍須確認合法使用依據。
-6. 舊台灣目錄、商戶、保險、seed reviews／quotes 及自訂字型不會在香港修正版公開。
-7. 完整邊界、migration 及待確認項見 [CONTENT_RIGHTS.md](CONTENT_RIGHTS.md)。
+5. 帳戶持有人已於 2026-07-29 確認原有 VetMap 診所 database 由我方建立或已獲授權使用。
+6. 完整 ASC 聲明仍須另行確認涵蓋香港服務目錄、官方保險產品入口及依 Terms 展示／審核的用戶投稿。
+7. 舊台灣目錄、舊產品／保險及 seed reviews／quotes 不會在香港修正版公開。
+8. 完整邊界、migration 及待確認項見 [CONTENT_RIGHTS.md](CONTENT_RIGHTS.md)。
 
 此項是法律聲明，不能由自動化代替帳戶持有人確認。
 
@@ -164,10 +170,11 @@ StoreKit 程式碼及測試產品留作後續版本，不代表今次需要建�
 3. 設定 `GOOGLE_SERVICE_INFO_PLIST_BASE64` secret。
 4. Build 6 已成功但包含未有 rights packet 的舊 seed data，不可掛接。
 5. Build 7 已成功，但只有示範資料。
-6. Build 9 已成功並暫掛 iOS 1.0，但錯誤加入台灣目錄，不可送審。
-7. 推送香港修正版，等候 Xcode Cloud Test／Archive／Distribution。
-8. 安裝同一香港修正版作真機 UGC／account deletion smoke test。
-9. 將 processing 完成的香港修正版掛接至 iOS 1.0，取代 Build 9。
+6. Build 9 曾暫掛 iOS 1.0，但錯誤加入台灣目錄，不可送審。
+7. Build 11 已成功並暫掛 iOS 1.0，但不包含本次完整香港目錄修正。
+8. 推送完整目錄修正版，等候 Xcode Cloud Test／Archive／Distribution。
+9. 安裝同一香港修正版作真機目錄／UGC／account deletion smoke test。
+10. 將 processing 完成的香港修正版掛接至 iOS 1.0，取代 Build 11。
 
 ## 最後核對
 
@@ -177,6 +184,6 @@ StoreKit 程式碼及測試產品留作後續版本，不代表今次需要建�
 - Medical Device 已選 No
 - Content Rights 已由帳戶持有人確認
 - Reviewer credentials 及 Review Notes 已填
-- 香港修正版 build 已掛接，Build 9 已換走
+- 完整香港目錄 build 已掛接，Build 11 已換走
 - Review draft 只包含 iOS 1.0 及正確 build，沒有 IAP
 - 停在「提交以供審核」前，交由帳戶持有人最後確認

@@ -1,0 +1,272 @@
+{
+  "generatedAt": "2026-07-28T21:02:21.599Z",
+  "expectedCount": 179,
+  "actualCount": 179,
+  "sourceCoverage": {
+    "petcircle": {
+      "expected": 176,
+      "covered": 176
+    },
+    "seed": {
+      "expected": 29,
+      "covered": 29
+    },
+    "uniqueLineageIDs": 205
+  },
+  "coordinateCount": 161,
+  "awaitingCoordinateCount": 18,
+  "newALSLookupCount": 32,
+  "duplicateSourceRows": [
+    {
+      "kept": "vet-154",
+      "merged": "vet-171",
+      "address": "香港新界大埔普益街19號地下",
+      "phones": "2653 3632 / 6168 6175"
+    },
+    {
+      "kept": "vet-102",
+      "merged": "vet-174",
+      "address": "香港新界大圍積存街46號葵偉樓地下",
+      "phones": "2698 2185 / 2687 0226"
+    }
+  ],
+  "seedResolutionReport": [
+    {
+      "seedName": "太平道寵物診所 (PAVC) / 城大動物醫療中心",
+      "resolution": "same current premises",
+      "target": "vet-001"
+    },
+    {
+      "seedName": "動物醫療中心",
+      "resolution": "superseded premises",
+      "target": "vet-064"
+    },
+    {
+      "seedName": "紅磡獸醫診所",
+      "resolution": "superseded premises",
+      "target": "vet-162"
+    },
+    {
+      "seedName": "NPV非牟利獸醫服務協會（NPV29）",
+      "resolution": "superseded premises",
+      "target": "vet-075"
+    },
+    {
+      "seedName": "麥花臣動物診所",
+      "resolution": "same current premises",
+      "target": "vet-074"
+    },
+    {
+      "seedName": "土瓜灣動物醫院",
+      "resolution": "merged-exact-address",
+      "target": "vet-066"
+    },
+    {
+      "seedName": "Once And For All Veterinary Centre",
+      "resolution": "retained-authorized-extra",
+      "target": "seed-once-and-for-all-veterinary-centre"
+    },
+    {
+      "seedName": "Pets Central 旺角動物醫院",
+      "resolution": "retained-authorized-extra",
+      "target": "seed-pets-central"
+    },
+    {
+      "seedName": "萊奧動物醫療中心 LEAO Animal Medical Center",
+      "resolution": "retained-authorized-extra",
+      "target": "seed-leao-animal-medical-center"
+    },
+    {
+      "seedName": "博施寵物綜合醫療中心",
+      "resolution": "merged-exact-address",
+      "target": "vet-003"
+    },
+    {
+      "seedName": "寵誠動物醫院",
+      "resolution": "merged-exact-address",
+      "target": "vet-071"
+    },
+    {
+      "seedName": "動物醫療中心24小時中心",
+      "resolution": "merged-exact-address",
+      "target": "vet-064"
+    },
+    {
+      "seedName": "鴨脷洲獸醫診所",
+      "resolution": "merged-exact-address",
+      "target": "vet-049"
+    },
+    {
+      "seedName": "恩典動物醫院",
+      "resolution": "merged-exact-address",
+      "target": "vet-167"
+    },
+    {
+      "seedName": "雅發動物診所",
+      "resolution": "merged-exact-address",
+      "target": "vet-165"
+    },
+    {
+      "seedName": "Hong Kong Veterinary Specialty Services",
+      "resolution": "retained-authorized-extra",
+      "target": "seed-hong-kong-veterinary-specialty-services"
+    },
+    {
+      "seedName": "24 hours Animal Emergency Centre 24小時動物急診中心",
+      "resolution": "superseded premises",
+      "target": "vet-018"
+    },
+    {
+      "seedName": "雅各動物醫院",
+      "resolution": "merged-exact-address",
+      "target": "vet-045"
+    },
+    {
+      "seedName": "動物王國醫院",
+      "resolution": "merged-exact-address",
+      "target": "vet-039"
+    },
+    {
+      "seedName": "動物獸醫中心-安健獸醫中心",
+      "resolution": "merged-exact-address",
+      "target": "vet-152"
+    },
+    {
+      "seedName": "哈比動物牙科及口腔手術中心",
+      "resolution": "merged-exact-address",
+      "target": "vet-103"
+    },
+    {
+      "seedName": "優活動物診所",
+      "resolution": "merged-exact-address",
+      "target": "vet-178"
+    },
+    {
+      "seedName": "柏德獸醫診所",
+      "resolution": "merged-exact-address",
+      "target": "vet-088"
+    },
+    {
+      "seedName": "貝澳獸醫診所",
+      "resolution": "merged-exact-address",
+      "target": "vet-148"
+    },
+    {
+      "seedName": "角落獸醫診所",
+      "resolution": "merged-exact-address",
+      "target": "vet-014"
+    },
+    {
+      "seedName": "將軍澳獸醫中心",
+      "resolution": "merged-exact-address",
+      "target": "vet-137"
+    },
+    {
+      "seedName": "Dr. George's 獸醫醫療中心",
+      "resolution": "merged-exact-address",
+      "target": "vet-130"
+    },
+    {
+      "seedName": "粉嶺動物醫院",
+      "resolution": "merged-exact-address",
+      "target": "vet-143"
+    },
+    {
+      "seedName": "豐盈動物腫瘤中心",
+      "resolution": "retained-authorized-extra",
+      "target": "seed-"
+    }
+  ],
+  "awaitingCoordinate": [
+    {
+      "id": "clinic-hk-vetmap-vet-038",
+      "name": "康迪亞獸醫",
+      "address": "香港跑馬地藍塘道5至7號低座地下及一樓"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-041",
+      "name": "葵涌動物診所",
+      "address": "香港新界葵涌葵豐街38至42號大鴻輝(葵涌)中心2期地下2號舖"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-051",
+      "name": "西區獸醫診所",
+      "address": "香港西營盤皇后大道西303號地下"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-052",
+      "name": "方舟動物醫院",
+      "address": "香港西營盤水街25-35A號1號舖"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-069",
+      "name": "Dr.Shih獸醫診所",
+      "address": "香港九龍土瓜灣馬頭圍道418號地下3號舖"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-070",
+      "name": "街坊動物醫院",
+      "address": "香港九龍觀塘曉光街34-36號地下"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-078",
+      "name": "專寵獸醫診所",
+      "address": "香港九龍太子鴨寮街34號地舖"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-080",
+      "name": "旺角動物診所",
+      "address": "香港九龍窩打老道66A地下"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-089",
+      "name": "置樂動物診所",
+      "address": "香港新界屯門彩華花園地下13號舖"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-096",
+      "name": "馬鞍山動物醫療中心",
+      "address": "香港新界馬鞍山褔安花園地下2及17號舖"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-106",
+      "name": "SAA動物醫療中心",
+      "address": "香港新界元朗宏業西街21號雨後4至5號舖"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-115",
+      "name": "元朗仁愛獸醫診所",
+      "address": "香港新界元朗福德街30A號地下"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-124",
+      "name": "N24社區動物醫院",
+      "address": "香港新界元朗洪水橋德興樓地下4-6號鋪"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-127",
+      "name": "荃灣獸醫寵物醫院",
+      "address": "香港新界荃灣沙咀道168號地下8號舖"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-129",
+      "name": "享和動物醫療中心",
+      "address": "香港新界荃灣沙咀道136至138號地下"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-135",
+      "name": "西貢動物醫院",
+      "address": "香港新界西貢萬年街30號地下"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-147",
+      "name": "太陽動物醫務所",
+      "address": "香港大嶼山梅窩麻布村31號"
+    },
+    {
+      "id": "clinic-hk-vetmap-vet-179",
+      "name": "東方獸醫診所(元朗)",
+      "address": "香港新界元朗鳳攸北街昌威大廈26-27號地舖"
+    }
+  ]
+}

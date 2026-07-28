@@ -518,19 +518,48 @@ final class FirebaseService {
 
     func fetchProducts(category: String?) async throws -> [PetProduct] {
         let db = try resolveFirestore()
-        let query: Query
-        if let category {
-            query = db.collection("products").whereField("category", isEqualTo: category)
-        } else {
-            query = db.collection("products")
-        }
+        let catalogExpiry = try await currentHKCatalogExpiry(in: db)
+        let query = db.collection("products")
+            .whereField("status", isEqualTo: ModerationStatus.approved.rawValue)
+            .whereField("catalogRegion", isEqualTo: "HK")
+            .whereField("region", isEqualTo: "HK")
+            .whereField("expiresAt", isEqualTo: catalogExpiry)
         let snapshot = try await query.getDocuments()
-        return try snapshot.documents.map { try decodeDocument($0, as: PetProduct.self) }
+        let products = try snapshot.documents.map { try decodeDocument($0, as: PetProduct.self) }
+
+        guard let category else { return products }
+        return products.filter { $0.category == category }
     }
 
     func fetchInsurances() async throws -> [Insurance] {
-        let snapshot = try await resolveFirestore().collection("insurances").getDocuments()
+        let db = try resolveFirestore()
+        let catalogExpiry = try await currentHKCatalogExpiry(in: db)
+        let snapshot = try await db
+            .collection("insurances")
+            .whereField("status", isEqualTo: ModerationStatus.approved.rawValue)
+            .whereField("catalogRegion", isEqualTo: "HK")
+            .whereField("region", isEqualTo: "HK")
+            .whereField("expiresAt", isEqualTo: catalogExpiry)
+            .getDocuments()
         return try snapshot.documents.map { try decodeDocument($0, as: Insurance.self) }
+    }
+
+    private func currentHKCatalogExpiry(in db: Firestore) async throws -> Timestamp {
+        let anchor = try await db
+            .collection("insurances")
+            .document("insurance-hk-fwd")
+            .getDocument()
+        guard
+            let data = anchor.data(),
+            data["status"] as? String == ModerationStatus.approved.rawValue,
+            data["catalogRegion"] as? String == "HK",
+            data["region"] as? String == "HK",
+            let expiry = data["expiresAt"] as? Timestamp,
+            expiry.dateValue() > Date(timeIntervalSinceNow: 60)
+        else {
+            throw FirebaseError.invalidCatalog
+        }
+        return expiry
     }
 
     // MARK: - Roles
@@ -687,6 +716,7 @@ enum FirebaseError: Error {
     case invalidReportTarget
     case invalidReviewID
     case cannotBlockSelf
+    case invalidCatalog
     case encodingFailed(Error)
     case decodingFailed(Error)
 }
@@ -716,6 +746,8 @@ extension FirebaseError: LocalizedError {
             "評價識別碼無效，未能標記為有用。"
         case .cannotBlockSelf:
             "不能封鎖自己的帳戶。"
+        case .invalidCatalog:
+            "香港商戶目錄尚未準備好或已過期。"
         case .encodingFailed(let error):
             "資料編碼失敗：\(error.localizedDescription)"
         case .decodingFailed(let error):
