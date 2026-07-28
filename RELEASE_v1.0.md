@@ -1,6 +1,6 @@
 # VetMap iOS 1.0 — Release Candidate Notes
 
-> 目前狀態：production 已恢復完整授權香港診所庫，準備下一個 Xcode Cloud build；尚未正式提交 App Review。
+> 目前狀態：production 已恢復完整授權香港診所庫；Xcode Cloud / ASC Build 12 已成功並掛到 iOS 1.0；尚未正式提交 App Review。
 > 本文件不以舊本機 archive、舊 commit 數或未部署設定冒充 release proof。
 
 ## 首版範圍
@@ -90,5 +90,13 @@
 2. Xcode Cloud 成功的 Test、Archive 及 App Store validation。
 3. 該 Cloud build 在 TestFlight 的真機 smoke test。
 4. App Store Connect 已掛接同一 build，且所有 metadata／privacy／rating／review 欄位完整。
+
+目前已確認：
+
+- GitHub `main` commit：`81ce20483a83bb4b85ae3625c357924c89eff103`
+- Xcode Cloud run：`1a5339f2-fc82-46da-879e-175812548668`，Build 12，`SUCCEEDED`
+- ASC build：`e1cd2911-c0c2-4cd7-94c4-985c2295794a`，`VALID`、`APP_STORE_ELIGIBLE`
+- iOS 1.0 draft：已讀回掛接 Build 12，狀態 `READY_FOR_REVIEW`
+- 實體 iPhone「是條小狗」：已安裝 `VetMap 1.0 (12)`；真實畫面顯示診所 180、地圖標記 162、寵物服務 124
 
 完整進度以 [PREFLIGHT_CHECKLIST.md](PREFLIGHT_CHECKLIST.md) 為準。

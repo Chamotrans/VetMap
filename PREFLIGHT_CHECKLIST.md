@@ -2,7 +2,7 @@
 
 > App Store Connect ID: `6777361219`
 > Bundle ID: `com.vetmap.app`
-> Release candidate: pending next Hong Kong Xcode Cloud build
+> Release candidate: Xcode Cloud / ASC build `1.0 (12)`
 > 最後核對：2026-07-29
 
 本表只記錄可驗證的目前狀態。正式按下 App Store Connect「提交以供審核」不在自動執行範圍內。
@@ -70,11 +70,11 @@
 - [x] Xcode Cloud build `1.0 (7)` 成功且無 App Store validation error
 - [x] 確認 Build 9 成功但地區方向錯誤，不可送審
 - [x] Xcode Cloud build `1.0 (11)` 成功並已暫掛 iOS 1.0
-- [ ] 提交並推送完整香港診所庫、服務／保險目錄及 attribution 修正
-- [ ] 香港修正版 Xcode Cloud build 成功且無 App Store validation error
+- [x] 提交並推送完整香港診所庫、服務／保險目錄及 attribution 修正：`81ce204`
+- [x] Xcode Cloud Build 12 成功；run `1a5339f2-fc82-46da-879e-175812548668`，ASC `VALID`／`APP_STORE_ELIGIBLE`
 - [ ] 在 TestFlight 真機完成登入、投稿、批核、公開、舉報、封鎖及帳戶刪除 smoke test
 - [x] 將 build 11 掛接至 App Store Connect iOS 1.0 作暫時 release candidate
-- [ ] 以完整香港目錄修正版取代 iOS 1.0 暫掛 build
+- [x] 以 Build 12 取代 iOS 1.0 暫掛的 Build 11，API read-back 為 `READY_FOR_REVIEW`
 
 本機舊 archive 及 Build 5 不能作為今次 release proof；本機是 macOS Beta，正式 build 只以 Xcode Cloud 結果為準。
 
@@ -94,7 +94,7 @@
 - [x] 把 App Store 描述及 keywords 改為 [AppStoreMetadata.md](AppStoreMetadata.md) 的香港＋community 版本，並從 live ASC 讀回確認
 - [ ] 完成 Content Rights。App 會顯示經批准的用戶內容，必須如實選擇 Yes；提交者須確認擁有或獲授權使用相關內容
 - [x] 將 build 7 加入 iOS 1.0 review draft
-- [ ] 香港修正版驗證後更新 iOS 1.0 所掛 build
+- [x] iOS 1.0 已掛 Build 12：`e1cd2911-c0c2-4cd7-94c4-985c2295794a`
 - [ ] 最後逐頁核對沒有紅色缺漏或矛盾
 - [ ] 停在「提交以供審核」按鈕前，交由帳戶持有人作最後確認
 

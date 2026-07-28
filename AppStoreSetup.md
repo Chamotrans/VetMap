@@ -3,7 +3,7 @@
 > App ID: `6777361219`
 > Bundle ID: `com.vetmap.app`
 > Version: `1.0`
-> Target build: 待下一個完整香港目錄 Xcode Cloud build；Build 11 暫掛
+> Target build: Xcode Cloud / ASC `1.0 (12)`；已掛 iOS 1.0
 
 此文件是今次免費首版的實際填表基線；Premium／IAP 不屬於 1.0。最後必須停在正式「提交以供審核」按鈕前。
 
@@ -171,10 +171,10 @@ StoreKit 程式碼及測試產品留作後續版本，不代表今次需要建�
 4. Build 6 已成功但包含未有 rights packet 的舊 seed data，不可掛接。
 5. Build 7 已成功，但只有示範資料。
 6. Build 9 曾暫掛 iOS 1.0，但錯誤加入台灣目錄，不可送審。
-7. Build 11 已成功並暫掛 iOS 1.0，但不包含本次完整香港目錄修正。
-8. 推送完整目錄修正版，等候 Xcode Cloud Test／Archive／Distribution。
-9. 安裝同一香港修正版作真機目錄／UGC／account deletion smoke test。
-10. 將 processing 完成的香港修正版掛接至 iOS 1.0，取代 Build 11。
+7. Build 12 已以 commit `81ce204` 完成 clean Xcode Cloud Archive，並成為 `VALID`／`APP_STORE_ELIGIBLE`。
+8. Build 12 已安裝到實體 iPhone，真實 Firestore 畫面顯示診所 180、地圖標記 162、服務 124。
+9. Build 12 已掛接至 iOS 1.0，取代 Build 11。
+10. 完成餘下 UGC／account deletion smoke test 及 iPhone／iPad screenshots。
 
 ## 最後核對
 
@@ -184,6 +184,6 @@ StoreKit 程式碼及測試產品留作後續版本，不代表今次需要建�
 - Medical Device 已選 No
 - Content Rights 已由帳戶持有人確認
 - Reviewer credentials 及 Review Notes 已填
-- 完整香港目錄 build 已掛接，Build 11 已換走
+- Build 12 已掛接，Build 11 已換走
 - Review draft 只包含 iOS 1.0 及正確 build，沒有 IAP
 - 停在「提交以供審核」前，交由帳戶持有人最後確認
