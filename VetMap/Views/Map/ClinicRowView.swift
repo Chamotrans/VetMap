@@ -21,6 +21,8 @@ struct ClinicRowView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .lineLimit(2)
+
+                    ClinicAvailabilityBadge(clinic: clinic, compact: true)
                 }
 
                 Spacer(minLength: 12)

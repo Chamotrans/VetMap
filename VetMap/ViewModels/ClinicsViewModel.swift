@@ -9,6 +9,7 @@ final class ClinicsViewModel {
     private(set) var storageError: String?
     private(set) var pinnedIDs: Set<String> = []
     private(set) var removedIDs: Set<String> = []
+    private(set) var availabilityNow = Date()
     var isLoading = false
     var networkError: String?
 
@@ -21,11 +22,13 @@ final class ClinicsViewModel {
     ) {
         self.firebase = firebase
         observeModerationChanges()
+        observeAvailabilityClock()
         Task { await loadClinics() }
     }
 
     var filteredClinics: [VetClinic] {
-        let base = filter.results(from: clinics).filter { !removedIDs.contains($0.id) }
+        let base = filter.results(from: clinics, at: availabilityNow)
+            .filter { !removedIDs.contains($0.id) }
         let pinned = base.filter { pinnedIDs.contains($0.id) }
         let rest = base.filter { !pinnedIDs.contains($0.id) }
         return pinned + rest
@@ -97,4 +100,14 @@ final class ClinicsViewModel {
             .store(in: &cancellables)
     }
 
+    private func observeAvailabilityClock() {
+        Timer.publish(every: 60, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] date in
+                Task { @MainActor in
+                    self?.availabilityNow = date
+                }
+            }
+            .store(in: &cancellables)
+    }
 }

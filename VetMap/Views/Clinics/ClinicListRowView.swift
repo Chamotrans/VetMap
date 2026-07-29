@@ -19,6 +19,8 @@ struct ClinicListRowView: View {
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                             .lineLimit(2)
+
+                        ClinicAvailabilityBadge(clinic: clinic)
                     }
 
                     Spacer(minLength: 4)

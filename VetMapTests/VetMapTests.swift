@@ -188,6 +188,84 @@ final class VetMapModelTests: XCTestCase {
         XCTAssertEqual(Set(results.map(\.id)), ["hk-premium", "hk-unverified"])
     }
 
+    func testAvailabilityFilterAndDefaultSortPrioritizeOpenClinics() {
+        let now = Date(timeIntervalSince1970: 1_775_102_400) // 2026-04-02 12:00 HKT
+        let alwaysOpen = makeClinic(
+            id: "always-open",
+            name: "24 小時動物醫院",
+            availability: makeAvailability(is24Hours: true)
+        )
+        let unknown = makeClinic(id: "unknown-hours", name: "未知時間診所")
+        var filter = ClinicSearchFilter()
+
+        XCTAssertEqual(
+            filter.results(from: [unknown, alwaysOpen], at: now).map(\.id),
+            ["always-open", "unknown-hours"]
+        )
+
+        filter.availability = .open24Hours
+        XCTAssertEqual(
+            filter.results(from: [unknown, alwaysOpen], at: now).map(\.id),
+            ["always-open"]
+        )
+
+        filter.availability = .nightService
+        XCTAssertEqual(
+            filter.results(from: [unknown, alwaysOpen], at: now).map(\.id),
+            ["always-open"]
+        )
+    }
+
+    func testRegularHoursComputeOpenNowInHongKongTime() {
+        let thursdayNoon = Date(timeIntervalSince1970: 1_775_102_400)
+        let clinic = makeClinic(
+            availability: makeAvailability(
+                weeklyHours: [
+                    "thu": [
+                        ClinicHoursInterval(opensAt: "08:00", closesAt: "20:00")
+                    ]
+                ]
+            )
+        )
+
+        XCTAssertTrue(clinic.isOpen(at: thursdayNoon))
+        XCTAssertEqual(
+            clinic.availabilityLabel(at: thursdayNoon),
+            "營業中 · 至 20:00"
+        )
+    }
+
+    func testOvernightHoursUsePreviousDaySchedule() {
+        let thursdayOneAM = Date(timeIntervalSince1970: 1_775_062_800)
+        let clinic = makeClinic(
+            availability: makeAvailability(
+                weeklyHours: [
+                    "wed": [
+                        ClinicHoursInterval(opensAt: "21:00", closesAt: "02:00")
+                    ]
+                ],
+                offersNightService: true
+            )
+        )
+
+        XCTAssertTrue(clinic.isOpen(at: thursdayOneAM))
+        XCTAssertEqual(
+            clinic.availabilityLabel(at: thursdayOneAM),
+            "營業中 · 至 02:00"
+        )
+    }
+
+    func testExpiredAvailabilityNeverClaimsOpen() {
+        let afterExpiry = Date(timeIntervalSince1970: 1_777_766_400)
+        let clinic = makeClinic(availability: makeAvailability(is24Hours: true))
+        var filter = ClinicSearchFilter()
+        filter.availability = .openNow
+
+        XCTAssertFalse(clinic.isOpen(at: afterExpiry))
+        XCTAssertNil(clinic.availabilityLabel(at: afterExpiry))
+        XCTAssertTrue(filter.results(from: [clinic], at: afterExpiry).isEmpty)
+    }
+
     func testHongKongFilterKeepsCuratedDirectoryEntryWithoutCoordinate() {
         var filter = ClinicSearchFilter()
         filter.region = .hongKong
@@ -1360,7 +1438,8 @@ final class VetMapModelTests: XCTestCase {
         services: [String] = ["一般診療", "牙科"],
         tags: [String] = ["貓友善", "急診"],
         priceLevel: Int = 2,
-        verified: Bool = true
+        verified: Bool = true,
+        availability: ClinicAvailability? = nil
     ) -> VetClinic {
         VetClinic(
             id: id,
@@ -1371,6 +1450,7 @@ final class VetMapModelTests: XCTestCase {
             phone: "+852 2123 4567",
             website: URL(string: "https://example.com/clinic"),
             openingHours: ["Mon": "09:00-18:00"],
+            availability: availability,
             services: services,
             avgRating: 4.7,
             reviewCount: 128,
@@ -1381,6 +1461,27 @@ final class VetMapModelTests: XCTestCase {
             updatedAt: date,
             reportedBy: "user-1",
             verified: verified
+        )
+    }
+
+    private func makeAvailability(
+        weeklyHours: [String: [ClinicHoursInterval]] = [:],
+        is24Hours: Bool = false,
+        offersNightService: Bool = false
+    ) -> ClinicAvailability {
+        ClinicAvailability(
+            schemaVersion: 1,
+            migrationId: "test-hours-v1",
+            timeZoneIdentifier: "Asia/Hong_Kong",
+            weeklyHours: weeklyHours,
+            is24Hours: is24Hours,
+            offersNightService: offersNightService || is24Hours,
+            displayLabel: is24Hours ? "24 小時" : "",
+            serviceNote: "測試營業資料",
+            sourceURL: URL(string: "https://example.com/hours")!,
+            sourceName: "測試官方網站",
+            verifiedAt: Date(timeIntervalSince1970: 1_767_225_600),
+            expiresAt: Date(timeIntervalSince1970: 1_775_577_600)
         )
     }
 

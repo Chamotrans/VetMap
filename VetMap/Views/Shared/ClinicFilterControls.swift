@@ -44,6 +44,7 @@ struct ClinicFilterControls: View {
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
+                availabilityMenu
                 regionMenu
                 priceMenu
 
@@ -54,6 +55,25 @@ struct ClinicFilterControls: View {
             .padding(.vertical, 1)
         }
         .scrollClipDisabled()
+    }
+
+    private var availabilityMenu: some View {
+        Menu {
+            Picker("營業狀態", selection: $filter.availability) {
+                ForEach(ClinicSearchFilter.Availability.allCases) { availability in
+                    Text(availability.rawValue).tag(availability)
+                }
+            }
+        } label: {
+            ClinicFilterChip(
+                title: filter.availability.title,
+                systemImage: "clock",
+                isActive: filter.availability != .all,
+                showsChevron: true
+            )
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("營業狀態篩選")
     }
 
     private var regionMenu: some View {
@@ -110,6 +130,53 @@ struct ClinicFilterControls: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel("清除篩選")
+    }
+}
+
+struct ClinicAvailabilityBadge: View {
+    let clinic: VetClinic
+    var compact = false
+
+    var body: some View {
+        TimelineView(.periodic(from: .now, by: 60)) { context in
+            if let label = clinic.availabilityLabel(at: context.date) {
+                Label(label, systemImage: systemImage(at: context.date))
+                    .font(compact ? .caption2.weight(.semibold) : .caption.weight(.semibold))
+                    .foregroundStyle(foregroundStyle(at: context.date))
+                    .padding(.horizontal, compact ? 7 : 9)
+                    .padding(.vertical, compact ? 4 : 5)
+                    .background(
+                        foregroundStyle(at: context.date).opacity(0.12),
+                        in: Capsule()
+                    )
+                    .lineLimit(1)
+                    .accessibilityLabel(label)
+            }
+        }
+    }
+
+    private func systemImage(at date: Date) -> String {
+        switch clinic.operatingStatus(at: date) {
+        case .open24Hours:
+            return "clock.badge.checkmark"
+        case .open:
+            return "door.left.hand.open"
+        case .closed where clinic.hasCurrentNightService(at: date):
+            return "moon.stars.fill"
+        case .closed, .unavailable:
+            return "clock"
+        }
+    }
+
+    private func foregroundStyle(at date: Date) -> Color {
+        switch clinic.operatingStatus(at: date) {
+        case .open24Hours, .open:
+            return AppTheme.primary
+        case .closed where clinic.hasCurrentNightService(at: date):
+            return AppTheme.accent
+        case .closed, .unavailable:
+            return .gray
+        }
     }
 }
 

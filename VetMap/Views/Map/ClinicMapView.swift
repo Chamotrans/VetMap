@@ -18,9 +18,17 @@ struct ClinicMapView: View {
                     if let coordinate = clinic.mapCoordinate {
                         Annotation(coordinate: coordinate) {
                             Image(systemName: "cross.case.fill")
-                                .foregroundStyle(AppTheme.primary)
+                                .foregroundStyle(
+                                    clinic.isOpen(at: viewModel.availabilityNow)
+                                        ? Color.green
+                                        : AppTheme.primary
+                                )
                         } label: {
-                            Text(clinic.name)
+                            Text(
+                                [clinic.name, clinic.availabilityLabel(at: viewModel.availabilityNow)]
+                                    .compactMap { $0 }
+                                    .joined(separator: "・")
+                            )
                         }
                         .tint(AppTheme.primary)
                         .tag(clinic.id)

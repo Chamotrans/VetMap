@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "catalogRegion": "HK",
+  "count": 11,
+  "timeZoneIdentifier": "Asia/Hong_Kong",
+  "verifiedAt": "2026-07-30T00:00:00+08:00",
+  "expiresAt": "2026-10-28T00:00:00+08:00",
+  "clinics": [
+    {
+      "clinicID": "clinic-hk-vetmap-vet-095",
+      "expectedName": "Harvest Veterinary Specialty & Emergency Hospital",
+      "is24Hours": true,
+      "offersNightService": true,
+      "displayLabel": "24 小時急症",
+      "serviceNote": "急症室星期一至日 24 小時；專科服務須預約，時間為 09:00–19:00。",
+      "weeklyHours": {},
+      "sourceName": "Harvest 官方網站",
+      "sourceURL": "https://hvseh.com.hk/en/contact-us/"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-158",
+      "expectedName": "香港獸醫急症中心",
+      "is24Hours": true,
+      "offersNightService": true,
+      "displayLabel": "24 小時",
+      "serviceNote": "星期一至日 24 小時服務，設 24 小時急症及重症服務。",
+      "weeklyHours": {},
+      "sourceName": "香港獸醫急症中心官方網站",
+      "sourceURL": "https://www.vec.com.hk/zh-hant/about"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-060",
+      "expectedName": "九龍專科獸醫醫院",
+      "is24Hours": true,
+      "offersNightService": true,
+      "displayLabel": "24 小時急症",
+      "serviceNote": "VSH 九龍急症及重症服務全年 24 小時；急症毋須預約。",
+      "weeklyHours": {},
+      "sourceName": "VSH Hong Kong 官方網站",
+      "sourceURL": "https://www.vsh.com.hk/zh-tw/specialties-and-services/247-emergency-services-at-vsh"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-166",
+      "expectedName": "動物醫療學會醫院",
+      "is24Hours": true,
+      "offersNightService": true,
+      "displayLabel": "24 小時急症",
+      "serviceNote": "一般營業時間為每日 09:00–19:00；急症服務每週 7 天、每天 24 小時。",
+      "weeklyHours": {},
+      "sourceName": "動物醫療學會醫院官方網站",
+      "sourceURL": "https://amahvet.com.hk/primary_care/24-hour-emergency-service/"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-031",
+      "expectedName": "香港愛護動物協會",
+      "is24Hours": true,
+      "offersNightService": true,
+      "displayLabel": "24 小時急症",
+      "serviceNote": "灣仔總部提供 24 小時緊急獸醫服務；非辦公時間求診必須先致電 2711 1000 安排。",
+      "weeklyHours": {},
+      "sourceName": "香港愛護動物協會官方網站",
+      "sourceURL": "https://www.spca.org.hk/zh-hant/contact/animal-welfare-emergencies/"
+    },
+    {
+      "clinicID": "hk-peace-avenue-veterinary-clinic---cityu-a",
+      "expectedName": "城大動物醫療中心",
+      "is24Hours": true,
+      "offersNightService": true,
+      "displayLabel": "24 小時急症",
+      "serviceNote": "急症及重症服務每天 24 小時，全年 365 日均有獸醫駐場。",
+      "weeklyHours": {},
+      "sourceName": "城大動物醫療中心官方網站",
+      "sourceURL": "https://cityuvmc.com.hk/en/services/"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-124",
+      "expectedName": "N24社區動物醫院",
+      "is24Hours": true,
+      "offersNightService": true,
+      "displayLabel": "24 小時",
+      "serviceNote": "官方網站列明提供 24 小時診症及住院服務；緊急情況宜先致電確認。",
+      "weeklyHours": {},
+      "sourceName": "N24 社區動物醫院官方網站",
+      "sourceURL": "https://n24.vet/"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-117",
+      "expectedName": "維多利24小時寵物醫院",
+      "is24Hours": true,
+      "offersNightService": true,
+      "displayLabel": "24 小時（須預約）",
+      "serviceNote": "全年無休、每天 24 小時服務，只接受預約；到診前請先致電。",
+      "weeklyHours": {},
+      "sourceName": "維多利 24 小時寵物醫院官方網站",
+      "sourceURL": "https://victoriavetshk.com/chi-home"
+    },
+    {
+      "clinicID": "hk-animal-medical-centre",
+      "expectedName": "動物醫療中心24小時中心",
+      "is24Hours": true,
+      "offersNightService": true,
+      "displayLabel": "24 小時",
+      "serviceNote": "何文田 24 小時中心每日全日開放。",
+      "weeklyHours": {},
+      "sourceName": "Animal Medical Centre 官方網站",
+      "sourceURL": "https://amcvet.com.hk/en/contact-us/"
+    },
+    {
+      "clinicID": "hk-69dcead9f1da3469d949",
+      "expectedName": "東區動物醫院",
+      "is24Hours": true,
+      "offersNightService": true,
+      "displayLabel": "24 小時",
+      "serviceNote": "星期一至日及公眾假期均為 24 小時；深夜時段提供急症服務。",
+      "weeklyHours": {},
+      "sourceName": "Creature Comforts 官方網站",
+      "sourceURL": "https://www.creaturecomforts.com.hk/zh-tw"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-137",
+      "expectedName": "將軍澳獸醫中心",
+      "is24Hours": false,
+      "offersNightService": false,
+      "displayLabel": "",
+      "serviceNote": "星期一至日及公眾假期均為 08:00–20:00。",
+      "weeklyHours": {
+        "mon": [{"opensAt": "08:00", "closesAt": "20:00"}],
+        "tue": [{"opensAt": "08:00", "closesAt": "20:00"}],
+        "wed": [{"opensAt": "08:00", "closesAt": "20:00"}],
+        "thu": [{"opensAt": "08:00", "closesAt": "20:00"}],
+        "fri": [{"opensAt": "08:00", "closesAt": "20:00"}],
+        "sat": [{"opensAt": "08:00", "closesAt": "20:00"}],
+        "sun": [{"opensAt": "08:00", "closesAt": "20:00"}]
+      },
+      "sourceName": "Creature Comforts 官方網站",
+      "sourceURL": "https://www.creaturecomforts.com.hk/zh-tw"
+    }
+  ]
+}

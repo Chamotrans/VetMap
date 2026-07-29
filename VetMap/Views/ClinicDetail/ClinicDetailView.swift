@@ -37,6 +37,34 @@ struct ClinicDetailView: View {
         .sorted { $0.day < $1.day }
     }
 
+    private var curatedOpeningHours: [(day: String, hours: String)] {
+        guard
+            let availability = clinic.availability,
+            availability.isCurrent(at: Date()),
+            !availability.weeklyHours.isEmpty
+        else {
+            return []
+        }
+        let dayOrder = [
+            ("mon", "星期一"),
+            ("tue", "星期二"),
+            ("wed", "星期三"),
+            ("thu", "星期四"),
+            ("fri", "星期五"),
+            ("sat", "星期六"),
+            ("sun", "星期日")
+        ]
+        return dayOrder.map { key, title in
+            let intervals = availability.weeklyHours[key] ?? []
+            let hours = intervals.isEmpty
+                ? "休息"
+                : intervals
+                    .map { "\($0.opensAt)–\($0.closesAt)" }
+                    .joined(separator: "、")
+            return (title, hours)
+        }
+    }
+
     private var trimmedPhone: String {
         clinic.phone.trimmingCharacters(in: .whitespacesAndNewlines)
     }
@@ -83,7 +111,8 @@ struct ClinicDetailView: View {
                             servicesSection
                                 .transition(.opacity)
                         }
-                        if !visibleOpeningHours.isEmpty {
+                        if clinic.hasCurrentAvailability()
+                            || !visibleOpeningHours.isEmpty {
                             openingHoursSection
                                 .transition(.opacity)
                         }
@@ -174,6 +203,8 @@ struct ClinicDetailView: View {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
+
+                    ClinicAvailabilityBadge(clinic: clinic)
                 }
             }
 
@@ -410,18 +441,66 @@ struct ClinicDetailView: View {
     private var openingHoursSection: some View {
         detailCard(title: "營業時間", systemImage: "clock.fill") {
             VStack(alignment: .leading, spacing: 10) {
-                ForEach(visibleOpeningHours, id: \.day) { day, hours in
-                    HStack {
-                        Text(day)
+                if let availability = clinic.availability,
+                   availability.isCurrent(at: Date()) {
+                    ClinicAvailabilityBadge(clinic: clinic)
+
+                    if !availability.serviceNote.isEmpty {
+                        Text(availability.serviceNote)
+                            .font(.footnote)
                             .foregroundStyle(.secondary)
-                        Spacer()
-                        Text(hours)
-                            .fontWeight(.medium)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
-                    .font(.subheadline)
+
+                    ForEach(curatedOpeningHours, id: \.day) { day, hours in
+                        HStack {
+                            Text(day)
+                                .foregroundStyle(.secondary)
+                            Spacer()
+                            Text(hours)
+                                .fontWeight(.medium)
+                        }
+                        .font(.subheadline)
+                    }
+
+                    Button {
+                        safariURL = availability.sourceURL
+                    } label: {
+                        Label("查看診所官方營業資料", systemImage: "checkmark.seal")
+                            .font(.footnote.weight(.semibold))
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(AppTheme.primary)
+
+                    Text(
+                        "由 \(availability.sourceName) 核實；"
+                            + "\(formattedAvailabilityDate(availability.verifiedAt)) 更新；"
+                            + "資料到期後會停止顯示「營業中」。"
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+                } else {
+                    ForEach(visibleOpeningHours, id: \.day) { day, hours in
+                        HStack {
+                            Text(day)
+                                .foregroundStyle(.secondary)
+                            Spacer()
+                            Text(hours)
+                                .fontWeight(.medium)
+                        }
+                        .font(.subheadline)
+                    }
                 }
             }
         }
+    }
+
+    private func formattedAvailabilityDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "zh_HK")
+        formatter.timeZone = TimeZone(identifier: "Asia/Hong_Kong")
+        formatter.dateFormat = "yyyy年M月d日"
+        return formatter.string(from: date)
     }
 
     private var mapSection: some View {

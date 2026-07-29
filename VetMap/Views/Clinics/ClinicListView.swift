@@ -416,6 +416,7 @@ private struct ClinicSlimRow: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
+                ClinicAvailabilityBadge(clinic: clinic, compact: true)
             }
 
             Spacer(minLength: 4)
@@ -451,6 +452,8 @@ private struct ClinicGridCard: View {
                 .font(.caption.weight(.semibold))
                 .lineLimit(2)
                 .frame(maxWidth: .infinity, alignment: .leading)
+
+            ClinicAvailabilityBadge(clinic: clinic, compact: true)
 
             HStack(spacing: 4) {
                 Spacer()

@@ -39,12 +39,29 @@ struct ClinicSearchFilter: Equatable {
         }
     }
 
+    enum Availability: String, CaseIterable, Identifiable {
+        case all = "全部營業狀態"
+        case openNow = "營業中"
+        case open24Hours = "24 小時"
+        case nightService = "夜診"
+
+        var id: String { rawValue }
+
+        var title: String {
+            self == .all ? "營業狀態" : rawValue
+        }
+    }
+
     var query = ""
+    var availability: Availability = .all
     var region: Region = .all
     var price: Price = .all
 
     var isActive: Bool {
-        !trimmedQuery.isEmpty || region != .all || price != .all
+        !trimmedQuery.isEmpty
+            || availability != .all
+            || region != .all
+            || price != .all
     }
 
     var activeDescription: String {
@@ -58,6 +75,10 @@ struct ClinicSearchFilter: Equatable {
             parts.append(region.rawValue)
         }
 
+        if availability != .all {
+            parts.append(availability.rawValue)
+        }
+
         if price != .all {
             parts.append(price.rawValue)
         }
@@ -65,14 +86,18 @@ struct ClinicSearchFilter: Equatable {
         return parts.isEmpty ? "全部診所" : parts.joined(separator: "・")
     }
 
-    func results(from clinics: [VetClinic]) -> [VetClinic] {
+    func results(
+        from clinics: [VetClinic],
+        at date: Date = Date()
+    ) -> [VetClinic] {
         clinics
-            .filter(matches)
-            .sorted(by: Self.sortClinics)
+            .filter { matches($0, at: date) }
+            .sorted { sortClinics($0, $1, at: date) }
     }
 
-    func matches(_ clinic: VetClinic) -> Bool {
+    func matches(_ clinic: VetClinic, at date: Date = Date()) -> Bool {
         matchesQuery(clinic)
+            && matchesAvailability(clinic, at: date)
             && matchesRegion(clinic)
             && matchesPrice(clinic)
     }
@@ -115,6 +140,22 @@ struct ClinicSearchFilter: Equatable {
         }
     }
 
+    private func matchesAvailability(_ clinic: VetClinic, at date: Date) -> Bool {
+        switch availability {
+        case .all:
+            return true
+        case .openNow:
+            return clinic.isOpen(at: date)
+        case .open24Hours:
+            guard clinic.availability?.isCurrent(at: date) == true else {
+                return false
+            }
+            return clinic.availability?.is24Hours == true
+        case .nightService:
+            return clinic.hasCurrentNightService(at: date)
+        }
+    }
+
     private func matchesPrice(_ clinic: VetClinic) -> Bool {
         switch price {
         case .all:
@@ -128,7 +169,16 @@ struct ClinicSearchFilter: Equatable {
         }
     }
 
-    private static func sortClinics(_ lhs: VetClinic, _ rhs: VetClinic) -> Bool {
+    private func sortClinics(
+        _ lhs: VetClinic,
+        _ rhs: VetClinic,
+        at date: Date
+    ) -> Bool {
+        let lhsRank = lhs.availabilitySortRank(at: date)
+        let rhsRank = rhs.availabilitySortRank(at: date)
+        if lhsRank != rhsRank {
+            return lhsRank < rhsRank
+        }
         return lhs.name.localizedStandardCompare(rhs.name) == .orderedAscending
     }
 }

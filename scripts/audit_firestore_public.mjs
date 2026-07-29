@@ -9,6 +9,13 @@ const clinicManifestURL = new URL(
   import.meta.url,
 );
 const clinicManifest = JSON.parse(await readFile(clinicManifestURL, "utf8"));
+const clinicHoursManifestURL = new URL(
+  "../catalog/hk_clinic_hours_v1.json",
+  import.meta.url,
+);
+const clinicHoursManifest = JSON.parse(
+  await readFile(clinicHoursManifestURL, "utf8"),
+);
 const apiKeyMatch = plist.match(
   /<key>API_KEY<\/key>\s*<string>([^<]+)<\/string>/,
 );
@@ -229,6 +236,44 @@ function decodeDocument(document) {
   };
 }
 
+function normalizedJSON(value) {
+  if (Array.isArray(value)) return value.map(normalizedJSON);
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.keys(value)
+        .sort()
+        .map((key) => [key, normalizedJSON(value[key])]),
+    );
+  }
+  return value;
+}
+
+function expectedClinicAvailability(clinic) {
+  return {
+    schemaVersion: clinicHoursManifest.schemaVersion,
+    migrationId: "hk-clinic-hours-v1-2026-07-30",
+    timeZoneIdentifier: clinicHoursManifest.timeZoneIdentifier,
+    weeklyHours: clinic.weeklyHours,
+    is24Hours: clinic.is24Hours,
+    offersNightService: clinic.offersNightService,
+    displayLabel: clinic.displayLabel,
+    serviceNote: clinic.serviceNote,
+    sourceURL: clinic.sourceURL,
+    sourceName: clinic.sourceName,
+    verifiedAt: new Date(clinicHoursManifest.verifiedAt).toISOString(),
+    expiresAt: new Date(clinicHoursManifest.expiresAt).toISOString(),
+  };
+}
+
+function normalizeAvailabilityTimestamps(availability) {
+  if (!availability) return availability;
+  return {
+    ...availability,
+    verifiedAt: new Date(availability.verifiedAt).toISOString(),
+    expiresAt: new Date(availability.expiresAt).toISOString(),
+  };
+}
+
 const expectedApprovedCounts = {
   clinics: clinicManifest.count + 1,
   reviews: 1,
@@ -315,6 +360,34 @@ for (const [collection, expectedCount] of Object.entries(expectedApprovedCounts)
         + `authorized source records; found ${uniqueSourceRecordIDs.size}.`,
       );
     }
+    const expectedHoursByID = new Map(
+      clinicHoursManifest.clinics.map((clinic) => [
+        clinic.clinicID,
+        expectedClinicAvailability(clinic),
+      ]),
+    );
+    const clinicsWithAvailability = hkClinics.filter(
+      ({availability}) => availability != null,
+    );
+    if (
+      clinicHoursManifest.schemaVersion !== 1
+      || clinicHoursManifest.catalogRegion !== "HK"
+      || clinicHoursManifest.count !== 11
+      || clinicHoursManifest.clinics.length !== clinicHoursManifest.count
+      || clinicsWithAvailability.length !== clinicHoursManifest.count
+      || new Date(clinicHoursManifest.expiresAt) <= new Date()
+      || clinicsWithAvailability.some((document) => {
+        const expected = expectedHoursByID.get(document.id);
+        if (!expected) return true;
+        const actual = normalizeAvailabilityTimestamps(document.availability);
+        return JSON.stringify(normalizedJSON(actual))
+          !== JSON.stringify(normalizedJSON(expected));
+      })
+    ) {
+      throw new Error(
+        "The public clinic availability overlay is incomplete or stale.",
+      );
+    }
     console.log(JSON.stringify({
       collection: "clinics",
       authorizedCatalogEntries: hkClinics.length,
@@ -322,6 +395,10 @@ for (const [collection, expectedCount] of Object.entries(expectedApprovedCounts)
       mappableEntries: mappableClinics.length,
       listOnlyEntries: hkClinics.length - mappableClinics.length,
       uniqueAuthorizedSourceRecords: uniqueSourceRecordIDs.size,
+      availabilityEntries: clinicsWithAvailability.length,
+      twentyFourHourEntries: clinicsWithAvailability.filter(
+        ({availability}) => availability.is24Hours,
+      ).length,
     }));
   }
 }

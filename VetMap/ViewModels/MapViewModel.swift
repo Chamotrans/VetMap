@@ -17,6 +17,7 @@ final class MapViewModel {
     }
     var isLoading = false
     var networkError: String?
+    private(set) var availabilityNow = Date()
 
     private let firebase: FirebaseService
     @ObservationIgnored private var cancellables: Set<AnyCancellable> = []
@@ -28,6 +29,7 @@ final class MapViewModel {
         self.firebase = firebase
         self.cameraPosition = .region(Self.defaultRegion)
         observeRepositoryChanges()
+        observeAvailabilityClock()
         loadClinics()
     }
 
@@ -43,7 +45,7 @@ final class MapViewModel {
     }
 
     var filteredClinics: [VetClinic] {
-        filter.results(from: directoryClinics)
+        filter.results(from: directoryClinics, at: availabilityNow)
     }
 
     /// The directory can contain approved clinics whose addresses have not yet
@@ -120,6 +122,17 @@ final class MapViewModel {
                 let clinicID = notification.userInfo?[MockClinicRepository.changedClinicIDUserInfoKey] as? String
                 Task { @MainActor in
                     await self?.loadClinics(focusingOn: clinicID)
+                }
+            }
+            .store(in: &cancellables)
+    }
+
+    private func observeAvailabilityClock() {
+        Timer.publish(every: 60, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] date in
+                Task { @MainActor in
+                    self?.availabilityNow = date
                 }
             }
             .store(in: &cancellables)
