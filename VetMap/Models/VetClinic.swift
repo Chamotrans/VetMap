@@ -114,7 +114,7 @@ extension VetClinic {
         case .open(let closingTime):
             return "營業中 · 至 \(formattedClinicTime(closingTime))"
         case .closed:
-            return hasCurrentNightService(at: date) ? "設夜診" : nil
+            return hasCurrentNightService(at: date) ? "設夜診" : "休息中"
         case .unavailable:
             return nil
         }

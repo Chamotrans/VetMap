@@ -290,6 +290,7 @@ final class VetMapModelTests: XCTestCase {
 
     func testRegularHoursComputeOpenNowInHongKongTime() {
         let thursdayNoon = Date(timeIntervalSince1970: 1_775_102_400)
+        let thursdayAfterClose = Date(timeIntervalSince1970: 1_775_134_800)
         let clinic = makeClinic(
             availability: makeAvailability(
                 weeklyHours: [
@@ -305,6 +306,10 @@ final class VetMapModelTests: XCTestCase {
             clinic.availabilityLabel(at: thursdayNoon),
             "營業中 · 至 20:00"
         )
+
+        XCTAssertEqual(clinic.operatingStatus(at: thursdayAfterClose), .closed)
+        XCTAssertFalse(clinic.isOpen(at: thursdayAfterClose))
+        XCTAssertEqual(clinic.availabilityLabel(at: thursdayAfterClose), "休息中")
     }
 
     func testOvernightHoursUsePreviousDaySchedule() {
@@ -334,8 +339,35 @@ final class VetMapModelTests: XCTestCase {
         filter.availability = .openNow
 
         XCTAssertFalse(clinic.isOpen(at: afterExpiry))
+        XCTAssertEqual(clinic.operatingStatus(at: afterExpiry), .unavailable)
         XCTAssertNil(clinic.availabilityLabel(at: afterExpiry))
         XCTAssertTrue(filter.results(from: [clinic], at: afterExpiry).isEmpty)
+    }
+
+    func testClosedClinicWithCurrentNightServiceKeepsNightServiceLabel() {
+        let thursdayAfterClose = Date(timeIntervalSince1970: 1_775_134_800)
+        let clinic = makeClinic(
+            availability: makeAvailability(
+                weeklyHours: [
+                    "thu": [
+                        ClinicHoursInterval(opensAt: "08:00", closesAt: "20:00")
+                    ]
+                ],
+                offersNightService: true
+            )
+        )
+
+        XCTAssertEqual(clinic.operatingStatus(at: thursdayAfterClose), .closed)
+        XCTAssertFalse(clinic.isOpen(at: thursdayAfterClose))
+        XCTAssertEqual(clinic.availabilityLabel(at: thursdayAfterClose), "設夜診")
+    }
+
+    func testClinicWithoutAvailabilityHasNoAvailabilityLabel() {
+        let clinic = makeClinic(availability: nil)
+
+        XCTAssertEqual(clinic.operatingStatus(at: date), .unavailable)
+        XCTAssertFalse(clinic.isOpen(at: date))
+        XCTAssertNil(clinic.availabilityLabel(at: date))
     }
 
     func testHongKongFilterKeepsCuratedDirectoryEntryWithoutCoordinate() {

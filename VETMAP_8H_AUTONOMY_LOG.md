@@ -33,7 +33,26 @@
   - Added focused tests for mixed, empty, and all-invalid inputs.
 - Sol acceptance: **ACCEPT** — no P0/P1/P2 finding. Query authority, failure semantics, logging scope, test coverage, and unrelated behavior reviewed.
 - Local evidence: Both touched Swift files passed `swiftc -parse`; `git diff --check` passed. No local `xcodebuild` was run.
+- GitHub validation: `Backend and Config Validation` run `30716770691` completed successfully for commit `59d32d0`.
+- Xcode Cloud: Build run 16 (`11e4cc73-6d5c-4ae7-be05-5400523d4f5c`) completed `SUCCEEDED`; its only action, `Archive - iOS`, completed `SUCCEEDED`; processed build 16 (`c4b9b1d2-eb49-4d0b-8b30-0483675a96b4`) is `VALID`. This proves compile/archive success; the workflow did not contain a test action, so XCTest execution is not claimed.
+- Release boundary: No ASC build attachment, review submission, or public release was performed.
+- Preserved scope: Registration, submissions, community interaction, moderation, all other collections, and existing user-owned dirty/untracked files were not changed by this round.
+
+## Round 3 — Distinguish known closed from unknown hours
+
+- Started: 2026-08-02 (Asia/Taipei)
+- Fresh live evidence:
+  - Public Firestore reads remained clinics 180, products 124, insurances 3, reviews 1, and quotes 1; the current commercial catalog expiry remained `2026-10-26T20:55:03.238Z`.
+  - Xcode Cloud Build 16 and GitHub validation remained successful; ASC iOS 1.0 remained `READY_FOR_REVIEW` with Build 12 attached.
+  - The connected physical device `是條小狗` still had VetMap 1.0 (14).
+- Sol plan: Make a clinic with a current official schedule visibly distinct when it is known to be closed, while leaving missing, future, expired, or invalid schedule data as unknown.
+- Luna implementation:
+  - Updated `availabilityLabel(at:)` so a current ordinary closed state returns `休息中`.
+  - Preserved `設夜診` for a current closed clinic with night service, plus all existing open and unavailable behavior.
+  - Extended focused tests for scheduled open/closed transitions, closed night service, no availability, and expired availability.
+- Sol acceptance: **ACCEPT** — no P0/P1/P2 finding. Current/unavailable boundaries, Hong Kong test times, shared badge styling and VoiceOver, scope, and regressions reviewed.
+- Local evidence: Both touched Swift files passed `swiftc -parse`; `git diff --check` passed. No local `xcodebuild` was run.
 - GitHub validation: Pending the pushed commit for this round.
 - Xcode Cloud: Pending the pushed commit for this round.
 - Release boundary: No ASC build attachment, review submission, or public release was performed.
-- Preserved scope: Registration, submissions, community interaction, moderation, all other collections, and existing user-owned dirty/untracked files were not changed by this round.
+- Preserved scope: No filter, sorting, timer, Firestore, registration, submissions, community, moderation, or user-owned dirty/untracked file was changed by this round.
