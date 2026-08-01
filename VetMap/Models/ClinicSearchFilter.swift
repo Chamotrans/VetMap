@@ -50,6 +50,15 @@ struct ClinicSearchFilter: Equatable {
         var title: String {
             self == .all ? "營業狀態" : rawValue
         }
+
+        var limitationMessage: String? {
+            switch self {
+            case .all:
+                return nil
+            case .openNow, .open24Hours, .nightService:
+                return "只按有現行官方營業資料的診所篩選；未列出的診所不代表休息，出發前請先致電。"
+            }
+        }
     }
 
     var query = ""

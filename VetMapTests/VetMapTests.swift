@@ -216,6 +216,15 @@ final class VetMapModelTests: XCTestCase {
         )
     }
 
+    func testAvailabilityFilterLimitationMessageAppearsOnlyForActiveFilters() {
+        let message = "只按有現行官方營業資料的診所篩選；未列出的診所不代表休息，出發前請先致電。"
+
+        XCTAssertNil(ClinicSearchFilter.Availability.all.limitationMessage)
+        XCTAssertEqual(ClinicSearchFilter.Availability.openNow.limitationMessage, message)
+        XCTAssertEqual(ClinicSearchFilter.Availability.open24Hours.limitationMessage, message)
+        XCTAssertEqual(ClinicSearchFilter.Availability.nightService.limitationMessage, message)
+    }
+
     func testRegularHoursComputeOpenNowInHongKongTime() {
         let thursdayNoon = Date(timeIntervalSince1970: 1_775_102_400)
         let clinic = makeClinic(

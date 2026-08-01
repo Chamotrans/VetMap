@@ -42,19 +42,29 @@ struct ClinicFilterControls: View {
     @Binding var filter: ClinicSearchFilter
 
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                availabilityMenu
-                regionMenu
-                priceMenu
+        VStack(alignment: .leading, spacing: 6) {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    availabilityMenu
+                    regionMenu
+                    priceMenu
 
-                if filter.isActive {
-                    clearButton
+                    if filter.isActive {
+                        clearButton
+                    }
                 }
+                .padding(.vertical, 1)
             }
-            .padding(.vertical, 1)
+            .scrollClipDisabled()
+
+            if let limitationMessage = filter.availability.limitationMessage {
+                Label(limitationMessage, systemImage: "info.circle")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityLabel(limitationMessage)
+            }
         }
-        .scrollClipDisabled()
     }
 
     private var availabilityMenu: some View {
