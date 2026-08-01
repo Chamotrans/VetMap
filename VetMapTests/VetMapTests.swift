@@ -370,6 +370,59 @@ final class VetMapModelTests: XCTestCase {
         XCTAssertNil(clinic.availabilityLabel(at: date))
     }
 
+    func testReconciledClinicSelectionReturnsNilWithoutVisibleClinics() {
+        XCTAssertNil(reconciledClinicSelection(currentID: "clinic-1", visibleIDs: []))
+    }
+
+    func testReconciledClinicSelectionKeepsCurrentVisibleClinic() {
+        XCTAssertEqual(
+            reconciledClinicSelection(currentID: "clinic-2", visibleIDs: ["clinic-1", "clinic-2"]),
+            "clinic-2"
+        )
+    }
+
+    func testReconciledClinicSelectionUsesFirstVisibleClinicWithoutCurrentSelection() {
+        XCTAssertEqual(
+            reconciledClinicSelection(currentID: nil, visibleIDs: ["clinic-1", "clinic-2"]),
+            "clinic-1"
+        )
+    }
+
+    func testReconciledClinicSelectionUsesFirstVisibleClinicWhenCurrentIsInvalid() {
+        XCTAssertEqual(
+            reconciledClinicSelection(currentID: "removed-clinic", visibleIDs: ["clinic-1", "clinic-2"]),
+            "clinic-1"
+        )
+    }
+
+    func testAvailabilityClockTransitionReconcilesExpiredSelectionWithoutCameraFocus() {
+        let scheduled = makeClinic(
+            id: "scheduled",
+            availability: makeAvailability(
+                weeklyHours: [
+                    "thu": [
+                        ClinicHoursInterval(opensAt: "08:00", closesAt: "20:00")
+                    ]
+                ]
+            )
+        )
+        let alwaysOpen = makeClinic(
+            id: "always-open",
+            availability: makeAvailability(is24Hours: true)
+        )
+        var filter = ClinicSearchFilter()
+        filter.availability = .openNow
+
+        let beforeClose = Date(timeIntervalSince1970: 1_775_131_140)
+        let afterClose = Date(timeIntervalSince1970: 1_775_131_200)
+        let beforeCloseIDs = filter.results(from: [scheduled, alwaysOpen], at: beforeClose).map(\.id)
+        let afterCloseIDs = filter.results(from: [scheduled, alwaysOpen], at: afterClose).map(\.id)
+
+        XCTAssertEqual(reconciledClinicSelection(currentID: scheduled.id, visibleIDs: beforeCloseIDs), scheduled.id)
+        XCTAssertEqual(reconciledClinicSelection(currentID: scheduled.id, visibleIDs: afterCloseIDs), alwaysOpen.id)
+        XCTAssertNil(reconciledClinicSelection(currentID: alwaysOpen.id, visibleIDs: []))
+    }
+
     func testHongKongFilterKeepsCuratedDirectoryEntryWithoutCoordinate() {
         var filter = ClinicSearchFilter()
         filter.region = .hongKong

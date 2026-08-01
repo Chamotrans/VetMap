@@ -74,8 +74,29 @@
 - Luna correction: Made source coverage and missing-coordinate reconciliation exact; added hours Boolean/name/label checks and regression fixtures.
 - Final Sol acceptance: **ACCEPT** — both P2 findings resolved with no new P0/P1/P2 finding.
 - Local evidence: `node --check` passed for both scripts; Node tests passed 10/10; the real catalog passed with 179 clinics, 161 coordinates, 18 awaiting coordinates, 205 lineage IDs, and 11 hours overlays; `git diff --check` passed.
-- GitHub validation: Pending the pushed commit for this round.
-- Xcode Cloud: No Swift change requires a new app proof, but the normal main-branch trigger will be observed if it runs.
+- GitHub validation: `Backend and Config Validation` run `30718060706` completed successfully for commit `069264a`, including the new `Validate Hong Kong clinic catalog integrity` step, Functions validation, Firebase emulator rules tests, and patch hygiene.
+- Xcode Cloud: The normal main-branch trigger produced Build run 18 (`6e8a215f-d2e8-4bd4-b744-755d2b58c19c`), whose `Archive - iOS` action completed `SUCCEEDED`; processed build 18 (`cddd7d5f-390d-45d9-b05b-7059de5c4ca6`) is `VALID`. This is additional archive proof for a CI-only source change, not a release claim.
 - Production boundary: The validator is offline and read-only. It does not replace the unavailable full authoritative Firestore inventory/stray/metadata audit.
 - Release boundary: No ASC build attachment, review submission, or public release was performed.
 - Preserved scope: No catalog data, migration, production, Swift, Firestore query, registration, submissions, community, moderation, or user-owned dirty/untracked file was changed by this round.
+
+## Round 5 — Reconcile map selection on availability clock changes
+
+- Started: 2026-08-02 (Asia/Taipei)
+- Fresh live evidence:
+  - The offline catalog validator and all 10 mutation tests still passed; public Firestore reads remained clinics 180, products 124, insurances 3, reviews 1, and quotes 1.
+  - Xcode Cloud Build 18 and GitHub validation remained successful; ASC iOS 1.0 remained `READY_FOR_REVIEW` with Build 12 attached.
+  - The physical device `是條小狗` was paired but not connected and still reported VetMap 1.0 (14), so no new runtime proof was claimed.
+- Sol plan: When the availability clock removes the selected clinic from an active filter, reconcile the stale selection without moving the map camera.
+- Luna implementation:
+  - Added a pure selection reconciler covering empty, retained, missing, and invalid current selections.
+  - Reused the reconciler in the existing filtered-selection synchronization path.
+  - Updated each 60-second availability tick to set the new time first and then reconcile with camera focus disabled.
+  - Preserved manual-filter camera focus and the existing post-load previous-selection behavior.
+  - Added focused tests for the four pure cases and a Hong Kong 19:59 to 20:00 transition from a scheduled clinic to a still-open 24-hour clinic, plus the no-results case.
+- Sol acceptance: **ACCEPT** — no P0/P1/P2 finding. Selection rules, timer ordering, camera guard, load/filter behavior, Hong Kong timestamps, and scope reviewed.
+- Local evidence: Both touched Swift files passed `swiftc -parse`; `git diff --check` passed. No local `xcodebuild` was run.
+- GitHub validation: Pending the pushed commit for this round.
+- Xcode Cloud: Pending the pushed commit for this round.
+- Release boundary: No ASC build attachment, review submission, or public release was performed.
+- Preserved scope: No availability calculation, filter, sort, UI, Firestore, location, registration, submissions, community, moderation, or user-owned dirty/untracked file was changed by this round.

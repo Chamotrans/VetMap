@@ -4,6 +4,14 @@ import Foundation
 import MapKit
 import SwiftUI
 
+func reconciledClinicSelection(currentID: String?, visibleIDs: [String]) -> String? {
+    guard let firstVisibleID = visibleIDs.first else { return nil }
+    guard let currentID, visibleIDs.contains(currentID) else {
+        return firstVisibleID
+    }
+    return currentID
+}
+
 @MainActor
 @Observable
 final class MapViewModel {
@@ -133,6 +141,7 @@ final class MapViewModel {
             .sink { [weak self] date in
                 Task { @MainActor in
                     self?.availabilityNow = date
+                    self?.syncSelectionWithFilteredClinics(shouldFocus: false)
                 }
             }
             .store(in: &cancellables)
@@ -140,20 +149,20 @@ final class MapViewModel {
 
     private func syncSelectionWithFilteredClinics(shouldFocus: Bool) {
         let visibleClinics = filteredClinics
-
-        guard let firstClinic = visibleClinics.first else {
-            selectedClinicID = nil
+        let reconciledID = reconciledClinicSelection(
+            currentID: selectedClinicID,
+            visibleIDs: visibleClinics.map(\.id)
+        )
+        guard reconciledID != selectedClinicID else {
             return
         }
 
-        if let selectedClinicID, visibleClinics.contains(where: { $0.id == selectedClinicID }) {
-            return
-        }
+        selectedClinicID = reconciledID
 
-        selectedClinicID = firstClinic.id
-
-        if shouldFocus {
-            focus(on: firstClinic)
+        if shouldFocus,
+            let reconciledID,
+            let clinic = visibleClinics.first(where: { $0.id == reconciledID }) {
+            focus(on: clinic)
         }
     }
 }
