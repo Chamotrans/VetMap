@@ -1,5 +1,16 @@
 import { readFile } from "node:fs/promises";
 
+const cliArguments = process.argv.slice(2);
+if (
+  cliArguments.length > 1
+  || (cliArguments.length === 1 && cliArguments[0] !== "--public-only")
+) {
+  throw new Error(
+    "Usage: node scripts/audit_firestore_public.mjs [--public-only]",
+  );
+}
+const auditMode = cliArguments[0] === "--public-only" ? "public-only" : "full";
+const authoritativeInventoryChecked = auditMode === "full";
 const projectId = "vetmap-app";
 const accessToken = process.env.FIREBASE_ACCESS_TOKEN;
 const plistURL = new URL("../VetMap/GoogleService-Info.plist", import.meta.url);
@@ -23,12 +34,20 @@ const apiKeyMatch = plist.match(
 if (!apiKeyMatch) {
   throw new Error("GoogleService-Info.plist is missing API_KEY");
 }
-if (!accessToken) {
+if (authoritativeInventoryChecked && !accessToken) {
   throw new Error(
     "Set FIREBASE_ACCESS_TOKEN so the audit can detect every potentially "
     + "public catalog document, including records with a different expiry.",
   );
 }
+
+console.log(JSON.stringify({
+  auditMode,
+  authoritativeInventoryChecked,
+  ...(authoritativeInventoryChecked ? {} : {
+    warning: "Public-only audit cannot detect documents hidden from anonymous queries, documents with a different expiry, or stray documents.",
+  }),
+}));
 
 async function listAuthoritativeCollection(collection) {
   const documents = [];
@@ -451,31 +470,33 @@ for (const [collection, expectedCount] of Object.entries(catalogExpectations)) {
       + `found ${documents.length}`,
     );
   }
-  const authoritativePublicDocuments = (
-    await listAuthoritativeCollection(collection)
-  )
-    .map(decodeDocument)
-    .filter((document) => {
-      const expiresAt = new Date(document.expiresAt ?? "");
-      return document.status === "approved"
-        && document.catalogRegion === "HK"
-        && document.region === "HK"
-        && !Number.isNaN(expiresAt.getTime())
-        && expiresAt > catalogAuditTime;
-    });
-  const anonymousIDs = documents.map(({id}) => id).sort();
-  const authoritativePublicIDs = authoritativePublicDocuments
-    .map(({id}) => id)
-    .sort();
-  if (
-    authoritativePublicDocuments.length !== expectedCount
-    || JSON.stringify(authoritativePublicIDs) !== JSON.stringify(anonymousIDs)
-  ) {
-    throw new Error(
-      `${collection}: anonymous exact-expiry results do not cover every `
-      + `rule-public document; anonymous=${JSON.stringify(anonymousIDs)}, `
-      + `authoritative=${JSON.stringify(authoritativePublicIDs)}`,
-    );
+  if (authoritativeInventoryChecked) {
+    const authoritativePublicDocuments = (
+      await listAuthoritativeCollection(collection)
+    )
+      .map(decodeDocument)
+      .filter((document) => {
+        const expiresAt = new Date(document.expiresAt ?? "");
+        return document.status === "approved"
+          && document.catalogRegion === "HK"
+          && document.region === "HK"
+          && !Number.isNaN(expiresAt.getTime())
+          && expiresAt > catalogAuditTime;
+      });
+    const anonymousIDs = documents.map(({id}) => id).sort();
+    const authoritativePublicIDs = authoritativePublicDocuments
+      .map(({id}) => id)
+      .sort();
+    if (
+      authoritativePublicDocuments.length !== expectedCount
+      || JSON.stringify(authoritativePublicIDs) !== JSON.stringify(anonymousIDs)
+    ) {
+      throw new Error(
+        `${collection}: anonymous exact-expiry results do not cover every `
+        + `rule-public document; anonymous=${JSON.stringify(anonymousIDs)}, `
+        + `authoritative=${JSON.stringify(authoritativePublicIDs)}`,
+      );
+    }
   }
   for (const document of documents) {
     for (const field of commonCatalogFields) {

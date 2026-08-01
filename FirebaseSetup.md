@@ -124,12 +124,23 @@ firebase deploy \
   --only firestore:rules,firestore:indexes,storage,functions,hosting
 ```
 
-部署後逐項驗證：
+部署後逐項驗證。兩種 audit 的證據範圍不同：
 
 ```bash
 firebase functions:list --project vetmap-app
 firebase hosting:channel:list --project vetmap-app
-node scripts/audit_firestore_public.mjs
+```
+
+完整 audit 必須提供 read-only bearer token，會比較匿名 exact-expiry query 與授權 inventory，因而能偵測匿名 query 隱藏、不同 expiry 或 stray 文件：
+
+```bash
+FIREBASE_ACCESS_TOKEN='read-only-token' node scripts/audit_firestore_public.mjs
+```
+
+若沒有 token，可執行 public-only audit；它只使用匿名 GET／`runQuery` 驗證目前公開可見資料、manifest、metadata、availability 和 anonymous denial。其 JSON output 會標示 `authoritativeInventoryChecked: false`；它**不能**證明沒有被 query 隱藏、不同 expiry 或 stray 文件，不能代替完整 audit：
+
+```bash
+node scripts/audit_firestore_public.mjs --public-only
 ```
 
 並直接開啟：

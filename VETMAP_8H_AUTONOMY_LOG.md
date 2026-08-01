@@ -139,7 +139,31 @@
   - Added focused tests for the current 179/161 split, zero difference, and defensive clamping.
 - Sol acceptance: **ACCEPT** — no P0/P1/P2 finding. Dynamic filtering, zero/no-result behavior, copy, accessibility, marker/carousel sources, navigation, backend scope, and tests reviewed.
 - Local evidence: All three touched Swift files passed `swiftc -parse`; targeted source checks and scoped `git diff --check` passed. No local `xcodebuild` was run.
+- GitHub validation: `Backend and Config Validation` run `30719655599` completed successfully for commit `c0b0bc2`, including the Hong Kong catalog gate, Functions validation, Firebase emulator rules tests, and patch hygiene.
+- Xcode Cloud: Build run 21 (`dfad5c5a-7a77-4dbe-9560-f8a2781a911e`) completed `SUCCEEDED`; its only action, `Archive - iOS` (`738c7e49-1045-456c-8408-97e3011448ad`), completed `SUCCEEDED`; processed build 21 (`9a1ec901-4875-4a0f-8307-63191dac99a1`) is `VALID`. This proves compile/archive success; the workflow did not contain a test action, so XCTest execution is not claimed.
+- Release boundary: No ASC build attachment, review submission, or public release was performed.
+- Preserved scope: No coordinates, catalog data, Firestore, registration, submissions, community, moderation, or user-owned dirty/untracked file was changed by this round.
+
+## Round 8 — Preserve a truthful public Firestore audit without admin credentials
+
+- Started: 2026-08-02 (Asia/Taipei)
+- Fresh live evidence:
+  - The offline catalog validator and all 10 mutation tests remained green at 179 clinics, 161 coordinates, 18 list-only clinics, 205 authorized lineage records, and 11 availability overlays.
+  - Anonymous reads showed clinics 180, reviews 1, quotes 1, products 124, and insurances 3; the commercial catalog shared expiry remained `2026-10-26T20:55:03.238Z`.
+  - GitHub validation and Xcode Cloud Build 21 remained successful; ASC iOS 1.0 remained `READY_FOR_REVIEW` with Build 12 attached.
+  - The physical device `是條小狗` remained paired rather than connected and reported VetMap 1.0 (14), so no new runtime proof was claimed.
+  - The full production audit remained unavailable because local gcloud credentials require interactive reauthentication; the previous script exited before performing even its anonymous checks when no bearer token was present.
+- Sol plan: Add an explicit public-only audit mode that proves the complete anonymous user-visible surface without weakening or silently downgrading the full authoritative inventory audit.
+- Luna implementation:
+  - Added strict CLI handling for either full mode with no argument or exactly `--public-only`; unknown, repeated, and extra arguments fail.
+  - Kept full mode token-required and preserved its bearer inventory plus exact anonymous-versus-authoritative ID comparison.
+  - Made public-only mode skip only the bearer inventory comparison while retaining clinic, availability, commercial catalog, metadata, expiry, price-safety, and anonymous-denial checks.
+  - Added machine-readable mode and authority fields plus an explicit warning that public-only cannot detect hidden-query, different-expiry, or stray documents.
+  - Documented separate full and public-only commands and their evidence boundaries.
+- Sol acceptance: **ACCEPT** — no P0/P1/P2 finding. CLI strictness, full-mode preservation, public-only coverage, read-only behavior, warning clarity, documentation, and dirty-file scope reviewed.
+- Local evidence: `node --check` passed; tokenless full mode, unknown arguments, and extra arguments failed as required; tokenless live public-only audit passed with clinics 180 (179 catalog plus demo), 161/18 map coverage, 205 lineage records, 11 availability entries including 10 24-hour entries, reviews 1, quotes 1, products 124, insurances 3, and all anonymous denial checks. Catalog tests remained 10/10 and the real validator remained `179/161/18/205/11`; scoped `git diff --check` passed.
+- Authority boundary: Full live inventory comparison was not rerun because gcloud still requires interactive reauthentication. Public-only evidence is not an authoritative no-stray-document claim.
 - GitHub validation: Pending the pushed commit for this round.
 - Xcode Cloud: Pending the pushed commit for this round.
 - Release boundary: No ASC build attachment, review submission, or public release was performed.
-- Preserved scope: No coordinates, catalog data, Firestore, registration, submissions, community, moderation, or user-owned dirty/untracked file was changed by this round.
+- Preserved scope: No catalog data, Firestore write/rules/backend, registration, submissions, community, moderation, device app, or user-owned dirty/untracked file was changed by this round.
