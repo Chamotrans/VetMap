@@ -421,12 +421,6 @@ private struct ClinicSlimRow: View {
 
             Spacer(minLength: 4)
 
-            if clinic.priceLevel > 0 {
-                Text(clinic.priceLevelText)
-                    .font(.caption2)
-                    .foregroundStyle(AppTheme.primary)
-            }
-
             Image(systemName: "chevron.forward")
                 .font(.caption2.weight(.semibold))
                 .foregroundStyle(.tertiary)
@@ -454,16 +448,6 @@ private struct ClinicGridCard: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             ClinicAvailabilityBadge(clinic: clinic, compact: true)
-
-            HStack(spacing: 4) {
-                Spacer()
-
-                if clinic.priceLevel > 0 {
-                    Text(clinic.priceLevelText)
-                        .font(.caption2)
-                        .foregroundStyle(AppTheme.primary)
-                }
-            }
         }
         .padding(10)
         .frame(maxWidth: .infinity)

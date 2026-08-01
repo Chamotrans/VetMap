@@ -96,7 +96,28 @@
   - Added focused tests for the four pure cases and a Hong Kong 19:59 to 20:00 transition from a scheduled clinic to a still-open 24-hour clinic, plus the no-results case.
 - Sol acceptance: **ACCEPT** — no P0/P1/P2 finding. Selection rules, timer ordering, camera guard, load/filter behavior, Hong Kong timestamps, and scope reviewed.
 - Local evidence: Both touched Swift files passed `swiftc -parse`; `git diff --check` passed. No local `xcodebuild` was run.
+- GitHub validation: `Backend and Config Validation` run `30718627686` completed successfully for commit `ef1eee3`, including the Hong Kong catalog gate, Functions validation, Firebase emulator rules tests, and patch hygiene.
+- Xcode Cloud: Build run 19 (`f5fccf71-0e81-4601-be0e-cf3baa89e381`) completed `SUCCEEDED`; its only action, `Archive - iOS`, completed `SUCCEEDED`; processed build 19 (`20c9750a-f320-4599-a58f-49f0081d914e`) is `VALID`. This proves compile/archive success; the workflow did not contain a test action, so XCTest execution is not claimed.
+- Release boundary: No ASC build attachment, review submission, or public release was performed.
+- Preserved scope: No availability calculation, filter, sort, UI, Firestore, location, registration, submissions, community, moderation, or user-owned dirty/untracked file was changed by this round.
+
+## Round 6 — Remove unsupported public clinic price presentation
+
+- Started: 2026-08-02 (Asia/Taipei)
+- Fresh live evidence:
+  - Public Firestore still exposed 180 approved clinics, but 179 had `priceLevel = 0`; the only `priceLevel = 1` record was the non-real App Review demo. All 179 catalog-restored clinics intentionally carry no price classification.
+  - Public catalog counts remained clinics 180, products 124, insurances 3, reviews 1, and quotes 1; the offline catalog gate remained 10/10 green.
+  - Xcode Cloud Build 19 and GitHub validation remained successful; ASC iOS 1.0 remained `READY_FOR_REVIEW` with Build 12 attached.
+  - The physical device `是條小狗` remained paired rather than connected and reported VetMap 1.0 (14), so no new runtime proof was claimed.
+- Sol plan: Remove the unsupported clinic price filter and `$` badges from public browsing so the demo record cannot be mistaken for representative Hong Kong price coverage.
+- Luna implementation:
+  - Removed the price menu from the shared clinic filter controls.
+  - Removed price badges from list detail, slim list, grid, map carousel, and clinic detail header presentations.
+  - Kept map tag layout conditional so removing the price badge does not leave an empty row.
+  - Preserved the model, filter schema/logic, backend, restore/audit, and community clinic-submission price field for compatibility.
+- Sol acceptance: **ACCEPT** — no P0/P1/P2 finding. Public-view coverage, layout, accessibility, availability/search/navigation behavior, schema compatibility, and dirty-file scope reviewed.
+- Local evidence: All five touched Swift files passed `swiftc -parse`; scoped `rg` found no public browsing price UI; `git diff --check` passed. No local `xcodebuild` was run.
 - GitHub validation: Pending the pushed commit for this round.
 - Xcode Cloud: Pending the pushed commit for this round.
 - Release boundary: No ASC build attachment, review submission, or public release was performed.
-- Preserved scope: No availability calculation, filter, sort, UI, Firestore, location, registration, submissions, community, moderation, or user-owned dirty/untracked file was changed by this round.
+- Preserved scope: No catalog, product pricing, IAP, quote, availability, Firestore, registration, submissions, community, moderation, or user-owned dirty/untracked file was changed by this round.

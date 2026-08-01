@@ -47,7 +47,6 @@ struct ClinicFilterControls: View {
                 HStack(spacing: 8) {
                     availabilityMenu
                     regionMenu
-                    priceMenu
 
                     if filter.isActive {
                         clearButton
@@ -103,25 +102,6 @@ struct ClinicFilterControls: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel("地區篩選")
-    }
-
-    private var priceMenu: some View {
-        Menu {
-            Picker("價格", selection: $filter.price) {
-                ForEach(ClinicSearchFilter.Price.allCases) { price in
-                    Text(price.rawValue).tag(price)
-                }
-            }
-        } label: {
-            ClinicFilterChip(
-                title: filter.price.title,
-                systemImage: "dollarsign.circle",
-                isActive: filter.price != .all,
-                showsChevron: true
-            )
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel("價格篩選")
     }
 
     private var clearButton: some View {

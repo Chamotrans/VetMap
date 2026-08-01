@@ -216,12 +216,6 @@ struct ClinicDetailView: View {
 
                 Text("\(viewModel.visibleReviews.count) 則評價")
                     .foregroundStyle(.secondary)
-
-                if clinic.priceLevel > 0 {
-                    Text(clinic.priceLevelText)
-                        .foregroundStyle(AppTheme.primary)
-                        .accessibilityLabel("價格等級 \(clinic.priceLevel)")
-                }
             }
             .font(.subheadline.weight(.semibold))
         }

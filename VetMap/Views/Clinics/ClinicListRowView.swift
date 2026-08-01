@@ -32,10 +32,6 @@ struct ClinicListRowView: View {
                         .accessibilityHidden(true)
                 }
 
-                if clinic.priceLevel > 0 {
-                    metrics
-                }
-
                 if !clinic.services.isEmpty {
                     FlowLayout(spacing: 6) {
                         ForEach(clinic.services.prefix(3), id: \.self) { service in
@@ -53,16 +49,6 @@ struct ClinicListRowView: View {
 
     private var statusIcon: some View {
         ClinicAvatarSmall(name: clinic.name)
-    }
-
-    private var metrics: some View {
-        HStack(spacing: 10) {
-            Text(clinic.priceLevelText)
-                .foregroundStyle(AppTheme.primary)
-                .accessibilityLabel("價格等級 \(clinic.priceLevel)")
-        }
-        .font(.caption.weight(.semibold))
-        .lineLimit(1)
     }
 }
 

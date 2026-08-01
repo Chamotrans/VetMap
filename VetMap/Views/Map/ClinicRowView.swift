@@ -35,20 +35,15 @@ struct ClinicRowView: View {
                 }
             }
 
-            HStack(spacing: 8) {
-                if clinic.priceLevel > 0 {
-                    Text(clinic.priceLevelText)
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(AppTheme.primary)
-                        .accessibilityLabel("價格等級 \(clinic.priceLevel)")
+            if !clinic.tags.isEmpty {
+                HStack(spacing: 8) {
+                    ForEach(clinic.tags.prefix(2), id: \.self) { tag in
+                        Text(tag)
+                            .appChip(tint: AppTheme.accent)
+                    }
                 }
-
-                ForEach(clinic.tags.prefix(2), id: \.self) { tag in
-                    Text(tag)
-                        .appChip(tint: AppTheme.accent)
-                }
+                .lineLimit(1)
             }
-            .lineLimit(1)
 
             if isSelected, let onOpenDetails {
                 Button {
