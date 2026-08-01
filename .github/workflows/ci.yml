@@ -40,6 +40,11 @@ jobs:
           node --test scripts/validate_hk_catalog_integrity.test.mjs
           node scripts/validate_hk_catalog_integrity.mjs
 
+      - name: Validate pending Hong Kong clinic hours v2 plan
+        run: |
+          node --test scripts/validate_hk_clinic_hours_v2_pending.test.mjs
+          node scripts/validate_hk_clinic_hours_v2_pending.mjs
+
       - name: Validate Functions
         run: |
           npm run lint --prefix functions

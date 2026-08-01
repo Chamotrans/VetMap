@@ -186,7 +186,31 @@
   - Preserved add-clinic controls, login continuation, submissions, moderation, reviews, quotes, and reporting flows.
 - Sol acceptance: **ACCEPT** — no P0/P1/P2 finding. Rights provenance, community preservation, copy, small-screen layout, localization, feature-flow scope, and backend boundaries reviewed.
 - Local evidence: The Swift view passed `swiftc -parse`; the string catalog passed `jq empty`; all three English and Simplified Chinese translations and states matched exactly; the source language remained `zh-Hant`; obsolete keys were absent; scoped `git diff --check` passed. No local `xcodebuild` was run.
+- GitHub validation: `Backend and Config Validation` run `30720829247` completed successfully for commit `238f3ba`, including the Hong Kong catalog gate, Functions validation, Firebase emulator rules tests, and patch hygiene.
+- Xcode Cloud: Build run 23 (`0bf123b8-29d4-4ff2-92a6-008909f82a7d`) completed `SUCCEEDED`; its only action, `Archive - iOS` (`51e29655-5a29-4ab4-acb0-cb87db96c8b5`), completed `SUCCEEDED`; processed build 23 (`17a142c5-bca5-419c-afb6-4386739f8a64`) is `VALID`. This proves compile/archive and string-catalog resource success; the workflow did not contain a test action, so XCTest execution is not claimed.
+- Release boundary: No ASC build attachment, review submission, or public release was performed.
+- Preserved scope: No clinic records, availability, Firestore, registration, submissions, community behavior, moderation, ASC state, device app, or user-owned dirty/untracked file was changed by this round.
+
+## Round 10 — Prepare four additional official availability records
+
+- Started: 2026-08-02 (Asia/Taipei)
+- Fresh live evidence:
+  - Production remained at 11 availability overlays, including 10 24-hour entries; the public-only production audit, offline catalog gate, GitHub validation, and Xcode Cloud Build 23 remained green.
+  - ASC iOS 1.0 remained `READY_FOR_REVIEW` with Build 12 attached, while the paired physical device `是條小狗` still reported VetMap 1.0 (14).
+  - Official primary pages directly documented Pets Central Mong Kok as a 24-hour veterinary service, Pets Central Tseung Kwan O as open daily 08:30–20:30, Southside Vets weekday/weekend hours, and Trinity Vets weekday/Sunday hours with a 13:00–14:00 lunch closure.
+- Sol plan: Create an explicitly pending v2 availability delta for those four clinics, with a source-only validation gate and no production deployment.
+- Luna implementation:
+  - Added a pending manifest with exact clinic identities, official HTTPS sources, canonical schedules, call-first notes, a 2026-10-31 expiry, and `deploymentStatus: pending`.
+  - Planned coverage becomes 15 overlays: 11 24-hour and 4 scheduled, while the deployed v1 manifest remains unchanged at 11/10.
+  - Added a validator that combines deployed v1 and pending v2 through the existing structural integrity validator, then pins exact IDs, catalog names, URLs, schedules, service notes, counts, and pending status.
+  - Added mutation tests for IDs, v1 overlap, names, official URLs, weekday/time drift, Trinity lunch intervals, Pets Central 24-hour status, deployment status, and contradictory service notes.
+  - Added only the pending validator and tests to the primary GitHub workflow; no restore, token, deploy, or write command was added.
+- First Sol review: **RETURNED** — one P2 false-negative allowed canonical call-first and public-holiday service notes to be contradicted while CI stayed green.
+- Luna correction: Added all four exact service notes to canonical comparison and regression tests for contradictory Pets Central and scheduled-clinic notes.
+- Final Sol acceptance: **ACCEPT** — the P2 was resolved with no new P0/P1/P2 finding.
+- Local evidence: New pending tests passed 7/7; the pending validator returned `deploymentStatus: pending`, `productionApplied: false`, pending 4, planned total 15, planned 24-hour 11, and planned scheduled 4. Existing catalog tests remained 10/10 with deployed baseline `179/161/18/205/11`; all three Node files passed syntax checks and scoped patch hygiene passed. No local `xcodebuild` was run.
+- Production boundary: This round did not alter the deployed v1 manifest, restore tooling, public audit expectations, or Firestore. Production availability remains 11 overlays, including 10 24-hour entries.
 - GitHub validation: Pending the pushed commit for this round.
 - Xcode Cloud: Pending the pushed commit for this round.
 - Release boundary: No ASC build attachment, review submission, or public release was performed.
-- Preserved scope: No clinic records, availability, Firestore, registration, submissions, community behavior, moderation, ASC state, device app, or user-owned dirty/untracked file was changed by this round.
+- Preserved scope: No production data, registration, submissions, community behavior, moderation, ASC state, device app, or user-owned dirty/untracked file was changed by this round.

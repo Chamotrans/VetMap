@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "migrationId": "hk-clinic-hours-v2-2026-08-02",
+  "deploymentStatus": "pending",
+  "catalogRegion": "HK",
+  "timeZoneIdentifier": "Asia/Hong_Kong",
+  "verifiedAt": "2026-08-02T00:00:00+08:00",
+  "expiresAt": "2026-10-31T00:00:00+08:00",
+  "count": 4,
+  "clinics": [
+    {
+      "clinicID": "clinic-hk-vetmap-seed-pets-central",
+      "expectedName": "Pets Central 旺角動物醫院",
+      "is24Hours": true,
+      "offersNightService": true,
+      "displayLabel": "24 小時急症",
+      "serviceNote": "提供夜間急症服務；到診前請先致電確認。",
+      "weeklyHours": {},
+      "sourceName": "Pets Central 官方網站",
+      "sourceURL": "https://pets-central.com/en/AboutUs/Hospitals"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-141",
+      "expectedName": "將軍澳動物醫院",
+      "is24Hours": false,
+      "offersNightService": false,
+      "displayLabel": "",
+      "serviceNote": "官方頁面未列出公眾假期例外；出發前請先致電確認。",
+      "weeklyHours": {
+        "mon": [{"opensAt": "08:30", "closesAt": "20:30"}],
+        "tue": [{"opensAt": "08:30", "closesAt": "20:30"}],
+        "wed": [{"opensAt": "08:30", "closesAt": "20:30"}],
+        "thu": [{"opensAt": "08:30", "closesAt": "20:30"}],
+        "fri": [{"opensAt": "08:30", "closesAt": "20:30"}],
+        "sat": [{"opensAt": "08:30", "closesAt": "20:30"}],
+        "sun": [{"opensAt": "08:30", "closesAt": "20:30"}]
+      },
+      "sourceName": "Pets Central 官方網站",
+      "sourceURL": "https://pets-central.com/en/AboutUs/Hospitals"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-159",
+      "expectedName": "Southside Vets",
+      "is24Hours": false,
+      "offersNightService": false,
+      "displayLabel": "",
+      "serviceNote": "官方頁面未列出公眾假期例外；出發前請先致電確認。",
+      "weeklyHours": {
+        "mon": [{"opensAt": "10:00", "closesAt": "19:00"}],
+        "tue": [{"opensAt": "10:00", "closesAt": "19:00"}],
+        "wed": [{"opensAt": "10:00", "closesAt": "19:00"}],
+        "thu": [{"opensAt": "10:00", "closesAt": "19:00"}],
+        "fri": [{"opensAt": "10:00", "closesAt": "19:00"}],
+        "sat": [{"opensAt": "10:00", "closesAt": "18:00"}],
+        "sun": [{"opensAt": "10:00", "closesAt": "14:00"}]
+      },
+      "sourceName": "Southside Vets 官方網站",
+      "sourceURL": "https://www.southsidevets.hk/contactus"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-156",
+      "expectedName": "Trinity Vets",
+      "is24Hours": false,
+      "offersNightService": false,
+      "displayLabel": "",
+      "serviceNote": "官方頁面未列出公眾假期例外；出發前請先致電確認。",
+      "weeklyHours": {
+        "mon": [{"opensAt": "09:00", "closesAt": "13:00"}, {"opensAt": "14:00", "closesAt": "19:00"}],
+        "tue": [{"opensAt": "09:00", "closesAt": "13:00"}, {"opensAt": "14:00", "closesAt": "19:00"}],
+        "wed": [{"opensAt": "09:00", "closesAt": "13:00"}, {"opensAt": "14:00", "closesAt": "19:00"}],
+        "thu": [{"opensAt": "09:00", "closesAt": "13:00"}, {"opensAt": "14:00", "closesAt": "19:00"}],
+        "fri": [{"opensAt": "09:00", "closesAt": "13:00"}, {"opensAt": "14:00", "closesAt": "19:00"}],
+        "sat": [{"opensAt": "09:00", "closesAt": "13:00"}, {"opensAt": "14:00", "closesAt": "19:00"}],
+        "sun": [{"opensAt": "10:00", "closesAt": "13:00"}, {"opensAt": "14:00", "closesAt": "19:00"}]
+      },
+      "sourceName": "Trinity Vets 官方網站",
+      "sourceURL": "https://trinityvets.com.hk/hk/contact/"
+    }
+  ]
+}
