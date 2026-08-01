@@ -206,9 +206,11 @@ struct ClinicListView: View {
             .padding(.top, 12)
             .padding(.bottom, 24)
 
-            Text("資料由社群投稿，經管理員審核後公開")
+            Text("診所目錄由 VetMap 建立或經授權使用，並由 VetMap 整理及審核。")
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.top, 8)
         }
@@ -235,9 +237,9 @@ struct ClinicListView: View {
                 .background(AppTheme.primary, in: RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous))
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 4) {
-                Text("社群回報")
+                Text("香港獸醫診所目錄")
                     .font(.headline.weight(.semibold))
-                Text("社群投稿會安全送到雲端，經管理員審核後公開。")
+                Text("搜尋診所；有現行官方營業資料時會標示，社群投稿經審核後公開。")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)

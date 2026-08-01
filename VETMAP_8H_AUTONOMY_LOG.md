@@ -163,7 +163,30 @@
 - Sol acceptance: **ACCEPT** — no P0/P1/P2 finding. CLI strictness, full-mode preservation, public-only coverage, read-only behavior, warning clarity, documentation, and dirty-file scope reviewed.
 - Local evidence: `node --check` passed; tokenless full mode, unknown arguments, and extra arguments failed as required; tokenless live public-only audit passed with clinics 180 (179 catalog plus demo), 161/18 map coverage, 205 lineage records, 11 availability entries including 10 24-hour entries, reviews 1, quotes 1, products 124, insurances 3, and all anonymous denial checks. Catalog tests remained 10/10 and the real validator remained `179/161/18/205/11`; scoped `git diff --check` passed.
 - Authority boundary: Full live inventory comparison was not rerun because gcloud still requires interactive reauthentication. Public-only evidence is not an authoritative no-stray-document claim.
+- GitHub validation: `Backend and Config Validation` run `30720288430` completed successfully for commit `7a51338`, including the Hong Kong catalog gate, Functions validation, Firebase emulator rules tests, and patch hygiene.
+- Xcode Cloud: Build run 22 (`e53fb5d0-e4d9-496d-baf5-86529e96262a`) completed `SUCCEEDED`; its only action, `Archive - iOS` (`e7d82574-e235-4704-8d59-bbef7e2d67e0`), completed `SUCCEEDED`; processed build 22 (`89521c4f-ca5c-4560-b121-158396fff5d7`) is `VALID`. This proves compile/archive success; the workflow did not contain a test action, so XCTest execution is not claimed.
+- Release boundary: No ASC build attachment, review submission, or public release was performed.
+- Preserved scope: No catalog data, Firestore write/rules/backend, registration, submissions, community, moderation, device app, or user-owned dirty/untracked file was changed by this round.
+
+## Round 9 — Correct the clinic directory provenance disclosure
+
+- Started: 2026-08-02 (Asia/Taipei)
+- Fresh live evidence:
+  - The public-only production audit remained green at clinics 180 (179 authorized catalog plus one demo), 161 mappable and 18 list-only clinics, 205 authorized lineage records, 11 availability entries including 10 24-hour entries, reviews 1, quotes 1, products 124, and insurances 3.
+  - The 179 catalog clinics identify the source as the authorized VetMap Hong Kong clinic database and the rights basis as owner-confirmed in-house creation or licensed use.
+  - The main clinic list nevertheless described the directory as entirely community-submitted, while the profile disclosure correctly described it as created by or licensed to VetMap.
+  - GitHub validation and Xcode Cloud Build 22 remained successful; ASC iOS 1.0 remained `READY_FOR_REVIEW` with Build 12 attached.
+  - The physical device `是條小狗` remained paired rather than connected; its app inventory still reported VetMap 1.0 (14), so no new runtime proof was claimed.
+- Sol plan: Correct the primary clinic browsing provenance disclosure so the authorized directory and reviewed community submissions are both represented truthfully.
+- Luna implementation:
+  - Changed the clinic-list header to identify the Hong Kong veterinary clinic directory.
+  - Explained that current official opening information is shown when available while community submissions are published after review.
+  - Replaced the inaccurate all-community footer with the established created-or-licensed VetMap directory disclosure and added multiline centered layout.
+  - Added exact English and Simplified Chinese translations for all three new source strings and removed the three obsolete misleading localization keys.
+  - Preserved add-clinic controls, login continuation, submissions, moderation, reviews, quotes, and reporting flows.
+- Sol acceptance: **ACCEPT** — no P0/P1/P2 finding. Rights provenance, community preservation, copy, small-screen layout, localization, feature-flow scope, and backend boundaries reviewed.
+- Local evidence: The Swift view passed `swiftc -parse`; the string catalog passed `jq empty`; all three English and Simplified Chinese translations and states matched exactly; the source language remained `zh-Hant`; obsolete keys were absent; scoped `git diff --check` passed. No local `xcodebuild` was run.
 - GitHub validation: Pending the pushed commit for this round.
 - Xcode Cloud: Pending the pushed commit for this round.
 - Release boundary: No ASC build attachment, review submission, or public release was performed.
-- Preserved scope: No catalog data, Firestore write/rules/backend, registration, submissions, community, moderation, device app, or user-owned dirty/untracked file was changed by this round.
+- Preserved scope: No clinic records, availability, Firestore, registration, submissions, community behavior, moderation, ASC state, device app, or user-owned dirty/untracked file was changed by this round.
