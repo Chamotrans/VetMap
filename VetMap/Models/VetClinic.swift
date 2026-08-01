@@ -150,6 +150,9 @@ extension ClinicAvailability {
     private static let weekdayKeys = [
         "sun", "mon", "tue", "wed", "thu", "fri", "sat"
     ]
+    private static let maximumVerificationWindow: TimeInterval = 100 * 24 * 60 * 60
+    private static let minutesPerDay = 24 * 60
+    private static let minutesPerWeek = 7 * minutesPerDay
 
     fileprivate var calendar: Calendar? {
         guard let timeZone = TimeZone(identifier: timeZoneIdentifier) else {
@@ -161,9 +164,107 @@ extension ClinicAvailability {
     }
 
     func isCurrent(at date: Date) -> Bool {
-        verifiedAt <= date
-            && date < expiresAt
-            && calendar != nil
+        guard
+            schemaVersion == 1,
+            hasSafeMigrationIdentifier,
+            timeZoneIdentifier == "Asia/Hong_Kong",
+            calendar != nil,
+            verifiedAt < expiresAt,
+            expiresAt.timeIntervalSince(verifiedAt)
+                <= Self.maximumVerificationWindow,
+            verifiedAt <= date,
+            date < expiresAt,
+            sourceURL.scheme?.lowercased() == "https",
+            sourceURL.host?.isEmpty == false,
+            hasVisibleAlphanumeric(sourceName),
+            hasVisibleAlphanumeric(serviceNote)
+        else {
+            return false
+        }
+
+        if is24Hours {
+            return offersNightService
+                && hasVisibleAlphanumeric(displayLabel)
+                && weeklyHours.isEmpty
+        }
+        return hasValidScheduledHours
+    }
+
+    private var hasSafeMigrationIdentifier: Bool {
+        let bytes = Array(migrationId.utf8)
+        let prefix = Array("hk-clinic-hours-".utf8)
+        guard
+            bytes.starts(with: prefix),
+            bytes.count > prefix.count
+        else {
+            return false
+        }
+        let suffix = bytes.dropFirst(prefix.count)
+        guard
+            let first = suffix.first,
+            let last = suffix.last,
+            Self.isASCIIAlphanumeric(first),
+            Self.isASCIIAlphanumeric(last)
+        else {
+            return false
+        }
+        return suffix.allSatisfy {
+            Self.isASCIIAlphanumeric($0) || $0 == 45
+        }
+    }
+
+    private func hasVisibleAlphanumeric(_ value: String) -> Bool {
+        value.unicodeScalars.contains {
+            CharacterSet.alphanumerics.contains($0)
+        }
+    }
+
+    private static func isASCIIAlphanumeric(_ byte: UInt8) -> Bool {
+        (48...57).contains(byte)
+            || (65...90).contains(byte)
+            || (97...122).contains(byte)
+    }
+
+    private var hasValidScheduledHours: Bool {
+        guard Set(weeklyHours.keys) == Set(Self.weekdayKeys) else {
+            return false
+        }
+
+        var occupiedSegments: [Range<Int>] = []
+        for (dayIndex, weekday) in Self.weekdayKeys.enumerated() {
+            guard let intervals = weeklyHours[weekday] else { return false }
+            for interval in intervals {
+                guard
+                    let opens = interval.canonicalMinuteOfDay(interval.opensAt),
+                    let closes = interval.canonicalMinuteOfDay(interval.closesAt),
+                    opens != closes
+                else {
+                    return false
+                }
+                let start = dayIndex * Self.minutesPerDay + opens
+                let end = dayIndex * Self.minutesPerDay
+                    + closes
+                    + (closes < opens ? Self.minutesPerDay : 0)
+                if end <= Self.minutesPerWeek {
+                    occupiedSegments.append(start..<end)
+                } else {
+                    occupiedSegments.append(start..<Self.minutesPerWeek)
+                    occupiedSegments.append(0..<(end - Self.minutesPerWeek))
+                }
+            }
+        }
+
+        let sortedSegments = occupiedSegments.sorted {
+            if $0.lowerBound == $1.lowerBound {
+                return $0.upperBound < $1.upperBound
+            }
+            return $0.lowerBound < $1.lowerBound
+        }
+        for (previous, current) in zip(sortedSegments, sortedSegments.dropFirst())
+            where current.lowerBound < previous.upperBound {
+            return false
+        }
+        return true
     }
 
     fileprivate func openIntervalEnd(
@@ -215,12 +316,15 @@ extension ClinicAvailability {
     }
 }
 
-private extension ClinicHoursInterval {
+fileprivate extension ClinicHoursInterval {
     var continuesIntoFollowingDay: Bool {
-        guard let opens = minuteOfDay(opensAt), let closes = minuteOfDay(closesAt) else {
+        guard
+            let opens = canonicalMinuteOfDay(opensAt),
+            let closes = canonicalMinuteOfDay(closesAt)
+        else {
             return false
         }
-        return closes <= opens
+        return closes < opens
     }
 
     func dateRange(
@@ -228,8 +332,9 @@ private extension ClinicHoursInterval {
         calendar: Calendar
     ) -> Range<Date>? {
         guard
-            let opens = minuteOfDay(opensAt),
-            let closes = minuteOfDay(closesAt),
+            let opens = canonicalMinuteOfDay(opensAt),
+            let closes = canonicalMinuteOfDay(closesAt),
+            opens != closes,
             let start = calendar.date(
                 byAdding: .minute,
                 value: opens,
@@ -244,7 +349,7 @@ private extension ClinicHoursInterval {
             return nil
         }
         let end: Date
-        if closes <= opens {
+        if closes < opens {
             guard let followingDayEnd = calendar.date(
                 byAdding: .day,
                 value: 1,
@@ -260,12 +365,20 @@ private extension ClinicHoursInterval {
         return start..<end
     }
 
-    func minuteOfDay(_ value: String) -> Int? {
-        let parts = value.split(separator: ":", omittingEmptySubsequences: false)
+    func canonicalMinuteOfDay(_ value: String) -> Int? {
+        let bytes = Array(value.utf8)
         guard
-            parts.count == 2,
-            let hour = Int(parts[0]),
-            let minute = Int(parts[1]),
+            bytes.count == 5,
+            bytes[2] == 58,
+            bytes.enumerated().allSatisfy({ index, byte in
+                index == 2 || (48...57).contains(byte)
+            })
+        else {
+            return nil
+        }
+        let hour = Int(bytes[0] - 48) * 10 + Int(bytes[1] - 48)
+        let minute = Int(bytes[3] - 48) * 10 + Int(bytes[4] - 48)
+        guard
             (0...23).contains(hour),
             (0...59).contains(minute)
         else {

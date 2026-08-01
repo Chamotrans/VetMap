@@ -344,6 +344,130 @@ final class VetMapModelTests: XCTestCase {
         XCTAssertTrue(filter.results(from: [clinic], at: afterExpiry).isEmpty)
     }
 
+    func testCanonicalAvailabilitySemanticsAcceptSupportedSchedules() {
+        let now = Date(timeIntervalSince1970: 1_775_102_400)
+        let allDay = makeAvailability(is24Hours: true)
+        let sevenDay = makeAvailability(weeklyHours: [
+            "thu": [ClinicHoursInterval(opensAt: "08:00", closesAt: "20:00")]
+        ])
+        let trinitySplit = makeAvailability(weeklyHours: [
+            "thu": [
+                ClinicHoursInterval(opensAt: "09:00", closesAt: "13:00"),
+                ClinicHoursInterval(opensAt: "14:00", closesAt: "19:00")
+            ]
+        ])
+        let overnight = makeAvailability(weeklyHours: [
+            "wed": [ClinicHoursInterval(opensAt: "21:00", closesAt: "02:00")]
+        ], offersNightService: true)
+
+        for availability in [allDay, sevenDay, trinitySplit, overnight] {
+            XCTAssertTrue(availability.isCurrent(at: now))
+        }
+    }
+
+    func testAvailabilityExpiryBoundaryIsFailClosed() {
+        let verifiedAt = Date(timeIntervalSince1970: 1_775_000_000)
+        let expiresAt = verifiedAt.addingTimeInterval(24 * 60 * 60)
+        let availability = makeAvailability(
+            is24Hours: true,
+            verifiedAt: verifiedAt,
+            expiresAt: expiresAt
+        )
+
+        XCTAssertTrue(availability.isCurrent(at: verifiedAt))
+        XCTAssertTrue(availability.isCurrent(at: expiresAt.addingTimeInterval(-1)))
+        XCTAssertFalse(availability.isCurrent(at: expiresAt))
+
+        let exactlyOneHundredDays = makeAvailability(
+            is24Hours: true,
+            verifiedAt: verifiedAt,
+            expiresAt: verifiedAt.addingTimeInterval(100 * 24 * 60 * 60)
+        )
+        XCTAssertTrue(exactlyOneHundredDays.isCurrent(at: verifiedAt))
+        assertInvalidAvailability(
+            makeAvailability(
+                is24Hours: true,
+                verifiedAt: verifiedAt,
+                expiresAt: verifiedAt.addingTimeInterval(100 * 24 * 60 * 60 + 1)
+            ),
+            at: verifiedAt,
+            message: "100 days plus one second"
+        )
+    }
+
+    func testInvalidAvailabilityMutationMatrixIsUnavailableAndExcludedFromFilters() {
+        let now = Date(timeIntervalSince1970: 1_775_102_400)
+        let validStart = Date(timeIntervalSince1970: 1_775_000_000)
+        let validEnd = validStart.addingTimeInterval(90 * 24 * 60 * 60)
+        let regularDay = [
+            ClinicHoursInterval(opensAt: "08:00", closesAt: "20:00")
+        ]
+        let invalidPayloads = [
+            makeAvailability(schemaVersion: 2, is24Hours: true),
+            makeAvailability(migrationId: "", is24Hours: true),
+            makeAvailability(migrationId: "other-hours-v1", is24Hours: true),
+            makeAvailability(migrationId: "hk-clinic-hours-v1\u{2060}", is24Hours: true),
+            makeAvailability(migrationId: "hk-clinic-hours-v1\u{FEFF}", is24Hours: true),
+            makeAvailability(timeZoneIdentifier: "Asia/Taipei", is24Hours: true),
+            makeAvailability(is24Hours: true, sourceURL: URL(string: "http://example.com")!),
+            makeAvailability(is24Hours: true, sourceURL: URL(string: "https:///hours")!),
+            makeAvailability(is24Hours: true, sourceName: " \n "),
+            makeAvailability(is24Hours: true, sourceName: "\u{2060}"),
+            makeAvailability(is24Hours: true, serviceNote: "\t"),
+            makeAvailability(is24Hours: true, serviceNote: "\u{FEFF}"),
+            makeAvailability(is24Hours: true, verifiedAt: validEnd, expiresAt: validStart),
+            makeAvailability(is24Hours: true, verifiedAt: now.addingTimeInterval(1), expiresAt: validEnd),
+            makeAvailability(is24Hours: true, verifiedAt: validStart, expiresAt: now),
+            makeAvailability(
+                is24Hours: true,
+                verifiedAt: validStart,
+                expiresAt: validStart.addingTimeInterval(100 * 24 * 60 * 60 + 1)
+            ),
+            makeAvailability(is24Hours: true, offersNightService: false),
+            makeAvailability(is24Hours: true, displayLabel: "  "),
+            makeAvailability(is24Hours: true, displayLabel: "\u{2060}"),
+            makeAvailability(weeklyHours: ["thu": regularDay], is24Hours: true),
+            makeAvailability(weeklyHours: ["sun": regularDay], omitWeekday: "sat"),
+            makeAvailability(weeklyHours: ["holiday": regularDay]),
+            makeAvailability(weeklyHours: [
+                "thu": [ClinicHoursInterval(opensAt: "8:00", closesAt: "20:00")]
+            ]),
+            makeAvailability(weeklyHours: [
+                "thu": [ClinicHoursInterval(opensAt: "😀:", closesAt: "20:00")]
+            ]),
+            makeAvailability(weeklyHours: [
+                "thu": [ClinicHoursInterval(opensAt: "０8:00", closesAt: "20:00")]
+            ]),
+            makeAvailability(weeklyHours: [
+                "thu": [ClinicHoursInterval(opensAt: "0\u{2060}:00", closesAt: "20:00")]
+            ]),
+            makeAvailability(weeklyHours: [
+                "thu": [ClinicHoursInterval(opensAt: "24:00", closesAt: "20:00")]
+            ]),
+            makeAvailability(weeklyHours: [
+                "thu": [ClinicHoursInterval(opensAt: "08:00", closesAt: "08:00")]
+            ]),
+            makeAvailability(weeklyHours: [
+                "thu": [
+                    ClinicHoursInterval(opensAt: "08:00", closesAt: "12:00"),
+                    ClinicHoursInterval(opensAt: "11:00", closesAt: "14:00")
+                ]
+            ]),
+            makeAvailability(weeklyHours: [
+                "wed": [ClinicHoursInterval(opensAt: "21:00", closesAt: "02:00")],
+                "thu": [ClinicHoursInterval(opensAt: "01:00", closesAt: "03:00")]
+            ]),
+            makeAvailability(weeklyHours: [
+                "sun": [ClinicHoursInterval(opensAt: "01:00", closesAt: "03:00")],
+                "sat": [ClinicHoursInterval(opensAt: "21:00", closesAt: "02:00")]
+            ])
+        ]
+
+        for (index, availability) in invalidPayloads.enumerated() {
+            assertInvalidAvailability(availability, at: now, message: "mutation \(index)")
+        }
+    }
+
     func testClosedClinicWithCurrentNightServiceKeepsNightServiceLabel() {
         let thursdayAfterClose = Date(timeIntervalSince1970: 1_775_134_800)
         let clinic = makeClinic(
@@ -1635,22 +1759,81 @@ final class VetMapModelTests: XCTestCase {
 
     private func makeAvailability(
         weeklyHours: [String: [ClinicHoursInterval]] = [:],
+        schemaVersion: Int = 1,
+        migrationId: String = "hk-clinic-hours-test-v1",
+        timeZoneIdentifier: String = "Asia/Hong_Kong",
         is24Hours: Bool = false,
-        offersNightService: Bool = false
+        offersNightService: Bool? = nil,
+        displayLabel: String? = nil,
+        serviceNote: String = "測試營業資料",
+        sourceURL: URL = URL(string: "https://example.com/hours")!,
+        sourceName: String = "測試官方網站",
+        verifiedAt: Date = Date(timeIntervalSince1970: 1_767_225_600),
+        expiresAt: Date = Date(timeIntervalSince1970: 1_775_577_600),
+        omitWeekday: String? = nil
     ) -> ClinicAvailability {
-        ClinicAvailability(
-            schemaVersion: 1,
-            migrationId: "test-hours-v1",
-            timeZoneIdentifier: "Asia/Hong_Kong",
-            weeklyHours: weeklyHours,
+        let weekdayKeys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
+        var normalizedWeeklyHours: [String: [ClinicHoursInterval]] = is24Hours
+            ? [:]
+            : Dictionary(uniqueKeysWithValues: weekdayKeys.map { ($0, []) })
+        for (weekday, intervals) in weeklyHours {
+            normalizedWeeklyHours[weekday] = intervals
+        }
+        if let omitWeekday {
+            normalizedWeeklyHours.removeValue(forKey: omitWeekday)
+        }
+        return ClinicAvailability(
+            schemaVersion: schemaVersion,
+            migrationId: migrationId,
+            timeZoneIdentifier: timeZoneIdentifier,
+            weeklyHours: normalizedWeeklyHours,
             is24Hours: is24Hours,
-            offersNightService: offersNightService || is24Hours,
-            displayLabel: is24Hours ? "24 小時" : "",
-            serviceNote: "測試營業資料",
-            sourceURL: URL(string: "https://example.com/hours")!,
-            sourceName: "測試官方網站",
-            verifiedAt: Date(timeIntervalSince1970: 1_767_225_600),
-            expiresAt: Date(timeIntervalSince1970: 1_775_577_600)
+            offersNightService: offersNightService ?? is24Hours,
+            displayLabel: displayLabel ?? (is24Hours ? "24 小時" : ""),
+            serviceNote: serviceNote,
+            sourceURL: sourceURL,
+            sourceName: sourceName,
+            verifiedAt: verifiedAt,
+            expiresAt: expiresAt
+        )
+    }
+
+    private func assertInvalidAvailability(
+        _ availability: ClinicAvailability,
+        at date: Date,
+        message: String,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let clinic = makeClinic(availability: availability)
+        XCTAssertFalse(availability.isCurrent(at: date), message, file: file, line: line)
+        XCTAssertFalse(clinic.hasCurrentAvailability(at: date), message, file: file, line: line)
+        XCTAssertFalse(clinic.hasCurrentNightService(at: date), message, file: file, line: line)
+        XCTAssertEqual(clinic.operatingStatus(at: date), .unavailable, message, file: file, line: line)
+        XCTAssertFalse(clinic.isOpen(at: date), message, file: file, line: line)
+        XCTAssertNil(clinic.availabilityLabel(at: date), message, file: file, line: line)
+
+        var filter = ClinicSearchFilter()
+        for availabilityFilter in [
+            ClinicSearchFilter.Availability.openNow,
+            .open24Hours,
+            .nightService
+        ] {
+            filter.availability = availabilityFilter
+            XCTAssertTrue(
+                filter.results(from: [clinic], at: date).isEmpty,
+                message,
+                file: file,
+                line: line
+            )
+        }
+        filter.availability = .all
+        XCTAssertEqual(
+            filter.results(from: [clinic], at: date).map(\.id),
+            [clinic.id],
+            message,
+            file: file,
+            line: line
         )
     }
 

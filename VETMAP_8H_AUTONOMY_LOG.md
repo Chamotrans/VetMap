@@ -236,7 +236,7 @@
 - Local evidence: Runner tests passed 20/20; combined runner, pending-plan, and catalog-integrity tests passed 37/37; both Node files passed syntax checks; both validator CLIs passed; and `git diff --check` passed. No local `xcodebuild` was run.
 - Live-run boundary: No authoritative live dry-run was claimed because the local Google credentials still require interactive reauthentication. No `--apply`, Firestore write, or production backup was performed; deployed availability remains 11/10/1 and the v2 manifest remains pending.
 - GitHub validation: `Backend and Config Validation` run `30722671583` completed successfully for commit `cdb0e53`, including the new pending v2 restore-runner suite, catalog gates, Functions validation, Firebase emulator rules tests, and patch hygiene.
-- Xcode Cloud boundary: GitHub's Apple Xcode Cloud check confirmed commit-specific build run `789b9c0d-abd1-4efe-b0d2-0d4e172f0dab` and its only action, `Archive - iOS` (`318c6fa6-6105-465c-ab6f-ca92ab53e55a`), were in progress. Completion and processed-build validity were not yet claimed; no local `xcodebuild` was substituted.
+- Xcode Cloud: GitHub's Apple Xcode Cloud check confirmed commit-specific build run `789b9c0d-abd1-4efe-b0d2-0d4e172f0dab` and its only action, `Archive - iOS` (`318c6fa6-6105-465c-ab6f-ca92ab53e55a`), completed successfully. Processed-build validity was not independently available from the expired ASC session, and no local `xcodebuild` was substituted.
 - Device evidence: The physical iPhone `是條小狗` was booted, paired, and visible over the local network; its installed VetMap remained version 1.0, build 14. No installation or runtime smoke test was performed this round.
 - Release boundary: No ASC build attachment, review submission, public release, or device app change was performed.
 - Preserved scope: Registration, submissions, community interaction, moderation, Firebase rules, all production records, and all user-owned dirty/untracked files were preserved.
@@ -261,5 +261,33 @@
 - Final Sol acceptance: **ACCEPT** — the P2 was resolved with no remaining P0–P3 actionable finding.
 - Local evidence: The audit-state suite passed 17/17; combined audit, runner, pending-plan, and catalog-integrity tests passed 54/54; all three Node files passed syntax checks; both validator CLIs and `git diff --check` passed. The default public-only live audit completed successfully at `11/10/1` with `availabilityStateVerified: true`. No local `xcodebuild` was run.
 - Authority boundary: Full authenticated audit was not run because local Google credentials still require interactive reauthentication. The post-apply-v2 production command was deliberately not run because production is correctly still v1.
+- GitHub validation: `Backend and Config Validation` run `30723286330` completed successfully for commit `8a49221`, including the new audit-state suite, runner and manifest gates, Functions validation, Firebase emulator rules tests, and patch hygiene.
+- Xcode Cloud boundary: GitHub's Apple Xcode Cloud check confirmed build run `412bf7cd-2352-4f5d-a3b7-e5787def976b` and its only action, `Archive - iOS` (`90948b41-46b8-49cd-82f9-6360af090ae6`), were in progress. Completion and processed-build validity are not yet claimed.
 - Production and release boundary: No runner `--apply`, Firestore write, backup, Firebase deploy, manifest-status change, ASC build attachment, review submission, public release, or device-app change was performed.
 - Preserved scope: Registration, submissions, community interaction, moderation, and all user-owned dirty/untracked files were preserved.
+
+## Round 13 — Fail closed on semantically unsafe clinic availability
+
+- Started: 2026-08-02 (Asia/Taipei)
+- Fresh live evidence:
+  - The default public-only audit remained verified at deployed v1 `11/10/1`; the v2 plan remained pending at four additions and planned `15/11/4`.
+  - GitHub run `30723286330` remained successful. Its Xcode Cloud build run `412bf7cd-2352-4f5d-a3b7-e5787def976b` and only `Archive - iOS` action (`90948b41-46b8-49cd-82f9-6360af090ae6`) were still in progress and were not treated as success.
+  - The physical iPhone `是條小狗` was booted, paired, and tunnel-connected over the local network; its installed VetMap remained version 1.0, build 14. No new runtime proof was claimed.
+- Sol plan: Add one production app-side semantic gate so a type-correct but unsafe availability payload cannot display `營業中`, `24 小時`, or `夜診`, while the clinic remains available in the complete unfiltered directory.
+- Luna implementation:
+  - Expanded the shared `ClinicAvailability.isCurrent(at:)` contract so every existing operating-status, badge, detail, sorting, and filter path fails closed through one predicate.
+  - Required schema version 1, a safe `hk-clinic-hours-…` migration identifier, exact `Asia/Hong_Kong`, a current ordered verification window no longer than 100 days, an HTTPS source host, and visibly meaningful source name and service note.
+  - Required coherent 24-hour records: night service enabled, a visible label, and no recurring schedule. Scheduled records require exactly seven weekday keys, canonical ASCII `HH:mm`, unequal endpoints, and no overlap across same-day, overnight, or week-wrap intervals.
+  - Added formal XCTest coverage and normalized scheduled test fixtures, but did not claim XCTest execution because the current Xcode Cloud workflow contains only an Archive action.
+  - Added a standalone semantic harness that compiles the actual production `ClinicCoordinate`, `VetClinic`, and `ClinicSearchFilter` sources; it exercises supported schedules, temporal boundaries, metadata mutations, Unicode attacks, cyclic overlaps, the three active filters, and `.all` directory preservation.
+  - Integrated that harness into the existing Xcode Cloud post-clone script after Firebase configuration validation, so a non-zero semantic check blocks the Archive action without changing the ASC workflow.
+- First Sol review: **RETURNED** — one P1 found a five-byte adversarial Unicode time string could trap through mixed UTF-8/Character indexing; two P2 findings found invisible format-only metadata could pass and the standalone harness did not compile or exercise the production filters.
+- Luna correction:
+  - Replaced Character indexing with exact five-byte ASCII parsing and added emoji, full-width digit, and format-control mutations.
+  - Required visible alphanumeric metadata and a safe ASCII migration suffix, rejecting word-joiner and BOM-only values.
+  - Compiled `ClinicSearchFilter.swift` into the harness and proved each invalid payload is excluded from `openNow`, `open24Hours`, and `nightService`, while `.all` retains the clinic. Exact 100 days passes; 100 days plus one second fails.
+- Final Sol source acceptance: **SOURCE ACCEPT** — all P1/P2 findings resolved with no new P0–P3 actionable finding. Final external acceptance remains conditional on Xcode Cloud executing the post-clone harness and completing Archive successfully.
+- Local evidence: The production-source harness returned `{"count":39,"passed":true}`; `sh -n`, Node regression tests 54/54, both validator CLIs, and `git diff --check` passed. This was a standalone host Swift compile/run, not a local iOS build; no local `xcodebuild` was run.
+- Test boundary: Formal `VetMapTests` XCTest cases were added but not executed by the current Archive-only Cloud workflow, so no XCTest pass is claimed.
+- Production and release boundary: No availability data, runner `--apply`, Firestore write, Firebase deploy, ASC workflow/edit/build attachment/review submission, public release, or device-app change was performed.
+- Preserved scope: Registration, submissions, community interaction, moderation, manifests, and all user-owned dirty/untracked files were preserved.
