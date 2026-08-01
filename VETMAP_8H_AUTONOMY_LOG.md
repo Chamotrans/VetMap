@@ -52,7 +52,30 @@
   - Extended focused tests for scheduled open/closed transitions, closed night service, no availability, and expired availability.
 - Sol acceptance: **ACCEPT** — no P0/P1/P2 finding. Current/unavailable boundaries, Hong Kong test times, shared badge styling and VoiceOver, scope, and regressions reviewed.
 - Local evidence: Both touched Swift files passed `swiftc -parse`; `git diff --check` passed. No local `xcodebuild` was run.
-- GitHub validation: Pending the pushed commit for this round.
-- Xcode Cloud: Pending the pushed commit for this round.
+- GitHub validation: `Backend and Config Validation` run `30717329278` completed successfully for commit `d90c623`.
+- Xcode Cloud: Build run 17 (`b0dec185-c49c-400c-95cb-31eeb39f9ab8`) completed `SUCCEEDED`; its only action, `Archive - iOS`, completed `SUCCEEDED`; processed build 17 (`ce1ecfa9-305f-4435-a608-1cd932ed21bf`) is `VALID`. This proves compile/archive success; the workflow did not contain a test action, so XCTest execution is not claimed.
 - Release boundary: No ASC build attachment, review submission, or public release was performed.
 - Preserved scope: No filter, sorting, timer, Firestore, registration, submissions, community, moderation, or user-owned dirty/untracked file was changed by this round.
+
+## Round 4 — Offline Hong Kong catalog integrity gate
+
+- Started: 2026-08-02 (Asia/Taipei)
+- Fresh live evidence:
+  - Public Firestore reads remained clinics 180, products 124, insurances 3, reviews 1, and quotes 1; the current commercial catalog expiry remained `2026-10-26T20:55:03.238Z`.
+  - Xcode Cloud Build 17 and GitHub validation remained successful; ASC iOS 1.0 remained `READY_FOR_REVIEW` with Build 12 attached.
+  - The connected physical device `是條小狗` still had VetMap 1.0 (14).
+- Sol plan: Add a read-only, offline CI gate that prevents the checked-in Hong Kong restore catalog from silently shrinking or drifting while still allowing synchronized expansion.
+- Luna implementation:
+  - Added a Node 22 built-ins-only validator for clinic count floors, unique clinic and lineage IDs, required identity/source fields, Hong Kong coordinates, exact report reconciliation, and exact missing-coordinate IDs.
+  - Added availability-overlay validation for count floors, authorized clinic identity, Boolean flags, HTTPS sources, verification window ordering, weekday/time formats, full regular schedules, and non-empty 24-hour labels.
+  - Added mutation tests for synchronized shrinkage, duplicate IDs/lineage, stale report coverage, missing/replaced coordinate details, orphan hours, unsafe hours metadata, invalid coordinates, and a valid synchronized 180th clinic expansion.
+  - Integrated tests and real-manifest validation into the primary GitHub workflow before Firebase emulator checks.
+- First Sol review: **RETURNED** — two P2 false-negative classes were found in report reconciliation and hours metadata validation.
+- Luna correction: Made source coverage and missing-coordinate reconciliation exact; added hours Boolean/name/label checks and regression fixtures.
+- Final Sol acceptance: **ACCEPT** — both P2 findings resolved with no new P0/P1/P2 finding.
+- Local evidence: `node --check` passed for both scripts; Node tests passed 10/10; the real catalog passed with 179 clinics, 161 coordinates, 18 awaiting coordinates, 205 lineage IDs, and 11 hours overlays; `git diff --check` passed.
+- GitHub validation: Pending the pushed commit for this round.
+- Xcode Cloud: No Swift change requires a new app proof, but the normal main-branch trigger will be observed if it runs.
+- Production boundary: The validator is offline and read-only. It does not replace the unavailable full authoritative Firestore inventory/stray/metadata audit.
+- Release boundary: No ASC build attachment, review submission, or public release was performed.
+- Preserved scope: No catalog data, migration, production, Swift, Firestore query, registration, submissions, community, moderation, or user-owned dirty/untracked file was changed by this round.

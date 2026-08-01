@@ -35,6 +35,11 @@ jobs:
           npm ci --prefix functions
           npm ci --prefix firebase-tests
 
+      - name: Validate Hong Kong clinic catalog integrity
+        run: |
+          node --test scripts/validate_hk_catalog_integrity.test.mjs
+          node scripts/validate_hk_catalog_integrity.mjs
+
       - name: Validate Functions
         run: |
           npm run lint --prefix functions
