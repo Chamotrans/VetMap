@@ -12,6 +12,10 @@ func reconciledClinicSelection(currentID: String?, visibleIDs: [String]) -> Stri
     return currentID
 }
 
+func pendingMapLocationCount(directoryCount: Int, markerCount: Int) -> Int {
+    max(directoryCount - markerCount, 0)
+}
+
 @MainActor
 @Observable
 final class MapViewModel {
@@ -60,6 +64,13 @@ final class MapViewModel {
     /// been reliably geocoded. Only this subset is safe to render as map pins.
     var mappableClinics: [VetClinic] {
         filteredClinics.filter { $0.mapCoordinate != nil }
+    }
+
+    var pendingLocationCount: Int {
+        pendingMapLocationCount(
+            directoryCount: filteredClinics.count,
+            markerCount: mappableClinics.count
+        )
     }
 
     func loadClinics() {

@@ -106,6 +106,14 @@ struct ClinicMapView: View {
                 .accessibilityLabel("定位到目前位置")
             }
 
+            if let pendingLocationMessage {
+                Label(pendingLocationMessage, systemImage: "mappin.slash")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityLabel(pendingLocationMessage)
+            }
+
             ClinicSearchField(text: $viewModel.filter.query, placeholder: "搜尋診所、地址、服務")
             ClinicFilterControls(filter: $viewModel.filter)
         }
@@ -121,6 +129,12 @@ struct ClinicMapView: View {
         }
 
         return "目錄 \(viewModel.directoryClinics.count) 間・地圖 \(viewModel.mappableClinics.count) 個標記"
+    }
+
+    private var pendingLocationMessage: String? {
+        let count = viewModel.pendingLocationCount
+        guard count > 0 else { return nil }
+        return "\(count) 間診所位置待確認，仍可在下方目錄查看詳情"
     }
 
     @ViewBuilder

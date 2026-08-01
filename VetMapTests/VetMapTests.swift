@@ -395,6 +395,18 @@ final class VetMapModelTests: XCTestCase {
         )
     }
 
+    func testPendingMapLocationCountReturnsDirectoryMinusMarkers() {
+        XCTAssertEqual(pendingMapLocationCount(directoryCount: 179, markerCount: 161), 18)
+    }
+
+    func testPendingMapLocationCountReturnsZeroWhenAllClinicsAreMappable() {
+        XCTAssertEqual(pendingMapLocationCount(directoryCount: 11, markerCount: 11), 0)
+    }
+
+    func testPendingMapLocationCountNeverReturnsNegative() {
+        XCTAssertEqual(pendingMapLocationCount(directoryCount: 1, markerCount: 2), 0)
+    }
+
     func testAvailabilityClockTransitionReconcilesExpiredSelectionWithoutCameraFocus() {
         let scheduled = makeClinic(
             id: "scheduled",

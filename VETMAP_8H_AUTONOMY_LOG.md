@@ -117,7 +117,29 @@
   - Preserved the model, filter schema/logic, backend, restore/audit, and community clinic-submission price field for compatibility.
 - Sol acceptance: **ACCEPT** — no P0/P1/P2 finding. Public-view coverage, layout, accessibility, availability/search/navigation behavior, schema compatibility, and dirty-file scope reviewed.
 - Local evidence: All five touched Swift files passed `swiftc -parse`; scoped `rg` found no public browsing price UI; `git diff --check` passed. No local `xcodebuild` was run.
+- GitHub validation: `Backend and Config Validation` run `30719149139` completed successfully for commit `2276cd0`, including the Hong Kong catalog gate, Functions validation, Firebase emulator rules tests, and patch hygiene.
+- Xcode Cloud: Build run 20 (`1bff0581-b33f-4574-bbd5-1cc4ceb1116d`) completed `SUCCEEDED`; its only action, `Archive - iOS`, completed `SUCCEEDED`; processed build 20 (`2750941a-737a-4c16-b032-9cdccbe884a6`) is `VALID`. This proves compile/archive success; the workflow did not contain a test action, so XCTest execution is not claimed.
+- Release boundary: No ASC build attachment, review submission, or public release was performed.
+- Preserved scope: No catalog, product pricing, IAP, quote, availability, Firestore, registration, submissions, community, moderation, or user-owned dirty/untracked file was changed by this round.
+
+## Round 7 — Explain clinics awaiting reliable map coordinates
+
+- Started: 2026-08-02 (Asia/Taipei)
+- Fresh live evidence:
+  - The checked-in Hong Kong catalog remained 179 clinics: 161 with reliable map coordinates and 18 awaiting coordinates; all 179 remain available in the directory.
+  - Public catalog counts remained clinics 180, products 124, insurances 3, reviews 1, and quotes 1; the offline catalog gate remained 10/10 green.
+  - Xcode Cloud Build 20 and GitHub validation remained successful; ASC iOS 1.0 remained `READY_FOR_REVIEW` with Build 12 attached.
+  - The physical device `是條小狗` remained paired rather than connected and reported VetMap 1.0 (14), so no new runtime proof was claimed.
+- Sol plan: Explain the dynamic difference between directory results and reliable map markers without hiding clinics or inventing coordinates.
+- Luna implementation:
+  - Added a pure defensive pending-location counter that clamps malformed negative differences to zero.
+  - Derived the pending count dynamically from the currently filtered directory and mappable clinic sets, so it follows search, availability, and region filters.
+  - Added a conditional, multiline, VoiceOver-labelled map notice directing users to the directory for clinics whose locations await confirmation.
+  - Preserved reliable-coordinate-only markers, the complete filtered directory carousel, camera and selection behavior, filters, navigation, and backend behavior.
+  - Added focused tests for the current 179/161 split, zero difference, and defensive clamping.
+- Sol acceptance: **ACCEPT** — no P0/P1/P2 finding. Dynamic filtering, zero/no-result behavior, copy, accessibility, marker/carousel sources, navigation, backend scope, and tests reviewed.
+- Local evidence: All three touched Swift files passed `swiftc -parse`; targeted source checks and scoped `git diff --check` passed. No local `xcodebuild` was run.
 - GitHub validation: Pending the pushed commit for this round.
 - Xcode Cloud: Pending the pushed commit for this round.
 - Release boundary: No ASC build attachment, review submission, or public release was performed.
-- Preserved scope: No catalog, product pricing, IAP, quote, availability, Firestore, registration, submissions, community, moderation, or user-owned dirty/untracked file was changed by this round.
+- Preserved scope: No coordinates, catalog data, Firestore, registration, submissions, community, moderation, or user-owned dirty/untracked file was changed by this round.
