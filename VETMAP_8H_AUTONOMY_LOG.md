@@ -235,5 +235,31 @@
 - Final Sol acceptance: **ACCEPT** — both findings resolved with no remaining P0–P3 actionable finding.
 - Local evidence: Runner tests passed 20/20; combined runner, pending-plan, and catalog-integrity tests passed 37/37; both Node files passed syntax checks; both validator CLIs passed; and `git diff --check` passed. No local `xcodebuild` was run.
 - Live-run boundary: No authoritative live dry-run was claimed because the local Google credentials still require interactive reauthentication. No `--apply`, Firestore write, or production backup was performed; deployed availability remains 11/10/1 and the v2 manifest remains pending.
-- Release boundary: Commit-specific GitHub and Xcode Cloud validation is pending. No ASC build attachment, review submission, public release, or device app change was performed.
+- GitHub validation: `Backend and Config Validation` run `30722671583` completed successfully for commit `cdb0e53`, including the new pending v2 restore-runner suite, catalog gates, Functions validation, Firebase emulator rules tests, and patch hygiene.
+- Xcode Cloud boundary: GitHub's Apple Xcode Cloud check confirmed commit-specific build run `789b9c0d-abd1-4efe-b0d2-0d4e172f0dab` and its only action, `Archive - iOS` (`318c6fa6-6105-465c-ab6f-ca92ab53e55a`), were in progress. Completion and processed-build validity were not yet claimed; no local `xcodebuild` was substituted.
+- Device evidence: The physical iPhone `是條小狗` was booted, paired, and visible over the local network; its installed VetMap remained version 1.0, build 14. No installation or runtime smoke test was performed this round.
+- Release boundary: No ASC build attachment, review submission, public release, or device app change was performed.
 - Preserved scope: Registration, submissions, community interaction, moderation, Firebase rules, all production records, and all user-owned dirty/untracked files were preserved.
+
+## Round 12 — Add a deploy-aware availability audit transition
+
+- Started: 2026-08-02 (Asia/Taipei)
+- Fresh live evidence:
+  - The public-only audit passed with 180 approved clinics: 179 authorized Hong Kong catalog entries plus one demo, 161 mappable and 18 list-only clinics, 205 authorized lineage records, and deployed availability still exactly `11/10/1`.
+  - Reviews 1, quotes 1, products 124, insurances 3, and all anonymous denial checks remained green. The v2 plan remained pending at four additions and planned `15/11/4`, with `productionApplied: false`.
+  - GitHub run `30722671583` was successful for Round 11; the corresponding Xcode Cloud archive check was still in progress. The physical iPhone `是條小狗` remained paired over the local network with VetMap 1.0 (14).
+- Sol plan: Add an explicit audit-state transition so today's production remains fail-closed at deployed v1, while a future v2 apply can be independently proven only by a full authenticated audit showing exact public and authoritative parity at `15/11/4`.
+- Luna implementation:
+  - Added a strict, order-independent `--availability-state deployed-v1|post-apply-v2` selector; default remains `deployed-v1`, while `post-apply-v2` is forbidden with `--public-only`.
+  - Validated the selected catalog and availability manifests before the first network call and built exact per-clinic expectations with the correct v1 and v2 migration IDs, normalized timestamps, schedules, service notes, sources, expiry, and every availability field.
+  - Preserved today's exact `11/10/1` production expectation; the future selector requires exact merged `15/11/4` and does not perform a migration or change manifest state.
+  - Extended full mode to compare authenticated approved clinic IDs with anonymous approved IDs, retain the 179-HK-plus-demo boundary, and verify exact public and authoritative availability contents.
+  - Emitted `availabilityStateVerified: true` only after all existing catalog, products, insurances, and anonymous-denial gates complete; machine output includes the selected state and public/authenticated availability summaries.
+  - Added pure and mocked regression coverage and integrated it into the primary GitHub workflow without credentials, network access, or production mutation.
+- First Sol review: **RETURNED** — one P2 found that the full audit filtered authoritative clinics to `approved` before checking stray availability, allowing a non-approved document outside the plan to escape detection.
+- Luna correction: The full unfiltered authoritative clinic inventory is now checked for availability outside the selected plan before the approved subset is used for public parity. A regression test proves rejected stray availability fails while rejected documents without availability do not pollute approved parity.
+- Final Sol acceptance: **ACCEPT** — the P2 was resolved with no remaining P0–P3 actionable finding.
+- Local evidence: The audit-state suite passed 17/17; combined audit, runner, pending-plan, and catalog-integrity tests passed 54/54; all three Node files passed syntax checks; both validator CLIs and `git diff --check` passed. The default public-only live audit completed successfully at `11/10/1` with `availabilityStateVerified: true`. No local `xcodebuild` was run.
+- Authority boundary: Full authenticated audit was not run because local Google credentials still require interactive reauthentication. The post-apply-v2 production command was deliberately not run because production is correctly still v1.
+- Production and release boundary: No runner `--apply`, Firestore write, backup, Firebase deploy, manifest-status change, ASC build attachment, review submission, public release, or device-app change was performed.
+- Preserved scope: Registration, submissions, community interaction, moderation, and all user-owned dirty/untracked files were preserved.

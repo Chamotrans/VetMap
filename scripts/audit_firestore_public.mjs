@@ -1,15 +1,15 @@
 import { readFile } from "node:fs/promises";
+import {
+  buildAvailabilityExpectation,
+  parseAuditOptions,
+  verifyApprovedClinicParity,
+  verifyHKClinicAvailability,
+  verifyNoAvailabilityOutsidePlan,
+} from "./hk_clinic_availability_audit.mjs";
 
-const cliArguments = process.argv.slice(2);
-if (
-  cliArguments.length > 1
-  || (cliArguments.length === 1 && cliArguments[0] !== "--public-only")
-) {
-  throw new Error(
-    "Usage: node scripts/audit_firestore_public.mjs [--public-only]",
-  );
-}
-const auditMode = cliArguments[0] === "--public-only" ? "public-only" : "full";
+const options = parseAuditOptions(process.argv.slice(2));
+const auditMode = options.auditMode;
+const availabilityState = options.availabilityState;
 const authoritativeInventoryChecked = auditMode === "full";
 const projectId = "vetmap-app";
 const accessToken = process.env.FIREBASE_ACCESS_TOKEN;
@@ -27,6 +27,21 @@ const clinicHoursManifestURL = new URL(
 const clinicHoursManifest = JSON.parse(
   await readFile(clinicHoursManifestURL, "utf8"),
 );
+const pendingHoursManifest = JSON.parse(await readFile(
+  new URL("../catalog/hk_clinic_hours_v2.pending.json", import.meta.url),
+  "utf8",
+));
+const clinicReport = JSON.parse(await readFile(
+  new URL("../catalog/hk_clinics_v1.report.json", import.meta.url),
+  "utf8",
+));
+const availabilityExpectation = buildAvailabilityExpectation({
+  catalog: clinicManifest,
+  v1Hours: clinicHoursManifest,
+  pending: pendingHoursManifest,
+  report: clinicReport,
+  availabilityState,
+});
 const apiKeyMatch = plist.match(
   /<key>API_KEY<\/key>\s*<string>([^<]+)<\/string>/,
 );
@@ -43,6 +58,7 @@ if (authoritativeInventoryChecked && !accessToken) {
 
 console.log(JSON.stringify({
   auditMode,
+  availabilityState,
   authoritativeInventoryChecked,
   ...(authoritativeInventoryChecked ? {} : {
     warning: "Public-only audit cannot detect documents hidden from anonymous queries, documents with a different expiry, or stray documents.",
@@ -255,49 +271,14 @@ function decodeDocument(document) {
   };
 }
 
-function normalizedJSON(value) {
-  if (Array.isArray(value)) return value.map(normalizedJSON);
-  if (value && typeof value === "object") {
-    return Object.fromEntries(
-      Object.keys(value)
-        .sort()
-        .map((key) => [key, normalizedJSON(value[key])]),
-    );
-  }
-  return value;
-}
-
-function expectedClinicAvailability(clinic) {
-  return {
-    schemaVersion: clinicHoursManifest.schemaVersion,
-    migrationId: "hk-clinic-hours-v1-2026-07-30",
-    timeZoneIdentifier: clinicHoursManifest.timeZoneIdentifier,
-    weeklyHours: clinic.weeklyHours,
-    is24Hours: clinic.is24Hours,
-    offersNightService: clinic.offersNightService,
-    displayLabel: clinic.displayLabel,
-    serviceNote: clinic.serviceNote,
-    sourceURL: clinic.sourceURL,
-    sourceName: clinic.sourceName,
-    verifiedAt: new Date(clinicHoursManifest.verifiedAt).toISOString(),
-    expiresAt: new Date(clinicHoursManifest.expiresAt).toISOString(),
-  };
-}
-
-function normalizeAvailabilityTimestamps(availability) {
-  if (!availability) return availability;
-  return {
-    ...availability,
-    verifiedAt: new Date(availability.verifiedAt).toISOString(),
-    expiresAt: new Date(availability.expiresAt).toISOString(),
-  };
-}
-
 const expectedApprovedCounts = {
   clinics: clinicManifest.count + 1,
   reviews: 1,
   quotes: 1,
 };
+
+let publicAvailabilitySummary;
+let authenticatedAvailabilitySummary;
 
 for (const [collection, expectedCount] of Object.entries(expectedApprovedCounts)) {
   const rawDocuments = await listApproved(collection);
@@ -314,6 +295,11 @@ for (const [collection, expectedCount] of Object.entries(expectedApprovedCounts)
     documentIDs: documents.map(({id}) => id).slice(0, 20),
   }));
   if (collection === "clinics") {
+    verifyNoAvailabilityOutsidePlan(
+      documents,
+      availabilityExpectation,
+      "public clinics",
+    );
     const expectedClinicsByID = new Map(
       clinicManifest.clinics.map((clinic) => [clinic.id, clinic]),
     );
@@ -379,32 +365,35 @@ for (const [collection, expectedCount] of Object.entries(expectedApprovedCounts)
         + `authorized source records; found ${uniqueSourceRecordIDs.size}.`,
       );
     }
-    const expectedHoursByID = new Map(
-      clinicHoursManifest.clinics.map((clinic) => [
-        clinic.clinicID,
-        expectedClinicAvailability(clinic),
-      ]),
+    publicAvailabilitySummary = verifyHKClinicAvailability(
+      hkClinics,
+      availabilityExpectation,
+      "public clinics",
     );
-    const clinicsWithAvailability = hkClinics.filter(
-      ({availability}) => availability != null,
-    );
-    if (
-      clinicHoursManifest.schemaVersion !== 1
-      || clinicHoursManifest.catalogRegion !== "HK"
-      || clinicHoursManifest.count !== 11
-      || clinicHoursManifest.clinics.length !== clinicHoursManifest.count
-      || clinicsWithAvailability.length !== clinicHoursManifest.count
-      || new Date(clinicHoursManifest.expiresAt) <= new Date()
-      || clinicsWithAvailability.some((document) => {
-        const expected = expectedHoursByID.get(document.id);
-        if (!expected) return true;
-        const actual = normalizeAvailabilityTimestamps(document.availability);
-        return JSON.stringify(normalizedJSON(actual))
-          !== JSON.stringify(normalizedJSON(expected));
-      })
-    ) {
-      throw new Error(
-        "The public clinic availability overlay is incomplete or stale.",
+
+    if (authoritativeInventoryChecked) {
+      const authoritativeClinicInventory = (
+        await listAuthoritativeCollection("clinics")
+      ).map(decodeDocument);
+      verifyNoAvailabilityOutsidePlan(
+        authoritativeClinicInventory,
+        availabilityExpectation,
+        "authenticated clinic inventory",
+      );
+      const authoritativeApprovedClinics = authoritativeClinicInventory
+        .filter(({status}) => status === "approved");
+      verifyApprovedClinicParity(
+        documents,
+        authoritativeApprovedClinics,
+        availabilityExpectation,
+      );
+      const authoritativeHKClinics = authoritativeApprovedClinics.filter(
+        ({id}) => availabilityExpectation.catalogIDs.has(id),
+      );
+      authenticatedAvailabilitySummary = verifyHKClinicAvailability(
+        authoritativeHKClinics,
+        availabilityExpectation,
+        "authenticated clinics",
       );
     }
     console.log(JSON.stringify({
@@ -414,10 +403,9 @@ for (const [collection, expectedCount] of Object.entries(expectedApprovedCounts)
       mappableEntries: mappableClinics.length,
       listOnlyEntries: hkClinics.length - mappableClinics.length,
       uniqueAuthorizedSourceRecords: uniqueSourceRecordIDs.size,
-      availabilityEntries: clinicsWithAvailability.length,
-      twentyFourHourEntries: clinicsWithAvailability.filter(
-        ({availability}) => availability.is24Hours,
-      ).length,
+      availabilityEntries: publicAvailabilitySummary.total,
+      twentyFourHourEntries: publicAvailabilitySummary.twentyFourHours,
+      scheduledEntries: publicAvailabilitySummary.scheduled,
     }));
   }
 }
@@ -664,3 +652,14 @@ for (const [collection, documentId] of [
     anonymousLegacyReadDenied: true,
   }));
 }
+
+console.log(JSON.stringify({
+  auditMode,
+  availabilityState,
+  authoritativeInventoryChecked,
+  availabilityStateVerified: true,
+  publicAvailability: publicAvailabilitySummary,
+  ...(authenticatedAvailabilitySummary
+    ? {authenticatedAvailability: authenticatedAvailabilitySummary}
+    : {}),
+}));
