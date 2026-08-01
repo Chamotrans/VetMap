@@ -45,6 +45,9 @@ jobs:
           node --test scripts/validate_hk_clinic_hours_v2_pending.test.mjs
           node scripts/validate_hk_clinic_hours_v2_pending.mjs
 
+      - name: Test pending clinic hours v2 restore runner
+        run: node --test scripts/restore_hk_clinic_hours_v2_pending.test.mjs
+
       - name: Validate Functions
         run: |
           npm run lint --prefix functions

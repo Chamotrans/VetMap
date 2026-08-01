@@ -210,7 +210,30 @@
 - Final Sol acceptance: **ACCEPT** — the P2 was resolved with no new P0/P1/P2 finding.
 - Local evidence: New pending tests passed 7/7; the pending validator returned `deploymentStatus: pending`, `productionApplied: false`, pending 4, planned total 15, planned 24-hour 11, and planned scheduled 4. Existing catalog tests remained 10/10 with deployed baseline `179/161/18/205/11`; all three Node files passed syntax checks and scoped patch hygiene passed. No local `xcodebuild` was run.
 - Production boundary: This round did not alter the deployed v1 manifest, restore tooling, public audit expectations, or Firestore. Production availability remains 11 overlays, including 10 24-hour entries.
-- GitHub validation: Pending the pushed commit for this round.
-- Xcode Cloud: Pending the pushed commit for this round.
+- GitHub validation: `Backend and Config Validation` run `30721739657` completed successfully for commit `b14a736`, including the deployed catalog gate, the new pending hours v2 validator and seven mutation tests, Functions validation, Firebase emulator rules tests, and patch hygiene.
+- Xcode Cloud: Build run 24 (`ddfb0424-374f-4a4d-a6d1-7cec3b553818`) completed `SUCCEEDED`; its only action, `Archive - iOS` (`6e98fc5c-8f7a-45db-af2d-547ec4714aa9`), completed `SUCCEEDED`; processed build 24 (`66d6fd8a-b1e1-4713-92a2-f09f35219d74`) is `VALID`. This proves compile/archive success; the workflow did not contain a test action, so XCTest execution is not claimed.
 - Release boundary: No ASC build attachment, review submission, or public release was performed.
 - Preserved scope: No production data, registration, submissions, community behavior, moderation, ASC state, device app, or user-owned dirty/untracked file was changed by this round.
+
+## Round 11 — Add a production-safe clinic-hours v2 migration runner
+
+- Started: 2026-08-02 (Asia/Taipei)
+- Fresh evidence before implementation:
+  - The public-only Firestore audit remained at clinics 180 (179 authorized catalog plus one demo), 161 mappable and 18 list-only clinics, 205 authorized lineage records, 11 deployed availability entries including 10 24-hour entries, reviews 1, quotes 1, products 124, and insurances 3.
+  - The checked-in v2 plan remained explicitly pending: four additional records, planned total 15, planned 24-hour 11, planned scheduled 4, and `productionApplied: false`.
+  - GitHub validation and Xcode Cloud Build 24 remained successful; ASC iOS 1.0 remained `READY_FOR_REVIEW` with Build 12 attached. The paired physical device `是條小狗` remained available with VetMap 1.0 (14), but no new runtime proof was claimed.
+- Sol plan: Add a fail-closed, idempotent migration runner whose default mode performs only an authoritative dry-run and backup, while keeping any future production write behind an explicit `--apply` flag and atomic optimistic-concurrency checks.
+- Luna implementation:
+  - Added strict CLI parsing, mandatory pending-manifest validation before network access, paginated authoritative Firestore decoding, canonical normalized comparisons, and exact preflight checks for the deployed v1 `11/10/1` overlay plus the four approved Hong Kong v2 targets.
+  - Rejected v1 drift, renamed or non-approved targets, region drift, unexpected availability outside the planned 15 IDs, and any partially applied or non-canonical v2 state.
+  - Added a raw four-target backup with mode `0600`, SHA-256 reporting, and no token or document payload in stdout.
+  - Prepared a future apply path using one atomic four-write `documents:commit`; each write updates only `availability` and carries the target document's `updateTime` precondition. Commit failures and post-read mismatches fail closed.
+  - Required an authoritative post-read proving exact canonical coverage and `15/11/4` before reporting `productionApplied: true`; an already-canonical state is an idempotent zero-write path.
+  - Added the mocked runner suite to the primary GitHub workflow without credentials, production network access, or persistent backup artifacts.
+- First Sol review: **RETURNED** — one P2 found that a successful fresh apply would report post-write success beside pre-write `current*` counts, and one P3 found that tests did not exercise the real backup writer's file mode, content boundary, or digest.
+- Luna correction: Successful apply output now uses the verified post-read `15/11/4` counts; a temporary-file test now verifies the exact four-document raw backup wrapper, `updateTime` preservation, `0600` mode, and independently recomputed SHA-256.
+- Final Sol acceptance: **ACCEPT** — both findings resolved with no remaining P0–P3 actionable finding.
+- Local evidence: Runner tests passed 20/20; combined runner, pending-plan, and catalog-integrity tests passed 37/37; both Node files passed syntax checks; both validator CLIs passed; and `git diff --check` passed. No local `xcodebuild` was run.
+- Live-run boundary: No authoritative live dry-run was claimed because the local Google credentials still require interactive reauthentication. No `--apply`, Firestore write, or production backup was performed; deployed availability remains 11/10/1 and the v2 manifest remains pending.
+- Release boundary: Commit-specific GitHub and Xcode Cloud validation is pending. No ASC build attachment, review submission, public release, or device app change was performed.
+- Preserved scope: Registration, submissions, community interaction, moderation, Firebase rules, all production records, and all user-owned dirty/untracked files were preserved.
