@@ -2,6 +2,35 @@
 // Bundled JSON remains a read-only seed/fallback used by the presentation layer.
 import Foundation
 
+func decodeFirestoreDocuments<Input, Output>(
+    _ documents: [Input],
+    documentID: (Input) -> String,
+    decode: (Input) throws -> Output,
+    onFailure: (String, Error) -> Void
+) throws -> [Output] {
+    guard !documents.isEmpty else { return [] }
+
+    var decoded: [Output] = []
+    var firstError: Error?
+
+    for document in documents {
+        do {
+            decoded.append(try decode(document))
+        } catch {
+            if firstError == nil {
+                firstError = error
+            }
+            onFailure(documentID(document), error)
+        }
+    }
+
+    if decoded.isEmpty, let firstError {
+        throw firstError
+    }
+
+    return decoded
+}
+
 #if canImport(FirebaseCore) && canImport(FirebaseFirestore)
 import FirebaseCore
 import FirebaseFirestore
@@ -30,7 +59,18 @@ final class FirebaseService {
             .collection("clinics")
             .whereField("status", isEqualTo: ModerationStatus.approved.rawValue)
             .getDocuments()
-        return try snapshot.documents.map { try decodeDocument($0, as: VetClinic.self) }
+        return try decodeFirestoreDocuments(
+            snapshot.documents,
+            documentID: \.documentID,
+            decode: { try self.decodeDocument($0, as: VetClinic.self) },
+            onFailure: { documentID, error in
+                CrashReporting.log("FirebaseService.fetchClinics.decodeFailed documentID=\(documentID)")
+                CrashReporting.recordError(
+                    error,
+                    domain: "FirebaseService.fetchClinics.\(documentID)"
+                )
+            }
+        )
     }
 
     func searchClinics(query: String) async throws -> [VetClinic] {

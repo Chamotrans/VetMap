@@ -225,6 +225,69 @@ final class VetMapModelTests: XCTestCase {
         XCTAssertEqual(ClinicSearchFilter.Availability.nightService.limitationMessage, message)
     }
 
+    func testDecodeFirestoreDocumentsSkipsMalformedDocumentsInOriginalOrder() throws {
+        let documents = ["valid-A", "malformed", "valid-B"]
+        var failedDocumentIDs: [String] = []
+
+        let decoded = try decodeFirestoreDocuments(
+            documents,
+            documentID: { $0 },
+            decode: { document in
+                guard document != "malformed" else {
+                    throw NSError(domain: "VetMapTests", code: 1)
+                }
+                return document
+            },
+            onFailure: { documentID, _ in
+                failedDocumentIDs.append(documentID)
+            }
+        )
+
+        XCTAssertEqual(decoded, ["valid-A", "valid-B"])
+        XCTAssertEqual(failedDocumentIDs, ["malformed"])
+    }
+
+    func testDecodeFirestoreDocumentsReturnsEmptyWithoutFailureCallback() throws {
+        var failureCount = 0
+
+        let decoded: [String] = try decodeFirestoreDocuments(
+            [String](),
+            documentID: { $0 },
+            decode: { $0 },
+            onFailure: { _, _ in
+                failureCount += 1
+            }
+        )
+
+        XCTAssertEqual(decoded, [])
+        XCTAssertEqual(failureCount, 0)
+    }
+
+    func testDecodeFirestoreDocumentsThrowsFirstErrorAfterReportingAllFailures() {
+        let documents = ["malformed-A", "malformed-B"]
+        var failedDocumentIDs: [String] = []
+
+        XCTAssertThrowsError(
+            try decodeFirestoreDocuments(
+                documents,
+                documentID: { $0 },
+                decode: { document in
+                    throw NSError(
+                        domain: "VetMapTests",
+                        code: document == "malformed-A" ? 1 : 2
+                    )
+                },
+                onFailure: { documentID, _ in
+                    failedDocumentIDs.append(documentID)
+                }
+            ) as [String]
+        ) { error in
+            XCTAssertEqual((error as NSError).code, 1)
+        }
+
+        XCTAssertEqual(failedDocumentIDs, documents)
+    }
+
     func testRegularHoursComputeOpenNowInHongKongTime() {
         let thursdayNoon = Date(timeIntervalSince1970: 1_775_102_400)
         let clinic = makeClinic(
