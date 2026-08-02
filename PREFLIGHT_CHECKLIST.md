@@ -15,11 +15,12 @@
 - [x] 公開內容只容許管理員由待審佇列批准建立
 - [x] 評價、報價及診所均可舉報；評價及報價作者可被封鎖
 - [x] 一對一聊天室只限參與者讀取；支援刪除自己訊息、舉報訊息及封鎖對方
+- [x] 新聊天室只可由已批准、未下架的評價發起；`sourceReviewId`、評價作者、兩名參與者及 canonical conversation ID 均由 Firestore rules 驗證
 - [x] Firestore rules 同時檢查雙方封鎖清單；任一方封鎖後不可再寫入新訊息
 - [x] 聊天室首個訊息及 conversation preview 以 atomic batch 建立／更新，sender、participant 及 preview 內容受 rules 一致性檢查
 - [x] 「有用」標記改為每個 Firebase UID 對每項評價一次
 - [x] App 內提供帳戶刪除、重新驗證、Apple token 撤銷及伺服器資料清除
-- [x] Firestore／Storage 規則 emulator 測試：15/15 通過（包括聊天室 participant query regression）
+- [x] Firestore／Storage 規則 emulator 測試：16/16 通過（包括聊天室 participant query、批准評價來源、反向重複 ID、已下架來源及 legacy migration regression）
 - [x] Firebase Functions lint 及載入檢查通過
 - [x] 全部 Swift 檔案 `swiftc -parse` 通過
 - [x] App、Widget、Privacy manifest、Xcode scheme 及 project 檔案語法檢查通過
@@ -38,6 +39,7 @@
 ## Firebase production
 
 - [x] 部署 `FirestoreRules.rules`
+- [x] 2026-08-03 部署聊天室來源加固 rules；Firebase compile／release 成功，匿名 conversation／message REST read 均回 403
 - [x] 部署 `StorageRules.rules`
 - [x] 部署 `firestore.indexes.json`，包括刪戶所需 collection-group indexes
 - [x] 部署 `functions/` 的 `purgeUserData`；Node.js 22、`asia-east1`、ACTIVE
@@ -49,7 +51,7 @@
 - [x] 建立獨立管理員帳戶，並在 `users/{uid}` 設定 `role: admin`
 - [x] 建立不需 2FA 的普通、刪除測試及 fixture App Review 電郵／密碼帳戶
 - [x] 以專用 fixture UID 建立 rights-cleared 示範診所、評價及報價，令 Helpful／Report／Block 路徑可達
-- [x] 以專用 fixture UID 建立 rights-cleared 示範聊天室訊息，令 Send／Delete／Report／Block 路徑可達
+- [x] 以專用 fixture UID 建立 rights-cleared 示範聊天室訊息，並連結已批准示範評價；雙方帳戶 read-back 驗證 source、participant、sender 及 incoming message
 - [x] 每次 migration 前以 0600 權限備份 production collection，再以 guarded script 寫入 179 間香港診所
 - [x] 對帳 176/176 筆主資料及 29/29 筆補充資料；205 個唯一 lineage ID 全部存在
 - [x] 兩對同名同址重複資料只顯示一間，但保留雙 source ID 及雙電話
@@ -81,6 +83,7 @@
 - [x] Xcode Cloud run 39 已成功 compile/archive，Cloud development artifact 為 `VetMap 1.0 (39)`，並已安裝到實體 iPhone「是條小狗」
 - [x] Xcode Cloud Run 41 screenshot test plan 在 iPhone 17 Pro Max 及 iPad Pro 13-inch 完成 `SUCCEEDED`；12 張 release evidence 附件已匯出及逐張驗收
 - [x] Xcode Cloud workflow 已還原為 `Default` Archive／`APP_STORE_ELIGIBLE`，並在 upload limit 重置前保持 disabled
+- [x] 聊天室來源加固已推送至 GitHub `main`：code commit `70918e8`；Actions run `30762479857` 全綠，Firestore／Storage rules 16/16
 - [ ] 等待 Apple 24 小時 upload window 重置後再跑新 Cloud candidate；Run 39 delivery 被 `ITMS-90382 Upload limit reached` 拒絕，未進入 ASC processing
 - [ ] 在 TestFlight 真機完成登入、投稿、批核、公開、聊天室收發／刪除／舉報／封鎖及帳戶刪除 smoke test
 - [x] 將 build 11 掛接至 App Store Connect iOS 1.0 作暫時 release candidate

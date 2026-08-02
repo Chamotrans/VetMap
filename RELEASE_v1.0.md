@@ -38,7 +38,7 @@
 | `reports/{id}` | 舉報 | 只可建立自己的 pending 舉報 |
 | `users/{uid}/blockedUsers/{blockedUid}` | 私人封鎖名單 | 只限本人 |
 | `reviewEngagement/{reviewId}/voters/{uid}` | 每人一次「有用」標記 | 只可建立自己的 vote |
-| `conversations/{id}` | 一對一對話及訊息 preview | 只限兩名參與者讀取；寫入須符合 participant／preview 一致性 |
+| `conversations/{id}` | 一對一對話及訊息 preview | 只限兩名參與者讀取；建立時必須連結已批准、未下架且作者為收件人的評價，並符合 canonical ID、participant／preview 一致性 |
 | `conversations/{id}/messages/{id}` | 私人訊息 | 只限兩名參與者讀取；sender 綁定登入 UID；自己可軟刪除 |
 
 公開 collection 只有管理員可以建立或刪除。管理員批准投稿時，以 batch 同步建立公開文件及更新 submission 狀態。
@@ -82,7 +82,7 @@
 ## 已完成的本機非 build 驗證
 
 - Swift 語法 parse：通過
-- Firestore／Storage Rules emulator：15/15 通過
+- Firestore／Storage Rules emulator：16/16 通過
 - Firebase Functions ESLint：通過
 - Firebase Functions module load：通過
 - plist、Xcode project 及共用 scheme XML：通過
@@ -107,8 +107,9 @@
 
 聊天室候選驗證：
 
-- production Firestore rules、indexes、`purgeUserData` 及示範聊天室已部署並以雙方帳戶 read-back 驗證
-- GitHub Actions 對聊天室候選的 semantic rules suite、Swift parse、functions lint 及靜態檢查通過
+- production Firestore rules、indexes、`purgeUserData` 及示範聊天室已部署；示範對話已連結已批准評價，並以雙方帳戶 read-back 驗證 source、participant、sender 及 incoming message
+- 聊天室來源加固 code commit `70918e8` 已推送至 `main`；GitHub Actions run `30762479857` 對 semantic rules 16/16、catalog、Functions 及 patch hygiene 全部通過
+- production rules 於 2026-08-03 經 Firebase compile 後成功 release；匿名 conversation list 及 message read 均回 403，公開 catalog audit 仍為 clinics 180、reviews 1、quotes 1、services 124、insurances 3
 - Xcode Cloud Run 39 已成功 compile/archive 並產生 App Store、development 及 ad-hoc exports；Apple delivery 電郵明確回報 `ITMS-90382 Upload limit reached`
 - Run 39 development artifact `VetMap 1.0 (39)` 已安裝到實體 iPhone「是條小狗」，新訊息 tab 及未登入安全提示可達
 - Xcode Cloud Run 41（`fe0b7c5b-da2a-4199-8576-db3f6ff04153`）以專用 screenshot test plan 在 iPhone 17 Pro Max 及 iPad Pro 13-inch 模擬器完成 `SUCCEEDED`；12 張附件均不屬於 failure
