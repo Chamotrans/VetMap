@@ -68,6 +68,7 @@
 		BA2642C4975E683817973F13 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49784B5ABE69AD0F526EA250 /* ErrorView.swift */; };
 		C0284768A62037364B4E8473 /* MockInsuranceRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F446A0B36B60108EF1A41C /* MockInsuranceRepository.swift */; };
 		C0A1B1C2D3E4F5A6B7C8D9E0 /* MockCommunityRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A1B1C2D3E4F5A6B7C8D9E0 /* MockCommunityRepository.swift */; };
+		CAFB0002D3E4F5A6B7C8D9E0 /* ClinicAvailabilityFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFB0001D3E4F5A6B7C8D9E0 /* ClinicAvailabilityFeedback.swift */; };
 		C15E0B38C7D14BF595565245 /* CrashReporting.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4AB9CA5F7F448799E55B86 /* CrashReporting.swift */; };
 		C2A1B1C2D3E4F5A6B7C8D9E0 /* ClinicDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A1B1C2D3E4F5A6B7C8D9E0 /* ClinicDetailViewModel.swift */; };
 		C4A1B1C2D3E4F5A6B7C8D9E0 /* AddReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5A1B1C2D3E4F5A6B7C8D9E0 /* AddReviewView.swift */; };
@@ -226,6 +227,7 @@
 		C62841BFAAB6D01481A4B479 /* ReviewListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReviewListView.swift; path = VetMap/Views/Review/ReviewListView.swift; sourceTree = SOURCE_ROOT; };
 		C675427DB511E7814F67BB7B /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Haptics.swift; path = VetMap/Utilities/Haptics.swift; sourceTree = SOURCE_ROOT; };
 		C7F446A0B36B60108EF1A41C /* MockInsuranceRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MockInsuranceRepository.swift; path = VetMap/Services/MockInsuranceRepository.swift; sourceTree = SOURCE_ROOT; };
+		CAFB0001D3E4F5A6B7C8D9E0 /* ClinicAvailabilityFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClinicAvailabilityFeedback.swift; sourceTree = "<group>"; };
 		D5DD473BB07660598AEA988C /* ProductListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProductListView.swift; path = VetMap/Views/Products/ProductListView.swift; sourceTree = SOURCE_ROOT; };
 		D82F4A8EA14EF69F59941560 /* QuoteListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuoteListView.swift; path = VetMap/Views/Community/QuoteListView.swift; sourceTree = SOURCE_ROOT; };
 		DB9E4E23A299B338E285D03C /* ProductListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProductListView.swift; path = VetMap/Views/Products/ProductListView.swift; sourceTree = SOURCE_ROOT; };
@@ -344,6 +346,7 @@
 			children = (
 				0BA1B1C2D3E4F5A6B7C8D9E0 /* ClinicCoordinate.swift */,
 				0DA1B1C2D3E4F5A6B7C8D9E0 /* VetClinic.swift */,
+				CAFB0001D3E4F5A6B7C8D9E0 /* ClinicAvailabilityFeedback.swift */,
 				0FA1B1C2D3E4F5A6B7C8D9E0 /* Review.swift */,
 				12A1B1C2D3E4F5A6B7C8D9E0 /* UserProfile.swift */,
 				14A1B1C2D3E4F5A6B7C8D9E0 /* PetProduct.swift */,
@@ -712,6 +715,7 @@
 				03A1B1C2D3E4F5A6B7C8D9E0 /* ContentView.swift in Sources */,
 				0AA1B1C2D3E4F5A6B7C8D9E0 /* ClinicCoordinate.swift in Sources */,
 				0CA1B1C2D3E4F5A6B7C8D9E0 /* VetClinic.swift in Sources */,
+				CAFB0002D3E4F5A6B7C8D9E0 /* ClinicAvailabilityFeedback.swift in Sources */,
 				0EA1B1C2D3E4F5A6B7C8D9E0 /* Review.swift in Sources */,
 				11A1B1C2D3E4F5A6B7C8D9E0 /* UserProfile.swift in Sources */,
 				13A1B1C2D3E4F5A6B7C8D9E0 /* PetProduct.swift in Sources */,

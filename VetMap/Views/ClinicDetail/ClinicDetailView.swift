@@ -10,6 +10,10 @@ struct ClinicDetailView: View {
     @State private var safariURL: URL?
     @State private var showPendingNotice = false
     @State private var showClinicReport = false
+    @State private var showAvailabilityReport = false
+    @State private var isSubmittingClinicReport = false
+    @State private var didSubmitClinicReport = false
+    @State private var showAvailabilityReportSuccess = false
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
 
@@ -142,8 +146,14 @@ struct ClinicDetailView: View {
                         Button(role: .destructive) {
                             showClinicReport = true
                         } label: {
-                            Label("舉報診所", systemImage: "flag")
+                            Label(
+                                didSubmitClinicReport ? "已回報診所" : "舉報診所",
+                                systemImage: didSubmitClinicReport
+                                    ? "checkmark.circle"
+                                    : "flag"
+                            )
                         }
+                        .disabled(isSubmittingClinicReport || didSubmitClinicReport)
                     } label: {
                         Image(systemName: "ellipsis.circle")
                     }
@@ -172,10 +182,35 @@ struct ClinicDetailView: View {
             .confirmationDialog("舉報此診所", isPresented: $showClinicReport, titleVisibility: .visible) {
                 ForEach(Self.reportReasons, id: \.self) { reason in
                     Button(reason) {
-                        Task { _ = await viewModel.reportClinic(reason: reason) }
+                        submitClinicReport(reason: reason, availabilityFeedback: false)
+                    }
+                    .disabled(isSubmittingClinicReport || didSubmitClinicReport)
+                }
+                Button("取消", role: .cancel) {}
+            }
+            .confirmationDialog(
+                "回報營業資料問題",
+                isPresented: $showAvailabilityReport,
+                titleVisibility: .visible
+            ) {
+                if let availability = clinic.availability {
+                    ForEach(
+                        ClinicAvailabilityFeedback.reasons(for: availability),
+                        id: \.id
+                    ) { reason in
+                        Button(reason.rawValue) {
+                            submitAvailabilityFeedback(reason, availability: availability)
+                        }
+                        .disabled(isSubmittingClinicReport || didSubmitClinicReport)
                     }
                 }
                 Button("取消", role: .cancel) {}
+            }
+            .alert(
+                "已收到營業資料回報",
+                isPresented: $showAvailabilityReportSuccess
+            ) {
+                Button("好", role: .cancel) {}
             }
             .sheet(isPresented: Binding(
                 get: { safariURL != nil },
@@ -275,7 +310,14 @@ struct ClinicDetailView: View {
 
     @ViewBuilder
     private var storageErrorBanner: some View {
-        if let storageError = viewModel.storageError {
+        if didSubmitClinicReport {
+            Label("已回報此診所，我們會跟進。", systemImage: "checkmark.circle.fill")
+                .font(.footnote.weight(.medium))
+                .foregroundStyle(AppTheme.primary)
+                .padding(12)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .appCard(fill: AppTheme.primary.opacity(0.10), stroke: AppTheme.primary.opacity(0.20))
+        } else if let storageError = viewModel.storageError {
             Label(storageError, systemImage: "externaldrive.badge.exclamationmark")
                 .font(.footnote.weight(.medium))
                 .foregroundStyle(AppTheme.warning)
@@ -473,6 +515,24 @@ struct ClinicDetailView: View {
                     )
                     .font(.caption)
                     .foregroundStyle(.tertiary)
+
+                    Button {
+                        showAvailabilityReport = true
+                    } label: {
+                        Label(
+                            didSubmitClinicReport
+                                ? "已回報此診所"
+                                : isSubmittingClinicReport
+                                ? "正在提交營業資料回報…"
+                                : "回報營業資料",
+                            systemImage: didSubmitClinicReport
+                                ? "checkmark.circle"
+                                : "exclamationmark.bubble"
+                        )
+                        .font(.footnote.weight(.semibold))
+                    }
+                    .buttonStyle(.bordered)
+                    .disabled(isSubmittingClinicReport || didSubmitClinicReport)
                 } else {
                     ForEach(visibleOpeningHours, id: \.day) { day, hours in
                         HStack {
@@ -495,6 +555,40 @@ struct ClinicDetailView: View {
         formatter.timeZone = TimeZone(identifier: "Asia/Hong_Kong")
         formatter.dateFormat = "yyyy年M月d日"
         return formatter.string(from: date)
+    }
+
+    private func submitAvailabilityFeedback(
+        _ selectedReason: ClinicAvailabilityFeedbackReason,
+        availability: ClinicAvailability
+    ) {
+        guard
+            !isSubmittingClinicReport,
+            !didSubmitClinicReport,
+            let reportReason = ClinicAvailabilityFeedback.reportReason(
+                selectedReason,
+                availability: availability
+            )
+        else {
+            return
+        }
+        submitClinicReport(reason: reportReason, availabilityFeedback: true)
+    }
+
+    private func submitClinicReport(
+        reason: String,
+        availabilityFeedback: Bool
+    ) {
+        guard !isSubmittingClinicReport, !didSubmitClinicReport else { return }
+        isSubmittingClinicReport = true
+        Task {
+            let succeeded = await viewModel.reportClinic(reason: reason)
+            isSubmittingClinicReport = false
+            guard succeeded else { return }
+            didSubmitClinicReport = true
+            if availabilityFeedback {
+                showAvailabilityReportSuccess = true
+            }
+        }
     }
 
     private var mapSection: some View {

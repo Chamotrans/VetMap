@@ -468,6 +468,124 @@ final class VetMapModelTests: XCTestCase {
         }
     }
 
+    func testClinicAvailabilityFeedbackReasonMatrixRequiresCurrentData() {
+        let now = Date(timeIntervalSince1970: 1_775_102_400)
+        XCTAssertEqual(
+            ClinicAvailabilityFeedback.reasons(
+                for: makeAvailability(weeklyHours: [:]),
+                at: now
+            ),
+            [.differentHours, .closedOrSuspended, .otherAvailabilityIssue]
+        )
+        XCTAssertEqual(
+            ClinicAvailabilityFeedback.reasons(
+                for: makeAvailability(is24Hours: true),
+                at: now
+            ),
+            [
+                .differentHours,
+                .closedOrSuspended,
+                .otherAvailabilityIssue,
+                .notOpen24Hours,
+                .nightOrEmergencyChanged
+            ]
+        )
+        XCTAssertEqual(
+            ClinicAvailabilityFeedback.reasons(
+                for: makeAvailability(offersNightService: true),
+                at: now
+            ),
+            [
+                .differentHours,
+                .closedOrSuspended,
+                .otherAvailabilityIssue,
+                .nightOrEmergencyChanged
+            ]
+        )
+        XCTAssertTrue(
+            ClinicAvailabilityFeedback.reasons(
+                for: makeAvailability(is24Hours: true),
+                at: Date(timeIntervalSince1970: 1_777_766_400)
+            ).isEmpty
+        )
+        XCTAssertTrue(ClinicAvailabilityFeedback.reasons(for: nil, at: now).isEmpty)
+    }
+
+    func testClinicAvailabilityFeedbackFormatsFixedSanitizedReport() {
+        let now = Date(timeIntervalSince1970: 1_775_102_400)
+        let availability = makeAvailability(
+            is24Hours: true,
+            sourceURL: URL(string: "https://example.com/private-hours")!,
+            sourceName: "官方\n\u{0000}網站"
+        )
+        let report = ClinicAvailabilityFeedback.reportReason(
+            .differentHours,
+            availability: availability,
+            at: now
+        )
+
+        XCTAssertEqual(
+            report,
+            "營業資料回報｜原因：營業時間不同｜migrationId：hk-clinic-hours-test-v1"
+                + "｜來源名稱：官方 網站｜核實日期：2026-01-01"
+        )
+        XCTAssertFalse(report?.contains("\n") == true)
+        XCTAssertFalse(report?.contains("\u{0000}") == true)
+        XCTAssertFalse(report?.contains(availability.sourceURL.absoluteString) == true)
+        XCTAssertFalse(report?.contains("+852 2123 4567") == true)
+        XCTAssertNil(
+            ClinicAvailabilityFeedback.reportReason(
+                .notOpen24Hours,
+                availability: makeAvailability(),
+                at: now
+            )
+        )
+    }
+
+    func testClinicAvailabilityFeedbackRedactsSensitiveSourceNamesAndCapsLength() {
+        let now = Date(timeIntervalSince1970: 1_775_102_400)
+        for sensitiveSource in [
+            "https://example.com/hours",
+            "clinic.example.com",
+            "2123/4567",
+            "(852) 2123.4567",
+            "+852 2123 4567"
+        ] {
+            let report = ClinicAvailabilityFeedback.reportReason(
+                .differentHours,
+                availability: makeAvailability(
+                    is24Hours: true,
+                    sourceName: sensitiveSource
+                ),
+                at: now
+            )
+            XCTAssertTrue(report?.contains("來源名稱：官方來源") == true)
+            XCTAssertFalse(report?.contains(sensitiveSource) == true)
+        }
+
+        let injectedReport = ClinicAvailabilityFeedback.reportReason(
+            .differentHours,
+            availability: makeAvailability(
+                is24Hours: true,
+                sourceName: "官方｜來源|偽造"
+            ),
+            at: now
+        )
+        XCTAssertTrue(injectedReport?.contains("來源名稱：官方 來源 偽造") == true)
+        XCTAssertFalse(injectedReport?.contains("來源名稱：官方｜來源|偽造") == true)
+
+        let longReport = ClinicAvailabilityFeedback.reportReason(
+            .differentHours,
+            availability: makeAvailability(
+                is24Hours: true,
+                sourceName: String(repeating: "官", count: 1_000)
+            ),
+            at: now
+        )
+        XCTAssertNotNil(longReport)
+        XCTAssertLessThanOrEqual(longReport?.count ?? .max, 500)
+    }
+
     func testClosedClinicWithCurrentNightServiceKeepsNightServiceLabel() {
         let thursdayAfterClose = Date(timeIntervalSince1970: 1_775_134_800)
         let clinic = makeClinic(

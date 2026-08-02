@@ -318,4 +318,32 @@
   - Actual-manifest compatibility: v1 `11/10/1`, v2 `4/1/3`, merged `15/11/4`, filters `15/11/11/11`, scheduled probes `35/7`, `manifestCompatibility: true`, and `productionApplied: false`.
   - `sh -n`, Node tests 54/54, both validator CLIs, and `git diff --check` passed. These were standalone host Swift checks, not a local iOS build; no local `xcodebuild` or XCTest execution was claimed.
 - Production and release boundary: No manifest or availability data, runner `--apply`, Firestore write, Firebase deploy, ASC workflow/build attachment/review submission, public release, or device-app change was performed.
+- GitHub validation: `Backend and Config Validation` run `30724669063` completed successfully for commit `a64d4c5`, including catalog/audit/runner gates, Functions validation, Firebase emulator rules tests, and patch hygiene.
+- Xcode Cloud boundary: GitHub's Apple Xcode Cloud check confirmed build run `ca5e34a9-2e81-4458-aa57-bbae2f1a992b` and its only action, `Archive - iOS` (`0850f430-5c6d-4d78-ad9c-f711341c08a4`), were in progress. The post-clone dual-harness output, Archive completion, processed-build validity, and XCTest execution are not yet claimed.
 - Preserved scope: Registration, submissions, community interaction, moderation, and all user-owned dirty/untracked files were preserved.
+
+## Round 15 — Add a structured clinic-availability feedback loop
+
+- Started: 2026-08-02 (Asia/Taipei)
+- Fresh live evidence:
+  - The public-only production audit remained verified at deployed v1 `11/10/1`; the v2 manifest remained pending with four additions and planned `15/11/4`, with `productionApplied: false`.
+  - Xcode Cloud Archive checks for Round 12 (`8a49221`) and Round 13 (`53146c4`) completed successfully, proving the deploy-aware audit and production Swift semantic post-clone gate compiled and archived. Round 14 (`a64d4c5`) remained `in_progress` and was not treated as success.
+  - The physical iPhone `是條小狗` remained booted, paired, local-network and tunnel connected, with VetMap 1.0 installed. No runtime action or production report was performed.
+- Sol plan: Add a dedicated `回報營業資料` path for current verified availability, reusing the existing clinic-report moderation flow without adding a collection, schema, or Firestore-rule change.
+- Luna implementation:
+  - Added a current-data-only reason matrix: three base availability reasons, plus `並非24小時` for 24-hour records and `夜診／急症服務有變` for night-service records.
+  - Added a fixed report payload containing the selected reason, migration ID, source name, and verified date; it removes controls, newlines, field delimiters, URLs, bare domains, and phone-like source names, excludes source URLs, and caps the payload at 500 characters.
+  - Added the availability feedback dialog to the verified opening-hours card and reused `ClinicDetailViewModel.reportClinic(reason:)`; no new Firebase path was introduced.
+  - Enforced the existing backend invariant of one active report per user and clinic by sharing submission and completion state between the general clinic-report and availability-feedback entries. A successful report disables both entries; failed reports retain retry and surface the existing `storageError`.
+  - Added production-model XCTest coverage and a standalone production-source feedback harness to the Xcode Cloud post-clone gate. The new model was added only to the VetMap app target; tests access it through `@testable import VetMap`.
+- First Sol review: **RETURNED** — one P1 found both report entries could race or sequentially write the same deterministic report document, whose second client update is denied by rules; one P2 found bare domains, punctuated phone numbers, and the full-width field delimiter could bypass source-name sanitization.
+- Luna correction: Both report entries now share one guarded submit path and one completed state; the sanitizer rejects bare domains and phone-like values across punctuation and strips both ASCII and full-width field delimiters. Regression coverage includes `clinic.example.com`, slash/dot/parenthesized/`+852` phone forms, and delimiter injection.
+- Final Sol source acceptance: **ACCEPT** — both findings were resolved with no remaining actionable finding. Full SwiftUI compilation remains conditional on Xcode Cloud Archive completion.
+- Local evidence:
+  - Availability feedback production harness: `{"clinicAvailabilityFeedback":true,"passed":22}`.
+  - Availability semantic harness: `{"count":39,"passed":true}`.
+  - Actual-manifest compatibility remained v1 `11/10/1`, v2 `4/1/3`, merged `15/11/4`, filters `15/11/11/11`, scheduled probes `35/7`, `manifestCompatibility: true`, and `productionApplied: false`.
+  - Node regression tests passed 54/54; catalog integrity remained `179/161/18/205/11`; the pending validator remained four additions and planned `15/11/4`; `sh -n`, project `plutil`, and `git diff --check` passed.
+  - These were standalone host Swift checks, not a local iOS build. No local `xcodebuild` or XCTest execution was claimed.
+- Production and release boundary: No report was submitted, no availability data or manifest was changed, no runner `--apply`, Firestore write, Firebase deploy, ASC workflow/build attachment/review submission, public release, or device-app change was performed.
+- Preserved scope: Registration, submissions, community interaction, general clinic reporting, moderation, and all user-owned dirty/untracked files were preserved.

@@ -22,6 +22,7 @@ semantic_directory=$(mktemp -d "${TMPDIR:-/tmp}/vetmap-availability-semantics.XX
 trap 'rm -rf "$semantic_directory"' EXIT HUP INT TERM
 semantic_binary="$semantic_directory/clinic-availability-semantics"
 compatibility_binary="$semantic_directory/clinic-availability-manifest-compatibility"
+feedback_binary="$semantic_directory/clinic-availability-feedback"
 
 /usr/bin/xcrun swiftc \
   "$CI_PRIMARY_REPOSITORY_PATH/VetMap/Models/ClinicCoordinate.swift" \
@@ -42,3 +43,12 @@ compatibility_binary="$semantic_directory/clinic-availability-manifest-compatibi
 "$compatibility_binary" \
   "$CI_PRIMARY_REPOSITORY_PATH/catalog/hk_clinic_hours_v1.json" \
   "$CI_PRIMARY_REPOSITORY_PATH/catalog/hk_clinic_hours_v2.pending.json"
+
+/usr/bin/xcrun swiftc \
+  "$CI_PRIMARY_REPOSITORY_PATH/VetMap/Models/ClinicCoordinate.swift" \
+  "$CI_PRIMARY_REPOSITORY_PATH/VetMap/Models/VetClinic.swift" \
+  "$CI_PRIMARY_REPOSITORY_PATH/VetMap/Models/ClinicAvailabilityFeedback.swift" \
+  "$CI_PRIMARY_REPOSITORY_PATH/scripts/clinic_availability_feedback_harness.swift" \
+  -o "$feedback_binary"
+
+"$feedback_binary"
