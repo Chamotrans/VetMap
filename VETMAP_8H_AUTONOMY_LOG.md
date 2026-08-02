@@ -568,3 +568,12 @@
 - Cloud boundary: Xcode Cloud remained disabled and no Run 42 or Apple upload was created.
 - Deployment boundary: The currently active production callable was not changed. The compatible Functions source, like the least-privilege rules, remains pending until a compatible new app candidate is installed. No production read/write, Firebase deploy, local `xcodebuild`, Cloud workflow activation, Apple upload, ASC mutation, App Review submission, public release, or device action occurred.
 - Preserved scope: Registration, clinic/review/quote submission, reporting, blocking, Helpful votes, chat and all community interactions remain open. User-owned dirty and untracked files were not staged, reverted, deleted, or edited.
+
+### GitHub Actions Node 24 maintenance — 2026-08-03 04:09 CST
+
+- Finding: Successful run `30764818975` carried a GitHub annotation that `actions/checkout@v4`, `actions/setup-node@v4`, and `actions/setup-java@v4` targeted deprecated Node 20 and were being forced onto Node 24.
+- Official action evidence: The current major tags `actions/checkout@v7`, `actions/setup-node@v7`, and `actions/setup-java@v5` each declare `runs.using: node24`; their latest official releases were respectively 7.0.1, 7.0.0, and 5.7.0 at the time of verification.
+- Implementation: Updated only the three action major pins. The app Functions runtime remains Node 22, Java remains Temurin 21, dependency caches and every validation command remain unchanged.
+- Verification: Workflow YAML parsed successfully, Functions ESLint/module load and `git diff --check` passed. Commit `bc84750` (`ci: move validation actions to Node 24`) was pushed to `origin/main`.
+- GitHub evidence: `Backend and Config Validation` run `30764946922` completed successfully in 34 seconds. The live job used checkout v7, setup-node v7, and setup-java v5; catalog gates, Functions purge 2/2, rules 17/17, and patch hygiene passed; the annotations section was empty, proving the Node 20 warning was removed.
+- Boundary: Xcode Cloud remained disabled; no Run 42, Apple upload, production deployment, ASC mutation, App Review submission, public release, or device action occurred. All user-owned dirty and untracked files remained untouched.

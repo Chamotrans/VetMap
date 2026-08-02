@@ -23,6 +23,7 @@
 - [x] `purgeUserData` Firestore emulator 行為測試 2/2：五分鐘 recent-auth 邊界、投稿／評價／報價／聊天室／舉報／moderation marker／封鎖引用／Helpful vote／4 個 Storage prefix、他人資料保留及重試冪等均通過
 - [x] Firestore／Storage 規則 emulator 測試：17/17 通過（包括聊天室 participant query、批准評價來源、反向重複 ID、已下架來源、message report atomic marker 及 admin least-privilege regression）
 - [x] Firebase Functions lint 及載入檢查通過
+- [x] GitHub validation actions 已升級至原生 Node 24 runtime：`checkout@v7`、`setup-node@v7`、`setup-java@v5`；run `30764946922` 全綠且沒有 Node 20 deprecation annotation
 - [x] 全部 Swift 檔案 `swiftc -parse` 通過
 - [x] App、Widget、Privacy manifest、Xcode scheme 及 project 檔案語法檢查通過
 - [x] 共用 `VetMap` scheme 已提交準備供 Xcode Cloud 使用

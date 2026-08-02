@@ -87,6 +87,7 @@
 - `purgeUserData` Firestore emulator：2/2 通過，覆蓋 recent-auth、完整帳戶圖、聊天室 moderation marker、Storage prefix、他人資料保留及重試冪等
 - Firebase Functions ESLint：通過
 - Firebase Functions module load：通過
+- GitHub Actions runtime：`checkout@v7`、`setup-node@v7`、`setup-java@v5` 原生 Node 24；run `30764946922` 成功且 annotations 為空
 - plist、Xcode project 及共用 scheme XML：通過
 - `git diff --check`：通過
 
