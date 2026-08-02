@@ -413,13 +413,24 @@ struct AdminReportsView: View {
             } else {
                 ForEach(sortedReports) { report in
                     let canonicalTarget = store.canonicalTarget(for: report)
+                    let availabilityFeedback = ClinicAvailabilityFeedback.classify(
+                        report.reason,
+                        isClinicReport: report.targetType == .clinic
+                    )
                     VStack(alignment: .leading, spacing: 6) {
                         HStack {
                             Label(report.targetType.label, systemImage: report.targetType.systemImage)
                                 .font(.caption.weight(.medium))
                                 .foregroundStyle(.secondary)
+                            if availabilityFeedback.isAvailabilityFeedback {
+                                Text("營業資料")
+                                    .appChip(tint: .blue, isFilled: true)
+                            }
                             Spacer()
-                            statusChip(report.status)
+                            statusChip(
+                                report.status,
+                                isAvailabilityFeedback: availabilityFeedback.isAvailabilityFeedback
+                            )
                         }
                         if let canonicalTarget {
                             Text(canonicalTarget.title)
@@ -437,33 +448,70 @@ struct AdminReportsView: View {
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(AppTheme.warning)
                         }
-                        Text("原因：\(report.reason)")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                        switch availabilityFeedback {
+                        case let .structured(ticket):
+                            availabilityFeedbackFields(
+                                ticket,
+                                canonicalTarget: canonicalTarget
+                            )
+                        case let .malformed(rawReason):
+                            Label(
+                                "營業資料回報格式錯誤；只可關閉個案，不可下架內容。",
+                                systemImage: "exclamationmark.triangle.fill"
+                            )
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(AppTheme.warning)
+                            Text("原始內容：\(rawReason)")
+                                .font(.caption.monospaced())
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .textSelection(.enabled)
+                        case let .general(reason):
+                            Text("原因：\(reason)")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
                         Text(report.createdAt.formatted(date: .abbreviated, time: .shortened))
                             .font(.caption2)
                             .foregroundStyle(.tertiary)
 
                         if report.status == .pending {
-                            decisionButtons(
-                                approveTitle: "下架內容",
-                                approveIcon: "eye.slash",
-                                approveDisabled: canonicalTarget == nil,
-                                rejectTitle: "駁回",
-                                rejectIcon: "xmark",
-                                onApprove: {
-                                    Task {
-                                        await store.resolveReport(id: report.id, takeDown: true)
-                                        if store.errorMessage == nil { Haptics.success() }
+                            if availabilityFeedback.allowsTakeDown {
+                                decisionButtons(
+                                    approveTitle: "下架內容",
+                                    approveIcon: "eye.slash",
+                                    approveDisabled: canonicalTarget == nil,
+                                    rejectTitle: "駁回",
+                                    rejectIcon: "xmark",
+                                    onApprove: {
+                                        Task {
+                                            await store.resolveReport(id: report.id, takeDown: true)
+                                            if store.errorMessage == nil { Haptics.success() }
+                                        }
+                                    },
+                                    onReject: {
+                                        Task {
+                                            await store.resolveReport(id: report.id, takeDown: false)
+                                            if store.errorMessage == nil { Haptics.medium() }
+                                        }
                                     }
-                                },
-                                onReject: {
+                                )
+                            } else {
+                                Button {
                                     Task {
                                         await store.resolveReport(id: report.id, takeDown: false)
                                         if store.errorMessage == nil { Haptics.medium() }
                                     }
+                                } label: {
+                                    Label("關閉個案", systemImage: "checkmark.circle")
+                                        .font(.caption.weight(.semibold))
+                                        .frame(maxWidth: .infinity)
                                 }
-                            )
+                                .buttonStyle(.bordered)
+                                .buttonBorderShape(.capsule)
+                                .controlSize(.small)
+                                .padding(.top, 4)
+                            }
                         }
                     }
                     .padding(.vertical, 4)
@@ -474,16 +522,58 @@ struct AdminReportsView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 
-    private func statusChip(_ status: ModerationStatus) -> some View {
+    @ViewBuilder
+    private func availabilityFeedbackFields(
+        _ ticket: ClinicAvailabilityFeedbackTicket,
+        canonicalTarget: ReportTargetSummary?
+    ) -> some View {
+        HStack {
+            Text("尚未重新核實")
+                .appChip(tint: AppTheme.warning, isFilled: true)
+            Spacer()
+            if let canonicalTarget {
+                ShareLink(
+                    item: ticket.verificationTicket(
+                        clinicID: canonicalTarget.id,
+                        clinicName: canonicalTarget.title
+                    )
+                ) {
+                    Label("匯出核實工單", systemImage: "square.and.arrow.up")
+                        .font(.caption.weight(.semibold))
+                }
+            }
+        }
+        Group {
+            Text("回報原因：\(ticket.reason.rawValue)")
+            Text("migrationId：\(ticket.migrationID)")
+            Text("來源名稱：\(ticket.sourceName)")
+            Text("原核實日期：\(ticket.verifiedDate)")
+        }
+        .font(.caption)
+        .foregroundStyle(.secondary)
+        Text("必須重新向官方來源核實；不可直接套用用戶回報內容。")
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(AppTheme.warning)
+    }
+
+    private func statusChip(
+        _ status: ModerationStatus,
+        isAvailabilityFeedback: Bool
+    ) -> some View {
         let tint: Color = switch status {
         case .pending: AppTheme.warning
         case .approved: .red
         case .rejected: .secondary
         }
-        let label: LocalizedStringKey = switch status {
-        case .pending: "待處理"
-        case .approved: "已下架"
-        case .rejected: "已駁回"
+        let label: LocalizedStringKey
+        if isAvailabilityFeedback, status != .pending {
+            label = "已關閉"
+        } else {
+            label = switch status {
+            case .pending: "待處理"
+            case .approved: "已下架"
+            case .rejected: "已駁回"
+            }
         }
         return Text(label).appChip(tint: tint, isFilled: status == .pending)
     }

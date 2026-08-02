@@ -345,5 +345,42 @@
   - Actual-manifest compatibility remained v1 `11/10/1`, v2 `4/1/3`, merged `15/11/4`, filters `15/11/11/11`, scheduled probes `35/7`, `manifestCompatibility: true`, and `productionApplied: false`.
   - Node regression tests passed 54/54; catalog integrity remained `179/161/18/205/11`; the pending validator remained four additions and planned `15/11/4`; `sh -n`, project `plutil`, and `git diff --check` passed.
   - These were standalone host Swift checks, not a local iOS build. No local `xcodebuild` or XCTest execution was claimed.
+- GitHub validation: `Backend and Config Validation` run `30725508945` completed successfully for the Round 15 source and regression gates.
+- Xcode Cloud validation: Build run `8dedffd1-e5a8-4da0-882a-8af66f51f4dc` and its `Archive - iOS` action (`dff8ef1c-1449-4ba0-84d8-a6fb88ac0021`) completed successfully, externally proving the Round 15 production feedback model and post-clone harness compiled before Archive. This does not claim XCTest execution, processed-build validity, ASC attachment, review submission, public release, or device installation.
 - Production and release boundary: No report was submitted, no availability data or manifest was changed, no runner `--apply`, Firestore write, Firebase deploy, ASC workflow/build attachment/review submission, public release, or device-app change was performed.
 - Preserved scope: Registration, submissions, community interaction, general clinic reporting, moderation, and all user-owned dirty/untracked files were preserved.
+
+## Round 16 — Fail-closed admin triage for availability feedback
+
+- Started: 2026-08-02 (Asia/Taipei)
+- Fresh external evidence:
+  - Round 15 GitHub run `30725508945` completed successfully.
+  - Round 15 Xcode Cloud build run `8dedffd1-e5a8-4da0-882a-8af66f51f4dc` and `Archive - iOS` action `dff8ef1c-1449-4ba0-84d8-a6fb88ac0021` completed successfully.
+- Sol plan: Add a strict Foundation-only parser and classifier for clinic availability reports, then give admins a non-destructive verification workflow without changing the existing moderation schema or general clinic, review, and quote handling.
+- Luna implementation:
+  - Added a strict three-way classifier: valid fixed-format clinic availability reports become structured tickets, any clinic report using the reserved availability prefix but failing validation becomes malformed, and all other clinic/review/quote reports remain general.
+  - Required the exact five-field order, one of the five allowed reasons, a production-safe `hk-clinic-hours-…` migration ID, safe source name, exact real `yyyy-MM-dd` date, canonical reconstruction, and a maximum of 500 characters.
+  - Added a pure handling policy: structured and malformed availability reports never permit content takedown; pending cases expose only the existing `resolveReport(..., takeDown: false)` path and closed availability cases display `已關閉`.
+  - Structured admin cards show an availability badge, parsed fields, and `尚未重新核實`; malformed cards show a warning and the preserved raw reason. General report cards and their takedown/dismiss decisions retain the existing flow.
+  - Added a structured `ShareLink` verification ticket using only canonical clinic ID/name and parsed fields, with the explicit instruction `需重新核實，不可直接套用回報內容`. It excludes report ID, reporter UID, clinic phone, and source URL.
+  - Added XCTest and standalone production-model coverage for round-tripping all five reasons, malformed variants, privacy exclusions, takedown policy, non-clinic classification, and the exact exported ticket.
+- First Sol review: **RETURNED** — one P1 found that leading whitespace or invisible controls could move a reserved availability report into the general destructive flow; one P2 found compatibility-width URLs, ideographic domain punctuation, and vertical-bar confusables could bypass source redaction and strict parsing.
+- Luna correction:
+  - Added a classification-only security probe that removes leading whitespace, control, and format scalars, applies compatibility normalization, and maps vertical-bar confusables before checking the exact reserved prefix `營業資料回報｜`. The raw unmodified payload must still pass the canonical parser; probe-normalized input is never upgraded to structured.
+  - Kept clinic strings without the reserved delimiter, including `營業資料回報唔準`, in the general flow. The same dirty reserved-prefix payloads remain general for review and quote reports.
+  - Added a source security probe with compatibility/width normalization and explicit Unicode dot, slash, colon, and vertical-bar mappings. Fullwidth URLs, `診所。香港`, `∣`, and `│` now redact to `官方來源` during generation and fail as malformed if received in a purported structured report.
+  - Expanded XCTest and standalone cases for ASCII space, newline, NBSP, BOM, word joiner, delimiter confusables, non-clinic isolation, compatibility-width URLs, ideographic dots, and safe canonical Chinese source names.
+- Second Sol review: **RETURNED** — one remaining P2 found that the bare-domain check still recognized only ASCII labels, allowing Unicode-label domains such as `診所.香港` and `例子.com` through.
+- Luna final correction:
+  - Replaced the ASCII-only domain regex with a Unicode label parser over the normalized source probe. Each adjacent domain label must be non-empty, 63 scalars or fewer, use only Unicode letters/numbers with interior ASCII hyphens, and begin and end alphanumerically.
+  - Required a reasonable terminal label: 2–63 ASCII letters, valid `xn--` form, or a conservative explicit Unicode TLD set including `.香港`. This catches `診所.香港`, normalized `診所。香港`, and `例子.com` without treating an ordinary source sentence such as `香港診所。官方網站資料` as a domain.
+  - Added generation-redaction, raw-parser-malformed, and ordinary-Chinese safe round-trip regressions to XCTest and the standalone harness.
+- Local evidence:
+  - Availability feedback production harness: `{"clinicAvailabilityFeedback":true,"passed":154}`.
+  - Round 13 semantic harness remained `{"count":39,"passed":true}`. Round 14 actual-manifest compatibility remained v1 `11/10/1`, v2 `4/1/3`, merged `15/11/4`, filters `15/11/11/11`, scheduled probes `35/7`, `manifestCompatibility: true`, and `productionApplied: false`.
+  - Node regression tests passed 54/54; catalog integrity remained `179/161/18/205/11`; the v2 plan remained pending at four additions and planned `15/11/4`.
+  - The Foundation model, Admin Swift source, and XCTest source passed standalone Swift parsing; `sh -n`, project `plutil`, and `git diff --check` passed.
+  - These checks are not a local iOS build. No local `xcodebuild` or XCTest execution is claimed.
+- Final Sol source acceptance: **ACCEPT** — the leading-prefix, Unicode confusable, and IDN findings were resolved with no remaining actionable finding. Full SwiftUI compilation remains conditional on Xcode Cloud Archive completion.
+- Production and release boundary: No report was resolved, no content was removed, no Firestore or availability data was written, no network request or deploy occurred, and no ASC, public-release, or device action was performed.
+- Preserved scope: General clinic, review, and quote moderation, registration, submissions, community interaction, and all user-owned dirty/untracked files were preserved.

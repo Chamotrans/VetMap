@@ -549,7 +549,13 @@ final class VetMapModelTests: XCTestCase {
             "clinic.example.com",
             "2123/4567",
             "(852) 2123.4567",
-            "+852 2123 4567"
+            "+852 2123 4567",
+            "ｈｔｔｐｓ：／／ｅｘａｍｐｌｅ．ｃｏｍ",
+            "診所。香港",
+            "診所.香港",
+            "例子.com",
+            "官方∣來源",
+            "官方│來源"
         ] {
             let report = ClinicAvailabilityFeedback.reportReason(
                 .differentHours,
@@ -562,6 +568,23 @@ final class VetMapModelTests: XCTestCase {
             XCTAssertTrue(report?.contains("來源名稱：官方來源") == true)
             XCTAssertFalse(report?.contains(sensitiveSource) == true)
         }
+
+        let ordinaryChineseSentence = "香港診所。官方網站資料"
+        let ordinaryReport = ClinicAvailabilityFeedback.reportReason(
+            .differentHours,
+            availability: makeAvailability(
+                is24Hours: true,
+                sourceName: ordinaryChineseSentence
+            ),
+            at: now
+        )
+        XCTAssertTrue(ordinaryReport?.contains("來源名稱：\(ordinaryChineseSentence)") == true)
+        guard case let .structured(ordinaryTicket) = ClinicAvailabilityFeedback.classify(
+            ordinaryReport ?? ""
+        ) else {
+            return XCTFail("ordinary Chinese sentence must remain a safe source name")
+        }
+        XCTAssertEqual(ordinaryTicket.sourceName, ordinaryChineseSentence)
 
         let injectedReport = ClinicAvailabilityFeedback.reportReason(
             .differentHours,
@@ -584,6 +607,158 @@ final class VetMapModelTests: XCTestCase {
         )
         XCTAssertNotNil(longReport)
         XCTAssertLessThanOrEqual(longReport?.count ?? .max, 500)
+    }
+
+    func testClinicAvailabilityFeedbackStrictParserRoundTripsAllReasons() throws {
+        let now = Date(timeIntervalSince1970: 1_775_102_400)
+        let availability = makeAvailability(
+            is24Hours: true,
+            sourceName: "官方網站"
+        )
+
+        for reason in ClinicAvailabilityFeedbackReason.allCases {
+            let canonical = try XCTUnwrap(
+                ClinicAvailabilityFeedback.reportReason(
+                    reason,
+                    availability: availability,
+                    at: now
+                )
+            )
+            let classification = ClinicAvailabilityFeedback.classify(canonical)
+            guard case let .structured(ticket) = classification else {
+                return XCTFail("canonical report must classify as structured")
+            }
+            XCTAssertEqual(ticket.reason, reason)
+            XCTAssertEqual(ticket.migrationID, "hk-clinic-hours-test-v1")
+            XCTAssertEqual(ticket.sourceName, "官方網站")
+            XCTAssertEqual(ticket.verifiedDate, "2026-01-01")
+            XCTAssertEqual(ticket.canonicalReportReason, canonical)
+            XCTAssertTrue(classification.isAvailabilityFeedback)
+            XCTAssertFalse(classification.allowsTakeDown)
+        }
+    }
+
+    func testClinicAvailabilityFeedbackMalformedPrefixFailsClosed() {
+        let malformedReasons = [
+            "營業資料回報｜原因：營業時間不同",
+            "營業資料回報｜migrationId：hk-clinic-hours-test-v1｜原因：營業時間不同｜來源名稱：官方網站｜核實日期：2026-01-01",
+            "營業資料回報｜原因：任意原因｜migrationId：hk-clinic-hours-test-v1｜來源名稱：官方網站｜核實日期：2026-01-01",
+            "營業資料回報｜原因：營業時間不同｜migrationId：unsafe｜來源名稱：官方網站｜核實日期：2026-01-01",
+            "營業資料回報｜原因：營業時間不同｜migrationId：hk-clinic-hours-test-v1｜來源名稱：clinic.example.com｜核實日期：2026-01-01",
+            "營業資料回報｜原因：營業時間不同｜migrationId：hk-clinic-hours-test-v1｜來源名稱：ｈｔｔｐｓ：／／ｅｘａｍｐｌｅ．ｃｏｍ｜核實日期：2026-01-01",
+            "營業資料回報｜原因：營業時間不同｜migrationId：hk-clinic-hours-test-v1｜來源名稱：診所。香港｜核實日期：2026-01-01",
+            "營業資料回報｜原因：營業時間不同｜migrationId：hk-clinic-hours-test-v1｜來源名稱：診所.香港｜核實日期：2026-01-01",
+            "營業資料回報｜原因：營業時間不同｜migrationId：hk-clinic-hours-test-v1｜來源名稱：例子.com｜核實日期：2026-01-01",
+            "營業資料回報｜原因：營業時間不同｜migrationId：hk-clinic-hours-test-v1｜來源名稱：官方∣來源｜核實日期：2026-01-01",
+            "營業資料回報｜原因：營業時間不同｜migrationId：hk-clinic-hours-test-v1｜來源名稱：官方│來源｜核實日期：2026-01-01",
+            "營業資料回報｜原因：營業時間不同｜migrationId：hk-clinic-hours-test-v1｜來源名稱：官方網站｜核實日期：2026-02-30",
+            "營業資料回報｜原因：營業時間不同｜migrationId：hk-clinic-hours-test-v1｜來源名稱：官方網站｜核實日期：2026-01-01｜額外：欄位",
+            "營業資料回報|原因：營業時間不同|migrationId：hk-clinic-hours-test-v1|來源名稱：官方網站|核實日期：2026-01-01",
+            "營業資料回報｜原因：營業時間不同｜migrationId：hk-clinic-hours-test-v1｜來源名稱：\(String(repeating: "官", count: 501))｜核實日期：2026-01-01"
+        ]
+
+        for malformedReason in malformedReasons {
+            let classification = ClinicAvailabilityFeedback.classify(malformedReason)
+            guard case let .malformed(rawReason) = classification else {
+                return XCTFail("reserved availability prefix must fail closed")
+            }
+            XCTAssertEqual(rawReason, malformedReason)
+            XCTAssertTrue(classification.isAvailabilityFeedback)
+            XCTAssertFalse(classification.allowsTakeDown)
+        }
+
+        let canonical = "營業資料回報｜原因：營業時間不同｜migrationId：hk-clinic-hours-test-v1｜來源名稱：官方網站｜核實日期：2026-01-01"
+        let dirtyReservedPrefixes = [
+            " " + canonical,
+            "\n" + canonical,
+            "\u{00A0}" + canonical,
+            "\u{FEFF}" + canonical,
+            "\u{2060}" + canonical,
+            canonical.replacingOccurrences(
+                of: "｜",
+                with: "∣",
+                options: [],
+                range: canonical.range(of: "｜")
+            ),
+            canonical.replacingOccurrences(
+                of: "｜",
+                with: "│",
+                options: [],
+                range: canonical.range(of: "｜")
+            )
+        ]
+        for dirtyReason in dirtyReservedPrefixes {
+            let clinicClassification = ClinicAvailabilityFeedback.classify(dirtyReason)
+            guard case let .malformed(rawReason) = clinicClassification else {
+                return XCTFail("dirty reserved prefix must fail closed")
+            }
+            XCTAssertEqual(rawReason, dirtyReason)
+            XCTAssertFalse(clinicClassification.allowsTakeDown)
+
+            let nonClinicClassification = ClinicAvailabilityFeedback.classify(
+                dirtyReason,
+                isClinicReport: false
+            )
+            XCTAssertEqual(nonClinicClassification, .general(dirtyReason))
+            XCTAssertTrue(nonClinicClassification.allowsTakeDown)
+        }
+
+        for generalReason in ["資料不實", "營業資料回報", "營業資料回報唔準"] {
+            let general = ClinicAvailabilityFeedback.classify(generalReason)
+            XCTAssertEqual(general, .general(generalReason))
+            XCTAssertFalse(general.isAvailabilityFeedback)
+            XCTAssertTrue(general.allowsTakeDown)
+        }
+
+        let reviewWithReservedPrefix = ClinicAvailabilityFeedback.classify(
+            canonical,
+            isClinicReport: false
+        )
+        XCTAssertEqual(reviewWithReservedPrefix, .general(canonical))
+        XCTAssertTrue(reviewWithReservedPrefix.allowsTakeDown)
+    }
+
+    func testClinicAvailabilityFeedbackVerificationTicketIsExactAndPrivate() throws {
+        let now = Date(timeIntervalSince1970: 1_775_102_400)
+        let availability = makeAvailability(
+            is24Hours: true,
+            sourceURL: URL(string: "https://example.com/private-hours")!,
+            sourceName: "官方\n網站"
+        )
+        let canonical = try XCTUnwrap(
+            ClinicAvailabilityFeedback.reportReason(
+                .differentHours,
+                availability: availability,
+                at: now
+            )
+        )
+        guard case let .structured(ticket) = ClinicAvailabilityFeedback.classify(canonical) else {
+            return XCTFail("canonical report must classify as structured")
+        }
+
+        let exported = ticket.verificationTicket(
+            clinicID: "clinic-001",
+            clinicName: "香港獸醫診所"
+        )
+        XCTAssertEqual(
+            exported,
+            "VetMap 營業資料重新核實工單\n"
+                + "診所 ID：clinic-001\n"
+                + "診所名稱：香港獸醫診所\n"
+                + "回報原因：營業時間不同\n"
+                + "migrationId：hk-clinic-hours-test-v1\n"
+                + "來源名稱：官方 網站\n"
+                + "原核實日期：2026-01-01\n"
+                + "處理要求：需重新核實，不可直接套用回報內容"
+        )
+        for privateValue in [
+            "report-id-private",
+            "reporter-uid-private",
+            "+852 2123 4567",
+            availability.sourceURL.absoluteString
+        ] {
+            XCTAssertFalse(exported.contains(privateValue))
+        }
     }
 
     func testClosedClinicWithCurrentNightServiceKeepsNightServiceLabel() {
