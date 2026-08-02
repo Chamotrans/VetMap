@@ -192,6 +192,7 @@ enum AppLaunchFlags {
         case "02-Clinics", "03-ClinicDetail": .clinics
         case "04-Community": .clinics
         case "04-Products": .products
+        case "05-Messages": .messages
         case "05-Profile": .profile
         default: .home
         }

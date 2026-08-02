@@ -2,8 +2,8 @@
 
 > App Store Connect ID: `6777361219`
 > Bundle ID: `com.vetmap.app`
-> Release candidate: Xcode Cloud / ASC build `1.0 (12)`
-> 最後核對：2026-07-29
+> Release candidate: source candidate `1.0 (13)`；ASC 暫掛 build `1.0 (12)`
+> 最後核對：2026-08-03
 
 本表只記錄可驗證的目前狀態。正式按下 App Store Connect「提交以供審核」不在自動執行範圍內。
 
@@ -16,9 +16,10 @@
 - [x] 評價、報價及診所均可舉報；評價及報價作者可被封鎖
 - [x] 一對一聊天室只限參與者讀取；支援刪除自己訊息、舉報訊息及封鎖對方
 - [x] Firestore rules 同時檢查雙方封鎖清單；任一方封鎖後不可再寫入新訊息
+- [x] 聊天室首個訊息及 conversation preview 以 atomic batch 建立／更新，sender、participant 及 preview 內容受 rules 一致性檢查
 - [x] 「有用」標記改為每個 Firebase UID 對每項評價一次
 - [x] App 內提供帳戶刪除、重新驗證、Apple token 撤銷及伺服器資料清除
-- [x] Firestore／Storage 規則 emulator 測試：11/11 通過
+- [x] Firestore／Storage 規則 emulator 測試：15/15 通過（包括聊天室 participant query regression）
 - [x] Firebase Functions lint 及載入檢查通過
 - [x] 全部 Swift 檔案 `swiftc -parse` 通過
 - [x] App、Widget、Privacy manifest、Xcode scheme 及 project 檔案語法檢查通過
@@ -48,7 +49,7 @@
 - [x] 建立獨立管理員帳戶，並在 `users/{uid}` 設定 `role: admin`
 - [x] 建立不需 2FA 的普通、刪除測試及 fixture App Review 電郵／密碼帳戶
 - [x] 以專用 fixture UID 建立 rights-cleared 示範診所、評價及報價，令 Helpful／Report／Block 路徑可達
-- [ ] 以專用 fixture UID 建立 rights-cleared 示範聊天室訊息，令 Send／Delete／Report／Block 路徑可達
+- [x] 以專用 fixture UID 建立 rights-cleared 示範聊天室訊息，令 Send／Delete／Report／Block 路徑可達
 - [x] 每次 migration 前以 0600 權限備份 production collection，再以 guarded script 寫入 179 間香港診所
 - [x] 對帳 176/176 筆主資料及 29/29 筆補充資料；205 個唯一 lineage ID 全部存在
 - [x] 兩對同名同址重複資料只顯示一間，但保留雙 source ID 及雙電話
@@ -75,6 +76,9 @@
 - [x] Xcode Cloud build `1.0 (11)` 成功並已暫掛 iOS 1.0
 - [x] 提交並推送完整香港診所庫、服務／保險目錄及 attribution 修正：`81ce204`
 - [x] Xcode Cloud Build 12 成功；run `1a5339f2-fc82-46da-879e-175812548668`，ASC `VALID`／`APP_STORE_ELIGIBLE`
+- [x] 聊天室初版 Cloud run `c980a28d-5fcd-4077-8c04-8e93f7f1bcf7` 找出並修正 Swift style type mismatch
+- [x] 修正版 Cloud run `8a456702-9631-4f74-9c4f-165c5a28f2d5` 已成功 compile、archive 及產生三種 export；App Store preparation 因 Apple session proxy authentication 失敗，不能當作 ASC upload 成功
+- [ ] Xcode Cloud build `1.0 (13)` 成功並在 ASC 完成 processing
 - [ ] 在 TestFlight 真機完成登入、投稿、批核、公開、聊天室收發／刪除／舉報／封鎖及帳戶刪除 smoke test
 - [x] 將 build 11 掛接至 App Store Connect iOS 1.0 作暫時 release candidate
 - [x] 以 Build 12 取代 iOS 1.0 暫掛的 Build 11，API read-back 為 `READY_FOR_REVIEW`
@@ -91,6 +95,7 @@
 - [x] 「需要登入」保留勾選，填入 App Review 電郵及密碼
 - [x] 填寫 App Review Notes，說明待審投稿、舉報、封鎖、帳戶刪除及測試路徑
 - [x] 完成並 Publish App Privacy 問卷；2026-07-24 live UI 再確認為 Published
+- [ ] 在 ASC live UI 將新增私人聊天室涵蓋於「其他用戶內容」，並重新核對 Published 狀態
 - [x] 完成年齡分級問卷；結果 16+
 - [x] 完成 regulated medical device 聲明：No
 - [ ] 以香港修正版真實畫面取代所有舊 screenshots

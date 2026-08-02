@@ -1,6 +1,6 @@
 # VetMap iOS 1.0 — Release Candidate Notes
 
-> 目前狀態：production 已恢復完整授權香港診所庫；Xcode Cloud / ASC Build 12 已成功並掛到 iOS 1.0；尚未正式提交 App Review。
+> 目前狀態：production 已恢復完整授權香港診所庫及部署聊天室 backend；ASC Build 12 暫掛 iOS 1.0，source candidate 已升至 Build 13 等候 Xcode Cloud；尚未正式提交 App Review。
 > 本文件不以舊本機 archive、舊 commit 數或未部署設定冒充 release proof。
 
 ## 首版範圍
@@ -15,6 +15,8 @@
 - 所有社群投稿先進入雲端待審佇列，批准後才公開
 - 評價、報價及診所舉報
 - 封鎖評價／報價作者
+- 由已批准評價作者入口開始的一對一私人聊天室
+- 聊天訊息收發、自己訊息軟刪除、訊息舉報及封鎖對方
 - 每帳戶一次的評價「有用」標記
 - App 內帳戶及相關用戶資料刪除
 
@@ -36,6 +38,8 @@
 | `reports/{id}` | 舉報 | 只可建立自己的 pending 舉報 |
 | `users/{uid}/blockedUsers/{blockedUid}` | 私人封鎖名單 | 只限本人 |
 | `reviewEngagement/{reviewId}/voters/{uid}` | 每人一次「有用」標記 | 只可建立自己的 vote |
+| `conversations/{id}` | 一對一對話及訊息 preview | 只限兩名參與者讀取；寫入須符合 participant／preview 一致性 |
+| `conversations/{id}/messages/{id}` | 私人訊息 | 只限兩名參與者讀取；sender 綁定登入 UID；自己可軟刪除 |
 
 公開 collection 只有管理員可以建立或刪除。管理員批准投稿時，以 batch 同步建立公開文件及更新 submission 狀態。
 
@@ -60,6 +64,7 @@
 - 台灣 17 間舊診所及 `officialClinicCatalog` 不會公開；App 亦不再載入或顯示台灣目錄。
 - 第三方自訂字型已從 target 移除並改用系統字型。
 - 新社群內容必須經雲端待審流程。
+- 私人聊天室訊息不公開亦不作預先人工審核；只有對話雙方可讀取，訊息被舉報後獲授權管理員才可為審核讀取及處理。
 - `verified` 不作獨立核實聲稱；列表／地圖不顯示未有可靠同步機制的舊 aggregate 星級或評價數，詳情只以實際公開評價即時計算。
 - 新診所投稿必須使用香港境內的 geocode 或手動座標；未知價錢不會歸入平價篩選。
 - 帳戶持有人已確認原有診所庫由我方建立或已獲授權；完整 ASC Content Rights（包括服務目錄、官方保險連結及用戶投稿）仍需另行明確確認。
@@ -68,6 +73,7 @@
 ## 私隱
 
 - 帳戶名稱、電郵、UID 及用戶投稿會與帳戶連結，用於 App 功能。
+- 私人聊天室訊息與帳戶及對話參與者連結，用於訊息傳送、安全舉報、封鎖及內容審核。
 - 目前位置只在裝置上用於距離計算，不上傳或儲存。
 - Crashlytics 收集不綁定帳戶身份的 crash／diagnostic data。
 - Cloud Functions 會產生包括 function name 及 caller IP 的服務請求中繼資料。
@@ -76,7 +82,7 @@
 ## 已完成的本機非 build 驗證
 
 - Swift 語法 parse：通過
-- Firestore／Storage Rules emulator：11/11 通過
+- Firestore／Storage Rules emulator：15/15 通過
 - Firebase Functions ESLint：通過
 - Firebase Functions module load：通過
 - plist、Xcode project 及共用 scheme XML：通過
@@ -91,12 +97,19 @@
 3. 該 Cloud build 在 TestFlight 的真機 smoke test。
 4. App Store Connect 已掛接同一 build，且所有 metadata／privacy／rating／review 欄位完整。
 
-目前已確認：
+目前已確認的上一個 ASC release baseline：
 
 - GitHub `main` commit：`81ce20483a83bb4b85ae3625c357924c89eff103`
 - Xcode Cloud run：`1a5339f2-fc82-46da-879e-175812548668`，Build 12，`SUCCEEDED`
 - ASC build：`e1cd2911-c0c2-4cd7-94c4-985c2295794a`，`VALID`、`APP_STORE_ELIGIBLE`
 - iOS 1.0 draft：已讀回掛接 Build 12，狀態 `READY_FOR_REVIEW`
 - 實體 iPhone「是條小狗」：已安裝 `VetMap 1.0 (12)`；真實畫面顯示診所 180、地圖標記 162、寵物服務 124
+
+聊天室候選驗證：
+
+- production Firestore rules、indexes、`purgeUserData` 及示範聊天室已部署並以雙方帳戶 read-back 驗證
+- GitHub Actions 對聊天室候選的 semantic rules suite、Swift parse、functions lint 及靜態檢查通過
+- Xcode Cloud run `8a456702-9631-4f74-9c4f-165c5a28f2d5` 已成功 compile/archive；只在 Apple App Store Connect session proxy authentication 階段失敗
+- Build 13 必須取得新的 Xcode Cloud／ASC／真機證據，才可取代上面的 Build 12 baseline
 
 完整進度以 [PREFLIGHT_CHECKLIST.md](PREFLIGHT_CHECKLIST.md) 為準。
