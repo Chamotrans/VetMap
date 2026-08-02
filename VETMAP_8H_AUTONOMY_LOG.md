@@ -289,5 +289,33 @@
 - Final Sol source acceptance: **SOURCE ACCEPT** — all P1/P2 findings resolved with no new P0–P3 actionable finding. Final external acceptance remains conditional on Xcode Cloud executing the post-clone harness and completing Archive successfully.
 - Local evidence: The production-source harness returned `{"count":39,"passed":true}`; `sh -n`, Node regression tests 54/54, both validator CLIs, and `git diff --check` passed. This was a standalone host Swift compile/run, not a local iOS build; no local `xcodebuild` was run.
 - Test boundary: Formal `VetMapTests` XCTest cases were added but not executed by the current Archive-only Cloud workflow, so no XCTest pass is claimed.
+- GitHub validation: `Backend and Config Validation` run `30724132718` completed successfully for commit `53146c4`, including catalog/audit/runner gates, Functions validation, Firebase emulator rules tests, and patch hygiene.
+- Xcode Cloud boundary: GitHub's Apple Xcode Cloud check confirmed build run `4ffe2fee-65d5-4b10-ad30-e413923188c3` and its only action, `Archive - iOS` (`0979fd9f-2237-4277-bd4d-158b3ff0f5ef`), were in progress. The post-clone harness and Archive completion were not yet externally accepted; processed-build validity and XCTest execution are not claimed.
 - Production and release boundary: No availability data, runner `--apply`, Firestore write, Firebase deploy, ASC workflow/edit/build attachment/review submission, public release, or device-app change was performed.
 - Preserved scope: Registration, submissions, community interaction, moderation, manifests, and all user-owned dirty/untracked files were preserved.
+
+## Round 14 — Prove real manifests are compatible with production Swift semantics
+
+- Started: 2026-08-02 (Asia/Taipei)
+- Fresh live evidence:
+  - The public-only production audit remained verified at deployed v1 `11/10/1`; the v2 manifest remained pending at four additions and planned `15/11/4`.
+  - GitHub run `30724132718` remained successful. Xcode Cloud runs for commits `8a49221` and `53146c4` both remained `in_progress` without annotations or failures; the older stalled run predates the Round 13 semantic harness, so no source causality was inferred.
+  - The physical iPhone `是條小狗` was booted, paired, and tunnel-connected, with VetMap 1.0 (14) still installed. No runtime smoke or installation was performed.
+- Sol plan: Add a cross-layer gate that reads the actual deployed v1 and pending v2 manifests, projects every entry exactly as the migration runner would, and proves those records remain accepted by the production Swift availability and filter semantics.
+- Luna implementation:
+  - Added a standalone Swift harness that decodes the actual `hk_clinic_hours_v1.json` and `hk_clinic_hours_v2.pending.json` files supplied by CLI path; no embedded availability fixtures are used.
+  - Projected schema, timezone, dates, weekly hours, flags, labels, caveats, and sources field-for-field. v1 uses `hk-clinic-hours-v1-2026-07-30`; v2 uses its pinned top-level migration ID.
+  - Used the later manifest verification time as a deterministic common reference and required it to precede both expiries.
+  - Proved unique, non-overlapping IDs and exact distributions: v1 `11/10/1`, pending v2 `4/1/3`, merged `15/11/4`.
+  - Proved every projected entry is current under production Swift semantics; every 24-hour entry preserves its exact caveat label, while scheduled entries remain excluded from the 24-hour and night-service filters.
+  - Proved merged production filter counts at the common Hong Kong midnight: all 15, 24-hour 11, night service 11, and open now 11.
+  - Added the compatibility binary after the Round 13 semantic binary in the Xcode Cloud post-clone gate. Either non-zero exit blocks Archive; success explicitly reports `manifestCompatibility: true` beside `productionApplied: false`.
+- First Sol review: **RETURNED** — one P2 found that scheduled runtime probing selected only the first interval, so Trinity's afternoon opening and lunch closure could regress while the harness stayed green.
+- Luna correction: Every one of the 35 actual scheduled intervals is now probed at its midpoint for open status and an open label. All seven non-zero same-day gaps are probed as closed with no open label, locking Trinity's daily 13:00–14:00 lunch closure; overnight intervals are excluded from incorrect same-day gap inference.
+- Final Sol source acceptance: **SOURCE ACCEPT** — the P2 was resolved with no new P0–P3 actionable finding. External Xcode Cloud execution remains pending.
+- Local evidence:
+  - Round 13 production semantic harness: `{"count":39,"passed":true}`.
+  - Actual-manifest compatibility: v1 `11/10/1`, v2 `4/1/3`, merged `15/11/4`, filters `15/11/11/11`, scheduled probes `35/7`, `manifestCompatibility: true`, and `productionApplied: false`.
+  - `sh -n`, Node tests 54/54, both validator CLIs, and `git diff --check` passed. These were standalone host Swift checks, not a local iOS build; no local `xcodebuild` or XCTest execution was claimed.
+- Production and release boundary: No manifest or availability data, runner `--apply`, Firestore write, Firebase deploy, ASC workflow/build attachment/review submission, public release, or device-app change was performed.
+- Preserved scope: Registration, submissions, community interaction, moderation, and all user-owned dirty/untracked files were preserved.
