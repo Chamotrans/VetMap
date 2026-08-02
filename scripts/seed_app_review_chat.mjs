@@ -26,6 +26,7 @@ const apiKey = plistValue("API_KEY");
 const projectId = plistValue("PROJECT_ID");
 const reviewEmail = "appreview@vetmap.app";
 const fixtureEmail = "appreview-fixture@vetmap.app";
+const adminEmail = "appreview-admin@vetmap.app";
 
 async function requestJson(url, options = {}, allowedStatuses = [200]) {
   const response = await fetch(url, options);
@@ -60,10 +61,15 @@ const fixtureIdentity = await signIn(
     fixtureEmail,
     keychainPassword("VetMap App Review Fixture", fixtureEmail),
 );
+const adminIdentity = await signIn(
+    adminEmail,
+    keychainPassword("VetMap App Review Admin", adminEmail),
+);
 
 const participants = [reviewIdentity.uid, fixtureIdentity.uid].sort();
 const conversationId = participants.join("--");
 const messageId = "vetmap-demo-chat-message";
+const sourceReviewId = "vetmap-demo-review";
 const documentRoot =
   `projects/${projectId}/databases/(default)/documents`;
 const firestoreBase =
@@ -113,7 +119,23 @@ const existing = (await listReviewConversations()).find(
 );
 let result = "existing";
 
-if (!existing) {
+if (
+  existing &&
+  existing.document?.fields?.sourceReviewId?.stringValue !== sourceReviewId
+) {
+  await requestJson(
+      `${firestoreBase}/conversations/${encodeURIComponent(conversationId)}` +
+        "?updateMask.fieldPaths=sourceReviewId",
+      {
+        method: "PATCH",
+        headers: headers(adminIdentity.idToken),
+        body: JSON.stringify({
+          fields: {sourceReviewId: stringValue(sourceReviewId)},
+        }),
+      },
+  );
+  result = "origin-linked";
+} else if (!existing) {
   const now = new Date().toISOString();
   const messageBody =
     "呢係 VetMap 聊天室功能示範訊息，並非真實診所或醫療建議。";
@@ -138,6 +160,7 @@ if (!existing) {
                   id: stringValue(conversationId),
                   participantIds: arrayValue(participants),
                   participantNames: mapValue(participantNames),
+                  sourceReviewId: stringValue(sourceReviewId),
                   lastMessageId: stringValue(messageId),
                   lastMessage: stringValue(messageBody),
                   lastMessageAt: timestampValue(now),
@@ -175,6 +198,12 @@ const verifiedConversation = (await listReviewConversations()).find(
 if (!verifiedConversation) {
   throw new Error("App Review conversation is not readable by the review account");
 }
+if (
+  verifiedConversation.document?.fields?.sourceReviewId?.stringValue !==
+  sourceReviewId
+) {
+  throw new Error("App Review conversation is not linked to the approved demo review");
+}
 
 const messageURL = `${firestoreBase}/conversations/${encodeURIComponent(conversationId)}` +
   `/messages/${encodeURIComponent(messageId)}`;
@@ -190,6 +219,7 @@ if (
 
 console.log(JSON.stringify({
   conversation: result,
+  approvedReviewOriginVerified: true,
   reviewParticipantVerified: true,
   fixtureSenderVerified: true,
   incomingMessageReadable: true,

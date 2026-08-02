@@ -160,6 +160,11 @@ final class ChatStore: ObservableObject {
                 "updatedAt": Timestamp(date: now)
             ], forDocument: conversationReference)
         } else {
+            guard let sourceReviewID = recipient.sourceReviewID?
+                .trimmingCharacters(in: .whitespacesAndNewlines),
+                  ChatConversationID.isSafeDocumentID(sourceReviewID) else {
+                throw ChatError.invalidSourceReview
+            }
             let senderName = normalizedName(user.displayName)
             let recipientName = normalizedName(recipient.displayName)
             let participants = [user.uid, recipient.userID].sorted()
@@ -170,6 +175,7 @@ final class ChatStore: ObservableObject {
                     user.uid: senderName,
                     recipient.userID: recipientName
                 ],
+                sourceReviewId: sourceReviewID,
                 lastMessageId: messageID,
                 lastMessage: body,
                 lastMessageAt: now,
@@ -274,11 +280,13 @@ final class ChatStore: ObservableObject {
 
 enum ChatError: LocalizedError {
     case invalidRecipient
+    case invalidSourceReview
     case cannotDeleteMessage
 
     var errorDescription: String? {
         switch self {
         case .invalidRecipient: "無法建立此對話。"
+        case .invalidSourceReview: "請由已批准的社群評價重新開始對話。"
         case .cannotDeleteMessage: "只可刪除自己發出的訊息。"
         }
     }

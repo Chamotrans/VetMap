@@ -146,12 +146,13 @@ function chatMessage({
 function conversation({
   id = "alice--bob",
   participants = ["alice", "bob"],
+  sourceReviewId = "review-1",
   lastMessageId = "message-1",
   lastMessage = "你好，想交流一下診所經驗。",
   lastSenderId = "alice",
   now = new Date(),
 } = {}) {
-  return {
+  const data = {
     id,
     participantIds: participants,
     participantNames: {alice: "Alice", bob: "Bob"},
@@ -162,6 +163,38 @@ function conversation({
     createdAt: now,
     updatedAt: now,
   };
+  if (sourceReviewId !== null) data.sourceReviewId = sourceReviewId;
+  return data;
+}
+
+function approvedChatReview({
+  id = "review-1",
+  userId = "bob",
+  status = "approved",
+} = {}) {
+  const now = new Date();
+  return {
+    id,
+    clinicId: "clinic-1",
+    userId,
+    userName: userId === "bob" ? "Bob" : "Mallory",
+    rating: 4,
+    title: "已批准評價",
+    content: "用作聊天室來源驗證的評價。",
+    createdAt: now,
+    updatedAt: now,
+    helpfulCount: 0,
+    authorId: userId,
+    status,
+    approvedAt: now,
+  };
+}
+
+async function seedChatReview(options = {}) {
+  const review = approvedChatReview(options);
+  await testEnv.withSecurityRulesDisabled(async (context) => {
+    await context.firestore().collection("reviews").doc(review.id).set(review);
+  });
 }
 
 async function createConversation(db, options = {}) {
@@ -530,13 +563,39 @@ test("聊天室只限兩名參與者，建立對話必須原子寫入第一則�
   const alice = testEnv.authenticatedContext("alice").firestore();
   const bob = testEnv.authenticatedContext("bob").firestore();
   const mallory = testEnv.authenticatedContext("mallory").firestore();
+  await seedChatReview();
+  await seedChatReview({id: "review-mallory", userId: "mallory"});
 
   await assertFails(
     alice.collection("conversations").doc("alice--bob").set(conversation()),
   );
   await assertFails(
-    createConversation(alice, {participants: ["bob", "alice"]}),
+    createConversation(alice, {id: "bob--alice", participants: ["bob", "alice"]}),
   );
+  await assertFails(
+    createConversation(alice, {sourceReviewId: null}),
+  );
+  await assertFails(
+    createConversation(alice, {sourceReviewId: "missing-review"}),
+  );
+  await assertFails(
+    createConversation(alice, {sourceReviewId: "review-mallory"}),
+  );
+  await testEnv.withSecurityRulesDisabled(async (context) => {
+    await context.firestore().collection("contentStates").doc("review-review-1").set({
+      id: "review-review-1",
+      type: "review",
+      targetId: "review-1",
+      isRemoved: true,
+      isPinned: false,
+      updatedAt: new Date(),
+      updatedBy: "admin",
+    });
+  });
+  await assertFails(createConversation(alice));
+  await testEnv.withSecurityRulesDisabled(async (context) => {
+    await context.firestore().collection("contentStates").doc("review-review-1").delete();
+  });
   await assertSucceeds(createConversation(alice));
 
   const conversationRef = alice.collection("conversations").doc("alice--bob");
@@ -554,9 +613,41 @@ test("聊天室只限兩名參與者，建立對話必須原子寫入第一則�
   );
 });
 
+test("舊對話來源只可由管理員一次性連結到已批准評價", async () => {
+  await seedAdmin();
+  await seedChatReview();
+  await seedChatReview({id: "review-mallory", userId: "mallory"});
+  const legacy = conversation({sourceReviewId: null});
+  const legacyMessage = chatMessage();
+  await testEnv.withSecurityRulesDisabled(async (context) => {
+    const db = context.firestore();
+    const reference = db.collection("conversations").doc(legacy.id);
+    const batch = db.batch();
+    batch.set(reference, legacy);
+    batch.set(reference.collection("messages").doc(legacyMessage.id), legacyMessage);
+    await batch.commit();
+  });
+
+  const alice = testEnv.authenticatedContext("alice").firestore();
+  const admin = testEnv.authenticatedContext("admin").firestore();
+  const reference = alice.collection("conversations").doc(legacy.id);
+  await assertFails(reference.update({sourceReviewId: "review-1"}));
+  await assertSucceeds(
+    admin.collection("conversations").doc(legacy.id).update({
+      sourceReviewId: "review-1",
+    }),
+  );
+  await assertFails(
+    admin.collection("conversations").doc(legacy.id).update({
+      sourceReviewId: "review-mallory",
+    }),
+  );
+});
+
 test("聊天室新訊息綁定本人及對話預覽，任一方封鎖後禁止再傳送", async () => {
   const alice = testEnv.authenticatedContext("alice").firestore();
   const bob = testEnv.authenticatedContext("bob").firestore();
+  await seedChatReview();
   await createConversation(alice);
 
   const secondSentAt = new Date();
@@ -617,6 +708,7 @@ test("訊息只可由作者軟刪除，參與者可舉報而外人不可", async
   const alice = testEnv.authenticatedContext("alice").firestore();
   const bob = testEnv.authenticatedContext("bob").firestore();
   const mallory = testEnv.authenticatedContext("mallory").firestore();
+  await seedChatReview();
   await createConversation(alice);
 
   const messageRef = alice.collection("conversations/alice--bob/messages").doc("message-1");

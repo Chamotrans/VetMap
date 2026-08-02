@@ -25,6 +25,9 @@ final class VetMapModelTests: XCTestCase {
         XCTAssertNil(ChatConversationID.make("alice", "alice"))
         XCTAssertNil(ChatConversationID.make("alice", "unsafe/user"))
         XCTAssertNil(ChatConversationID.make("", "bob"))
+        XCTAssertTrue(ChatConversationID.isSafeDocumentID(String(repeating: "r", count: 200)))
+        XCTAssertFalse(ChatConversationID.isSafeDocumentID(String(repeating: "r", count: 201)))
+        XCTAssertFalse(ChatConversationID.isSafeDocumentID("-review"))
     }
 
     func testChatModelsRoundTripThroughCodable() throws {
@@ -32,6 +35,7 @@ final class VetMapModelTests: XCTestCase {
             id: "alice--bob",
             participantIds: ["alice", "bob"],
             participantNames: ["alice": "Alice", "bob": "Bob"],
+            sourceReviewId: "review-1",
             lastMessageId: "message-1",
             lastMessage: "你好",
             lastMessageAt: date,
@@ -52,6 +56,7 @@ final class VetMapModelTests: XCTestCase {
         try assertRoundTrip(message)
         XCTAssertEqual(conversation.otherUserID(for: "alice"), "bob")
         XCTAssertEqual(conversation.otherDisplayName(for: "alice"), "Bob")
+        XCTAssertEqual(conversation.sourceReviewId, "review-1")
     }
 
     func testClinicWithoutCoordinateRoundTripsAndHasNoMapLocation() throws {

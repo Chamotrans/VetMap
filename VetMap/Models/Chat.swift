@@ -3,6 +3,13 @@ import Foundation
 struct ChatTarget: Identifiable, Hashable {
     let userID: String
     let displayName: String
+    let sourceReviewID: String?
+
+    init(userID: String, displayName: String, sourceReviewID: String? = nil) {
+        self.userID = userID
+        self.displayName = displayName
+        self.sourceReviewID = sourceReviewID
+    }
 
     var id: String { userID }
 }
@@ -11,6 +18,7 @@ struct ChatConversation: Identifiable, Codable, Equatable {
     let id: String
     var participantIds: [String]
     var participantNames: [String: String]
+    var sourceReviewId: String? = nil
     var lastMessageId: String
     var lastMessage: String
     var lastMessageAt: Date
@@ -55,9 +63,18 @@ enum ChatConversationID {
         return conversationID.count <= 200 ? conversationID : nil
     }
 
-    private static func isSafeUserID(_ value: String) -> Bool {
-        guard !value.isEmpty, value.count <= 100 else { return false }
+    static func isSafeDocumentID(_ value: String) -> Bool {
+        guard !value.isEmpty,
+              value.count <= 200,
+              let first = value.unicodeScalars.first,
+              CharacterSet.alphanumerics.contains(first) else {
+            return false
+        }
         let allowed = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "._-"))
         return value.unicodeScalars.allSatisfy(allowed.contains)
+    }
+
+    private static func isSafeUserID(_ value: String) -> Bool {
+        value.count <= 100 && isSafeDocumentID(value)
     }
 }

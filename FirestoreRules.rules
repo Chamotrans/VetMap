@@ -44,7 +44,8 @@ service cloud.firestore {
         ])
         && data.keys().hasOnly([
           'id', 'participantIds', 'participantNames', 'lastMessageId',
-          'lastMessage', 'lastMessageAt', 'lastSenderId', 'createdAt', 'updatedAt'
+          'lastMessage', 'lastMessageAt', 'lastSenderId', 'createdAt', 'updatedAt',
+          'sourceReviewId'
         ])
         && data.id == conversationId
         && data.participantIds is list
@@ -52,6 +53,7 @@ service cloud.firestore {
         && validChatUserID(data.participantIds[0])
         && validChatUserID(data.participantIds[1])
         && data.participantIds[0] != data.participantIds[1]
+        && data.participantIds[0] < data.participantIds[1]
         && conversationId.size() <= 200
         && conversationId
           == data.participantIds[0] + '--' + data.participantIds[1]
@@ -64,6 +66,7 @@ service cloud.firestore {
         && data.participantNames[data.participantIds[1]] is string
         && data.participantNames[data.participantIds[1]].size() > 0
         && data.participantNames[data.participantIds[1]].size() <= 80
+        && (!('sourceReviewId' in data) || validDocumentID(data.sourceReviewId))
         && validDocumentID(data.lastMessageId)
         && data.lastMessage is string
         && data.lastMessage.size() > 0
@@ -86,6 +89,28 @@ service cloud.firestore {
         )
         && !exists(
           /databases/$(database)/documents/users/$(data.participantIds[1])/blockedUsers/$(data.participantIds[0])
+        );
+    }
+
+    function approvedChatOrigin(data) {
+      return 'sourceReviewId' in data
+        && validDocumentID(data.sourceReviewId)
+        && exists(
+          /databases/$(database)/documents/reviews/$(data.sourceReviewId)
+        )
+        && get(
+          /databases/$(database)/documents/reviews/$(data.sourceReviewId)
+        ).data.status == 'approved'
+        && get(
+          /databases/$(database)/documents/reviews/$(data.sourceReviewId)
+        ).data.userId in data.participantIds
+        && (
+          !exists(
+            /databases/$(database)/documents/contentStates/review-$(data.sourceReviewId)
+          )
+          || get(
+            /databases/$(database)/documents/contentStates/review-$(data.sourceReviewId)
+          ).data.isRemoved == false
         );
     }
 
@@ -421,6 +446,10 @@ service cloud.firestore {
         && recentClientTimestamp(request.resource.data.createdAt)
         && chatParticipant(request.resource.data)
         && chatUnblocked(request.resource.data)
+        && approvedChatOrigin(request.resource.data)
+        && get(
+          /databases/$(database)/documents/reviews/$(request.resource.data.sourceReviewId)
+        ).data.userId != request.auth.uid
         && existsAfter(
           /databases/$(database)/documents/conversations/$(conversationId)/messages/$(request.resource.data.lastMessageId)
         )
@@ -430,9 +459,10 @@ service cloud.firestore {
         && getAfter(
           /databases/$(database)/documents/conversations/$(conversationId)/messages/$(request.resource.data.lastMessageId)
         ).data.senderId == request.auth.uid;
-      allow update: if (admin()
-          || (chatParticipant(resource.data) && chatUnblocked(resource.data)))
-        && (
+      allow update: if (
+          (admin()
+            || (chatParticipant(resource.data) && chatUnblocked(resource.data)))
+          && (
           (
             request.resource.data.diff(resource.data).affectedKeys().hasOnly([
               'lastMessageId', 'lastMessage', 'lastMessageAt',
@@ -463,6 +493,14 @@ service cloud.firestore {
               /databases/$(database)/documents/conversations/$(conversationId)/messages/$(resource.data.lastMessageId)
             ).data.deletedBy == request.auth.uid
           )
+          )
+        )
+        || (
+          admin()
+          && !('sourceReviewId' in resource.data)
+          && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['sourceReviewId'])
+          && approvedChatOrigin(request.resource.data)
         );
       allow delete: if false;
 

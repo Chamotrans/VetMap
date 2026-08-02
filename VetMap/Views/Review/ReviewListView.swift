@@ -52,7 +52,8 @@ struct ReviewListView: View {
                                 onMessageAuthor: canMessage(review) ? {
                                     chatTarget = ChatTarget(
                                         userID: review.userId,
-                                        displayName: review.userName
+                                        displayName: review.userName,
+                                        sourceReviewID: review.id
                                     )
                                 } : nil
                             )
