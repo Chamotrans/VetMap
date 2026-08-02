@@ -480,7 +480,7 @@
 - Started: 2026-08-02 (Asia/Taipei)
 - Fresh external evidence:
   - Round 19 GitHub `Backend and Config Validation` run `30728756512` completed successfully.
-  - Round 19 Xcode Cloud status is reserved for a later live refresh; no result is inferred.
+  - Xcode Cloud build `267320de-061e-4be2-b293-5aa144d28367`, Archive action `a0ace45a-9bea-4af0-9b1e-e72b928b640a`, completed successfully from `2026-08-02T03:16:31Z` to `2026-08-02T03:22:18Z` for source `8d820e5`.
 - Sol plan: Before a pending clinic can use the existing approval write, read the current approved directory and moderation removals, apply the same conservative strong-match rules, and require an exact, freshly revalidated candidate-set override.
 - First Sol source review: **RETURNED** with three P2 findings: the override bound only one selected candidate rather than the complete strong-match set; clinic preflight errors were not visible inside the pending-clinic screen; and the confirmation lacked admin-readable match reasons plus full details for every candidate.
 - Second Sol source review: **RETURNED** with one remaining P2: an ID-only set fingerprint would not detect changed matcher evidence or match semantics when a candidate retained the same document ID.
@@ -503,6 +503,27 @@
   - Node regressions passed 54/54; catalog integrity remained `179/161/18/205/11`; the pending plan remained four additions and planned `15/11/4`. Functions lint/module load and the loopback Firebase emulator suite 12/12 passed.
   - The matcher/policy, ModerationStore, Admin view, XCTest source, and harness passed standalone Swift parsing. Post-clone shell syntax, project `plutil`, integration-source assertions, and `git diff --check` passed.
   - These checks are not a local iOS build. No local `xcodebuild` or XCTest execution is claimed.
-- Final Sol source acceptance: **ACCEPT** — the full challenge fingerprint, visible preflight handling, informed override copy, per-operation typed outcomes, and committed-write lockout resolved every P2 with no remaining P0/P1/P2 finding. Full iOS compilation remains conditional on Xcode Cloud Archive completion.
+- Final Sol source acceptance: **ACCEPT** — the full challenge fingerprint, visible preflight handling, informed override copy, per-operation typed outcomes, and committed-write lockout resolved every P2 with no remaining P0/P1/P2 finding. Xcode Cloud subsequently confirmed the Archive action completed successfully.
 - Production and release boundary: No real moderation item was approved or rejected, no production read/write or network request was made, no Firebase deployment occurred, and no ASC, public-release, or device action was performed.
 - Preserved scope: Review and quote approval behavior, registration, submissions, community interaction, publication projection/rules, all user-owned dirty/untracked files, and unrelated release tooling were preserved.
+
+## Round 21 — Live-state reconciliation after Round 20 acceptance
+
+- Reconciled: 2026-08-02 (Asia/Taipei)
+- Source evidence:
+  - Reconciled source revision: `8d820e5`.
+  - GitHub `Backend and Config Validation` run `30730331974` completed successfully.
+  - Xcode Cloud build `267320de-061e-4be2-b293-5aa144d28367`, Archive action `a0ace45a-9bea-4af0-9b1e-e72b928b640a`, completed successfully from `2026-08-02T03:16:31Z` to `2026-08-02T03:22:18Z`.
+- Production public audit evidence:
+  - The live public availability overlay was verified at `11/10/1`: 11 availability records, including ten 24-hour entries and one scheduled entry.
+  - Availability v2 remains a pending four-clinic plan. The planned merged state is `15/11/4`, and `productionApplied` is explicitly `false`.
+- Device evidence:
+  - Physical device `是條小狗` was booted, paired, and reachable on the local network at the time of reconciliation, but its developer tunnel was disconnected.
+  - No fresh install, launch, screenshot, or functional device proof was performed or inferred.
+- App Store Connect boundary:
+  - The live ASC session was not refreshed because it had expired. Any last-known build/version/review information is historical only and must not be treated as current.
+  - No processed-build validity, version attachment, review-submission state, storefront availability, or public-release claim is made.
+- Action boundary:
+  - This reconciliation made no production write, ASC mutation, local Xcode build, Firebase deployment, device install/launch, or other device action.
+  - User-owned dirty and untracked files were preserved without staging, reverting, deleting, or modifying them.
+- Review state: Log-only reconciliation complete; source, GitHub, Xcode Cloud, production audit, device connectivity, and ASC evidence remain separately stated.
