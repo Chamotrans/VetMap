@@ -1,6 +1,6 @@
 # VetMap iOS 1.0 — Release Candidate Notes
 
-> 目前狀態：production 已恢復完整授權香港診所庫及部署聊天室 backend；ASC Build 12 暫掛 iOS 1.0；聊天室 Cloud Run 39 已成功 archive，但 delivery 被 `ITMS-90382 Upload limit reached` 拒絕，須等 Apple 24 小時 window 重置後再上載；尚未正式提交 App Review。
+> 目前狀態：production 已恢復完整授權香港診所庫及部署聊天室 backend；ASC Build 12 暫掛 iOS 1.0；聊天室 Cloud Run 39 已成功 archive，但 delivery 被 `ITMS-90382 Upload limit reached` 拒絕，須等 Apple 24 小時 window 重置後再上載；香港修正版 iPhone／iPad screenshots 已同步到 ASC；尚未正式提交 App Review。
 > 本文件不以舊本機 archive、舊 commit 數或未部署設定冒充 release proof。
 
 ## 首版範圍
@@ -111,7 +111,10 @@
 - GitHub Actions 對聊天室候選的 semantic rules suite、Swift parse、functions lint 及靜態檢查通過
 - Xcode Cloud Run 39 已成功 compile/archive 並產生 App Store、development 及 ad-hoc exports；Apple delivery 電郵明確回報 `ITMS-90382 Upload limit reached`
 - Run 39 development artifact `VetMap 1.0 (39)` 已安裝到實體 iPhone「是條小狗」，新訊息 tab 及未登入安全提示可達
-- App Store Connect 現有 iPhone／iPad screenshots 均已由 API 下載審計；仍顯示台北、199 間及未證明的 verified／rating，不能送審
+- Xcode Cloud Run 41（`fe0b7c5b-da2a-4199-8576-db3f6ff04153`）以專用 screenshot test plan 在 iPhone 17 Pro Max 及 iPad Pro 13-inch 模擬器完成 `SUCCEEDED`；12 張附件均不屬於 failure
+- ASC `en-GB` 及 `zh-Hant` 已同步香港修正版 screenshots：每個 locale 各 5 張 iPhone、6 張 iPad，22 張均由 API 讀回 `COMPLETE`；舊台北、199 間及未證明 verified／rating 畫面已移除
+- iPhone 地圖附件因被 Apple Intelligence 系統通知遮擋而明確排除；iPad 地圖附件未受遮擋並已上載
+- 臨時 screenshot-only workflow 已還原為 `Default` Archive／`APP_STORE_ELIGIBLE` 配置並保持 disabled，避免 24 小時 upload limit 期間自動再上載
 - 下一個 Cloud candidate 必須在 upload limit 重置後取得 ASC processing 及完整真機聊天室 smoke test，才可取代上面的 Build 12 baseline
 
 完整進度以 [PREFLIGHT_CHECKLIST.md](PREFLIGHT_CHECKLIST.md) 為準。

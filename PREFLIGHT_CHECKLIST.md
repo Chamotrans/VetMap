@@ -79,6 +79,8 @@
 - [x] 聊天室初版 Cloud run `c980a28d-5fcd-4077-8c04-8e93f7f1bcf7` 找出並修正 Swift style type mismatch
 - [x] 修正版 Cloud run `8a456702-9631-4f74-9c4f-165c5a28f2d5` 已成功 compile、archive 及產生三種 export；App Store preparation 因 Apple session proxy authentication 失敗，不能當作 ASC upload 成功
 - [x] Xcode Cloud run 39 已成功 compile/archive，Cloud development artifact 為 `VetMap 1.0 (39)`，並已安裝到實體 iPhone「是條小狗」
+- [x] Xcode Cloud Run 41 screenshot test plan 在 iPhone 17 Pro Max 及 iPad Pro 13-inch 完成 `SUCCEEDED`；12 張 release evidence 附件已匯出及逐張驗收
+- [x] Xcode Cloud workflow 已還原為 `Default` Archive／`APP_STORE_ELIGIBLE`，並在 upload limit 重置前保持 disabled
 - [ ] 等待 Apple 24 小時 upload window 重置後再跑新 Cloud candidate；Run 39 delivery 被 `ITMS-90382 Upload limit reached` 拒絕，未進入 ASC processing
 - [ ] 在 TestFlight 真機完成登入、投稿、批核、公開、聊天室收發／刪除／舉報／封鎖及帳戶刪除 smoke test
 - [x] 將 build 11 掛接至 App Store Connect iOS 1.0 作暫時 release candidate
@@ -99,7 +101,7 @@
 - [ ] 在 ASC live UI 將新增私人聊天室涵蓋於「其他用戶內容」，並重新核對 Published 狀態
 - [x] 完成年齡分級問卷；結果 16+
 - [x] 完成 regulated medical device 聲明：No
-- [ ] 以香港修正版真實畫面取代所有舊 screenshots
+- [x] 以 Xcode Cloud 香港修正版取代全部舊 screenshots；ASC API read-back：`en-GB`／`zh-Hant` 各 5 張 iPhone、6 張 iPad，22 張均為 `COMPLETE`
 - [x] 把 App Store 描述及 keywords 改為 [AppStoreMetadata.md](AppStoreMetadata.md) 的香港＋community 版本，並從 live ASC 讀回確認
 - [ ] 完成 Content Rights。App 會顯示經批准的用戶內容，必須如實選擇 Yes；提交者須確認擁有或獲授權使用相關內容
 - [x] 將 build 7 加入 iOS 1.0 review draft
