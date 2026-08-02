@@ -63,7 +63,7 @@ struct ChatThreadView: View {
         } message: {
             Text("舉報會交由 VetMap 管理員審核。")
         }
-        .alert("封鎖 (target.displayName)？", isPresented: $showBlockConfirmation) {
+        .alert("封鎖 \(target.displayName)？", isPresented: $showBlockConfirmation) {
             Button("取消", role: .cancel) {}
             Button("封鎖", role: .destructive) {
                 blockUser()
@@ -99,7 +99,7 @@ struct ChatThreadView: View {
             ContentUnavailableView {
                 Label("開始對話", systemImage: "bubble.left")
             } description: {
-                Text("向 (target.displayName) 傳送第一則訊息。")
+                Text("向 \(target.displayName) 傳送第一則訊息。")
             }
             .frame(maxHeight: .infinity)
         } else if chat.isLoading && chat.messages.isEmpty {
@@ -248,7 +248,7 @@ struct ChatThreadView: View {
             do {
                 try await chat.block(target.userID)
                 didBlock = true
-                notice = "已封鎖 (target.displayName)。"
+                notice = "已封鎖 \(target.displayName)。"
             } catch {
                 notice = error.localizedDescription
             }

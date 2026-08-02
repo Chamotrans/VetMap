@@ -78,7 +78,8 @@
 - [x] Xcode Cloud Build 12 成功；run `1a5339f2-fc82-46da-879e-175812548668`，ASC `VALID`／`APP_STORE_ELIGIBLE`
 - [x] 聊天室初版 Cloud run `c980a28d-5fcd-4077-8c04-8e93f7f1bcf7` 找出並修正 Swift style type mismatch
 - [x] 修正版 Cloud run `8a456702-9631-4f74-9c4f-165c5a28f2d5` 已成功 compile、archive 及產生三種 export；App Store preparation 因 Apple session proxy authentication 失敗，不能當作 ASC upload 成功
-- [ ] Xcode Cloud build `1.0 (13)` 成功並在 ASC 完成 processing
+- [x] Xcode Cloud run 39 已成功 compile/archive，Cloud development artifact 為 `VetMap 1.0 (39)`，並已安裝到實體 iPhone「是條小狗」
+- [ ] 等待 Apple 24 小時 upload window 重置後再跑新 Cloud candidate；Run 39 delivery 被 `ITMS-90382 Upload limit reached` 拒絕，未進入 ASC processing
 - [ ] 在 TestFlight 真機完成登入、投稿、批核、公開、聊天室收發／刪除／舉報／封鎖及帳戶刪除 smoke test
 - [x] 將 build 11 掛接至 App Store Connect iOS 1.0 作暫時 release candidate
 - [x] 以 Build 12 取代 iOS 1.0 暫掛的 Build 11，API read-back 為 `READY_FOR_REVIEW`

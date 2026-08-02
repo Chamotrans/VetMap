@@ -1,6 +1,6 @@
 # VetMap iOS 1.0 — Release Candidate Notes
 
-> 目前狀態：production 已恢復完整授權香港診所庫及部署聊天室 backend；ASC Build 12 暫掛 iOS 1.0，source candidate 已升至 Build 13 等候 Xcode Cloud；尚未正式提交 App Review。
+> 目前狀態：production 已恢復完整授權香港診所庫及部署聊天室 backend；ASC Build 12 暫掛 iOS 1.0；聊天室 Cloud Run 39 已成功 archive，但 delivery 被 `ITMS-90382 Upload limit reached` 拒絕，須等 Apple 24 小時 window 重置後再上載；尚未正式提交 App Review。
 > 本文件不以舊本機 archive、舊 commit 數或未部署設定冒充 release proof。
 
 ## 首版範圍
@@ -109,7 +109,9 @@
 
 - production Firestore rules、indexes、`purgeUserData` 及示範聊天室已部署並以雙方帳戶 read-back 驗證
 - GitHub Actions 對聊天室候選的 semantic rules suite、Swift parse、functions lint 及靜態檢查通過
-- Xcode Cloud run `8a456702-9631-4f74-9c4f-165c5a28f2d5` 已成功 compile/archive；只在 Apple App Store Connect session proxy authentication 階段失敗
-- Build 13 必須取得新的 Xcode Cloud／ASC／真機證據，才可取代上面的 Build 12 baseline
+- Xcode Cloud Run 39 已成功 compile/archive 並產生 App Store、development 及 ad-hoc exports；Apple delivery 電郵明確回報 `ITMS-90382 Upload limit reached`
+- Run 39 development artifact `VetMap 1.0 (39)` 已安裝到實體 iPhone「是條小狗」，新訊息 tab 及未登入安全提示可達
+- App Store Connect 現有 iPhone／iPad screenshots 均已由 API 下載審計；仍顯示台北、199 間及未證明的 verified／rating，不能送審
+- 下一個 Cloud candidate 必須在 upload limit 重置後取得 ASC processing 及完整真機聊天室 smoke test，才可取代上面的 Build 12 baseline
 
 完整進度以 [PREFLIGHT_CHECKLIST.md](PREFLIGHT_CHECKLIST.md) 為準。
