@@ -93,6 +93,7 @@ service cloud.firestore {
     }
 
     function approvedChatOrigin(data) {
+      let sourceStateId = 'review-' + data.sourceReviewId;
       return 'sourceReviewId' in data
         && validDocumentID(data.sourceReviewId)
         && exists(
@@ -106,10 +107,10 @@ service cloud.firestore {
         ).data.userId in data.participantIds
         && (
           !exists(
-            /databases/$(database)/documents/contentStates/review-$(data.sourceReviewId)
+            /databases/$(database)/documents/contentStates/$(sourceStateId)
           )
           || get(
-            /databases/$(database)/documents/contentStates/review-$(data.sourceReviewId)
+            /databases/$(database)/documents/contentStates/$(sourceStateId)
           ).data.isRemoved == false
         );
     }
