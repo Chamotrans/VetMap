@@ -297,12 +297,22 @@ final class FirebaseService {
         var payload: [String: Any]
         switch submission.type {
         case .clinic:
-            guard var clinic = submission.clinic else { throw FirebaseError.invalidSubmission }
-            // Publication approval is moderation, not independent fact
-            // verification. Keep the verification flag false until a separate
-            // evidence-backed verification process exists.
-            clinic.verified = false
-            payload = try publishedData(clinic, authorId: submission.authorId, approvedAt: Date())
+            guard
+                let clinic = submission.clinic,
+                let publicClinic = ClinicPublicationPolicy.safeProjection(
+                    of: clinic,
+                    submitterID: submission.authorId
+                )
+            else {
+                // Reject malformed or non-Hong-Kong legacy queue entries before
+                // a Firestore batch is constructed.
+                throw FirebaseError.invalidSubmission
+            }
+            payload = try publishedData(
+                publicClinic,
+                authorId: submission.authorId,
+                approvedAt: Date()
+            )
         case .review:
             guard let review = submission.review else { throw FirebaseError.invalidSubmission }
             payload = try publishedData(review, authorId: submission.authorId, approvedAt: Date())
@@ -626,10 +636,16 @@ final class FirebaseService {
     }
 
     private func publish(_ clinic: VetClinic, authorId: String) async throws {
+        guard let publicClinic = ClinicPublicationPolicy.safeProjection(
+            of: clinic,
+            submitterID: authorId
+        ) else {
+            throw FirebaseError.invalidSubmission
+        }
         try await resolveFirestore()
             .collection("clinics")
-            .document(clinic.id)
-            .setData(try publishedData(clinic, authorId: authorId, approvedAt: Date()))
+            .document(publicClinic.id)
+            .setData(try publishedData(publicClinic, authorId: authorId, approvedAt: Date()))
     }
 
     private func publish(_ review: Review, authorId: String) async throws {

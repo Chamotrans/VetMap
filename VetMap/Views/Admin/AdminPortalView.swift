@@ -234,6 +234,21 @@ struct AdminPendingClinicsView: View {
                         Text(pending.clinic.address)
                             .font(.caption)
                             .foregroundStyle(.secondary)
+                        Text(
+                            pending.clinic.phone.isEmpty
+                                ? "電話：未提供"
+                                : "電話：\(pending.clinic.phone)"
+                        )
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        Text(
+                            pending.clinic.website.map {
+                                "網站：\($0.absoluteString)"
+                            } ?? "網站：未提供"
+                        )
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .textSelection(.enabled)
                         if pending.clinic.hasReliableHongKongCoordinate,
                            let coordinate = pending.clinic.coordinate {
                             Text(
@@ -247,11 +262,18 @@ struct AdminPendingClinicsView: View {
                                 .foregroundStyle(AppTheme.warning)
                         }
                         if !pending.clinic.services.isEmpty {
-                            Text(pending.clinic.services.joined(separator: "、"))
+                            Text("投稿聲稱服務：\(pending.clinic.services.joined(separator: "、"))")
                                 .font(.caption)
                                 .foregroundStyle(.tertiary)
                                 .lineLimit(2)
                         }
+                        Label(
+                            "批准只會公開診所身份、聯絡資料及可靠香港座標；營業時間、服務、評分、價錢、圖片及標籤等投稿聲稱不會直接公開。",
+                            systemImage: "shield.lefthalf.filled"
+                        )
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                         Text("提交於 \(pending.submittedAt.formatted(date: .abbreviated, time: .shortened))")
                             .font(.caption2)
                             .foregroundStyle(.tertiary)

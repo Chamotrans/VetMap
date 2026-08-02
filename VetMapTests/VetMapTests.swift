@@ -778,6 +778,66 @@ final class VetMapModelTests: XCTestCase {
         )
     }
 
+    func testClinicPublicationPolicyRetainsOnlySafeIdentityContactAndCoordinate() throws {
+        let submitted = makeClinic(
+            id: "client-controlled-id",
+            name: "香港社群投稿診所",
+            address: "香港測試地址",
+            catalogRegion: "TW",
+            services: ["24 小時急症", "夜診"],
+            tags: ["官方", "已驗證"],
+            priceLevel: 3,
+            verified: true,
+            availability: makeAvailability(is24Hours: true)
+        )
+        let projected = try XCTUnwrap(
+            ClinicPublicationPolicy.safeProjection(
+                of: submitted,
+                submitterID: "firebase-user-1"
+            )
+        )
+
+        XCTAssertEqual(projected.id, submitted.id)
+        XCTAssertEqual(projected.name, submitted.name)
+        XCTAssertEqual(projected.address, submitted.address)
+        XCTAssertEqual(projected.coordinate, submitted.coordinate)
+        XCTAssertEqual(projected.phone, submitted.phone)
+        XCTAssertEqual(projected.website, submitted.website)
+        XCTAssertEqual(projected.createdAt, submitted.createdAt)
+        XCTAssertEqual(projected.updatedAt, submitted.updatedAt)
+        XCTAssertEqual(projected.reportedBy, "firebase-user-1")
+        XCTAssertEqual(projected.catalogRegion, "HK")
+        XCTAssertFalse(projected.verified)
+        XCTAssertTrue(projected.openingHours.isEmpty)
+        XCTAssertNil(projected.availability)
+        XCTAssertTrue(projected.services.isEmpty)
+        XCTAssertEqual(projected.avgRating, 0)
+        XCTAssertEqual(projected.reviewCount, 0)
+        XCTAssertEqual(projected.priceLevel, 0)
+        XCTAssertTrue(projected.images.isEmpty)
+        XCTAssertTrue(projected.tags.isEmpty)
+    }
+
+    func testClinicPublicationPolicyRejectsMissingInvalidAndNonHongKongCoordinates() {
+        let rejectedCoordinates: [ClinicCoordinate?] = [
+            nil,
+            ClinicCoordinate(latitude: .nan, longitude: 114.1),
+            ClinicCoordinate(latitude: 22.3, longitude: .infinity),
+            ClinicCoordinate(latitude: 25.033, longitude: 121.5654),
+            ClinicCoordinate(latitude: 22.7, longitude: 114.2),
+            ClinicCoordinate(latitude: 22.3, longitude: 113.7)
+        ]
+
+        for coordinate in rejectedCoordinates {
+            XCTAssertNil(
+                ClinicPublicationPolicy.safeProjection(
+                    of: makeClinic(coordinate: coordinate),
+                    submitterID: "firebase-user-1"
+                )
+            )
+        }
+    }
+
     func testOvernightHoursUsePreviousDaySchedule() {
         let thursdayOneAM = Date(timeIntervalSince1970: 1_775_062_800)
         let clinic = makeClinic(

@@ -86,6 +86,23 @@ service cloud.firestore {
         && (!('migrationId' in data) || data.migrationId is string);
     }
 
+    // Admin approval is not independent verification of operating, reputation,
+    // price, media, or taxonomy claims supplied by a user. Every client-source
+    // clinic publication must contain only the safe server projection.
+    function safeClinicPublication(data) {
+      return data.catalogRegion == 'HK'
+        && data.reportedBy == data.authorId
+        && data.verified == false
+        && data.openingHours.size() == 0
+        && !('availability' in data)
+        && data.services.size() == 0
+        && data.avgRating == 0
+        && data.reviewCount == 0
+        && data.priceLevel == 0
+        && data.images.size() == 0
+        && data.tags.size() == 0;
+    }
+
     function validReview(data) {
       return data.keys().hasAll([
           'id', 'clinicId', 'userId', 'userName', 'rating', 'title', 'content',
@@ -223,6 +240,7 @@ service cloud.firestore {
           'images', 'tags', 'createdAt', 'updatedAt', 'reportedBy', 'verified',
           'authorId', 'status', 'approvedAt', 'catalogRegion', 'migrationId'
         ])
+        && safeClinicPublication(request.resource.data)
         && request.resource.data.authorId is string
         && request.resource.data.status == 'approved'
         && request.resource.data.approvedAt is timestamp;

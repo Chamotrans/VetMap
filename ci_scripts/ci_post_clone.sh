@@ -24,6 +24,7 @@ semantic_binary="$semantic_directory/clinic-availability-semantics"
 compatibility_binary="$semantic_directory/clinic-availability-manifest-compatibility"
 feedback_binary="$semantic_directory/clinic-availability-feedback"
 duplicate_binary="$semantic_directory/clinic-duplicate-matcher"
+publication_binary="$semantic_directory/clinic-publication-policy"
 
 /usr/bin/xcrun swiftc \
   "$CI_PRIMARY_REPOSITORY_PATH/VetMap/Models/ClinicCoordinate.swift" \
@@ -62,3 +63,12 @@ duplicate_binary="$semantic_directory/clinic-duplicate-matcher"
   -o "$duplicate_binary"
 
 "$duplicate_binary"
+
+/usr/bin/xcrun swiftc \
+  "$CI_PRIMARY_REPOSITORY_PATH/VetMap/Models/ClinicCoordinate.swift" \
+  "$CI_PRIMARY_REPOSITORY_PATH/VetMap/Models/VetClinic.swift" \
+  "$CI_PRIMARY_REPOSITORY_PATH/VetMap/Models/ClinicPublicationPolicy.swift" \
+  "$CI_PRIMARY_REPOSITORY_PATH/scripts/clinic_publication_policy_harness.swift" \
+  -o "$publication_binary"
+
+"$publication_binary"

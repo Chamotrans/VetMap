@@ -49,6 +49,38 @@ function clinicSubmission({
   };
 }
 
+function publishedClinic({
+  id = "ugc-submission-clinic-1",
+  authorId = "alice",
+  overrides = {},
+} = {}) {
+  const submitted = clinicSubmission({authorId}).clinic;
+  return {
+    id,
+    name: submitted.name,
+    address: submitted.address,
+    coordinate: submitted.coordinate,
+    phone: submitted.phone,
+    website: "https://example.hk/clinic",
+    openingHours: {},
+    services: [],
+    avgRating: 0,
+    reviewCount: 0,
+    priceLevel: 0,
+    images: [],
+    tags: [],
+    createdAt: submitted.createdAt,
+    updatedAt: submitted.createdAt,
+    reportedBy: authorId,
+    verified: false,
+    authorId,
+    status: "approved",
+    approvedAt: new Date(),
+    catalogRegion: "HK",
+    ...overrides,
+  };
+}
+
 function quoteSubmission({
   submissionId = "submission-quote-1",
   quoteId = "quote-1",
@@ -286,6 +318,94 @@ test("管理員批准 batch 及 create-only 公開規則", async () => {
   );
 });
 
+test("診所批准只可建立安全投影；crafted claims 拒絕且 batch 保持 pending", async () => {
+  await seedAdmin();
+  const alice = testEnv.authenticatedContext("alice").firestore();
+  const admin = testEnv.authenticatedContext("admin").firestore();
+  const pendingRef = alice.collection("submissions").doc("submission-clinic-1");
+  await pendingRef.set(clinicSubmission());
+
+  const approval = admin.batch();
+  approval.set(
+    admin.collection("clinics").doc("ugc-submission-clinic-1"),
+    publishedClinic(),
+  );
+  approval.update(admin.collection("submissions").doc("submission-clinic-1"), {
+    status: "approved",
+    reviewedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    reviewedBy: "admin",
+  });
+  await assertSucceeds(approval.commit());
+
+  const publicClinic = await admin.collection("clinics")
+    .doc("ugc-submission-clinic-1").get();
+  const publicData = publicClinic.data();
+  if (publicData.catalogRegion !== "HK"
+      || publicData.verified !== false
+      || Object.keys(publicData.openingHours).length !== 0
+      || publicData.services.length !== 0
+      || publicData.avgRating !== 0
+      || publicData.reviewCount !== 0
+      || publicData.priceLevel !== 0
+      || publicData.images.length !== 0
+      || publicData.tags.length !== 0
+      || publicData.reportedBy !== "alice") {
+    throw new Error("safe clinic projection was not preserved");
+  }
+
+  const craftedCases = [
+    ["verified", {verified: true}],
+    ["wrong-region", {catalogRegion: "TW"}],
+    ["hours", {openingHours: {mon: "24 hours"}}],
+    ["availability", {availability: {is24Hours: true}}],
+    ["services", {services: ["24 hour emergency"]}],
+    ["rating", {avgRating: 5}],
+    ["reviews", {reviewCount: 99}],
+    ["price", {priceLevel: 3}],
+    ["images", {images: ["https://example.hk/untrusted.jpg"]}],
+    ["tags", {tags: ["verified"]}],
+    ["submitter", {reportedBy: "mallory"}],
+    ["non-hk", {coordinate: {latitude: 25.033, longitude: 121.5654}}],
+  ];
+  for (const [suffix, overrides] of craftedCases) {
+    const id = `crafted-${suffix}`;
+    await assertFails(
+      admin.collection("clinics").doc(id).set(publishedClinic({id, overrides})),
+    );
+  }
+  const missingCoordinate = publishedClinic({id: "crafted-missing-coordinate"});
+  delete missingCoordinate.coordinate;
+  await assertFails(
+    admin.collection("clinics").doc(missingCoordinate.id).set(missingCoordinate),
+  );
+
+  await alice.collection("submissions").doc("submission-clinic-crafted").set(
+    clinicSubmission({submissionId: "submission-clinic-crafted"}),
+  );
+  const rejectedBatch = admin.batch();
+  rejectedBatch.set(
+    admin.collection("clinics").doc("ugc-submission-clinic-crafted"),
+    publishedClinic({
+      id: "ugc-submission-clinic-crafted",
+      overrides: {services: ["crafted claim"]},
+    }),
+  );
+  rejectedBatch.update(
+    admin.collection("submissions").doc("submission-clinic-crafted"),
+    {
+      status: "approved",
+      reviewedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      reviewedBy: "admin",
+    },
+  );
+  await assertFails(rejectedBatch.commit());
+  const stillPending = await admin.collection("submissions")
+    .doc("submission-clinic-crafted").get();
+  if (stillPending.data().status !== "pending") {
+    throw new Error("rejected publication batch changed pending submission");
+  }
+});
+
 test("舊有無 approved 狀態的公開文件不再對外可見", async () => {
   await testEnv.withSecurityRulesDisabled(async (context) => {
     await context.firestore().collection("quotes").doc("legacy-quote").set({
@@ -438,7 +558,7 @@ test("已整理的香港診所可公開查詢，舊台灣目錄維持封鎖", as
       tags: [],
       createdAt: new Date(),
       updatedAt: new Date(),
-      reportedBy: "epetpet-hk",
+      reportedBy: "vetmap-curation",
       verified: false,
       authorId: "vetmap-curation",
       status: "approved",

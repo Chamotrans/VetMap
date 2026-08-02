@@ -442,5 +442,33 @@
   - Added `ClinicsViewModel.duplicateCandidateClinics`, derived from the full raw clinic collection rather than search, availability, or mappability results, and excluded the exact live `ModerationStore.shared.removedClinicIDs` set before both iPhone and iPad forms receive candidates.
   - Added XCTest and standalone exclusion proof covering display-hidden candidates, missing-coordinate candidates, and moderation-removed IDs; the matcher harness increased to 34 passing assertions.
 - Final Sol source acceptance: **ACCEPT** — both multi-phone and moderation-removed candidate findings were resolved with no remaining actionable finding. Full iOS compilation remains conditional on Xcode Cloud Archive completion.
+- GitHub validation: `Backend and Config Validation` run `30727987588` completed successfully for the Round 18 duplicate-warning model and regression gates.
+- Xcode Cloud validation: Build run `32c4f533-d14c-48c0-a3ec-4f45fdbc80de` and its `Archive - iOS` action (`e63b5c0d-7878-4c10-8a3a-effe9d655efc`) completed successfully from `01:58:19Z` to `02:05:10Z`. This proves the duplicate-warning source and post-clone gate compiled before Archive, but does not establish XCTest execution, processed-build validity, ASC attachment, review submission, public release, or device installation.
 - Production and release boundary: No clinic submission, Firestore write, Firebase deployment, network request, ASC workflow, public release, or device action was performed.
 - Preserved scope: The moderation submission contract, registration, clinic detail reporting, community interaction, filters, sorting, and all user-owned dirty/untracked files were preserved.
+
+## Round 19 — Publish only a safe clinic projection after approval
+
+- Started: 2026-08-02 (Asia/Taipei)
+- Fresh external evidence:
+  - Round 18 GitHub `Backend and Config Validation` run `30727987588` completed successfully.
+  - Round 18 Xcode Cloud build `32c4f533-d14c-48c0-a3ec-4f45fdbc80de` and Archive action `e63b5c0d-7878-4c10-8a3a-effe9d655efc` are recorded for a later live status refresh; no result is inferred from their existence.
+- Sol plan: Treat clinic approval as permission to list a narrowly projected identity/contact record, not verification of user-supplied hours, services, reputation, price, media, or tags. Enforce the same boundary in pure source, Firestore rules, admin copy, and fail-closed local gates.
+- Luna implementation:
+  - Added a Foundation-only `ClinicPublicationPolicy.safeProjection`. It retains clinic ID, name, address, reliable Hong Kong coordinate, phone, website, timestamps, and the canonical submission author; forces `catalogRegion` to `HK` and `verified` to false; and clears `openingHours`, verified availability, services, rating/count, price level, images, and tags.
+  - Missing, non-finite, or non-Hong-Kong coordinates return nil. Both queued clinic approval and the legacy direct clinic publication helper use the same projection; invalid queue data throws before a Firestore batch is created.
+  - Preserved the approval-owned `ugc-<submission-id>` public ID, submission author, canonical submission timestamps, public-document conflict check, and atomic public-create plus pending-status update.
+  - Expanded the pending clinic admin card with phone and website, labels service values as submission claims, and states that claims are not directly published.
+  - Added a Firestore `safeClinicPublication` create contract requiring the sanitized values and author/reporter parity. No rules were deployed.
+  - Added XCTest and a production-model harness for every retained/forced/cleared field and missing, non-finite, and out-of-Hong-Kong coordinates. Added the harness as a fail-closed Xcode Cloud post-clone gate and added the model only to the VetMap app target.
+  - Expanded emulator tests with a successful sanitized clinic approval batch, crafted rejects for verification, region, hours, availability, services, reputation, price, images, tags, submitter, and coordinate fields, plus proof that a rejected atomic batch leaves its submission pending.
+- Local evidence:
+  - Publication policy production harness: `{"clinicPublicationPolicy":true,"passed":25}`.
+  - Local Firestore/Storage emulator suite passed 12/12 using the cached Firebase emulator and OpenJDK 21; the new safe-projection case passed, including crafted rejects and pending-state atomicity.
+  - Existing production harnesses remained green: availability semantic `52/13`, actual-manifest merged `15/11/4` with next-opening probes `35/35/7`, feedback `154`, and duplicate matcher `34`.
+  - Node regressions passed 54/54; catalog integrity remained `179/161/18/205/11`; the pending plan remained four additions and planned `15/11/4`. Functions lint and module load passed.
+  - The production policy, Firebase service, admin view, XCTest source, and harness passed standalone Swift parsing. Rules-test JavaScript syntax, post-clone shell syntax, project `plutil`, app-only target membership, publication-path source assertions, and `git diff --check` passed.
+  - These checks are not a local iOS build. No local `xcodebuild` or XCTest execution is claimed.
+- Final Sol source acceptance: **ACCEPT** — policy, queued and legacy integration, atomicity, Admin disclosure, and source-only rules were accepted with no P0/P1/P2 actionable finding. Full iOS compilation remains conditional on Xcode Cloud Archive completion.
+- Production and release boundary: No real submission was approved, no Firestore or Storage production write occurred, no Firebase rules or Functions were deployed, and no ASC, public-release, or device action was performed. Network use was limited to loopback Firebase emulators.
+- Preserved scope: Registration, clinic submission availability, community interaction, review/quote publication, user-owned dirty/untracked files, and unrelated release tooling were preserved.
