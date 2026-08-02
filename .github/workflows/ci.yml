@@ -61,7 +61,7 @@ jobs:
           npx --yes firebase-tools@15.19.0 emulators:exec
           --project demo-vetmap-rules
           --only firestore,storage
-          "npm test --prefix firebase-tests"
+          "npm test --prefix functions && npm test --prefix firebase-tests"
 
       - name: Check patch hygiene
         run: git diff --check

@@ -20,6 +20,7 @@
 - [x] 聊天室首個訊息及 conversation preview 以 atomic batch 建立／更新，sender、participant 及 preview 內容受 rules 一致性檢查
 - [x] 「有用」標記改為每個 Firebase UID 對每項評價一次
 - [x] App 內提供帳戶刪除、重新驗證、Apple token 撤銷及伺服器資料清除
+- [x] `purgeUserData` Firestore emulator 行為測試 2/2：五分鐘 recent-auth 邊界、投稿／評價／報價／聊天室／舉報／moderation marker／封鎖引用／Helpful vote／4 個 Storage prefix、他人資料保留及重試冪等均通過
 - [x] Firestore／Storage 規則 emulator 測試：17/17 通過（包括聊天室 participant query、批准評價來源、反向重複 ID、已下架來源、message report atomic marker 及 admin least-privilege regression）
 - [x] Firebase Functions lint 及載入檢查通過
 - [x] 全部 Swift 檔案 `swiftc -parse` 通過
@@ -40,10 +41,10 @@
 
 - [x] 部署 `FirestoreRules.rules`
 - [x] 2026-08-03 部署聊天室來源加固 rules；Firebase compile／release 成功，匿名 conversation／message REST read 均回 403
-- [ ] 部署聊天室舉報 least-privilege rules：程式及 emulator 17/17 已通過；為免令現有 Build 39 的舊 report writer 失效，必須先由 Xcode Cloud 產生及安裝含 atomic moderation marker 的新 candidate，再部署並做真機舉報／管理員處理 smoke test
+- [ ] 部署聊天室舉報 least-privilege rules 及相容 `purgeUserData`：程式、Functions purge emulator 2/2 及 rules emulator 17/17 已通過；為免令現有 Build 39 的舊 report writer 失效，必須先由 Xcode Cloud 產生及安裝含 atomic moderation marker 的新 candidate，再部署並做真機舉報／管理員處理／刪戶 smoke test
 - [x] 部署 `StorageRules.rules`
 - [x] 部署 `firestore.indexes.json`，包括刪戶所需 collection-group indexes
-- [x] 部署 `functions/` 的 `purgeUserData`；Node.js 22、`asia-east1`、ACTIVE
+- [x] production baseline `purgeUserData` 已部署；Node.js 22、`asia-east1`、ACTIVE。含 `chatModeration` recursive cleanup 及新 emulator gate 的相容 source 尚待新 candidate 安裝後部署
 - [x] 部署 `public/` 的私隱政策、使用條款及支援頁，三個 production URL 均回應 HTTP 200
 - [x] 未登入直接呼叫 `purgeUserData` 會回應 `UNAUTHENTICATED`
 - [x] production 公開 approved 查詢為 clinics 180、reviews 1、quotes 1；clinics 包括 179 間授權香港診所及 1 間 VetMap 示範診所
