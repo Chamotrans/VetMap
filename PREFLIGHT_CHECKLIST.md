@@ -2,7 +2,7 @@
 
 > App Store Connect ID: `6777361219`
 > Bundle ID: `com.vetmap.app`
-> Release candidate: source candidate `1.0 (13)`；ASC 暫掛 build `1.0 (12)`
+> Release candidate: GitHub `main` source candidate（待下一次 Cloud build）；ASC 暫掛 build `1.0 (12)`
 > 最後核對：2026-08-03
 
 本表只記錄可驗證的目前狀態。正式按下 App Store Connect「提交以供審核」不在自動執行範圍內。
@@ -14,13 +14,13 @@
 - [x] 所有診所、評價及報價投稿先寫入 `submissions` 待審佇列
 - [x] 公開內容只容許管理員由待審佇列批准建立
 - [x] 評價、報價及診所均可舉報；評價及報價作者可被封鎖
-- [x] 一對一聊天室只限參與者讀取；支援刪除自己訊息、舉報訊息及封鎖對方
+- [x] 一對一聊天室只限參與者讀取；只有訊息被舉報後，管理員才可讀取／處理該一則訊息；支援刪除自己訊息、舉報訊息及封鎖對方
 - [x] 新聊天室只可由已批准、未下架的評價發起；`sourceReviewId`、評價作者、兩名參與者及 canonical conversation ID 均由 Firestore rules 驗證
 - [x] Firestore rules 同時檢查雙方封鎖清單；任一方封鎖後不可再寫入新訊息
 - [x] 聊天室首個訊息及 conversation preview 以 atomic batch 建立／更新，sender、participant 及 preview 內容受 rules 一致性檢查
 - [x] 「有用」標記改為每個 Firebase UID 對每項評價一次
 - [x] App 內提供帳戶刪除、重新驗證、Apple token 撤銷及伺服器資料清除
-- [x] Firestore／Storage 規則 emulator 測試：16/16 通過（包括聊天室 participant query、批准評價來源、反向重複 ID、已下架來源及 legacy migration regression）
+- [x] Firestore／Storage 規則 emulator 測試：17/17 通過（包括聊天室 participant query、批准評價來源、反向重複 ID、已下架來源、message report atomic marker 及 admin least-privilege regression）
 - [x] Firebase Functions lint 及載入檢查通過
 - [x] 全部 Swift 檔案 `swiftc -parse` 通過
 - [x] App、Widget、Privacy manifest、Xcode scheme 及 project 檔案語法檢查通過
@@ -40,6 +40,7 @@
 
 - [x] 部署 `FirestoreRules.rules`
 - [x] 2026-08-03 部署聊天室來源加固 rules；Firebase compile／release 成功，匿名 conversation／message REST read 均回 403
+- [ ] 部署聊天室舉報 least-privilege rules：程式及 emulator 17/17 已通過；為免令現有 Build 39 的舊 report writer 失效，必須先由 Xcode Cloud 產生及安裝含 atomic moderation marker 的新 candidate，再部署並做真機舉報／管理員處理 smoke test
 - [x] 部署 `StorageRules.rules`
 - [x] 部署 `firestore.indexes.json`，包括刪戶所需 collection-group indexes
 - [x] 部署 `functions/` 的 `purgeUserData`；Node.js 22、`asia-east1`、ACTIVE

@@ -83,6 +83,44 @@ service cloud.firestore {
         && request.auth.uid in data.participantIds;
     }
 
+    function pendingMessageReportAfter(conversationId, messageId) {
+      let reportId = 'message-' + messageId + '-' + request.auth.uid;
+      return signedIn()
+        && existsAfter(
+          /databases/$(database)/documents/reports/$(reportId)
+        )
+        && getAfter(
+          /databases/$(database)/documents/reports/$(reportId)
+        ).data.id == reportId
+        && getAfter(
+          /databases/$(database)/documents/reports/$(reportId)
+        ).data.targetType == 'message'
+        && getAfter(
+          /databases/$(database)/documents/reports/$(reportId)
+        ).data.targetId == messageId
+        && getAfter(
+          /databases/$(database)/documents/reports/$(reportId)
+        ).data.conversationId == conversationId
+        && getAfter(
+          /databases/$(database)/documents/reports/$(reportId)
+        ).data.reporterId == request.auth.uid
+        && getAfter(
+          /databases/$(database)/documents/reports/$(reportId)
+        ).data.status == 'pending';
+    }
+
+    function reportedConversation(conversationId) {
+      return exists(
+        /databases/$(database)/documents/chatModeration/$(conversationId)
+      );
+    }
+
+    function reportedMessage(conversationId, messageId) {
+      return exists(
+        /databases/$(database)/documents/chatModeration/$(conversationId)/reportedMessages/$(messageId)
+      );
+    }
+
     function chatUnblocked(data) {
       return !exists(
           /databases/$(database)/documents/users/$(data.participantIds[0])/blockedUsers/$(data.participantIds[1])
@@ -441,7 +479,8 @@ service cloud.firestore {
     }
 
     match /conversations/{conversationId} {
-      allow read: if chatParticipant(resource.data) || admin();
+      allow read: if chatParticipant(resource.data)
+        || (admin() && reportedConversation(conversationId));
       allow create: if signedIn()
         && validConversation(request.resource.data, conversationId)
         && recentClientTimestamp(request.resource.data.createdAt)
@@ -508,7 +547,7 @@ service cloud.firestore {
       match /messages/{messageId} {
         allow read: if chatParticipant(
             get(/databases/$(database)/documents/conversations/$(conversationId)).data
-          ) || admin();
+          ) || (admin() && reportedMessage(conversationId, messageId));
         allow create: if signedIn()
           && existsAfter(/databases/$(database)/documents/conversations/$(conversationId))
           && chatParticipant(
@@ -528,7 +567,7 @@ service cloud.firestore {
             /databases/$(database)/documents/conversations/$(conversationId)
           ).data.lastSenderId == request.auth.uid;
         allow update: if (
-            admin()
+            (admin() && reportedMessage(conversationId, messageId))
             || (
               chatParticipant(
                 get(/databases/$(database)/documents/conversations/$(conversationId)).data
@@ -545,6 +584,88 @@ service cloud.firestore {
           && request.resource.data.deletedAt == request.time
           && request.resource.data.deletedBy == request.auth.uid;
         allow delete: if false;
+      }
+    }
+
+    // A message report and both moderation markers must be written in the same
+    // atomic batch. The conversation marker reveals only conversation metadata
+    // to an admin; the nested marker authorizes access to that one message.
+    match /chatModeration/{conversationId} {
+      allow read: if admin();
+      allow create: if signedIn()
+        && validDocumentID(conversationId)
+        && exists(
+          /databases/$(database)/documents/conversations/$(conversationId)
+        )
+        && chatParticipant(
+          get(/databases/$(database)/documents/conversations/$(conversationId)).data
+        )
+        && request.resource.data.keys().hasAll([
+          'conversationId', 'lastReportedMessageId', 'updatedAt'
+        ])
+        && request.resource.data.keys().hasOnly([
+          'conversationId', 'lastReportedMessageId', 'updatedAt'
+        ])
+        && request.resource.data.conversationId == conversationId
+        && validDocumentID(request.resource.data.lastReportedMessageId)
+        && request.resource.data.updatedAt == request.time
+        && pendingMessageReportAfter(
+          conversationId,
+          request.resource.data.lastReportedMessageId
+        );
+      allow update: if signedIn()
+        && chatParticipant(
+          get(/databases/$(database)/documents/conversations/$(conversationId)).data
+        )
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'lastReportedMessageId', 'updatedAt'
+        ])
+        && request.resource.data.conversationId == resource.data.conversationId
+        && request.resource.data.conversationId == conversationId
+        && validDocumentID(request.resource.data.lastReportedMessageId)
+        && request.resource.data.updatedAt == request.time
+        && pendingMessageReportAfter(
+          conversationId,
+          request.resource.data.lastReportedMessageId
+        );
+      allow delete: if admin();
+
+      match /reportedMessages/{messageId} {
+        allow read: if admin();
+        allow create: if signedIn()
+          && validDocumentID(messageId)
+          && exists(
+            /databases/$(database)/documents/conversations/$(conversationId)
+          )
+          && chatParticipant(
+            get(/databases/$(database)/documents/conversations/$(conversationId)).data
+          )
+          && exists(
+            /databases/$(database)/documents/conversations/$(conversationId)/messages/$(messageId)
+          )
+          && request.resource.data.keys().hasAll([
+            'conversationId', 'messageId', 'updatedAt'
+          ])
+          && request.resource.data.keys().hasOnly([
+            'conversationId', 'messageId', 'updatedAt'
+          ])
+          && request.resource.data.conversationId == conversationId
+          && request.resource.data.messageId == messageId
+          && request.resource.data.updatedAt == request.time
+          && pendingMessageReportAfter(conversationId, messageId);
+        allow update: if signedIn()
+          && chatParticipant(
+            get(/databases/$(database)/documents/conversations/$(conversationId)).data
+          )
+          && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['updatedAt'])
+          && request.resource.data.conversationId == resource.data.conversationId
+          && request.resource.data.conversationId == conversationId
+          && request.resource.data.messageId == resource.data.messageId
+          && request.resource.data.messageId == messageId
+          && request.resource.data.updatedAt == request.time
+          && pendingMessageReportAfter(conversationId, messageId);
+        allow delete: if admin();
       }
     }
 
@@ -601,6 +722,15 @@ service cloud.firestore {
             )
             && exists(
               /databases/$(database)/documents/conversations/$(request.resource.data.conversationId)/messages/$(request.resource.data.targetId)
+            )
+            && existsAfter(
+              /databases/$(database)/documents/chatModeration/$(request.resource.data.conversationId)
+            )
+            && getAfter(
+              /databases/$(database)/documents/chatModeration/$(request.resource.data.conversationId)
+            ).data.lastReportedMessageId == request.resource.data.targetId
+            && existsAfter(
+              /databases/$(database)/documents/chatModeration/$(request.resource.data.conversationId)/reportedMessages/$(request.resource.data.targetId)
             ))
           || (request.resource.data.targetType != 'message'
             && !('conversationId' in request.resource.data))

@@ -527,3 +527,19 @@
   - This reconciliation made no production write, ASC mutation, local Xcode build, Firebase deployment, device install/launch, or other device action.
   - User-owned dirty and untracked files were preserved without staging, reverting, deleting, or modifying them.
 - Review state: Log-only reconciliation complete; source, GitHub, Xcode Cloud, production audit, device connectivity, and ASC evidence remain separately stated.
+
+## Release follow-up — Chat moderation least privilege and Apple upload quota
+
+- Started: 2026-08-03 (Asia/Taipei)
+- Apple evidence: Developer Relations reported `ITMS-90382: Upload limit reached` for Version 1.0 Build 39 and instructed waiting one day. This confirms Build 39 did not enter ASC processing; it is not a signing or compilation diagnosis.
+- Plan: Keep the Xcode Cloud workflow disabled during the quota window, complete a source-only privacy hardening item, then run the next candidate only after the upload window resets.
+- Implementation:
+  - Message reporting now writes the report, one conversation moderation marker, and one message-specific marker in a single Firestore batch.
+  - Admin conversation access requires a reported-conversation marker. Admin message read and soft-delete require the marker for that exact message; a marker for one message does not unlock other messages in the conversation.
+  - Account deletion recursively removes the linked `chatModeration` document and nested markers together with the conversation and linked reports.
+  - Production deployment is deliberately deferred until a compatible new Cloud candidate is installed; deploying first would make Build 39's older report writer fail and would violate the requirement to keep reporting available.
+- Local verification:
+  - Firestore／Storage emulator: 17/17 passed, including report-only and marker-only rejection, atomic report success, pre-report admin denial, exact reported-message access, and denial for a second unreported message in the same conversation.
+  - Firebase Functions ESLint/module load, JavaScript syntax, Swift frontend parse, project plist, and `git diff --check` passed.
+  - No local `xcodebuild`, archive, Apple upload, Firebase production deployment, ASC mutation, review submission, public release, or device action was performed.
+- Next: Commit/push the exact source, wait for GitHub validation, then after Apple's one-day window run Xcode Cloud to terminal state, install the compatible candidate, deploy the least-privilege rules, and complete the report/admin device smoke test.

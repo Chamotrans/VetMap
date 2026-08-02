@@ -39,7 +39,8 @@
 | `users/{uid}/blockedUsers/{blockedUid}` | 私人封鎖名單 | 只限本人 |
 | `reviewEngagement/{reviewId}/voters/{uid}` | 每人一次「有用」標記 | 只可建立自己的 vote |
 | `conversations/{id}` | 一對一對話及訊息 preview | 只限兩名參與者讀取；建立時必須連結已批准、未下架且作者為收件人的評價，並符合 canonical ID、participant／preview 一致性 |
-| `conversations/{id}/messages/{id}` | 私人訊息 | 只限兩名參與者讀取；sender 綁定登入 UID；自己可軟刪除 |
+| `conversations/{id}/messages/{id}` | 私人訊息 | 只限兩名參與者讀取；sender 綁定登入 UID；自己可軟刪除；管理員只可讀取／處理有對應舉報 marker 的該一則訊息 |
+| `chatModeration/{conversationId}/reportedMessages/{messageId}` | 私人 moderation marker | 與 message report 原子建立；普通用戶不可讀，管理員只藉此取得已舉報訊息的最小權限 |
 
 公開 collection 只有管理員可以建立或刪除。管理員批准投稿時，以 batch 同步建立公開文件及更新 submission 狀態。
 
@@ -82,7 +83,7 @@
 ## 已完成的本機非 build 驗證
 
 - Swift 語法 parse：通過
-- Firestore／Storage Rules emulator：16/16 通過
+- Firestore／Storage Rules emulator：17/17 通過
 - Firebase Functions ESLint：通過
 - Firebase Functions module load：通過
 - plist、Xcode project 及共用 scheme XML：通過
@@ -118,6 +119,7 @@
 - 臨時 screenshot-only workflow 已還原為 `Default` Archive／`APP_STORE_ELIGIBLE` 配置並保持 disabled，避免 24 小時 upload limit 期間自動再上載
 - 2026-08-03 ASC API live read-back 再確認 iOS 1.0 為 `READY_FOR_REVIEW`、仍掛 Build 12 `VALID`、ASC 最新 processed build 為 35、workflow disabled，最新 Cloud run 仍為 41
 - 同日實體 iPhone「是條小狗」live read-back 為 `VetMap 1.0 (39)`；App 成功啟動並顯示 production 香港目錄 180 間／162 個地圖標記及訊息 tab。iPhone Mirroring 逾時，故未把此證據當作完整聊天室互動 smoke test
+- 聊天室 least-privilege candidate 已在 source 收窄 admin 權限：report、conversation marker 及 message marker 必須 atomic；17/17 emulator 證明 admin 在舉報前不能讀 conversation／message，舉報後仍不能讀或刪同一對話內未被舉報的第二則訊息。production rules 要待相容的新 Cloud candidate 安裝後才部署，避免令 Build 39 的舊 report writer 中斷
 - 下一個 Cloud candidate 必須在 upload limit 重置後取得 ASC processing 及完整真機聊天室 smoke test，才可取代上面的 Build 12 baseline
 
 完整進度以 [PREFLIGHT_CHECKLIST.md](PREFLIGHT_CHECKLIST.md) 為準。

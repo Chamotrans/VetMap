@@ -70,15 +70,23 @@ exports.purgeUserData = onCall({region: REGION}, async (request) => {
       .where("participantIds", "array-contains", uid)
       .get();
   let linkedChatReports = 0;
+  let linkedChatModeration = 0;
   for (const conversation of conversations.docs) {
     const reports = await db.collection("reports")
         .where("conversationId", "==", conversation.id)
         .get();
     linkedChatReports += await deleteSnapshotDocuments(db, reports);
+    const moderationReference = db.collection("chatModeration")
+        .doc(conversation.id);
+    if ((await moderationReference.get()).exists) {
+      linkedChatModeration += 1;
+    }
+    await db.recursiveDelete(moderationReference);
     await db.recursiveDelete(conversation.ref);
   }
   deletionCounts.conversations = conversations.size;
   deletionCounts.linkedChatReports = linkedChatReports;
+  deletionCounts.chatModeration = linkedChatModeration;
 
   const ownedReviews = await db.collection("reviews")
       .where("userId", "==", uid)

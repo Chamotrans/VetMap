@@ -213,6 +213,43 @@ async function createConversation(db, options = {}) {
   return batch.commit();
 }
 
+function messageReport({
+  reporterId = "bob",
+  conversationId = "alice--bob",
+  messageId = "message-1",
+} = {}) {
+  return {
+    id: `message-${messageId}-${reporterId}`,
+    targetType: "message",
+    targetId: messageId,
+    targetTitle: "聊天室訊息",
+    conversationId,
+    reason: "騷擾或冒犯",
+    reporterId,
+    createdAt: new Date(),
+    status: "pending",
+  };
+}
+
+function createMessageReport(db, options = {}) {
+  const data = messageReport(options);
+  const moderation = db.collection("chatModeration")
+    .doc(data.conversationId);
+  const batch = db.batch();
+  batch.set(db.collection("reports").doc(data.id), data);
+  batch.set(moderation, {
+    conversationId: data.conversationId,
+    lastReportedMessageId: data.targetId,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  }, {merge: true});
+  batch.set(moderation.collection("reportedMessages").doc(data.targetId), {
+    conversationId: data.conversationId,
+    messageId: data.targetId,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  }, {merge: true});
+  return batch.commit();
+}
+
 function catalogMetadata({
   status = "approved",
   catalogRegion = "HK",
@@ -559,10 +596,12 @@ test("封鎖清單只可由本人管理，亦不可封鎖自己", async () => {
 });
 
 test("聊天室只限兩名參與者，建立對話必須原子寫入第一則本人訊息", async () => {
+  await seedAdmin();
   const anonymous = testEnv.unauthenticatedContext().firestore();
   const alice = testEnv.authenticatedContext("alice").firestore();
   const bob = testEnv.authenticatedContext("bob").firestore();
   const mallory = testEnv.authenticatedContext("mallory").firestore();
+  const admin = testEnv.authenticatedContext("admin").firestore();
   await seedChatReview();
   await seedChatReview({id: "review-mallory", userId: "mallory"});
 
@@ -603,6 +642,10 @@ test("聊天室只限兩名參與者，建立對話必須原子寫入第一則�
   await assertSucceeds(conversationRef.get());
   await assertSucceeds(bob.collection("conversations").doc("alice--bob").get());
   await assertFails(mallory.collection("conversations").doc("alice--bob").get());
+  await assertFails(admin.collection("conversations").doc("alice--bob").get());
+  await assertFails(
+    admin.collection("conversations/alice--bob/messages").doc("message-1").get(),
+  );
   await assertSucceeds(
     alice.collection("conversations")
       .where("participantIds", "array-contains", "alice")
@@ -733,27 +776,116 @@ test("訊息只可由作者軟刪除，參與者可舉報而外人不可", async
   });
   await assertSucceeds(deletion.commit());
 
-  const messageReport = {
-    id: "message-message-1-bob",
-    targetType: "message",
-    targetId: "message-1",
-    targetTitle: "聊天室訊息",
-    conversationId: "alice--bob",
-    reason: "騷擾或冒犯",
-    reporterId: "bob",
-    createdAt: new Date(),
-    status: "pending",
-  };
-  await assertSucceeds(
-    bob.collection("reports").doc(messageReport.id).set(messageReport),
+  const reportData = messageReport();
+  await assertFails(
+    bob.collection("reports").doc(reportData.id).set(reportData),
+  );
+  await assertFails(
+    bob.collection("chatModeration").doc("alice--bob").set({
+      conversationId: "alice--bob",
+      lastReportedMessageId: "message-1",
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    }),
+  );
+  await assertSucceeds(createMessageReport(bob));
+  await assertFails(
+    bob.collection("chatModeration").doc("alice--bob").update({
+      lastReportedMessageId: "missing-message",
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    }),
   );
   await assertFails(
     mallory.collection("reports").doc("message-message-1-mallory").set({
-      ...messageReport,
+      ...reportData,
       id: "message-message-1-mallory",
       reporterId: "mallory",
     }),
   );
+});
+
+test("管理員只可查看及處理已舉報訊息，不可瀏覽同一對話其他訊息", async () => {
+  await seedAdmin();
+  const alice = testEnv.authenticatedContext("alice").firestore();
+  const bob = testEnv.authenticatedContext("bob").firestore();
+  const admin = testEnv.authenticatedContext("admin").firestore();
+  await seedChatReview();
+  await createConversation(alice);
+
+  const conversationRef = bob.collection("conversations").doc("alice--bob");
+  const secondSentAt = new Date();
+  const secondMessage = chatMessage({
+    id: "message-2",
+    senderId: "bob",
+    body: "呢一則未被舉報。",
+    sentAt: secondSentAt,
+  });
+  const reply = bob.batch();
+  reply.update(conversationRef, {
+    lastMessageId: secondMessage.id,
+    lastMessage: secondMessage.body,
+    lastMessageAt: secondSentAt,
+    lastSenderId: "bob",
+    updatedAt: secondSentAt,
+  });
+  reply.set(conversationRef.collection("messages").doc(secondMessage.id), secondMessage);
+  await assertSucceeds(reply.commit());
+
+  await assertFails(admin.collection("conversations").doc("alice--bob").get());
+  await assertFails(
+    admin.collection("conversations/alice--bob/messages").doc("message-1").get(),
+  );
+  await assertSucceeds(createMessageReport(bob));
+  await assertSucceeds(createMessageReport(alice, {reporterId: "alice"}));
+  await assertSucceeds(admin.collection("conversations").doc("alice--bob").get());
+  await assertSucceeds(
+    admin.collection("conversations/alice--bob/messages").doc("message-1").get(),
+  );
+  await assertFails(
+    admin.collection("conversations/alice--bob/messages").doc("message-2").get(),
+  );
+  await assertFails(
+    admin.collection("conversations/alice--bob/messages").doc("message-2").update({
+      body: "",
+      isDeleted: true,
+      deletedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      deletedBy: "admin",
+    }),
+  );
+  await assertSucceeds(
+    admin.collection("conversations/alice--bob/messages").doc("message-1").update({
+      body: "",
+      isDeleted: true,
+      deletedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      deletedBy: "admin",
+    }),
+  );
+
+  await assertSucceeds(createMessageReport(alice, {
+    reporterId: "alice",
+    messageId: "message-2",
+  }));
+  const resolution = admin.batch();
+  resolution.update(
+    admin.collection("conversations/alice--bob/messages").doc("message-2"),
+    {
+      body: "",
+      isDeleted: true,
+      deletedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      deletedBy: "admin",
+    },
+  );
+  resolution.update(admin.collection("conversations").doc("alice--bob"), {
+    lastMessage: "訊息已刪除",
+  });
+  resolution.update(
+    admin.collection("reports").doc("message-message-2-alice"),
+    {
+      status: "approved",
+      resolvedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      resolvedBy: "admin",
+    },
+  );
+  await assertSucceeds(resolution.commit());
 });
 
 test("每個 Firebase UID 對同一評價只能標記一次有用", async () => {

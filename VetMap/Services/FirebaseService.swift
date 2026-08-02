@@ -379,7 +379,39 @@ final class FirebaseService {
             reporterId: identity.uid
         )
         let data = try encoder.encode(report)
-        try await resolveFirestore().collection("reports").document(report.id).setData(data)
+        let db = try resolveFirestore()
+        let batch = db.batch()
+        batch.setData(data, forDocument: db.collection("reports").document(report.id))
+
+        if targetType == .message {
+            guard let conversationId,
+                  isSafeDocumentID(conversationId),
+                  isSafeDocumentID(targetId) else {
+                throw FirebaseError.invalidReportTarget
+            }
+            let moderationReference = db.collection("chatModeration")
+                .document(conversationId)
+            batch.setData(
+                [
+                    "conversationId": conversationId,
+                    "lastReportedMessageId": targetId,
+                    "updatedAt": FieldValue.serverTimestamp()
+                ],
+                forDocument: moderationReference,
+                merge: true
+            )
+            batch.setData(
+                [
+                    "conversationId": conversationId,
+                    "messageId": targetId,
+                    "updatedAt": FieldValue.serverTimestamp()
+                ],
+                forDocument: moderationReference.collection("reportedMessages")
+                    .document(targetId),
+                merge: true
+            )
+        }
+        try await batch.commit()
     }
 
     func fetchReports() async throws -> [Report] {
