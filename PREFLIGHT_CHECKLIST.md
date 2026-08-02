@@ -89,6 +89,7 @@
 - [x] 2026-08-03 ASC API live read-back：workflow `DBB6C988-A379-476E-9E99-3235B11BAD2E` 仍為 disabled，最新 run 仍是 41，沒有因後續 push 自動產生新 Cloud upload
 - [x] 2026-08-03 03:49 CST ASC live UI 再確認 `Default` workflow 仍停用、最後修改時間為同日 02:42、最新 run 仍是 41、沒有 Run 42；Archive 使用 `VetMap` scheme，distribution preparation 選擇 App Store Connect
 - [x] 聊天室 least-privilege candidate 已推送至 GitHub `main`：commit `00fa4a2`；Actions run `30763791472` 全綠，Firestore／Storage rules 17/17
+- [x] 帳戶刪除 behavior gate 已推送至 GitHub `main`：commit `703aa12`；Actions run `30764734390` 全綠，Functions purge 2/2 及 Firestore／Storage rules 17/17
 - [ ] 等待 Apple 24 小時 upload window 重置後再跑新 Cloud candidate；Run 39 delivery 被 `ITMS-90382 Upload limit reached` 拒絕，未進入 ASC processing。連接的 Gmail 找不到該封通知，未能取得精確收件時間；以 Run 39 於 2026-08-03 01:55 CST 開始作保守基準，最早在 2026-08-04 03:00 CST 後才重試
 - [ ] 在 TestFlight 真機完成登入、投稿、批核、公開、聊天室收發／刪除／舉報／封鎖及帳戶刪除 smoke test
 - [x] 將 build 11 掛接至 App Store Connect iOS 1.0 作暫時 release candidate

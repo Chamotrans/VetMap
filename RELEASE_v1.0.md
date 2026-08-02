@@ -128,6 +128,7 @@
 - 同日實體 iPhone「是條小狗」live read-back 為 `VetMap 1.0 (39)`；App 成功啟動並顯示 production 香港目錄 180 間／162 個地圖標記及訊息 tab。iPhone Mirroring 逾時，故未把此證據當作完整聊天室互動 smoke test
 - 聊天室 least-privilege candidate 已在 source 收窄 admin 權限：report、conversation marker 及 message marker 必須 atomic；17/17 emulator 證明 admin 在舉報前不能讀 conversation／message，舉報後仍不能讀或刪同一對話內未被舉報的第二則訊息。production rules 要待相容的新 Cloud candidate 安裝後才部署，避免令 Build 39 的舊 report writer 中斷
 - 帳戶刪除 backend 已抽取為可測試但行為等價的 helper；2/2 Firestore emulator tests 實際驗證五分鐘 recent-auth、投稿／評價／報價／聊天室／linked reports／`chatModeration`、封鎖引用、Helpful vote、4 個 Storage prefix、他人資料保留及第二次重試 0 殘留。此相容 Functions source 尚未部署 production
+- 帳戶刪除 behavior gate commit `703aa12` 已推送至 GitHub `main`；Backend and Config Validation run `30764734390` 在 clean runner 完成 `SUCCESS`，同一 emulator process 內 Functions purge 2/2 及 rules 17/17 全部通過
 - 上述 candidate commit `00fa4a2` 已推送至 GitHub `main`；Backend and Config Validation run `30763791472` 全綠。Xcode Cloud workflow 仍保持 disabled，沒有在 upload quota 期間建立新 run
 - 下一個 Cloud candidate 必須在 upload limit 重置後取得 ASC processing 及完整真機聊天室 smoke test，才可取代上面的 Build 12 baseline
 
