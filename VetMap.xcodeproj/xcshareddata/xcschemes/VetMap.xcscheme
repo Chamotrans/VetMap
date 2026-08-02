@@ -21,6 +21,20 @@
                ReferencedContainer = "container:VetMap.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "SHOT0006D3E4F5A6B7C8D9E0"
+               BuildableName = "VetMapScreenshotUITests.xctest"
+               BlueprintName = "VetMapScreenshotUITests"
+               ReferencedContainer = "container:VetMap.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -38,6 +52,17 @@
                BlueprintIdentifier = "34A1B1C2D3E4F5A6B7C8D9E0"
                BuildableName = "VetMapTests.xctest"
                BlueprintName = "VetMapTests"
+               ReferencedContainer = "container:VetMap.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "SHOT0006D3E4F5A6B7C8D9E0"
+               BuildableName = "VetMapScreenshotUITests.xctest"
+               BlueprintName = "VetMapScreenshotUITests"
                ReferencedContainer = "container:VetMap.xcodeproj">
             </BuildableReference>
          </TestableReference>
