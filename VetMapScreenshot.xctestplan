@@ -1,0 +1,28 @@
+{
+  "configurations" : [
+    {
+      "id" : "5EE085AB-2167-4F51-8A86-2D7382A15E96",
+      "name" : "Release Screenshots",
+      "options" : {
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:VetMap.xcodeproj",
+      "identifier" : "30A1B1C2D3E4F5A6B7C8D9E0",
+      "name" : "VetMap"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : false,
+      "target" : {
+        "containerPath" : "container:VetMap.xcodeproj",
+        "identifier" : "SHOT0006D3E4F5A6B7C8D9E0",
+        "name" : "VetMapScreenshotUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

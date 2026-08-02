@@ -171,6 +171,7 @@
 		1DA1B1C2D3E4F5A6B7C8D9E0 /* VetMapTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VetMapTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		SHOT0001D3E4F5A6B7C8D9E0 /* VetMapScreenshotUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VetMapScreenshotUITests.swift; sourceTree = "<group>"; };
 		SHOT0004D3E4F5A6B7C8D9E0 /* VetMapScreenshotUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VetMapScreenshotUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		SHOT0014D3E4F5A6B7C8D9E0 /* VetMapScreenshot.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = VetMapScreenshot.xctestplan; sourceTree = "<group>"; };
 		1E1A47F69DA8225881617EE0 /* InsuranceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = InsuranceListView.swift; path = VetMap/Views/Insurance/InsuranceListView.swift; sourceTree = SOURCE_ROOT; };
 		22834D9985568C8B6F4B3B6D /* QuoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuoteViewModel.swift; path = VetMap/ViewModels/QuoteViewModel.swift; sourceTree = SOURCE_ROOT; };
 		2661467A8AD35EE0F31439D0 /* ProductViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProductViewModel.swift; path = VetMap/ViewModels/ProductViewModel.swift; sourceTree = SOURCE_ROOT; };
@@ -330,6 +331,7 @@
 				WGT010E5A6B7C8D9E0F1A2B3C4,
 				24A1B1C2D3E4F5A6B7C8D9E0 /* VetMapTests */,
 				SHOT0005D3E4F5A6B7C8D9E0 /* VetMapScreenshotUITests */,
+				SHOT0014D3E4F5A6B7C8D9E0 /* VetMapScreenshot.xctestplan */,
 				22A1B1C2D3E4F5A6B7C8D9E0 /* Products */,
 				A983470DAB9FF20FF1ACB0A6 /* Utilities */,
 				6E9C4E74B1AA5A72DBAB5762 /* KeychainService.swift */,
