@@ -134,7 +134,11 @@ struct ChatThreadView: View {
             VStack(alignment: isMine ? .trailing : .leading, spacing: 4) {
                 Text(message.isDeleted ? "訊息已刪除" : message.body)
                     .font(.body)
-                    .foregroundStyle(message.isDeleted ? .secondary : (isMine ? .white : .primary))
+                    .foregroundStyle(
+                        message.isDeleted
+                            ? Color.secondary
+                            : (isMine ? Color.white : Color.primary)
+                    )
                     .padding(.horizontal, 12)
                     .padding(.vertical, 9)
                     .background(
