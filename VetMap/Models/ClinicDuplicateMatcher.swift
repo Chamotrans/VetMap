@@ -7,6 +7,21 @@ enum ClinicDuplicateMatchReason: Equatable {
     case sameNameNearby(distanceMeters: Double)
 }
 
+extension ClinicDuplicateMatchReason {
+    var adminReadableLabel: String {
+        switch self {
+        case .samePhoneAndName:
+            return "相同電話及名稱"
+        case .samePhoneNearby(let distanceMeters):
+            return "相同電話，距離約 \(Int(distanceMeters.rounded())) 米"
+        case .sameNameAndAddress:
+            return "相同名稱及地址"
+        case .sameNameNearby(let distanceMeters):
+            return "相同名稱，距離約 \(Int(distanceMeters.rounded())) 米"
+        }
+    }
+}
+
 struct ClinicDuplicateMatch: Equatable {
     let clinic: VetClinic
     let reason: ClinicDuplicateMatchReason
@@ -201,5 +216,119 @@ struct ClinicDuplicateSubmissionGate {
         if succeeded {
             submittedFingerprint = fingerprint
         }
+    }
+}
+
+enum ClinicApprovalDuplicateDecision: Equatable {
+    case approve
+    case requiresOverride(ClinicApprovalDuplicateChallenge)
+}
+
+struct ClinicApprovalDuplicateChallenge: Equatable {
+    let matches: [ClinicDuplicateMatch]
+    let fingerprint: String
+
+    init(matches: [ClinicDuplicateMatch]) {
+        var seenIDs: Set<String> = []
+        self.matches = matches
+            .sorted { lhs, rhs in
+                if lhs.clinic.id != rhs.clinic.id {
+                    return lhs.clinic.id < rhs.clinic.id
+                }
+                return Self.evidenceFingerprint(for: lhs)
+                    < Self.evidenceFingerprint(for: rhs)
+            }
+            .filter { seenIDs.insert($0.clinic.id).inserted }
+        fingerprint = Self.lengthPrefixed(
+            self.matches.map(Self.evidenceFingerprint(for:))
+        )
+    }
+
+    private static func evidenceFingerprint(for match: ClinicDuplicateMatch) -> String {
+        lengthPrefixed([
+            match.clinic.id,
+            ClinicDuplicateMatcher.normalizedText(match.clinic.name) ?? "",
+            ClinicDuplicateMatcher.normalizedText(match.clinic.address) ?? "",
+            ClinicDuplicateMatcher.canonicalPhones(match.clinic.phone)
+                .sorted()
+                .joined(separator: ","),
+            coordinateEvidence(match.clinic.coordinate),
+            reasonEvidence(match.reason)
+        ])
+    }
+
+    private static func coordinateEvidence(_ coordinate: ClinicCoordinate?) -> String {
+        guard
+            let coordinate,
+            coordinate.latitude.isFinite,
+            coordinate.longitude.isFinite,
+            (-90...90).contains(coordinate.latitude),
+            (-180...180).contains(coordinate.longitude)
+        else {
+            return "none"
+        }
+        let latitude = coordinate.latitude == 0 ? 0 : coordinate.latitude
+        let longitude = coordinate.longitude == 0 ? 0 : coordinate.longitude
+        return lengthPrefixed([
+            String(latitude.bitPattern, radix: 16),
+            String(longitude.bitPattern, radix: 16)
+        ])
+    }
+
+    private static func reasonEvidence(_ reason: ClinicDuplicateMatchReason) -> String {
+        switch reason {
+        case .samePhoneAndName:
+            return "samePhoneAndName"
+        case .samePhoneNearby(let distanceMeters):
+            return lengthPrefixed([
+                "samePhoneNearby",
+                String(distanceMeters.bitPattern, radix: 16)
+            ])
+        case .sameNameAndAddress:
+            return "sameNameAndAddress"
+        case .sameNameNearby(let distanceMeters):
+            return lengthPrefixed([
+                "sameNameNearby",
+                String(distanceMeters.bitPattern, radix: 16)
+            ])
+        }
+    }
+
+    private static func lengthPrefixed(_ values: [String]) -> String {
+        values
+            .map { "\($0.utf8.count):\($0)" }
+            .joined()
+    }
+}
+
+enum ClinicDuplicateApprovalPolicy {
+    static func decision(
+        for pendingClinic: VetClinic,
+        approvedClinics: [VetClinic],
+        removedClinicIDs: Set<String>,
+        overridingChallengeFingerprint: String? = nil
+    ) -> ClinicApprovalDuplicateDecision {
+        let candidates = ClinicDuplicateMatcher.duplicateCandidates(
+            from: approvedClinics,
+            excludingRemovedClinicIDs: removedClinicIDs
+        ).sorted { $0.id < $1.id }
+        let challenge = ClinicApprovalDuplicateChallenge(
+            matches: candidates.compactMap { clinic in
+                guard let reason = ClinicDuplicateMatcher.strongMatchReason(
+                    between: pendingClinic,
+                    and: clinic
+                ) else {
+                    return nil
+                }
+                return ClinicDuplicateMatch(clinic: clinic, reason: reason)
+            }
+        )
+        guard !challenge.matches.isEmpty else {
+            return .approve
+        }
+        guard overridingChallengeFingerprint == challenge.fingerprint else {
+            return .requiresOverride(challenge)
+        }
+        return .approve
     }
 }

@@ -778,6 +778,249 @@ final class VetMapModelTests: XCTestCase {
         )
     }
 
+    func testClinicDuplicateApprovalPolicyRequiresFreshExactCandidateOverride() {
+        let origin = ClinicCoordinate(latitude: 22.3000, longitude: 114.2000)
+        let far = ClinicCoordinate(latitude: 22.3030, longitude: 114.2000)
+        var pending = makeClinic(
+            id: "pending",
+            name: "安心動物醫院",
+            address: "香港旺角彌敦道1號",
+            coordinate: origin
+        )
+        pending.phone = "21234567"
+        var initialCandidate = makeClinic(
+            id: "a-candidate",
+            name: "安心動物醫院",
+            address: "不同地址",
+            coordinate: far
+        )
+        initialCandidate.phone = "21234567"
+        var unrelated = makeClinic(
+            id: "unrelated",
+            name: "完全不同診所",
+            address: "香港另一地址",
+            coordinate: far
+        )
+        unrelated.phone = "99998888"
+
+        XCTAssertEqual(
+            ClinicDuplicateApprovalPolicy.decision(
+                for: pending,
+                approvedClinics: [unrelated],
+                removedClinicIDs: []
+            ),
+            .approve
+        )
+        guard case let .requiresOverride(initialChallenge) =
+            ClinicDuplicateApprovalPolicy.decision(
+                for: pending,
+                approvedClinics: [initialCandidate],
+                removedClinicIDs: []
+            )
+        else {
+            return XCTFail("first fresh strong match must require an override")
+        }
+        XCTAssertEqual(initialChallenge.matches.map(\.clinic.id), [initialCandidate.id])
+        XCTAssertEqual(
+            ClinicDuplicateApprovalPolicy.decision(
+                for: pending,
+                approvedClinics: [initialCandidate],
+                removedClinicIDs: [],
+                overridingChallengeFingerprint: initialChallenge.fingerprint
+            ),
+            .approve
+        )
+
+        var sameIDContentChanged = initialCandidate
+        sameIDContentChanged.address = "再不同地址"
+        guard case let .requiresOverride(contentChangedChallenge) =
+            ClinicDuplicateApprovalPolicy.decision(
+                for: pending,
+                approvedClinics: [sameIDContentChanged],
+                removedClinicIDs: [],
+                overridingChallengeFingerprint: initialChallenge.fingerprint
+            )
+        else {
+            return XCTFail("same-ID normalized evidence change must invalidate the override")
+        }
+        XCTAssertEqual(contentChangedChallenge.matches.map(\.clinic.id), [initialCandidate.id])
+        XCTAssertEqual(contentChangedChallenge.matches.first?.reason, .samePhoneAndName)
+        XCTAssertNotEqual(contentChangedChallenge.fingerprint, initialChallenge.fingerprint)
+
+        var sameIDReasonChanged = sameIDContentChanged
+        sameIDReasonChanged.name = "另一名稱"
+        sameIDReasonChanged.coordinate = ClinicCoordinate(
+            latitude: 22.3010,
+            longitude: 114.2000
+        )
+        guard case let .requiresOverride(reasonChangedChallenge) =
+            ClinicDuplicateApprovalPolicy.decision(
+                for: pending,
+                approvedClinics: [sameIDReasonChanged],
+                removedClinicIDs: [],
+                overridingChallengeFingerprint: contentChangedChallenge.fingerprint
+            )
+        else {
+            return XCTFail("same-ID match-reason change must invalidate the override")
+        }
+        XCTAssertEqual(reasonChangedChallenge.matches.map(\.clinic.id), [initialCandidate.id])
+        guard
+            let reasonChangedMatch = reasonChangedChallenge.matches.first,
+            case .samePhoneNearby = reasonChangedMatch.reason
+        else {
+            return XCTFail("same-ID candidate should now match by nearby phone")
+        }
+        XCTAssertNotEqual(reasonChangedChallenge.fingerprint, contentChangedChallenge.fingerprint)
+        XCTAssertEqual(
+            ClinicDuplicateApprovalPolicy.decision(
+                for: pending,
+                approvedClinics: [sameIDReasonChanged],
+                removedClinicIDs: [],
+                overridingChallengeFingerprint: reasonChangedChallenge.fingerprint
+            ),
+            .approve
+        )
+
+        guard case let .requiresOverride(wrongOverrideChallenge) =
+            ClinicDuplicateApprovalPolicy.decision(
+                for: pending,
+                approvedClinics: [initialCandidate],
+                removedClinicIDs: [],
+                overridingChallengeFingerprint: "wrong-fingerprint"
+            )
+        else {
+            return XCTFail("an override for another candidate set must not approve")
+        }
+        XCTAssertEqual(wrongOverrideChallenge.matches.map(\.clinic.id), [initialCandidate.id])
+
+        var changedCandidate = makeClinic(
+            id: "changed-candidate",
+            name: "安心動物醫院",
+            address: "香港旺角彌敦道1號",
+            coordinate: nil
+        )
+        changedCandidate.phone = "87654321"
+        guard case let .requiresOverride(changedChallenge) =
+            ClinicDuplicateApprovalPolicy.decision(
+                for: pending,
+                approvedClinics: [changedCandidate],
+                removedClinicIDs: [],
+                overridingChallengeFingerprint: initialChallenge.fingerprint
+            )
+        else {
+            return XCTFail("a stale override must reprompt for the fresh raw candidate")
+        }
+        XCTAssertEqual(changedChallenge.matches.map(\.clinic.id), [changedCandidate.id])
+        XCTAssertNil(changedCandidate.coordinate)
+
+        var addedCandidate = makeClinic(
+            id: "z-candidate",
+            name: "另一名稱",
+            address: "另一地址",
+            coordinate: ClinicCoordinate(latitude: 22.3010, longitude: 114.2000)
+        )
+        addedCandidate.phone = pending.phone
+        guard case let .requiresOverride(expandedChallenge) =
+            ClinicDuplicateApprovalPolicy.decision(
+                for: pending,
+                approvedClinics: [addedCandidate, initialCandidate],
+                removedClinicIDs: [],
+                overridingChallengeFingerprint: initialChallenge.fingerprint
+            )
+        else {
+            return XCTFail("adding a later candidate must invalidate the one-candidate override")
+        }
+        XCTAssertEqual(
+            expandedChallenge.matches.map(\.clinic.id),
+            [initialCandidate.id, addedCandidate.id]
+        )
+        XCTAssertEqual(
+            ClinicDuplicateApprovalPolicy.decision(
+                for: pending,
+                approvedClinics: [addedCandidate, initialCandidate],
+                removedClinicIDs: [],
+                overridingChallengeFingerprint: expandedChallenge.fingerprint
+            ),
+            .approve
+        )
+
+        XCTAssertEqual(
+            ClinicDuplicateApprovalPolicy.decision(
+                for: pending,
+                approvedClinics: [initialCandidate],
+                removedClinicIDs: [initialCandidate.id]
+            ),
+            .approve
+        )
+
+        var nameOnly = makeClinic(
+            id: "name-only",
+            name: pending.name,
+            address: "不同地址",
+            coordinate: far
+        )
+        nameOnly.phone = "87654321"
+        var phoneOnly = makeClinic(
+            id: "phone-only",
+            name: "不同名稱",
+            address: "另一地址",
+            coordinate: far
+        )
+        phoneOnly.phone = pending.phone
+        XCTAssertEqual(
+            ClinicDuplicateApprovalPolicy.decision(
+                for: pending,
+                approvedClinics: [nameOnly, phoneOnly],
+                removedClinicIDs: []
+            ),
+            .approve
+        )
+    }
+
+    func testClinicDuplicateMatchReasonAdminReadableLabels() {
+        XCTAssertEqual(
+            ClinicDuplicateMatchReason.samePhoneAndName.adminReadableLabel,
+            "相同電話及名稱"
+        )
+        XCTAssertEqual(
+            ClinicDuplicateMatchReason.samePhoneNearby(distanceMeters: 42.6)
+                .adminReadableLabel,
+            "相同電話，距離約 43 米"
+        )
+        XCTAssertEqual(
+            ClinicDuplicateMatchReason.sameNameAndAddress.adminReadableLabel,
+            "相同名稱及地址"
+        )
+        XCTAssertEqual(
+            ClinicDuplicateMatchReason.sameNameNearby(distanceMeters: 12.4)
+                .adminReadableLabel,
+            "相同名稱，距離約 12 米"
+        )
+    }
+
+    func testClinicApprovalOperationPolicyKeepsAllFourOutcomesDistinct() {
+        XCTAssertEqual(
+            ClinicApprovalOperationPolicy.resolution(for: .preflightFailed),
+            .preflightFailedNoWrite
+        )
+        XCTAssertEqual(
+            ClinicApprovalOperationPolicy.resolution(for: .writeFailed),
+            .writeFailedNoWrite
+        )
+        XCTAssertEqual(
+            ClinicApprovalOperationPolicy.resolution(
+                for: .writeSucceededRefreshSucceeded
+            ),
+            .approved
+        )
+        XCTAssertEqual(
+            ClinicApprovalOperationPolicy.resolution(
+                for: .writeSucceededRefreshFailed
+            ),
+            .approvedRefreshFailed
+        )
+    }
+
     func testClinicPublicationPolicyRetainsOnlySafeIdentityContactAndCoordinate() throws {
         let submitted = makeClinic(
             id: "client-controlled-id",

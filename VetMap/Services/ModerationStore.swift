@@ -1,6 +1,38 @@
 import Combine
 import Foundation
 
+enum ClinicApprovalOperationOutcome: Equatable {
+    case preflightFailed
+    case writeFailed
+    case writeSucceededRefreshSucceeded
+    case writeSucceededRefreshFailed
+}
+
+enum ClinicApprovalOperationResolution: Equatable {
+    case preflightFailedNoWrite
+    case writeFailedNoWrite
+    case approved
+    case approvedRefreshFailed
+}
+
+enum ClinicApprovalOperationPolicy {
+    static func resolution(
+        for outcome: ClinicApprovalOperationOutcome
+    ) -> ClinicApprovalOperationResolution {
+        switch outcome {
+        case .preflightFailed:
+            return .preflightFailedNoWrite
+        case .writeFailed:
+            return .writeFailedNoWrite
+        case .writeSucceededRefreshSucceeded:
+            return .approved
+        case .writeSucceededRefreshFailed:
+            return .approvedRefreshFailed
+        }
+    }
+}
+
+#if !CLINIC_APPROVAL_OPERATION_HARNESS
 /// Firestore-backed moderation state.
 ///
 /// This store deliberately has no local persistence: showing a local success
@@ -19,6 +51,8 @@ final class ModerationStore: ObservableObject {
     @Published private(set) var blockedUserIDs: Set<String> = []
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage: String?
+    @Published private(set) var clinicApprovalInFlightIDs: Set<String> = []
+    @Published private(set) var clinicApprovalCommittedIDs: Set<String> = []
 
     private let firebase: FirebaseService
 
@@ -98,6 +132,14 @@ final class ModerationStore: ObservableObject {
         reportTargetsByReportID[report.id]
     }
 
+    func isClinicApprovalInFlight(_ submissionID: String) -> Bool {
+        clinicApprovalInFlightIDs.contains(submissionID)
+    }
+
+    func isClinicApprovalCommitted(_ submissionID: String) -> Bool {
+        clinicApprovalCommittedIDs.contains(submissionID)
+    }
+
     // MARK: - Refresh
 
     func refreshPublicState() async {
@@ -128,32 +170,7 @@ final class ModerationStore: ObservableObject {
     }
 
     func refreshAdminQueue() async {
-        isLoading = true
-        defer { isLoading = false }
-
-        do {
-            submissions = try await firebase.fetchPendingSubmissions()
-            let fetchedReports = try await firebase.fetchReports()
-            var canonicalTargets: [String: ReportTargetSummary] = [:]
-            for report in fetchedReports {
-                do {
-                    canonicalTargets[report.id] = try await firebase
-                        .fetchCanonicalReportTarget(report)
-                } catch {
-                    CrashReporting.recordError(
-                        error,
-                        domain: "ModerationStore.fetchCanonicalReportTarget"
-                    )
-                }
-            }
-            reports = fetchedReports
-            reportTargetsByReportID = canonicalTargets
-            apply(states: try await firebase.fetchContentStates())
-            errorMessage = nil
-            notifyChange()
-        } catch {
-            record(error, domain: "ModerationStore.refreshAdminQueue")
-        }
+        _ = await refreshAdminQueueOperation()
     }
 
     // MARK: - User submissions
@@ -236,61 +253,198 @@ final class ModerationStore: ObservableObject {
 
     // MARK: - Admin moderation
 
-    func approveSubmission(id: String) async {
+    enum ClinicApprovalResult {
+        case approved
+        case approvedRefreshFailed(message: String)
+        case requiresDuplicateOverride(ClinicApprovalDuplicateChallenge)
+        case preflightFailedNoWrite(message: String)
+        case writeFailedNoWrite(message: String)
+        case alreadyInFlight
+        case alreadyCommitted
+    }
+
+    enum AdminActionResult {
+        case writeFailed(Error)
+        case writeSucceededRefreshSucceeded
+        case writeSucceededRefreshFailed(Error)
+
+        var clinicApprovalOutcome: ClinicApprovalOperationOutcome {
+            switch self {
+            case .writeFailed:
+                return .writeFailed
+            case .writeSucceededRefreshSucceeded:
+                return .writeSucceededRefreshSucceeded
+            case .writeSucceededRefreshFailed:
+                return .writeSucceededRefreshFailed
+            }
+        }
+    }
+
+    func approveClinicSubmission(
+        id: String,
+        clinic: VetClinic,
+        overridingDuplicateChallengeFingerprint: String? = nil
+    ) async -> ClinicApprovalResult {
+        guard !clinicApprovalCommittedIDs.contains(id) else {
+            return .alreadyCommitted
+        }
+        guard clinicApprovalInFlightIDs.insert(id).inserted else {
+            return .alreadyInFlight
+        }
+        defer { clinicApprovalInFlightIDs.remove(id) }
+
+        do {
+            // Both reads are deliberately fresh for the first attempt and for
+            // every override. Display/search/map state is never used here.
+            let approvedClinics = try await firebase.fetchClinics()
+            let contentStates = try await firebase.fetchContentStates()
+            let removedIDs = Set(
+                contentStates
+                    .filter { $0.type == .clinic && $0.isRemoved }
+                    .map(\.targetId)
+            )
+            switch ClinicDuplicateApprovalPolicy.decision(
+                for: clinic,
+                approvedClinics: approvedClinics,
+                removedClinicIDs: removedIDs,
+                overridingChallengeFingerprint: overridingDuplicateChallengeFingerprint
+            ) {
+            case .approve:
+                let actionResult = await approveSubmission(id: id)
+                let resolution = ClinicApprovalOperationPolicy.resolution(
+                    for: actionResult.clinicApprovalOutcome
+                )
+                switch actionResult {
+                case .writeFailed(let error):
+                    assert(resolution == .writeFailedNoWrite)
+                    return .writeFailedNoWrite(message: error.localizedDescription)
+                case .writeSucceededRefreshSucceeded:
+                    assert(resolution == .approved)
+                    clinicApprovalCommittedIDs.insert(id)
+                    return .approved
+                case .writeSucceededRefreshFailed(let error):
+                    assert(resolution == .approvedRefreshFailed)
+                    clinicApprovalCommittedIDs.insert(id)
+                    return .approvedRefreshFailed(message: error.localizedDescription)
+                }
+            case .requiresOverride(let challenge):
+                errorMessage = nil
+                return .requiresDuplicateOverride(challenge)
+            }
+        } catch {
+            record(error, domain: "ModerationStore.approveClinicSubmission.preflight")
+            assert(
+                ClinicApprovalOperationPolicy.resolution(for: .preflightFailed)
+                    == .preflightFailedNoWrite
+            )
+            return .preflightFailedNoWrite(message: error.localizedDescription)
+        }
+    }
+
+    @discardableResult
+    func approveSubmission(id: String) async -> AdminActionResult {
         await performAdminAction(domain: "ModerationStore.approveSubmission") {
             try await firebase.approveSubmission(id: id)
         }
     }
 
     func rejectSubmission(id: String) async {
-        await performAdminAction(domain: "ModerationStore.rejectSubmission") {
+        _ = await performAdminAction(domain: "ModerationStore.rejectSubmission") {
             try await firebase.rejectSubmission(id: id)
         }
     }
 
     func resolveReport(id: String, takeDown: Bool) async {
-        await performAdminAction(domain: "ModerationStore.resolveReport") {
+        _ = await performAdminAction(domain: "ModerationStore.resolveReport") {
             try await firebase.resolveReport(id: id, takeDown: takeDown)
         }
     }
 
     func togglePin(_ clinicID: String) async {
         let newValue = !pinnedClinicIDs.contains(clinicID)
-        await performAdminAction(domain: "ModerationStore.togglePin") {
+        _ = await performAdminAction(domain: "ModerationStore.togglePin") {
             try await firebase.setClinicPinned(clinicId: clinicID, pinned: newValue)
         }
     }
 
     func setClinicRemoved(_ clinicID: String, _ removed: Bool) async {
-        await performAdminAction(domain: "ModerationStore.setClinicRemoved") {
+        _ = await performAdminAction(domain: "ModerationStore.setClinicRemoved") {
             try await firebase.setContentRemoved(type: .clinic, targetId: clinicID, removed: removed)
         }
     }
 
     func setReviewRemoved(_ reviewID: String, _ removed: Bool) async {
-        await performAdminAction(domain: "ModerationStore.setReviewRemoved") {
+        _ = await performAdminAction(domain: "ModerationStore.setReviewRemoved") {
             try await firebase.setContentRemoved(type: .review, targetId: reviewID, removed: removed)
         }
     }
 
     func setQuoteRemoved(_ quoteID: String, _ removed: Bool) async {
-        await performAdminAction(domain: "ModerationStore.setQuoteRemoved") {
+        _ = await performAdminAction(domain: "ModerationStore.setQuoteRemoved") {
             try await firebase.setContentRemoved(type: .quote, targetId: quoteID, removed: removed)
         }
     }
 
     // MARK: - Helpers
 
+    private enum AdminQueueRefreshResult {
+        case succeeded
+        case failed(Error)
+    }
+
     private func performAdminAction(
         domain: String,
         action: () async throws -> Void
-    ) async {
+    ) async -> AdminActionResult {
         do {
             try await action()
-            errorMessage = nil
-            await refreshAdminQueue()
         } catch {
             record(error, domain: domain)
+            return .writeFailed(error)
+        }
+
+        switch await refreshAdminQueueOperation() {
+        case .succeeded:
+            return .writeSucceededRefreshSucceeded
+        case .failed(let error):
+            return .writeSucceededRefreshFailed(error)
+        }
+    }
+
+    private func refreshAdminQueueOperation() async -> AdminQueueRefreshResult {
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            let fetchedSubmissions = try await firebase.fetchPendingSubmissions()
+            let fetchedReports = try await firebase.fetchReports()
+            var canonicalTargets: [String: ReportTargetSummary] = [:]
+            for report in fetchedReports {
+                do {
+                    canonicalTargets[report.id] = try await firebase
+                        .fetchCanonicalReportTarget(report)
+                } catch {
+                    CrashReporting.recordError(
+                        error,
+                        domain: "ModerationStore.fetchCanonicalReportTarget"
+                    )
+                }
+            }
+            let states = try await firebase.fetchContentStates()
+
+            submissions = fetchedSubmissions
+            reports = fetchedReports
+            reportTargetsByReportID = canonicalTargets
+            clinicApprovalCommittedIDs.formIntersection(
+                Set(fetchedSubmissions.map(\.id))
+            )
+            apply(states: states)
+            errorMessage = nil
+            notifyChange()
+            return .succeeded
+        } catch {
+            record(error, domain: "ModerationStore.refreshAdminQueue")
+            return .failed(error)
         }
     }
 
@@ -322,3 +476,4 @@ final class ModerationStore: ObservableObject {
 extension Notification.Name {
     static let vetModerationDidChange = Notification.Name("vetModerationDidChange")
 }
+#endif

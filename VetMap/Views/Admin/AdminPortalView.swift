@@ -221,9 +221,41 @@ struct AdminClinicManageView: View {
 
 struct AdminPendingClinicsView: View {
     @ObservedObject private var store = ModerationStore.shared
+    @State private var duplicatePrompt: ClinicDuplicateApprovalPrompt?
+    @State private var approvalNotice: ClinicApprovalNotice?
 
     var body: some View {
         List {
+            if let approvalNotice {
+                Section {
+                    Label(
+                        approvalNotice.message,
+                        systemImage: approvalNotice.systemImage
+                    )
+                    .font(.footnote)
+                    .foregroundStyle(approvalNotice.tint)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                    if approvalNotice.offersReload {
+                        Button("重新載入清單") {
+                            Task {
+                                await store.refreshAdminQueue()
+                                if store.errorMessage == nil {
+                                    self.approvalNotice = nil
+                                }
+                            }
+                        }
+                    }
+                }
+            } else if let error = store.errorMessage {
+                Section {
+                    Label("操作未完成：\(error)", systemImage: "icloud.slash")
+                        .font(.footnote)
+                        .foregroundStyle(AppTheme.warning)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+
             if store.pendingClinics.isEmpty {
                 emptyRow("目前沒有待審核的診所")
             } else {
@@ -278,12 +310,24 @@ struct AdminPendingClinicsView: View {
                             .font(.caption2)
                             .foregroundStyle(.tertiary)
 
+                        let approvalInFlight = store.isClinicApprovalInFlight(pending.id)
+                        let approvalCommitted = store.isClinicApprovalCommitted(pending.id)
+                        if approvalCommitted {
+                            Label(
+                                "已批准；等待清單重新載入",
+                                systemImage: "checkmark.circle.fill"
+                            )
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(.green)
+                        }
                         decisionButtons(
-                            approveDisabled: !pending.clinic.hasReliableHongKongCoordinate,
+                            approveDisabled: !pending.clinic.hasReliableHongKongCoordinate
+                                || approvalInFlight
+                                || approvalCommitted,
+                            rejectDisabled: approvalInFlight || approvalCommitted,
                             onApprove: {
                                 Task {
-                                    await store.approveSubmission(id: pending.id)
-                                    if store.errorMessage == nil { Haptics.success() }
+                                    await attemptClinicApproval(pending)
                                 }
                             },
                             onReject: {
@@ -298,8 +342,138 @@ struct AdminPendingClinicsView: View {
                 }
             }
         }
+        .confirmationDialog(
+            "可能已收錄",
+            isPresented: Binding(
+                get: { duplicatePrompt != nil },
+                set: { if !$0 { duplicatePrompt = nil } }
+            ),
+            titleVisibility: .visible,
+            presenting: duplicatePrompt
+        ) { prompt in
+            Button("返回核對", role: .cancel) {
+                duplicatePrompt = nil
+            }
+            Button("確認不是同一診所並批准") {
+                duplicatePrompt = nil
+                Task {
+                    await attemptClinicApproval(
+                        prompt.pending,
+                        overridingDuplicateChallengeFingerprint:
+                            prompt.challenge.fingerprint
+                    )
+                }
+            }
+        } message: { prompt in
+            Text(prompt.message)
+        }
         .navigationTitle("待審核診所")
         .navigationBarTitleDisplayMode(.inline)
+        .refreshable {
+            await store.refreshAdminQueue()
+            if store.errorMessage == nil {
+                approvalNotice = nil
+            }
+        }
+    }
+
+    @MainActor
+    private func attemptClinicApproval(
+        _ pending: PendingClinic,
+        overridingDuplicateChallengeFingerprint: String? = nil
+    ) async {
+        let result = await store.approveClinicSubmission(
+            id: pending.id,
+            clinic: pending.clinic,
+            overridingDuplicateChallengeFingerprint:
+                overridingDuplicateChallengeFingerprint
+        )
+        switch result {
+        case .approved:
+            duplicatePrompt = nil
+            approvalNotice = nil
+            Haptics.success()
+        case .approvedRefreshFailed(let message):
+            duplicatePrompt = nil
+            approvalNotice = .approvedRefreshFailed(detail: message)
+            Haptics.success()
+        case .requiresDuplicateOverride(let challenge):
+            approvalNotice = nil
+            duplicatePrompt = ClinicDuplicateApprovalPrompt(
+                pending: pending,
+                challenge: challenge
+            )
+        case .preflightFailedNoWrite(let message),
+             .writeFailedNoWrite(let message):
+            approvalNotice = .notApprovedNoWrite(detail: message)
+        case .alreadyCommitted:
+            approvalNotice = .approvedRefreshFailed(detail: nil)
+        case .alreadyInFlight:
+            break
+        }
+    }
+}
+
+private enum ClinicApprovalNotice {
+    case notApprovedNoWrite(detail: String)
+    case approvedRefreshFailed(detail: String?)
+
+    var message: String {
+        switch self {
+        case .notApprovedNoWrite(let detail):
+            return "未批准，資料未有改動，可重新嘗試。\n\(detail)"
+        case .approvedRefreshFailed(let detail):
+            let base = "已批准，但清單刷新失敗，請重新載入。"
+            guard let detail, !detail.isEmpty else { return base }
+            return "\(base)\n\(detail)"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .notApprovedNoWrite:
+            return "exclamationmark.triangle.fill"
+        case .approvedRefreshFailed:
+            return "checkmark.circle.fill"
+        }
+    }
+
+    var tint: Color {
+        switch self {
+        case .notApprovedNoWrite:
+            return AppTheme.warning
+        case .approvedRefreshFailed:
+            return .green
+        }
+    }
+
+    var offersReload: Bool {
+        if case .approvedRefreshFailed = self { return true }
+        return false
+    }
+}
+
+private struct ClinicDuplicateApprovalPrompt: Identifiable {
+    let pending: PendingClinic
+    let challenge: ClinicApprovalDuplicateChallenge
+
+    var id: String { pending.id }
+
+    var message: String {
+        let candidates = challenge.matches.map { match in
+            let phone = match.clinic.phone.isEmpty ? "未提供" : match.clinic.phone
+            return [
+                "• \(match.clinic.name)",
+                "地址：\(match.clinic.address)",
+                "電話：\(phone)",
+                "比對原因：\(match.reason.adminReadableLabel)"
+            ].joined(separator: "\n")
+        }
+        .joined(separator: "\n\n")
+
+        return "公開目錄內有 \(challenge.matches.count) 個強匹配候選：\n\n"
+            + candidates
+            + "\n\n系統會重新讀取完整最新候選；任何新增、移除或變更都會再次要求確認。"
     }
 }
 
@@ -607,6 +781,7 @@ private func decisionButtons(
     approveTitle: LocalizedStringKey = "批准",
     approveIcon: String = "checkmark",
     approveDisabled: Bool = false,
+    rejectDisabled: Bool = false,
     rejectTitle: LocalizedStringKey = "拒絕",
     rejectIcon: String = "xmark",
     onApprove: @escaping () -> Void,
@@ -632,6 +807,7 @@ private func decisionButtons(
         .buttonStyle(.bordered)
         .buttonBorderShape(.capsule)
         .controlSize(.small)
+        .disabled(rejectDisabled)
     }
     .padding(.top, 4)
 }

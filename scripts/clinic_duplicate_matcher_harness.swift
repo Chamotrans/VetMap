@@ -270,6 +270,228 @@ struct ClinicDuplicateMatcherHarness {
             "phone-set fingerprint is order independent"
         )
 
+        let unrelated = clinic(
+            id: "unrelated",
+            name: "完全不同診所",
+            address: "香港另一地址",
+            phone: "99998888",
+            coordinate: beyond200
+        )
+        check(
+            ClinicDuplicateApprovalPolicy.decision(
+                for: draft,
+                approvedClinics: [unrelated],
+                removedClinicIDs: []
+            ) == .approve,
+            "approval no-match proceeds"
+        )
+        guard case let .requiresOverride(initialApprovalMatch) =
+            ClinicDuplicateApprovalPolicy.decision(
+                for: draft,
+                approvedClinics: [phoneAndName],
+                removedClinicIDs: []
+            )
+        else {
+            preconditionFailure("approval strong match requires override")
+        }
+        check(
+            initialApprovalMatch.matches.map(\.clinic.id) == [phoneAndName.id],
+            "approval match candidate set"
+        )
+        check(
+            ClinicDuplicateApprovalPolicy.decision(
+                for: draft,
+                approvedClinics: [phoneAndName],
+                removedClinicIDs: [],
+                overridingChallengeFingerprint:
+                    initialApprovalMatch.fingerprint
+            ) == .approve,
+            "exact candidate-set override proceeds"
+        )
+
+        var sameIDContentChanged = phoneAndName
+        sameIDContentChanged.address = "另一個正規化地址"
+        guard case let .requiresOverride(contentChangedChallenge) =
+            ClinicDuplicateApprovalPolicy.decision(
+                for: draft,
+                approvedClinics: [sameIDContentChanged],
+                removedClinicIDs: [],
+                overridingChallengeFingerprint: initialApprovalMatch.fingerprint
+            )
+        else {
+            preconditionFailure("same-ID normalized evidence change must reprompt")
+        }
+        check(
+            contentChangedChallenge.matches.map(\.clinic.id) == [phoneAndName.id],
+            "same-ID content change keeps candidate identity"
+        )
+        check(
+            contentChangedChallenge.matches.first?.reason == .samePhoneAndName,
+            "same-ID content change can retain match reason"
+        )
+        check(
+            contentChangedChallenge.fingerprint != initialApprovalMatch.fingerprint,
+            "same-ID normalized evidence changes challenge fingerprint"
+        )
+
+        var sameIDReasonChanged = sameIDContentChanged
+        sameIDReasonChanged.name = "另一間獸醫"
+        sameIDReasonChanged.coordinate = within200
+        guard case let .requiresOverride(reasonChangedChallenge) =
+            ClinicDuplicateApprovalPolicy.decision(
+                for: draft,
+                approvedClinics: [sameIDReasonChanged],
+                removedClinicIDs: [],
+                overridingChallengeFingerprint: contentChangedChallenge.fingerprint
+            )
+        else {
+            preconditionFailure("same-ID match reason change must reprompt")
+        }
+        check(
+            reasonChangedChallenge.matches.map(\.clinic.id) == [phoneAndName.id],
+            "same-ID reason change keeps candidate identity"
+        )
+        guard
+            let reasonChangedMatch = reasonChangedChallenge.matches.first,
+            case .samePhoneNearby = reasonChangedMatch.reason
+        else {
+            preconditionFailure("same-ID candidate should now match by nearby phone")
+        }
+        passed += 1
+        check(
+            reasonChangedChallenge.fingerprint != contentChangedChallenge.fingerprint,
+            "same-ID reason and distance semantics change fingerprint"
+        )
+        check(
+            ClinicDuplicateApprovalPolicy.decision(
+                for: draft,
+                approvedClinics: [sameIDReasonChanged],
+                removedClinicIDs: [],
+                overridingChallengeFingerprint: reasonChangedChallenge.fingerprint
+            ) == .approve,
+            "exact same-ID changed-evidence override proceeds"
+        )
+
+        guard case let .requiresOverride(wrongOverrideMatch) =
+            ClinicDuplicateApprovalPolicy.decision(
+                for: draft,
+                approvedClinics: [phoneAndName],
+                removedClinicIDs: [],
+                overridingChallengeFingerprint: "wrong-fingerprint"
+            )
+        else {
+            preconditionFailure("wrong override must reprompt")
+        }
+        check(
+            wrongOverrideMatch.matches.map(\.clinic.id) == [phoneAndName.id],
+            "wrong override candidate set unchanged"
+        )
+        guard case let .requiresOverride(changedApprovalMatch) =
+            ClinicDuplicateApprovalPolicy.decision(
+                for: draft,
+                approvedClinics: [phoneNearby],
+                removedClinicIDs: [],
+                overridingChallengeFingerprint:
+                    initialApprovalMatch.fingerprint
+            )
+        else {
+            preconditionFailure("stale override must reprompt for changed candidate")
+        }
+        check(
+            changedApprovalMatch.matches.map(\.clinic.id) == [phoneNearby.id],
+            "changed candidate set reprompt"
+        )
+
+        let aCandidate = clinic(
+            id: "a-candidate",
+            name: draft.name,
+            address: "不同地址 A",
+            phone: draft.phone,
+            coordinate: beyond200
+        )
+        let zCandidate = clinic(
+            id: "z-candidate",
+            name: "另一名稱 Z",
+            address: "不同地址 Z",
+            phone: draft.phone,
+            coordinate: within200
+        )
+        guard case let .requiresOverride(oneCandidateChallenge) =
+            ClinicDuplicateApprovalPolicy.decision(
+                for: draft,
+                approvedClinics: [aCandidate],
+                removedClinicIDs: []
+            )
+        else {
+            preconditionFailure("one matching candidate must require override")
+        }
+        check(
+            !oneCandidateChallenge.fingerprint.isEmpty,
+            "one-candidate fingerprint binds normalized evidence"
+        )
+        guard case let .requiresOverride(expandedChallenge) =
+            ClinicDuplicateApprovalPolicy.decision(
+                for: draft,
+                approvedClinics: [zCandidate, aCandidate],
+                removedClinicIDs: [],
+                overridingChallengeFingerprint:
+                    oneCandidateChallenge.fingerprint
+            )
+        else {
+            preconditionFailure("new later candidate must invalidate stale override")
+        }
+        check(
+            expandedChallenge.matches.map(\.clinic.id) == [aCandidate.id, zCandidate.id],
+            "expanded candidate set is complete and sorted"
+        )
+        check(
+            ClinicDuplicateApprovalPolicy.decision(
+                for: draft,
+                approvedClinics: [zCandidate, aCandidate],
+                removedClinicIDs: [],
+                overridingChallengeFingerprint:
+                    expandedChallenge.fingerprint
+            ) == .approve,
+            "exact expanded candidate-set override proceeds"
+        )
+        check(
+            ClinicDuplicateApprovalPolicy.decision(
+                for: draft,
+                approvedClinics: [phoneAndName],
+                removedClinicIDs: [phoneAndName.id]
+            ) == .approve,
+            "removed candidate is ignored"
+        )
+        check(
+            ClinicDuplicateApprovalPolicy.decision(
+                for: draft,
+                approvedClinics: [nameFar, phoneFar],
+                removedClinicIDs: []
+            ) == .approve,
+            "indirect duplicate chain does not block approval"
+        )
+
+        check(
+            ClinicDuplicateMatchReason.samePhoneAndName.adminReadableLabel
+                == "相同電話及名稱",
+            "same phone and name admin label"
+        )
+        check(
+            ClinicDuplicateMatchReason.samePhoneNearby(distanceMeters: 42.6)
+                .adminReadableLabel == "相同電話，距離約 43 米",
+            "same phone nearby admin label"
+        )
+        check(
+            ClinicDuplicateMatchReason.sameNameAndAddress.adminReadableLabel
+                == "相同名稱及地址",
+            "same name and address admin label"
+        )
+        check(
+            ClinicDuplicateMatchReason.sameNameNearby(distanceMeters: 12.4)
+                .adminReadableLabel == "相同名稱，距離約 12 米",
+            "same name nearby admin label"
+        )
+
         print("{\"clinicDuplicateMatcher\":true,\"passed\":\(passed)}")
     }
 
