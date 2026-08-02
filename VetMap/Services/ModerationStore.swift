@@ -210,6 +210,7 @@ final class ModerationStore: ObservableObject {
         targetId: String,
         targetTitle: String,
         clinicId: String?,
+        conversationId: String? = nil,
         reason: String
     ) async throws {
         do {
@@ -218,6 +219,7 @@ final class ModerationStore: ObservableObject {
                 targetId: targetId,
                 targetTitle: targetTitle,
                 clinicId: clinicId,
+                conversationId: conversationId,
                 reason: reason
             )
             errorMessage = nil

@@ -126,6 +126,60 @@ function report({
   };
 }
 
+function chatMessage({
+  id = "message-1",
+  conversationId = "alice--bob",
+  senderId = "alice",
+  body = "你好，想交流一下診所經驗。",
+  sentAt = new Date(),
+} = {}) {
+  return {
+    id,
+    conversationId,
+    senderId,
+    body,
+    sentAt,
+    isDeleted: false,
+  };
+}
+
+function conversation({
+  id = "alice--bob",
+  participants = ["alice", "bob"],
+  lastMessageId = "message-1",
+  lastMessage = "你好，想交流一下診所經驗。",
+  lastSenderId = "alice",
+  now = new Date(),
+} = {}) {
+  return {
+    id,
+    participantIds: participants,
+    participantNames: {alice: "Alice", bob: "Bob"},
+    lastMessageId,
+    lastMessage,
+    lastMessageAt: now,
+    lastSenderId,
+    createdAt: now,
+    updatedAt: now,
+  };
+}
+
+async function createConversation(db, options = {}) {
+  const data = conversation(options);
+  const message = chatMessage({
+    id: data.lastMessageId,
+    conversationId: data.id,
+    senderId: data.lastSenderId,
+    body: data.lastMessage,
+    sentAt: data.lastMessageAt,
+  });
+  const reference = db.collection("conversations").doc(data.id);
+  const batch = db.batch();
+  batch.set(reference, data);
+  batch.set(reference.collection("messages").doc(message.id), message);
+  return batch.commit();
+}
+
 function catalogMetadata({
   status = "approved",
   catalogRegion = "HK",
@@ -467,6 +521,140 @@ test("封鎖清單只可由本人管理，亦不可封鎖自己", async () => {
     alice.collection("users/alice/blockedUsers").doc("alice").set({
       blockedUserId: "alice",
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    }),
+  );
+});
+
+test("聊天室只限兩名參與者，建立對話必須原子寫入第一則本人訊息", async () => {
+  const anonymous = testEnv.unauthenticatedContext().firestore();
+  const alice = testEnv.authenticatedContext("alice").firestore();
+  const bob = testEnv.authenticatedContext("bob").firestore();
+  const mallory = testEnv.authenticatedContext("mallory").firestore();
+
+  await assertFails(
+    alice.collection("conversations").doc("alice--bob").set(conversation()),
+  );
+  await assertFails(
+    createConversation(alice, {participants: ["bob", "alice"]}),
+  );
+  await assertSucceeds(createConversation(alice));
+
+  const conversationRef = alice.collection("conversations").doc("alice--bob");
+  await assertFails(anonymous.collection("conversations").doc("alice--bob").get());
+  await assertSucceeds(conversationRef.get());
+  await assertSucceeds(bob.collection("conversations").doc("alice--bob").get());
+  await assertFails(mallory.collection("conversations").doc("alice--bob").get());
+  await assertFails(
+    mallory.collection("conversations/alice--bob/messages").doc("message-1").get(),
+  );
+});
+
+test("聊天室新訊息綁定本人及對話預覽，任一方封鎖後禁止再傳送", async () => {
+  const alice = testEnv.authenticatedContext("alice").firestore();
+  const bob = testEnv.authenticatedContext("bob").firestore();
+  await createConversation(alice);
+
+  const secondSentAt = new Date();
+  const bobConversation = bob.collection("conversations").doc("alice--bob");
+  const secondMessage = chatMessage({
+    id: "message-2",
+    senderId: "bob",
+    body: "多謝分享。",
+    sentAt: secondSentAt,
+  });
+  const reply = bob.batch();
+  reply.update(bobConversation, {
+    lastMessageId: secondMessage.id,
+    lastMessage: secondMessage.body,
+    lastMessageAt: secondSentAt,
+    lastSenderId: "bob",
+    updatedAt: secondSentAt,
+  });
+  reply.set(bobConversation.collection("messages").doc(secondMessage.id), secondMessage);
+  await assertSucceeds(reply.commit());
+
+  const forged = alice.batch();
+  forged.update(alice.collection("conversations").doc("alice--bob"), {
+    lastMessageId: "message-3",
+    lastMessage: "冒認 Bob",
+    lastMessageAt: new Date(),
+    lastSenderId: "alice",
+    updatedAt: new Date(),
+  });
+  forged.set(
+    alice.collection("conversations/alice--bob/messages").doc("message-3"),
+    chatMessage({id: "message-3", senderId: "bob", body: "冒認 Bob"}),
+  );
+  await assertFails(forged.commit());
+
+  await bob.collection("users/bob/blockedUsers").doc("alice").set({
+    blockedUserId: "alice",
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+  });
+  const blockedSentAt = new Date();
+  const blocked = alice.batch();
+  blocked.update(alice.collection("conversations").doc("alice--bob"), {
+    lastMessageId: "message-4",
+    lastMessage: "不應送達",
+    lastMessageAt: blockedSentAt,
+    lastSenderId: "alice",
+    updatedAt: blockedSentAt,
+  });
+  blocked.set(
+    alice.collection("conversations/alice--bob/messages").doc("message-4"),
+    chatMessage({id: "message-4", body: "不應送達", sentAt: blockedSentAt}),
+  );
+  await assertFails(blocked.commit());
+});
+
+test("訊息只可由作者軟刪除，參與者可舉報而外人不可", async () => {
+  await seedAdmin();
+  const alice = testEnv.authenticatedContext("alice").firestore();
+  const bob = testEnv.authenticatedContext("bob").firestore();
+  const mallory = testEnv.authenticatedContext("mallory").firestore();
+  await createConversation(alice);
+
+  const messageRef = alice.collection("conversations/alice--bob/messages").doc("message-1");
+  await assertFails(
+    bob.collection("conversations/alice--bob/messages").doc("message-1").update({
+      body: "",
+      isDeleted: true,
+      deletedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      deletedBy: "bob",
+    }),
+  );
+
+  const deletion = alice.batch();
+  deletion.update(messageRef, {
+    body: "",
+    isDeleted: true,
+    deletedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    deletedBy: "alice",
+  });
+  deletion.update(alice.collection("conversations").doc("alice--bob"), {
+    lastMessage: "訊息已刪除",
+  });
+  await assertSucceeds(deletion.commit());
+
+  const messageReport = {
+    id: "message-message-1-bob",
+    targetType: "message",
+    targetId: "message-1",
+    targetTitle: "聊天室訊息",
+    conversationId: "alice--bob",
+    reason: "騷擾或冒犯",
+    reporterId: "bob",
+    createdAt: new Date(),
+    status: "pending",
+  };
+  await assertSucceeds(
+    bob.collection("reports").doc(messageReport.id).set(messageReport),
+  );
+  await assertFails(
+    mallory.collection("reports").doc("message-message-1-mallory").set({
+      ...messageReport,
+      id: "message-message-1-mallory",
+      reporterId: "mallory",
     }),
   );
 });

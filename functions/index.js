@@ -66,6 +66,20 @@ exports.purgeUserData = onCall({region: REGION}, async (request) => {
       (deletionCounts[collectionName] || 0) + deletedCount;
   }
 
+  const conversations = await db.collection("conversations")
+      .where("participantIds", "array-contains", uid)
+      .get();
+  let linkedChatReports = 0;
+  for (const conversation of conversations.docs) {
+    const reports = await db.collection("reports")
+        .where("conversationId", "==", conversation.id)
+        .get();
+    linkedChatReports += await deleteSnapshotDocuments(db, reports);
+    await db.recursiveDelete(conversation.ref);
+  }
+  deletionCounts.conversations = conversations.size;
+  deletionCounts.linkedChatReports = linkedChatReports;
+
   const ownedReviews = await db.collection("reviews")
       .where("userId", "==", uid)
       .get();

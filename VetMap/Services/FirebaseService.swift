@@ -362,6 +362,7 @@ final class FirebaseService {
         targetId: String,
         targetTitle: String,
         clinicId: String?,
+        conversationId: String? = nil,
         reason: String
     ) async throws {
         let identity = try authenticatedIdentity()
@@ -373,6 +374,7 @@ final class FirebaseService {
             targetId: targetId,
             targetTitle: targetTitle,
             clinicId: clinicId,
+            conversationId: conversationId,
             reason: reason,
             reporterId: identity.uid
         )
@@ -397,6 +399,27 @@ final class FirebaseService {
     func fetchCanonicalReportTarget(_ report: Report) async throws -> ReportTargetSummary? {
         guard isSafeDocumentID(report.targetId) else {
             throw FirebaseError.invalidReportTarget
+        }
+        if report.targetType == .message {
+            guard let conversationId = report.conversationId,
+                  isSafeDocumentID(conversationId) else {
+                throw FirebaseError.invalidReportTarget
+            }
+            let snapshot = try await resolveFirestore()
+                .collection("conversations")
+                .document(conversationId)
+                .collection("messages")
+                .document(report.targetId)
+                .getDocument()
+            guard snapshot.exists else { return nil }
+            let message = try decodeDocument(snapshot, as: ChatMessage.self)
+            return ReportTargetSummary(
+                id: message.id,
+                type: .message,
+                title: "聊天室訊息",
+                details: message.isDeleted ? "訊息已刪除" : message.body,
+                authorId: message.senderId
+            )
         }
         let snapshot = try await resolveFirestore()
             .collection(report.targetType.publicCollection)
@@ -439,6 +462,8 @@ final class FirebaseService {
                     ].filter { !$0.isEmpty }.joined(separator: "\n"),
                     authorId: quote.userId
                 )
+            case .message:
+                return nil
             }
         }
 
@@ -460,7 +485,7 @@ final class FirebaseService {
                 ].joined(separator: "\n"),
                 authorId: nil
             )
-        case .review, .quote:
+        case .review, .quote, .message:
             return nil
         }
     }
@@ -483,22 +508,49 @@ final class FirebaseService {
 
         let batch = db.batch()
         if takeDown {
-            let state = ContentModerationState(
-                id: contentStateID(type: report.targetType, targetId: report.targetId),
-                type: report.targetType,
-                targetId: report.targetId,
-                isRemoved: true,
-                isPinned: false,
-                updatedAt: Date(),
-                updatedBy: identity.uid
-            )
-            batch.setData(
-                try encoder.encode(state),
-                forDocument: db.collection("contentStates").document(state.id)
-            )
-            batch.deleteDocument(
-                db.collection(report.targetType.publicCollection).document(report.targetId)
-            )
+            if report.targetType == .message {
+                guard let conversationId = report.conversationId else {
+                    throw FirebaseError.invalidReportTarget
+                }
+                let conversationReference = db.collection("conversations")
+                    .document(conversationId)
+                let conversationSnapshot = try await conversationReference.getDocument()
+                batch.updateData(
+                    [
+                        "body": "",
+                        "isDeleted": true,
+                        "deletedAt": FieldValue.serverTimestamp(),
+                        "deletedBy": identity.uid
+                    ],
+                    forDocument: db.collection("conversations")
+                        .document(conversationId)
+                        .collection("messages")
+                        .document(report.targetId)
+                )
+                if conversationSnapshot.data()?["lastMessageId"] as? String == report.targetId {
+                    batch.updateData(
+                        ["lastMessage": "訊息已刪除"],
+                        forDocument: conversationReference
+                    )
+                }
+            } else {
+                let state = ContentModerationState(
+                    id: contentStateID(type: report.targetType, targetId: report.targetId),
+                    type: report.targetType,
+                    targetId: report.targetId,
+                    isRemoved: true,
+                    isPinned: false,
+                    updatedAt: Date(),
+                    updatedBy: identity.uid
+                )
+                batch.setData(
+                    try encoder.encode(state),
+                    forDocument: db.collection("contentStates").document(state.id)
+                )
+                batch.deleteDocument(
+                    db.collection(report.targetType.publicCollection).document(report.targetId)
+                )
+            }
         }
         batch.updateData(
             [

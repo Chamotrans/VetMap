@@ -14,6 +14,7 @@ struct ClinicDetailView: View {
     @State private var isSubmittingClinicReport = false
     @State private var didSubmitClinicReport = false
     @State private var showAvailabilityReportSuccess = false
+    @State private var chatTarget: ChatTarget?
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
 
@@ -137,6 +138,9 @@ struct ClinicDetailView: View {
             }
             .navigationTitle("診所詳情")
             .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(item: $chatTarget) { target in
+                ChatThreadView(target: target)
+            }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
@@ -385,7 +389,13 @@ struct ClinicDetailView: View {
                             },
                             onBlockAuthor: {
                                 Task { _ = await viewModel.blockUser(review.userId) }
-                            }
+                            },
+                            onMessageAuthor: canMessage(review) ? {
+                                chatTarget = ChatTarget(
+                                    userID: review.userId,
+                                    displayName: review.userName
+                                )
+                            } : nil
                         )
                     }
 
@@ -410,6 +420,12 @@ struct ClinicDetailView: View {
             }
         }
         .accessibilityLabel("查看評價")
+    }
+
+    private func canMessage(_ review: Review) -> Bool {
+        guard let currentUserID = AuthViewModel.shared.user?.uid else { return false }
+        return review.userId != currentUserID
+            && !ModerationStore.shared.blockedUserIDs.contains(review.userId)
     }
 
     @ViewBuilder

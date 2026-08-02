@@ -13,6 +13,47 @@ final class VetMapModelTests: XCTestCase {
         try assertRoundTrip(makeInsurance())
     }
 
+    func testChatConversationIDIsDeterministicAndRejectsUnsafeParticipants() {
+        XCTAssertEqual(
+            ChatConversationID.make("bob", "alice"),
+            "alice--bob"
+        )
+        XCTAssertEqual(
+            ChatConversationID.make("alice", "bob"),
+            "alice--bob"
+        )
+        XCTAssertNil(ChatConversationID.make("alice", "alice"))
+        XCTAssertNil(ChatConversationID.make("alice", "unsafe/user"))
+        XCTAssertNil(ChatConversationID.make("", "bob"))
+    }
+
+    func testChatModelsRoundTripThroughCodable() throws {
+        let conversation = ChatConversation(
+            id: "alice--bob",
+            participantIds: ["alice", "bob"],
+            participantNames: ["alice": "Alice", "bob": "Bob"],
+            lastMessageId: "message-1",
+            lastMessage: "你好",
+            lastMessageAt: date,
+            lastSenderId: "alice",
+            createdAt: date,
+            updatedAt: date
+        )
+        let message = ChatMessage(
+            id: "message-1",
+            conversationId: conversation.id,
+            senderId: "alice",
+            body: "你好",
+            sentAt: date,
+            isDeleted: false
+        )
+
+        try assertRoundTrip(conversation)
+        try assertRoundTrip(message)
+        XCTAssertEqual(conversation.otherUserID(for: "alice"), "bob")
+        XCTAssertEqual(conversation.otherDisplayName(for: "alice"), "Bob")
+    }
+
     func testClinicWithoutCoordinateRoundTripsAndHasNoMapLocation() throws {
         let clinic = makeClinic(id: "directory-only-clinic", coordinate: nil)
 

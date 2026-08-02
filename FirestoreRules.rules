@@ -30,6 +30,88 @@ service cloud.firestore {
         && value.matches('^[A-Za-z0-9][A-Za-z0-9._-]*$');
     }
 
+    function validChatUserID(value) {
+      return value is string
+        && value.size() > 0
+        && value.size() <= 100
+        && value.matches('^[A-Za-z0-9][A-Za-z0-9._-]*$');
+    }
+
+    function validConversation(data, conversationId) {
+      return data.keys().hasAll([
+          'id', 'participantIds', 'participantNames', 'lastMessageId',
+          'lastMessage', 'lastMessageAt', 'lastSenderId', 'createdAt', 'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'id', 'participantIds', 'participantNames', 'lastMessageId',
+          'lastMessage', 'lastMessageAt', 'lastSenderId', 'createdAt', 'updatedAt'
+        ])
+        && data.id == conversationId
+        && data.participantIds is list
+        && data.participantIds.size() == 2
+        && validChatUserID(data.participantIds[0])
+        && validChatUserID(data.participantIds[1])
+        && data.participantIds[0] != data.participantIds[1]
+        && conversationId.size() <= 200
+        && conversationId
+          == data.participantIds[0] + '--' + data.participantIds[1]
+        && data.participantNames is map
+        && data.participantNames.keys().hasAll(data.participantIds)
+        && data.participantNames.keys().hasOnly(data.participantIds)
+        && data.participantNames[data.participantIds[0]] is string
+        && data.participantNames[data.participantIds[0]].size() > 0
+        && data.participantNames[data.participantIds[0]].size() <= 80
+        && data.participantNames[data.participantIds[1]] is string
+        && data.participantNames[data.participantIds[1]].size() > 0
+        && data.participantNames[data.participantIds[1]].size() <= 80
+        && validDocumentID(data.lastMessageId)
+        && data.lastMessage is string
+        && data.lastMessage.size() > 0
+        && data.lastMessage.size() <= 1000
+        && data.lastSenderId in data.participantIds
+        && recentClientTimestamp(data.lastMessageAt)
+        && notFutureTimestamp(data.createdAt)
+        && recentClientTimestamp(data.updatedAt)
+        && data.lastMessageAt == data.updatedAt;
+    }
+
+    function chatParticipant(data) {
+      return signedIn()
+        && data.participantIds is list
+        && data.participantIds.size() == 2
+        && request.auth.uid in data.participantIds;
+    }
+
+    function chatUnblocked(data) {
+      return !exists(
+          /databases/$(database)/documents/users/$(data.participantIds[0])/blockedUsers/$(data.participantIds[1])
+        )
+        && !exists(
+          /databases/$(database)/documents/users/$(data.participantIds[1])/blockedUsers/$(data.participantIds[0])
+        );
+    }
+
+    function validChatMessage(data, conversationId, messageId) {
+      return data.keys().hasAll([
+          'id', 'conversationId', 'senderId', 'body', 'sentAt', 'isDeleted'
+        ])
+        && data.keys().hasOnly([
+          'id', 'conversationId', 'senderId', 'body', 'sentAt', 'isDeleted',
+          'deletedAt', 'deletedBy'
+        ])
+        && data.id == messageId
+        && validDocumentID(data.id)
+        && data.conversationId == conversationId
+        && data.senderId == request.auth.uid
+        && data.body is string
+        && data.body.size() > 0
+        && data.body.size() <= 1000
+        && recentClientTimestamp(data.sentAt)
+        && data.isDeleted == false
+        && !('deletedAt' in data)
+        && !('deletedBy' in data);
+    }
+
     function currentHKCatalogDocument(data) {
       return data.status == 'approved'
         && data.catalogRegion == 'HK'
@@ -334,6 +416,101 @@ service cloud.firestore {
       allow delete: if admin();
     }
 
+    match /conversations/{conversationId} {
+      allow read: if chatParticipant(resource.data) || admin();
+      allow create: if signedIn()
+        && validConversation(request.resource.data, conversationId)
+        && recentClientTimestamp(request.resource.data.createdAt)
+        && chatParticipant(request.resource.data)
+        && chatUnblocked(request.resource.data)
+        && existsAfter(
+          /databases/$(database)/documents/conversations/$(conversationId)/messages/$(request.resource.data.lastMessageId)
+        )
+        && getAfter(
+          /databases/$(database)/documents/conversations/$(conversationId)/messages/$(request.resource.data.lastMessageId)
+        ).data.body == request.resource.data.lastMessage
+        && getAfter(
+          /databases/$(database)/documents/conversations/$(conversationId)/messages/$(request.resource.data.lastMessageId)
+        ).data.senderId == request.auth.uid;
+      allow update: if (admin()
+          || (chatParticipant(resource.data) && chatUnblocked(resource.data)))
+        && (
+          (
+            request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+              'lastMessageId', 'lastMessage', 'lastMessageAt',
+              'lastSenderId', 'updatedAt'
+            ])
+            && validConversation(request.resource.data, conversationId)
+            && request.resource.data.createdAt == resource.data.createdAt
+            && request.resource.data.participantIds == resource.data.participantIds
+            && request.resource.data.participantNames == resource.data.participantNames
+            && request.resource.data.lastSenderId == request.auth.uid
+            && existsAfter(
+              /databases/$(database)/documents/conversations/$(conversationId)/messages/$(request.resource.data.lastMessageId)
+            )
+            && getAfter(
+              /databases/$(database)/documents/conversations/$(conversationId)/messages/$(request.resource.data.lastMessageId)
+            ).data.body == request.resource.data.lastMessage
+            && getAfter(
+              /databases/$(database)/documents/conversations/$(conversationId)/messages/$(request.resource.data.lastMessageId)
+            ).data.senderId == request.auth.uid
+          )
+          || (
+            request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastMessage'])
+            && request.resource.data.lastMessage == '訊息已刪除'
+            && getAfter(
+              /databases/$(database)/documents/conversations/$(conversationId)/messages/$(resource.data.lastMessageId)
+            ).data.isDeleted == true
+            && getAfter(
+              /databases/$(database)/documents/conversations/$(conversationId)/messages/$(resource.data.lastMessageId)
+            ).data.deletedBy == request.auth.uid
+          )
+        );
+      allow delete: if false;
+
+      match /messages/{messageId} {
+        allow read: if chatParticipant(
+            get(/databases/$(database)/documents/conversations/$(conversationId)).data
+          ) || admin();
+        allow create: if signedIn()
+          && existsAfter(/databases/$(database)/documents/conversations/$(conversationId))
+          && chatParticipant(
+            getAfter(/databases/$(database)/documents/conversations/$(conversationId)).data
+          )
+          && chatUnblocked(
+            getAfter(/databases/$(database)/documents/conversations/$(conversationId)).data
+          )
+          && validChatMessage(request.resource.data, conversationId, messageId)
+          && getAfter(
+            /databases/$(database)/documents/conversations/$(conversationId)
+          ).data.lastMessageId == messageId
+          && getAfter(
+            /databases/$(database)/documents/conversations/$(conversationId)
+          ).data.lastMessage == request.resource.data.body
+          && getAfter(
+            /databases/$(database)/documents/conversations/$(conversationId)
+          ).data.lastSenderId == request.auth.uid;
+        allow update: if (
+            admin()
+            || (
+              chatParticipant(
+                get(/databases/$(database)/documents/conversations/$(conversationId)).data
+              )
+              && resource.data.senderId == request.auth.uid
+            )
+          )
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+            'body', 'isDeleted', 'deletedAt', 'deletedBy'
+          ])
+          && resource.data.isDeleted == false
+          && request.resource.data.body == ''
+          && request.resource.data.isDeleted == true
+          && request.resource.data.deletedAt == request.time
+          && request.resource.data.deletedBy == request.auth.uid;
+        allow delete: if false;
+      }
+    }
+
     match /submissions/{submissionId} {
       allow create: if signedIn() && validSubmission(request.resource.data, submissionId);
       allow read: if admin()
@@ -355,13 +532,13 @@ service cloud.firestore {
           'reporterId', 'createdAt', 'status'
         ])
         && request.resource.data.keys().hasOnly([
-          'id', 'targetType', 'targetId', 'targetTitle', 'clinicId',
+          'id', 'targetType', 'targetId', 'targetTitle', 'clinicId', 'conversationId',
           'reason', 'reporterId', 'createdAt', 'status',
           'resolvedAt', 'resolvedBy'
         ])
         && request.resource.data.id == reportId
         && validDocumentID(request.resource.data.id)
-        && request.resource.data.targetType in ['clinic', 'review', 'quote']
+        && request.resource.data.targetType in ['clinic', 'review', 'quote', 'message']
         && validDocumentID(request.resource.data.targetId)
         && request.resource.data.targetTitle is string
         && request.resource.data.targetTitle.size() > 0
@@ -372,6 +549,24 @@ service cloud.firestore {
         && (
           !('clinicId' in request.resource.data)
           || validDocumentID(request.resource.data.clinicId)
+        )
+        && (
+          (request.resource.data.targetType == 'message'
+            && 'conversationId' in request.resource.data
+            && request.resource.data.conversationId is string
+            && request.resource.data.conversationId.size() > 0
+            && request.resource.data.conversationId.size() <= 200
+            && exists(
+              /databases/$(database)/documents/conversations/$(request.resource.data.conversationId)
+            )
+            && chatParticipant(
+              get(/databases/$(database)/documents/conversations/$(request.resource.data.conversationId)).data
+            )
+            && exists(
+              /databases/$(database)/documents/conversations/$(request.resource.data.conversationId)/messages/$(request.resource.data.targetId)
+            ))
+          || (request.resource.data.targetType != 'message'
+            && !('conversationId' in request.resource.data))
         )
         && request.resource.data.reason is string
         && request.resource.data.reason.size() > 0

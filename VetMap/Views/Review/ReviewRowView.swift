@@ -6,6 +6,7 @@ struct ReviewRowView: View {
     var onMarkHelpful: (() -> Void)?
     var onReport: ((String) -> Void)?
     var onBlockAuthor: (() -> Void)?
+    var onMessageAuthor: (() -> Void)?
 
     private static let reportReasons = ["不實內容", "冒犯性言論", "廣告或垃圾訊息", "其他"]
 
@@ -87,8 +88,15 @@ struct ReviewRowView: View {
                     .font(.caption)
                     .foregroundStyle(.tertiary)
 
-                if onReport != nil || onBlockAuthor != nil {
+                if onReport != nil || onBlockAuthor != nil || onMessageAuthor != nil {
                     Menu {
+                        if let onMessageAuthor {
+                            Button {
+                                onMessageAuthor()
+                            } label: {
+                                Label("傳送訊息", systemImage: "bubble.left")
+                            }
+                        }
                         if let onReport {
                             ForEach(Self.reportReasons, id: \.self) { reason in
                                 Button {

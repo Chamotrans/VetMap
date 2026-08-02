@@ -4,6 +4,7 @@ struct ReviewListView: View {
     let clinic: VetClinic
 
     @State private var viewModel: ReviewViewModel
+    @State private var chatTarget: ChatTarget?
 
     init(clinic: VetClinic) {
         self.clinic = clinic
@@ -47,7 +48,13 @@ struct ReviewListView: View {
                                 },
                                 onBlockAuthor: {
                                     Task { _ = await viewModel.blockAuthor(of: review) }
-                                }
+                                },
+                                onMessageAuthor: canMessage(review) ? {
+                                    chatTarget = ChatTarget(
+                                        userID: review.userId,
+                                        displayName: review.userName
+                                    )
+                                } : nil
                             )
                         }
                     }
@@ -63,6 +70,15 @@ struct ReviewListView: View {
         }
         .navigationTitle("\(clinic.name) 評價")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationDestination(item: $chatTarget) { target in
+            ChatThreadView(target: target)
+        }
+    }
+
+    private func canMessage(_ review: Review) -> Bool {
+        guard let currentUserID = AuthViewModel.shared.user?.uid else { return false }
+        return review.userId != currentUserID
+            && !ModerationStore.shared.blockedUserIDs.contains(review.userId)
     }
 
     private var sortPicker: some View {

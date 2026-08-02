@@ -69,12 +69,14 @@ enum ReportTargetType: String, Codable, CaseIterable {
     case clinic
     case review
     case quote
+    case message
 
     var label: String {
         switch self {
         case .clinic: "診所"
         case .review: "評價"
         case .quote: "報價"
+        case .message: "聊天室訊息"
         }
     }
 
@@ -83,6 +85,7 @@ enum ReportTargetType: String, Codable, CaseIterable {
         case .clinic: "cross.case.fill"
         case .review: "text.bubble.fill"
         case .quote: "dollarsign.circle.fill"
+        case .message: "bubble.left.fill"
         }
     }
 
@@ -91,6 +94,7 @@ enum ReportTargetType: String, Codable, CaseIterable {
         case .clinic: "clinics"
         case .review: "reviews"
         case .quote: "quotes"
+        case .message: "messages"
         }
     }
 }
@@ -101,6 +105,7 @@ struct Report: Identifiable, Codable, Equatable {
     var targetId: String
     var targetTitle: String
     var clinicId: String?
+    var conversationId: String?
     var reason: String
     var reporterId: String
     var createdAt: Date
@@ -114,6 +119,7 @@ struct Report: Identifiable, Codable, Equatable {
         targetId: String,
         targetTitle: String,
         clinicId: String? = nil,
+        conversationId: String? = nil,
         reason: String,
         reporterId: String,
         createdAt: Date = Date(),
@@ -126,6 +132,7 @@ struct Report: Identifiable, Codable, Equatable {
         self.targetId = targetId
         self.targetTitle = targetTitle
         self.clinicId = clinicId
+        self.conversationId = conversationId
         self.reason = reason
         self.reporterId = reporterId
         self.createdAt = createdAt

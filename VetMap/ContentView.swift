@@ -14,6 +14,7 @@ struct ContentView: View {
         case home = "首頁"
         case clinics = "診所"
         case products = "服務"
+        case messages = "訊息"
         case profile = "我的"
 
         var systemImage: String {
@@ -21,6 +22,7 @@ struct ContentView: View {
             case .home: "map.fill"
             case .clinics: "cross.case.fill"
             case .products: "storefront.fill"
+            case .messages: "bubble.left.and.bubble.right.fill"
             case .profile: "person.fill"
             }
         }
@@ -115,6 +117,13 @@ struct ContentView: View {
                     .accessibilityLabel("寵物服務及保險")
             }
 
+            ChatListView()
+                .tabItem {
+                    Label("訊息", systemImage: "bubble.left.and.bubble.right.fill")
+                }
+                .tag(SidebarTab.messages)
+                .accessibilityLabel("訊息")
+
             ProfileTab()
                 .tabItem {
                     Label("我的", systemImage: "person.fill")
@@ -145,6 +154,8 @@ struct ContentView: View {
                         ClinicsTab()
                     case .products:
                         ProductsTab()
+                    case .messages:
+                        ChatListView()
                     case .profile:
                         ProfileTab()
                     }
