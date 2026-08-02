@@ -312,6 +312,171 @@ final class VetMapModelTests: XCTestCase {
         XCTAssertEqual(clinic.availabilityLabel(at: thursdayAfterClose), "休息中")
     }
 
+    func testNextOpeningHandlesSplitDaysAndStrictFutureStarts() {
+        let reference = Date(timeIntervalSince1970: 1_775_102_400)
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "Asia/Hong_Kong")!
+        let thursday = calendar.startOfDay(for: reference)
+        func date(dayOffset: Int, minute: Int) -> Date {
+            calendar.date(
+                byAdding: .minute,
+                value: dayOffset * 24 * 60 + minute,
+                to: thursday
+            )!
+        }
+        let verifiedAt = date(dayOffset: -1, minute: 0)
+        let expiresAt = date(dayOffset: 30, minute: 0)
+        let split = makeAvailability(
+            weeklyHours: [
+                "thu": [
+                    ClinicHoursInterval(opensAt: "09:00", closesAt: "13:00"),
+                    ClinicHoursInterval(opensAt: "14:00", closesAt: "19:00")
+                ]
+            ],
+            verifiedAt: verifiedAt,
+            expiresAt: expiresAt
+        )
+        let clinic = makeClinic(availability: split)
+
+        XCTAssertEqual(
+            split.nextOpening(at: date(dayOffset: 0, minute: 8 * 60 + 59)),
+            date(dayOffset: 0, minute: 9 * 60)
+        )
+        XCTAssertEqual(
+            split.nextOpening(at: date(dayOffset: 0, minute: 13 * 60 + 30)),
+            date(dayOffset: 0, minute: 14 * 60)
+        )
+        XCTAssertEqual(
+            clinic.availabilityLabel(at: date(dayOffset: 0, minute: 13 * 60 + 30)),
+            "休息中 · 預計今日 14:00 再開"
+        )
+        XCTAssertEqual(
+            split.nextOpening(at: date(dayOffset: 0, minute: 14 * 60)),
+            date(dayOffset: 7, minute: 9 * 60)
+        )
+
+        let tomorrow = makeAvailability(
+            weeklyHours: [
+                "fri": [ClinicHoursInterval(opensAt: "08:00", closesAt: "18:00")]
+            ],
+            verifiedAt: verifiedAt,
+            expiresAt: expiresAt
+        )
+        XCTAssertEqual(
+            makeClinic(availability: tomorrow).availabilityLabel(
+                at: date(dayOffset: 0, minute: 20 * 60)
+            ),
+            "休息中 · 預計明日 08:00 再開"
+        )
+
+        let nextWednesday = makeAvailability(
+            weeklyHours: [
+                "wed": [ClinicHoursInterval(opensAt: "10:00", closesAt: "18:00")]
+            ],
+            verifiedAt: verifiedAt,
+            expiresAt: expiresAt
+        )
+        XCTAssertEqual(
+            makeClinic(availability: nextWednesday).availabilityLabel(
+                at: date(dayOffset: 0, minute: 20 * 60)
+            ),
+            "休息中 · 預計星期三 10:00 再開"
+        )
+    }
+
+    func testNextOpeningHandlesCrossWeekOvernightEmptyAndExpiry() {
+        let reference = Date(timeIntervalSince1970: 1_775_102_400)
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "Asia/Hong_Kong")!
+        let thursday = calendar.startOfDay(for: reference)
+        func date(dayOffset: Int, minute: Int) -> Date {
+            calendar.date(
+                byAdding: .minute,
+                value: dayOffset * 24 * 60 + minute,
+                to: thursday
+            )!
+        }
+        let verifiedAt = date(dayOffset: -1, minute: 0)
+        let expiresAt = date(dayOffset: 30, minute: 0)
+
+        let crossWeek = makeAvailability(
+            weeklyHours: [
+                "sun": [ClinicHoursInterval(opensAt: "10:00", closesAt: "16:00")]
+            ],
+            verifiedAt: verifiedAt,
+            expiresAt: expiresAt
+        )
+        XCTAssertEqual(
+            crossWeek.nextOpening(at: date(dayOffset: 2, minute: 20 * 60)),
+            date(dayOffset: 3, minute: 10 * 60)
+        )
+
+        let overnight = makeAvailability(
+            weeklyHours: [
+                "wed": [ClinicHoursInterval(opensAt: "21:00", closesAt: "02:00")]
+            ],
+            offersNightService: true,
+            verifiedAt: verifiedAt,
+            expiresAt: expiresAt
+        )
+        XCTAssertEqual(
+            overnight.nextOpening(at: date(dayOffset: 0, minute: 60)),
+            date(dayOffset: 6, minute: 21 * 60)
+        )
+        XCTAssertEqual(
+            makeClinic(availability: overnight).availabilityLabel(
+                at: date(dayOffset: 0, minute: 3 * 60)
+            ),
+            "設夜診"
+        )
+
+        XCTAssertNil(
+            makeAvailability(
+                verifiedAt: verifiedAt,
+                expiresAt: expiresAt
+            ).nextOpening(at: reference)
+        )
+        XCTAssertNil(
+            makeAvailability(
+                is24Hours: true,
+                verifiedAt: verifiedAt,
+                expiresAt: expiresAt
+            ).nextOpening(at: reference)
+        )
+        XCTAssertNil(
+            makeAvailability(
+                timeZoneIdentifier: "Asia/Taipei",
+                verifiedAt: verifiedAt,
+                expiresAt: expiresAt
+            ).nextOpening(at: reference)
+        )
+
+        let expiryAtOpening = date(dayOffset: 1, minute: 8 * 60)
+        let expiresAtCandidate = makeAvailability(
+            weeklyHours: [
+                "fri": [ClinicHoursInterval(opensAt: "08:00", closesAt: "18:00")]
+            ],
+            verifiedAt: verifiedAt,
+            expiresAt: expiryAtOpening
+        )
+        XCTAssertNil(
+            expiresAtCandidate.nextOpening(at: date(dayOffset: 0, minute: 20 * 60))
+        )
+
+        let expiresAfterCandidate = makeAvailability(
+            weeklyHours: [
+                "fri": [ClinicHoursInterval(opensAt: "08:00", closesAt: "18:00")]
+            ],
+            verifiedAt: verifiedAt,
+            expiresAt: expiryAtOpening.addingTimeInterval(1)
+        )
+        XCTAssertEqual(
+            expiresAfterCandidate.nextOpening(at: date(dayOffset: 0, minute: 20 * 60)),
+            expiryAtOpening
+        )
+        XCTAssertNil(expiresAfterCandidate.nextOpening(at: expiresAfterCandidate.expiresAt))
+    }
+
     func testOvernightHoursUsePreviousDaySchedule() {
         let thursdayOneAM = Date(timeIntervalSince1970: 1_775_062_800)
         let clinic = makeClinic(

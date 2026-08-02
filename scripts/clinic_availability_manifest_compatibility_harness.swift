@@ -71,19 +71,28 @@ struct ClinicAvailabilityManifestCompatibilityHarness {
 
         var scheduledIntervalProbes = 0
         var gapProbes = 0
+        var nextOpeningBeforeProbes = 0
+        var nextOpeningInsideProbes = 0
+        var nextOpeningGapProbes = 0
         let projectedV1 = try project(
             v1,
             migrationID: v1MigrationID,
             commonReference: commonReference,
             scheduledIntervalProbes: &scheduledIntervalProbes,
-            gapProbes: &gapProbes
+            gapProbes: &gapProbes,
+            nextOpeningBeforeProbes: &nextOpeningBeforeProbes,
+            nextOpeningInsideProbes: &nextOpeningInsideProbes,
+            nextOpeningGapProbes: &nextOpeningGapProbes
         )
         let projectedV2 = try project(
             v2,
             migrationID: v2.migrationId!,
             commonReference: commonReference,
             scheduledIntervalProbes: &scheduledIntervalProbes,
-            gapProbes: &gapProbes
+            gapProbes: &gapProbes,
+            nextOpeningBeforeProbes: &nextOpeningBeforeProbes,
+            nextOpeningInsideProbes: &nextOpeningInsideProbes,
+            nextOpeningGapProbes: &nextOpeningGapProbes
         )
         let merged = projectedV1 + projectedV2
         try require(merged.count == 15, "merged count")
@@ -97,6 +106,9 @@ struct ClinicAvailabilityManifestCompatibilityHarness {
         )
         try require(scheduledIntervalProbes == 35, "scheduled interval probe count")
         try require(gapProbes == 7, "scheduled gap probe count")
+        try require(nextOpeningBeforeProbes == 35, "next-opening before probe count")
+        try require(nextOpeningInsideProbes == 35, "next-opening inside probe count")
+        try require(nextOpeningGapProbes == 7, "next-opening gap probe count")
 
         let commonMidnight = Calendar.hongKong.startOfDay(for: commonReference)
         var filter = ClinicSearchFilter()
@@ -116,7 +128,8 @@ struct ClinicAvailabilityManifestCompatibilityHarness {
             + "\"mergedScheduled\":4,\"filterAll\":15,"
             + "\"filterOpen24Hours\":11,\"filterNightService\":11,"
             + "\"filterOpenNow\":11,\"scheduledIntervalProbes\":35,"
-            + "\"gapProbes\":7}"
+            + "\"gapProbes\":7,\"nextOpeningBeforeProbes\":35,"
+            + "\"nextOpeningInsideProbes\":35,\"nextOpeningGapProbes\":7}"
         )
     }
 
@@ -130,7 +143,10 @@ struct ClinicAvailabilityManifestCompatibilityHarness {
         migrationID: String,
         commonReference: Date,
         scheduledIntervalProbes: inout Int,
-        gapProbes: inout Int
+        gapProbes: inout Int,
+        nextOpeningBeforeProbes: inout Int,
+        nextOpeningInsideProbes: inout Int,
+        nextOpeningGapProbes: inout Int
     ) throws -> [VetClinic] {
         try manifest.clinics.map { source in
             let availability = ClinicAvailability(
@@ -202,7 +218,10 @@ struct ClinicAvailabilityManifestCompatibilityHarness {
                     for: clinic,
                     relativeTo: commonReference,
                     scheduledIntervalProbes: &scheduledIntervalProbes,
-                    gapProbes: &gapProbes
+                    gapProbes: &gapProbes,
+                    nextOpeningBeforeProbes: &nextOpeningBeforeProbes,
+                    nextOpeningInsideProbes: &nextOpeningInsideProbes,
+                    nextOpeningGapProbes: &nextOpeningGapProbes
                 )
             }
             return clinic
@@ -214,7 +233,10 @@ struct ClinicAvailabilityManifestCompatibilityHarness {
         for clinic: VetClinic,
         relativeTo reference: Date,
         scheduledIntervalProbes: inout Int,
-        gapProbes: inout Int
+        gapProbes: inout Int,
+        nextOpeningBeforeProbes: inout Int,
+        nextOpeningInsideProbes: inout Int,
+        nextOpeningGapProbes: inout Int
     ) throws {
         let calendar = Calendar.hongKong
         let referenceMidnight = calendar.startOfDay(for: reference)
@@ -228,7 +250,7 @@ struct ClinicAvailabilityManifestCompatibilityHarness {
                 throw HarnessError.failed("scheduled probe day")
             }
             let intervals = weeklyHours[weekday] ?? []
-            let parsed = try intervals.map { interval -> (opens: Int, closes: Int) in
+            let parsed = try intervals.map { interval -> (opens: Int, closes: Int, start: Date) in
                 guard
                     let opens = minuteOfDay(interval.opensAt),
                     let closes = minuteOfDay(interval.closesAt)
@@ -257,8 +279,30 @@ struct ClinicAvailabilityManifestCompatibilityHarness {
                     clinic.availabilityLabel(at: midpoint)?.hasPrefix("營業中 · 至 ") == true,
                     "scheduled label"
                 )
+                guard let beforeStart = calendar.date(
+                    byAdding: .minute,
+                    value: -1,
+                    to: start
+                ) else {
+                    throw HarnessError.failed("scheduled before-start date")
+                }
+                try require(
+                    clinic.availability?.nextOpening(at: beforeStart) == start,
+                    "scheduled before-start next opening"
+                )
+                nextOpeningBeforeProbes += 1
+                let expectedAfterMidpoint = try expectedNextOpening(
+                    weeklyHours,
+                    after: midpoint,
+                    calendar: calendar
+                )
+                try require(
+                    clinic.availability?.nextOpening(at: midpoint) == expectedAfterMidpoint,
+                    "scheduled inside next opening"
+                )
+                nextOpeningInsideProbes += 1
                 scheduledIntervalProbes += 1
-                return (opens, closes)
+                return (opens, closes, start)
             }.sorted { $0.opens < $1.opens }
 
             for (previous, current) in zip(parsed, parsed.dropFirst()) {
@@ -282,9 +326,52 @@ struct ClinicAvailabilityManifestCompatibilityHarness {
                         .hasPrefix("營業中 · 至 ") != true,
                     "scheduled gap has open label"
                 )
+                try require(
+                    clinic.availability?.nextOpening(at: gapMidpoint) == current.start,
+                    "scheduled gap next opening"
+                )
+                nextOpeningGapProbes += 1
                 gapProbes += 1
             }
         }
+    }
+
+    private static func expectedNextOpening(
+        _ weeklyHours: [String: [ClinicHoursInterval]],
+        after reference: Date,
+        calendar: Calendar
+    ) throws -> Date? {
+        let referenceDay = calendar.startOfDay(for: reference)
+        var candidates: [Date] = []
+        for dayOffset in 0...weekdays.count {
+            guard let targetDay = calendar.date(
+                byAdding: .day,
+                value: dayOffset,
+                to: referenceDay
+            ) else {
+                throw HarnessError.failed("expected next-opening day")
+            }
+            let weekdayIndex = calendar.component(.weekday, from: targetDay) - 1
+            guard weekdays.indices.contains(weekdayIndex) else {
+                throw HarnessError.failed("expected next-opening weekday")
+            }
+            for interval in weeklyHours[weekdays[weekdayIndex]] ?? [] {
+                guard
+                    let opens = minuteOfDay(interval.opensAt),
+                    let candidate = calendar.date(
+                        byAdding: .minute,
+                        value: opens,
+                        to: targetDay
+                    )
+                else {
+                    throw HarnessError.failed("expected next-opening date")
+                }
+                if candidate > reference {
+                    candidates.append(candidate)
+                }
+            }
+        }
+        return candidates.min()
     }
 
     private static func minuteOfDay(_ value: String) -> Int? {

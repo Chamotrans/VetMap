@@ -114,7 +114,13 @@ extension VetClinic {
         case .open(let closingTime):
             return "營業中 · 至 \(formattedClinicTime(closingTime))"
         case .closed:
-            return hasCurrentNightService(at: date) ? "設夜診" : "休息中"
+            if hasCurrentNightService(at: date) {
+                return "設夜診"
+            }
+            guard let nextOpening = availability?.nextOpening(at: date) else {
+                return "休息中"
+            }
+            return "休息中 · 預計\(formattedNextOpening(nextOpening, relativeTo: date)) 再開"
         case .unavailable:
             return nil
         }
@@ -143,6 +149,32 @@ extension VetClinic {
         } ?? TimeZone(identifier: "Asia/Hong_Kong")
         formatter.dateFormat = "HH:mm"
         return formatter.string(from: date)
+    }
+
+    private func formattedNextOpening(_ opening: Date, relativeTo reference: Date) -> String {
+        guard let calendar = availability?.calendar else {
+            return formattedClinicTime(opening)
+        }
+        let referenceDay = calendar.startOfDay(for: reference)
+        let openingDay = calendar.startOfDay(for: opening)
+        let dayOffset = calendar.dateComponents(
+            [.day],
+            from: referenceDay,
+            to: openingDay
+        ).day
+        let dayLabel: String
+        switch dayOffset {
+        case 0: dayLabel = "今日"
+        case 1: dayLabel = "明日"
+        default:
+            let formatter = DateFormatter()
+            formatter.calendar = calendar
+            formatter.locale = Locale(identifier: "zh_HK")
+            formatter.timeZone = calendar.timeZone
+            formatter.dateFormat = "EEEE"
+            dayLabel = formatter.string(from: opening)
+        }
+        return "\(dayLabel) \(formattedClinicTime(opening))"
     }
 }
 
@@ -188,6 +220,47 @@ extension ClinicAvailability {
                 && weeklyHours.isEmpty
         }
         return hasValidScheduledHours
+    }
+
+    func nextOpening(at date: Date) -> Date? {
+        guard
+            isCurrent(at: date),
+            !is24Hours,
+            let calendar
+        else {
+            return nil
+        }
+
+        let startOfToday = calendar.startOfDay(for: date)
+        var candidates: [Date] = []
+        for dayOffset in 0...Self.weekdayKeys.count {
+            guard let targetDay = calendar.date(
+                byAdding: .day,
+                value: dayOffset,
+                to: startOfToday
+            ) else {
+                continue
+            }
+            let weekdayIndex = calendar.component(.weekday, from: targetDay) - 1
+            guard Self.weekdayKeys.indices.contains(weekdayIndex) else { continue }
+            let weekday = Self.weekdayKeys[weekdayIndex]
+            for interval in weeklyHours[weekday] ?? [] {
+                guard
+                    let opens = interval.canonicalMinuteOfDay(interval.opensAt),
+                    let candidate = calendar.date(
+                        byAdding: .minute,
+                        value: opens,
+                        to: targetDay
+                    ),
+                    candidate > date,
+                    candidate < expiresAt
+                else {
+                    continue
+                }
+                candidates.append(candidate)
+            }
+        }
+        return candidates.min()
     }
 
     private var hasSafeMigrationIdentifier: Bool {

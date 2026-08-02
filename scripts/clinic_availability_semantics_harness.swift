@@ -131,7 +131,112 @@ struct ClinicAvailabilitySemanticsHarness {
         )
         precondition(exactlyOneHundredDays.isCurrent(at: verifiedAt))
 
-        print("{\"count\":\(positive.count + invalid.count + 3),\"passed\":true}")
+        var nextOpeningProbes = 0
+        func probe(_ condition: @autoclosure () -> Bool, _ message: String) {
+            precondition(condition(), message)
+            nextOpeningProbes += 1
+        }
+        let calendar = hongKongCalendar()
+        let thursday = calendar.startOfDay(for: now)
+        func date(dayOffset: Int, minute: Int) -> Date {
+            calendar.date(
+                byAdding: .minute,
+                value: dayOffset * 24 * 60 + minute,
+                to: thursday
+            )!
+        }
+
+        let splitAvailability = availability(hours: [
+            "thu": [
+                ClinicHoursInterval(opensAt: "09:00", closesAt: "13:00"),
+                ClinicHoursInterval(opensAt: "14:00", closesAt: "19:00")
+            ]
+        ])
+        let splitClinic = clinic(with: splitAvailability)
+        probe(
+            splitAvailability.nextOpening(at: date(dayOffset: 0, minute: 8 * 60 + 59))
+                == date(dayOffset: 0, minute: 9 * 60),
+            "same-day opening"
+        )
+        probe(
+            splitAvailability.nextOpening(at: date(dayOffset: 0, minute: 13 * 60 + 30))
+                == date(dayOffset: 0, minute: 14 * 60),
+            "split gap opening"
+        )
+        probe(
+            splitClinic.availabilityLabel(at: date(dayOffset: 0, minute: 13 * 60 + 30))
+                == "休息中 · 預計今日 14:00 再開",
+            "same-day closed label"
+        )
+        probe(
+            splitAvailability.nextOpening(at: date(dayOffset: 0, minute: 14 * 60))
+                == date(dayOffset: 7, minute: 9 * 60),
+            "strictly future interval start"
+        )
+
+        let tomorrow = availability(hours: [
+            "fri": [ClinicHoursInterval(opensAt: "08:00", closesAt: "18:00")]
+        ])
+        probe(
+            tomorrow.nextOpening(at: date(dayOffset: 0, minute: 20 * 60))
+                == date(dayOffset: 1, minute: 8 * 60),
+            "tomorrow opening"
+        )
+        probe(
+            clinic(with: tomorrow).availabilityLabel(at: date(dayOffset: 0, minute: 20 * 60))
+                == "休息中 · 預計明日 08:00 再開",
+            "tomorrow label"
+        )
+        let nextWednesday = availability(hours: [
+            "wed": [ClinicHoursInterval(opensAt: "10:00", closesAt: "18:00")]
+        ])
+        probe(
+            clinic(with: nextWednesday).availabilityLabel(at: date(dayOffset: 0, minute: 20 * 60))
+                == "休息中 · 預計星期三 10:00 再開",
+            "weekday label"
+        )
+
+        let crossWeek = availability(hours: [
+            "sun": [ClinicHoursInterval(opensAt: "10:00", closesAt: "16:00")]
+        ])
+        probe(
+            crossWeek.nextOpening(at: date(dayOffset: 2, minute: 20 * 60))
+                == date(dayOffset: 3, minute: 10 * 60),
+            "cross-week opening"
+        )
+        let overnight = availability(hours: [
+            "wed": [ClinicHoursInterval(opensAt: "21:00", closesAt: "02:00")]
+        ], offersNightService: true)
+        probe(
+            overnight.nextOpening(at: date(dayOffset: 0, minute: 60))
+                == date(dayOffset: 6, minute: 21 * 60),
+            "overnight next start"
+        )
+        probe(
+            clinic(with: overnight).availabilityLabel(at: date(dayOffset: 0, minute: 3 * 60))
+                == "設夜診",
+            "night label unchanged"
+        )
+
+        let emptySchedule = availability()
+        probe(emptySchedule.nextOpening(at: now) == nil, "empty schedule")
+        probe(positive[0].nextOpening(at: now) == nil, "24-hour schedule")
+        let expiryAtCandidate = date(dayOffset: 1, minute: 8 * 60)
+        let expiresBeforeOpening = availability(
+            hours: [
+                "fri": [ClinicHoursInterval(opensAt: "08:00", closesAt: "18:00")]
+            ],
+            expiresAt: expiryAtCandidate
+        )
+        probe(
+            expiresBeforeOpening.nextOpening(at: date(dayOffset: 0, minute: 20 * 60)) == nil,
+            "candidate at expiry"
+        )
+
+        print(
+            "{\"count\":\(positive.count + invalid.count + 3 + nextOpeningProbes),"
+                + "\"nextOpeningProbes\":\(nextOpeningProbes),\"passed\":true}"
+        )
     }
 
     private static func availability(
@@ -182,6 +287,7 @@ struct ClinicAvailabilitySemanticsHarness {
         precondition(clinic.operatingStatus(at: now) == .unavailable)
         precondition(!clinic.isOpen(at: now))
         precondition(clinic.availabilityLabel(at: now) == nil)
+        precondition(payload.nextOpening(at: now) == nil)
         for availabilityFilter in [
             ClinicSearchFilter.Availability.openNow,
             .open24Hours,
@@ -194,6 +300,12 @@ struct ClinicAvailabilitySemanticsHarness {
         var allFilter = ClinicSearchFilter()
         allFilter.availability = .all
         precondition(allFilter.results(from: [clinic], at: now).count == 1)
+    }
+
+    private static func hongKongCalendar() -> Calendar {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "Asia/Hong_Kong")!
+        return calendar
     }
 
     private static func clinic(with payload: ClinicAvailability) -> VetClinic {

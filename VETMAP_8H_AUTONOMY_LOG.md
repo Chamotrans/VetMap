@@ -382,5 +382,31 @@
   - The Foundation model, Admin Swift source, and XCTest source passed standalone Swift parsing; `sh -n`, project `plutil`, and `git diff --check` passed.
   - These checks are not a local iOS build. No local `xcodebuild` or XCTest execution is claimed.
 - Final Sol source acceptance: **ACCEPT** — the leading-prefix, Unicode confusable, and IDN findings were resolved with no remaining actionable finding. Full SwiftUI compilation remains conditional on Xcode Cloud Archive completion.
+- GitHub validation: `Backend and Config Validation` run `30726644881` completed successfully for the Round 16 parser, admin workflow, and regression gates.
+- Xcode Cloud boundary: Build run `d692046e-2991-42e1-9241-db58f0569e20` and its `Archive - iOS` action (`1e3e830e-1fab-487e-87b5-df2b3a0199f8`) were pending. No Archive success, processed-build validity, ASC attachment, review submission, public release, or device installation is claimed.
 - Production and release boundary: No report was resolved, no content was removed, no Firestore or availability data was written, no network request or deploy occurred, and no ASC, public-release, or device action was performed.
 - Preserved scope: General clinic, review, and quote moderation, registration, submissions, community interaction, and all user-owned dirty/untracked files were preserved.
+
+## Round 17 — Show the next verified scheduled opening
+
+- Started: 2026-08-02 (Asia/Taipei)
+- Fresh external evidence:
+  - Round 16 GitHub run `30726644881` completed successfully.
+  - Round 16 Xcode Cloud build run `d692046e-2991-42e1-9241-db58f0569e20` and `Archive - iOS` action `1e3e830e-1fab-487e-87b5-df2b3a0199f8` remained pending and were not treated as success.
+- Sol plan: Add a single production-model `nextOpening(at:)` query for verified Hong Kong schedules and use it only to enrich closed, non-night-service labels, without changing open status, filters, or sorting.
+- Luna implementation:
+  - Added `ClinicAvailability.nextOpening(at:)` for current, valid, non-24-hour Hong Kong schedules. It evaluates interval starts from today through day seven, requires every candidate to be strictly later than the reference and strictly earlier than `expiresAt`, and returns the earliest candidate.
+  - Empty schedules, 24-hour records, invalid payloads, expired payloads, and schedules whose next start is at or after expiry return nil. Split days, overnight intervals, week wrapping, and an opening exactly equal to the reference are covered explicitly.
+  - Preserved `營業中`, 24-hour, and `設夜診` labels. Only closed clinics without night service gain a verified forecast in the exact form `休息中 · 預計今日 HH:mm 再開`, `預計明日`, or `預計星期X`; no candidate retains `休息中`.
+  - Left operating-status, filter, and sort logic unchanged.
+  - Added synthetic XCTest coverage and expanded the production semantic harness. Expanded the actual-manifest harness to probe every one of the 35 scheduled intervals before and inside, plus all seven split gaps, against production `nextOpening(at:)` while retaining exact merged `15/11/4` and filter counts.
+- Local evidence:
+  - Production semantic harness: `{"count":52,"nextOpeningProbes":13,"passed":true}`.
+  - Actual-manifest compatibility retained v1 `11/10/1`, v2 `4/1/3`, merged `15/11/4`, filters `15/11/11/11`, interval/gap probes `35/7`, and added next-opening before/inside/gap probes `35/35/7`.
+  - Round 16 feedback harness remained `{"clinicAvailabilityFeedback":true,"passed":154}`. Node regressions passed 54/54; catalog integrity remained `179/161/18/205/11`; the pending validator remained four additions and planned `15/11/4`.
+  - Production model, XCTest, and both Swift harness sources passed standalone parsing; `sh -n`, project `plutil`, and `git diff --check` passed. These are not a local iOS build; no XCTest execution or local `xcodebuild` is claimed.
+- First Sol review: **RETURNED** — one P2 found the forecast wording placed `預計` after the date/time, contrary to the required natural Hong Kong Chinese phrase.
+- Luna correction: Changed the only new closed-label form to exact `休息中 · 預計\(formattedNextOpening(...)) 再開` and pinned standalone/XCTest expectations for `預計今日 14:00`, `預計明日 08:00`, and `預計星期三 10:00`.
+- Final Sol source acceptance: **ACCEPT** — the copy finding was resolved, all time-boundary and actual-manifest probes remained green, and no further actionable finding remained. Full iOS compilation remains conditional on Xcode Cloud Archive completion.
+- Production and release boundary: No availability or manifest data, Firestore record, Firebase deployment, ASC workflow, public release, or device app was changed. No network request or production action was performed.
+- Preserved scope: Availability filters and sorting, registration, submissions, community interaction, moderation, and all user-owned dirty/untracked files were preserved.
