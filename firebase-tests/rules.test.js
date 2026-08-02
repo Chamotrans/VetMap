@@ -544,6 +544,11 @@ test("聊天室只限兩名參與者，建立對話必須原子寫入第一則�
   await assertSucceeds(conversationRef.get());
   await assertSucceeds(bob.collection("conversations").doc("alice--bob").get());
   await assertFails(mallory.collection("conversations").doc("alice--bob").get());
+  await assertSucceeds(
+    alice.collection("conversations")
+      .where("participantIds", "array-contains", "alice")
+      .get(),
+  );
   await assertFails(
     mallory.collection("conversations/alice--bob/messages").doc("message-1").get(),
   );

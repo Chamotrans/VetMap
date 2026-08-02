@@ -30,6 +30,11 @@ VetMap 係一個專為香港毛孩家長而設嘅獸醫診所地圖同社群 App
 - 每個帳戶只可投一次嘅「有用」標記
 - 舉報不當內容及封鎖相關用戶
 
+**私人聊天室**
+- 由已審核評價作者開始一對一對話
+- 可刪除自己嘅訊息、舉報訊息及封鎖對方
+- 任一方封鎖後，雙方都唔可以再傳送新訊息
+
 **費用透明**
 - 治療報價分享系統
 - 預估費用 vs 實際費用
@@ -38,7 +43,7 @@ VetMap 係一個專為香港毛孩家長而設嘅獸醫診所地圖同社群 App
 **社群貢獻**
 - 登入／註冊後可新增診所、評價及治療報價
 - 所有投稿先進入人工審核，批准後先會公開
-- 可直接喺 App 內刪除帳戶及相關用戶內容
+- 可直接喺 App 內刪除帳戶、對話及相關用戶內容
 
 VetMap 首版只顯示香港診所。診所目錄以名稱、地址、電話及地圖位置為主；未重新核實嘅星級、價錢、營業時間、服務及醫療聲稱不會公開。
 
@@ -66,6 +71,11 @@ VetMap is a Hong Kong veterinary clinic map and moderated community for pet guar
 - Mark a review as helpful once per account
 - Report inappropriate content and block its author
 
+**Private chat**
+- Start a one-to-one conversation from an approved review author
+- Delete your own messages, report a message, or block the other user
+- Blocking by either participant prevents both users from sending new messages
+
 **Treatment quotes**
 - Share treatment quote information
 - Compare estimated and actual costs
@@ -74,7 +84,7 @@ VetMap is a Hong Kong veterinary clinic map and moderated community for pet guar
 **Contribute**
 - Sign in or create an account to submit clinics, reviews and treatment quotes
 - Every submission remains pending until manually approved
-- Delete your account and associated user content in the app
+- Delete your account, conversations and associated user content in the app
 
 VetMap 1.0 displays Hong Kong clinics only. Directory entries focus on factual names, addresses, phone numbers and map locations. Unverified ratings, prices, opening hours, services and medical claims are not published.
 
@@ -100,6 +110,7 @@ Clinic, review and cost information is for general reference only and is not vet
 2. Clinic detail
 3. Hong Kong pet-service / insurance directory
 4. Moderated review / quote submission and account controls
+5. Private chat with message report / block controls
 
 ## Support URL
 https://vetmap-app.web.app/support

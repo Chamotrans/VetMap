@@ -14,6 +14,8 @@
 - [x] 所有診所、評價及報價投稿先寫入 `submissions` 待審佇列
 - [x] 公開內容只容許管理員由待審佇列批准建立
 - [x] 評價、報價及診所均可舉報；評價及報價作者可被封鎖
+- [x] 一對一聊天室只限參與者讀取；支援刪除自己訊息、舉報訊息及封鎖對方
+- [x] Firestore rules 同時檢查雙方封鎖清單；任一方封鎖後不可再寫入新訊息
 - [x] 「有用」標記改為每個 Firebase UID 對每項評價一次
 - [x] App 內提供帳戶刪除、重新驗證、Apple token 撤銷及伺服器資料清除
 - [x] Firestore／Storage 規則 emulator 測試：11/11 通過
@@ -46,6 +48,7 @@
 - [x] 建立獨立管理員帳戶，並在 `users/{uid}` 設定 `role: admin`
 - [x] 建立不需 2FA 的普通、刪除測試及 fixture App Review 電郵／密碼帳戶
 - [x] 以專用 fixture UID 建立 rights-cleared 示範診所、評價及報價，令 Helpful／Report／Block 路徑可達
+- [ ] 以專用 fixture UID 建立 rights-cleared 示範聊天室訊息，令 Send／Delete／Report／Block 路徑可達
 - [x] 每次 migration 前以 0600 權限備份 production collection，再以 guarded script 寫入 179 間香港診所
 - [x] 對帳 176/176 筆主資料及 29/29 筆補充資料；205 個唯一 lineage ID 全部存在
 - [x] 兩對同名同址重複資料只顯示一間，但保留雙 source ID 及雙電話
@@ -72,7 +75,7 @@
 - [x] Xcode Cloud build `1.0 (11)` 成功並已暫掛 iOS 1.0
 - [x] 提交並推送完整香港診所庫、服務／保險目錄及 attribution 修正：`81ce204`
 - [x] Xcode Cloud Build 12 成功；run `1a5339f2-fc82-46da-879e-175812548668`，ASC `VALID`／`APP_STORE_ELIGIBLE`
-- [ ] 在 TestFlight 真機完成登入、投稿、批核、公開、舉報、封鎖及帳戶刪除 smoke test
+- [ ] 在 TestFlight 真機完成登入、投稿、批核、公開、聊天室收發／刪除／舉報／封鎖及帳戶刪除 smoke test
 - [x] 將 build 11 掛接至 App Store Connect iOS 1.0 作暫時 release candidate
 - [x] 以 Build 12 取代 iOS 1.0 暫掛的 Build 11，API read-back 為 `READY_FOR_REVIEW`
 
@@ -120,7 +123,8 @@
 2. 分別提交一項新診所、一項評價及一項報價，確認畫面顯示待審而不是假成功。
 3. 用管理員帳戶批准三項投稿。
 4. 用第二個普通帳戶確認批准內容可見。
-5. 對評價及報價執行舉報與封鎖，確認內容即時從該用戶畫面消失。
-6. 管理員處理舉報及下架，確認所有普通帳戶不再看見。
-7. 測試每個帳戶對同一評價只能標記一次「有用」。
-8. 測試電郵帳戶刪除；另以 Apple 登入帳戶測試重新驗證、token 撤銷及刪除。
+5. 由示範評價開啟聊天室，驗證雙向收發、作者軟刪除、另一方舉報及封鎖後不可再傳送。
+6. 對評價及報價執行舉報與封鎖，確認內容即時從該用戶畫面消失。
+7. 管理員處理舉報及下架，確認所有普通帳戶不再看見。
+8. 測試每個帳戶對同一評價只能標記一次「有用」。
+9. 測試電郵帳戶刪除；另以 Apple 登入帳戶測試重新驗證、token 撤銷及刪除。

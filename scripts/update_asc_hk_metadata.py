@@ -44,6 +44,11 @@ ZH_DESCRIPTION = """VetMap 係一個專為香港毛孩家長而設嘅獸醫診�
 • 每個帳戶只可投一次嘅「有用」標記
 • 舉報不當內容及封鎖相關用戶
 
+私人聊天室
+• 由已審核評價作者開始一對一對話
+• 可刪除自己嘅訊息、舉報訊息及封鎖對方
+• 任一方封鎖後，雙方都唔可以再傳送新訊息
+
 費用透明
 • 治療報價分享系統
 • 預估費用 vs 實際費用
@@ -52,7 +57,7 @@ ZH_DESCRIPTION = """VetMap 係一個專為香港毛孩家長而設嘅獸醫診�
 社群貢獻
 • 登入／註冊後可新增診所、評價及治療報價
 • 所有投稿先進入人工審核，批准後先會公開
-• 可直接喺 App 內刪除帳戶及相關用戶內容
+• 可直接喺 App 內刪除帳戶、對話及相關用戶內容
 
 VetMap 首版只顯示香港診所。診所目錄以名稱、地址、電話及地圖位置為主；未重新核實嘅星級、價錢、營業時間、服務及醫療聲稱不會公開。
 
@@ -78,6 +83,11 @@ Community reviews
 • Mark a review as helpful once per account
 • Report inappropriate content and block its author
 
+Private chat
+• Start a one-to-one conversation from an approved review author
+• Delete your own messages, report a message, or block the other user
+• Blocking by either participant prevents both users from sending new messages
+
 Treatment quotes
 • Share treatment quote information
 • Compare estimated and actual costs
@@ -86,7 +96,7 @@ Treatment quotes
 Contribute
 • Sign in or create an account to submit clinics, reviews and treatment quotes
 • Every submission remains pending until manually approved
-• Delete your account and associated user content in the app
+• Delete your account, conversations and associated user content in the app
 
 VetMap 1.0 displays Hong Kong clinics only. Directory entries focus on factual names, addresses, phone numbers and map locations. Unverified ratings, prices, opening hours, services and medical claims are not published.
 
@@ -228,15 +238,17 @@ Test paths:
 2. Clinics → + to submit a clinic.
 3. Open “VetMap 示範診所（非真實商戶）” → Add Review or Add Quote.
 4. Open its approved demo review/quote → Helpful / Report / Block Author.
-5. My → Account Settings → Delete Account.
+5. Open the demo review menu → Send Message. The Messages tab contains a rights-cleared incoming demo message. Long-press it to Report, or use the conversation menu to Block User.
+6. Long-press a message you sent to Delete Message.
+7. My → Account Settings → Delete Account.
 
-All new clinic, review, and quote submissions remain Pending until manually reviewed by an administrator. No IAP or subscription UI is exposed in v1.0. Location permission is optional and precise location is processed on device only to center the map and calculate distance.
+All new clinic, review, and quote submissions remain Pending until manually reviewed by an administrator. Private one-to-one messages are visible only to their two participants. Either participant can report a message or block the other user; reported messages are available to administrators for review and soft removal. No IAP or subscription UI is exposed in v1.0. Location permission is optional and precise location is processed on device only to center the map and calculate distance.
 
 The clinic directory contains 179 Hong Kong entries from a database created by VetMap or licensed for VetMap's use. All 179 remain searchable. 161 have reliable Hong Kong coordinates; the other 18 are list-only and do not receive fabricated pins, distances or routes. Unverified ratings, prices, opening hours, services and medical claims are not published.
 
 The service directory contains 124 Hong Kong pet-service entries without invented prices, ratings or opening hours. The insurance directory provides three official provider links and does not copy price or coverage claims.
 
-The single demo clinic, review, and quote are VetMap-owned test fixtures. Each is prominently labelled as non-real and contains no third-party business name, medical experience, or real price claim.
+The single demo clinic, review, quote, and chat message are VetMap-owned test fixtures. Each is prominently labelled as non-real and contains no third-party business name, medical experience, or real price claim.
 
 {deletion_account_match.group(0)}
 

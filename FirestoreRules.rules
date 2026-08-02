@@ -77,8 +77,6 @@ service cloud.firestore {
 
     function chatParticipant(data) {
       return signedIn()
-        && data.participantIds is list
-        && data.participantIds.size() == 2
         && request.auth.uid in data.participantIds;
     }
 
