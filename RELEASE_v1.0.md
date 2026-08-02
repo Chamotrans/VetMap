@@ -1,6 +1,6 @@
 # VetMap iOS 1.0 — Release Candidate Notes
 
-> 目前狀態：production 已恢復完整授權香港診所庫及部署聊天室 backend；ASC Build 12 暫掛 iOS 1.0；聊天室 Cloud Run 39 已成功 archive，但 delivery 被 `ITMS-90382 Upload limit reached` 拒絕，須等 Apple 24 小時 window 重置後再上載；香港修正版 iPhone／iPad screenshots 已同步到 ASC；尚未正式提交 App Review。
+> 目前狀態：production 已恢復完整授權香港診所庫及部署聊天室 backend；ASC Build 12 暫掛 iOS 1.0；聊天室 Cloud Run 39 已成功 archive，但 delivery 被 `ITMS-90382 Upload limit reached` 拒絕，須等 Apple 24 小時 window 重置後再上載；App Privacy 已確認涵蓋聊天室，Content Rights 仍待帳戶持有人完整確認；香港修正版 iPhone／iPad screenshots 已同步到 ASC；尚未正式提交 App Review。
 > 本文件不以舊本機 archive、舊 commit 數或未部署設定冒充 release proof。
 
 ## 首版範圍
@@ -118,6 +118,12 @@
 - iPhone 地圖附件因被 Apple Intelligence 系統通知遮擋而明確排除；iPad 地圖附件未受遮擋並已上載
 - 臨時 screenshot-only workflow 已還原為 `Default` Archive／`APP_STORE_ELIGIBLE` 配置並保持 disabled，避免 24 小時 upload limit 期間自動再上載
 - 2026-08-03 ASC API live read-back 再確認 iOS 1.0 為 `READY_FOR_REVIEW`、仍掛 Build 12 `VALID`、ASC 最新 processed build 為 35、workflow disabled，最新 Cloud run 仍為 41
+- 2026-08-03 03:49 CST ASC live UI 再確認 iOS 1.0 為「準備審查」並仍掛 Build 12；2026-07-14 06:07 建立的 Review Submission draft 只有 1 項，仍停在「提交項目草稿 (1)」，未送出 App Review
+- 同一 live UI 顯示 App Privacy 已 Published，列出 7 類 collected data；「其他用戶內容」已設定為 linked to identity、用於 App Functionality，故私人聊天室的 privacy disclosure 已完成
+- 年齡分級 live UI 顯示現行 `16+`（173 個國家或地區；南韓 `15+`），pre-OS 26／舊 global rating 為 `17+`；後者與 ASC API `SEVENTEEN_PLUS` 一致，不再把兩個介面的顯示差異當成矛盾
+- Content Rights live UI 仍錯誤顯示「否，此 App 不包含、顯示或存取第三方內容」；未取得帳戶持有人對診所庫、香港服務目錄、官方保險連結及按使用條款提交之用戶內容的完整權利確認前，沒有更改此欄
+- Xcode Cloud `Default` workflow（`DBB6C988-A379-476E-9E99-3235B11BAD2E`）於 live UI 仍為 disabled，最後修改時間為 2026-08-03 02:42 CST；最新 run 仍為 41、沒有 Run 42，Archive 使用 `VetMap` scheme 並選擇 App Store Connect distribution preparation
+- 連接的 Gmail 未找到 Build 39 的 Apple 通知，故精確 24 小時起點未獲證明；以 Run 39 於 2026-08-03 01:55 CST 開始作保守基準，最早在 2026-08-04 03:00 CST 後才重試
 - 同日實體 iPhone「是條小狗」live read-back 為 `VetMap 1.0 (39)`；App 成功啟動並顯示 production 香港目錄 180 間／162 個地圖標記及訊息 tab。iPhone Mirroring 逾時，故未把此證據當作完整聊天室互動 smoke test
 - 聊天室 least-privilege candidate 已在 source 收窄 admin 權限：report、conversation marker 及 message marker 必須 atomic；17/17 emulator 證明 admin 在舉報前不能讀 conversation／message，舉報後仍不能讀或刪同一對話內未被舉報的第二則訊息。production rules 要待相容的新 Cloud candidate 安裝後才部署，避免令 Build 39 的舊 report writer 中斷
 - 上述 candidate commit `00fa4a2` 已推送至 GitHub `main`；Backend and Config Validation run `30763791472` 全綠。Xcode Cloud workflow 仍保持 disabled，沒有在 upload quota 期間建立新 run

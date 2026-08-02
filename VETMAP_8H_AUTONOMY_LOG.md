@@ -547,3 +547,13 @@
   - GitHub `Backend and Config Validation` run `30763791472` completed successfully, including all 17 Firestore／Storage rules cases, Functions validation, catalog gates, and patch hygiene.
   - Xcode Cloud remained disabled; no Cloud build or Apple upload was triggered during the quota window.
 - Next: After Apple's one-day window, run Xcode Cloud to terminal state, install the compatible candidate, deploy the least-privilege rules, and complete the report/admin device smoke test.
+
+### Live ASC UI reconciliation — 2026-08-03 03:49 CST
+
+- App Privacy: Live UI showed the disclosure as Published. It listed seven collected-data types, including Other User Content linked to identity and used for App Functionality, so private chat is covered by the published disclosure.
+- Rating: The current UI showed `16+` in 173 countries or regions and `15+` in South Korea. The pre-OS 26／legacy global rating remained `17+`, matching the API value `SEVENTEEN_PLUS`; these are presentation generations of the same completed questionnaire, not conflicting declarations.
+- Content Rights: Live UI still showed `否，此 App 不包含、顯示或存取第三方內容`. No mutation was made because the account holder has not yet given the complete rights attestation covering the clinic database, Hong Kong service directory, official insurance links, and user-submitted content under the app terms.
+- Review state: iOS 1.0 remained `準備審查` with Build 12 attached. The Review Submission draft was created 2026-07-14 06:07, contained one item, and still offered `提交項目草稿 (1)`; it was not submitted.
+- Xcode Cloud: Workflow `Default` (`DBB6C988-A379-476E-9E99-3235B11BAD2E`) remained disabled and showed last modified 2026-08-03 02:42 CST. Its archive uses the `VetMap` scheme with App Store Connect distribution preparation. The latest run remained 41 and no Run 42 existed; no Cloud build or upload was triggered.
+- Upload-window evidence: The connected Gmail account contained no matching Build 39 Apple delivery notice, so the exact email receipt time could not be established. Using Run 39's 2026-08-03 01:55 CST start as a conservative reference, the next attempt is deferred until after 2026-08-04 03:00 CST.
+- Action boundary: This was a read-only ASC／mail reconciliation plus repository documentation. No App Review submission, Content Rights edit, build attachment, workflow activation, Cloud run, Apple upload, Firebase deployment, production write, public release, or device action was performed.

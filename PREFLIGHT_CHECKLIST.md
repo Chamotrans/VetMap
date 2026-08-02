@@ -86,8 +86,9 @@
 - [x] Xcode Cloud workflow 已還原為 `Default` Archive／`APP_STORE_ELIGIBLE`，並在 upload limit 重置前保持 disabled
 - [x] 聊天室來源加固已推送至 GitHub `main`：code commit `70918e8`；Actions run `30762479857` 全綠，Firestore／Storage rules 16/16
 - [x] 2026-08-03 ASC API live read-back：workflow `DBB6C988-A379-476E-9E99-3235B11BAD2E` 仍為 disabled，最新 run 仍是 41，沒有因後續 push 自動產生新 Cloud upload
+- [x] 2026-08-03 03:49 CST ASC live UI 再確認 `Default` workflow 仍停用、最後修改時間為同日 02:42、最新 run 仍是 41、沒有 Run 42；Archive 使用 `VetMap` scheme，distribution preparation 選擇 App Store Connect
 - [x] 聊天室 least-privilege candidate 已推送至 GitHub `main`：commit `00fa4a2`；Actions run `30763791472` 全綠，Firestore／Storage rules 17/17
-- [ ] 等待 Apple 24 小時 upload window 重置後再跑新 Cloud candidate；Run 39 delivery 被 `ITMS-90382 Upload limit reached` 拒絕，未進入 ASC processing
+- [ ] 等待 Apple 24 小時 upload window 重置後再跑新 Cloud candidate；Run 39 delivery 被 `ITMS-90382 Upload limit reached` 拒絕，未進入 ASC processing。連接的 Gmail 找不到該封通知，未能取得精確收件時間；以 Run 39 於 2026-08-03 01:55 CST 開始作保守基準，最早在 2026-08-04 03:00 CST 後才重試
 - [ ] 在 TestFlight 真機完成登入、投稿、批核、公開、聊天室收發／刪除／舉報／封鎖及帳戶刪除 smoke test
 - [x] 將 build 11 掛接至 App Store Connect iOS 1.0 作暫時 release candidate
 - [x] 以 Build 12 取代 iOS 1.0 暫掛的 Build 11，API read-back 為 `READY_FOR_REVIEW`
@@ -104,15 +105,16 @@
 - [x] 「需要登入」保留勾選，填入 App Review 電郵及密碼
 - [x] 填寫 App Review Notes，說明待審投稿、舉報、封鎖、帳戶刪除及測試路徑
 - [x] 完成並 Publish App Privacy 問卷；2026-07-24 live UI 再確認為 Published
-- [ ] 在 ASC live UI 將新增私人聊天室涵蓋於「其他用戶內容」，並重新核對 Published 狀態
-- [x] 完成年齡分級問卷；2026-08-03 live API 為 App Store `17+`（`SEVENTEEN_PLUS`），並已如實申報 messaging/chat、UGC 及 social media
+- [x] 2026-08-03 03:49 CST ASC live UI 再確認 App Privacy 已 Published；7 類資料包括「其他用戶內容」，其設定為 linked to identity、用於 App Functionality，已涵蓋私人聊天室
+- [x] 完成年齡分級問卷並如實申報 messaging/chat、UGC 及 social media；2026-08-03 live UI 顯示現行分級 `16+`（173 個國家或地區；南韓 `15+`），pre-OS 26／舊 global rating 為 `17+`，與 API `SEVENTEEN_PLUS` 對應
 - [x] 完成 regulated medical device 聲明：No
 - [x] 以 Xcode Cloud 香港修正版取代全部舊 screenshots；ASC API read-back：`en-GB`／`zh-Hant` 各 5 張 iPhone、6 張 iPad，22 張均為 `COMPLETE`
 - [x] 把 App Store 描述及 keywords 改為 [AppStoreMetadata.md](AppStoreMetadata.md) 的香港＋community 版本，並從 live ASC 讀回確認
 - [x] `What's New` 不適用於首個 App 版本；Apple API 對 1.0 回覆 `STATE_ERROR` 且官方文件說明首版不提供此欄，故舊 API 殘值不作 storefront／送審缺漏
-- [ ] 完成 Content Rights。2026-08-03 live API 仍錯誤顯示 `DOES_NOT_USE_THIRD_PARTY_CONTENT`；App 會顯示經批准的用戶內容，提交者確認完整權利範圍後必須改為使用／存取第三方內容
+- [ ] 完成 Content Rights。2026-08-03 03:49 CST live UI 仍顯示「否，此 App 不包含、顯示或存取第三方內容」；App 會顯示經批准的用戶內容，提交者確認完整權利範圍後必須改為使用／存取第三方內容
 - [x] 將 build 7 加入 iOS 1.0 review draft
 - [x] iOS 1.0 已掛 Build 12：`e1cd2911-c0c2-4cd7-94c4-985c2295794a`
+- [x] 2026-08-03 03:49 CST live UI：iOS 1.0 為「準備審查」、Build 12 仍掛接；Review Submission draft 於 2026-07-14 06:07 建立，含 1 項，仍只顯示「提交項目草稿 (1)」，未正式送出
 - [ ] 最後逐頁核對沒有紅色缺漏或矛盾
 - [ ] 停在「提交以供審核」按鈕前，交由帳戶持有人作最後確認
 
