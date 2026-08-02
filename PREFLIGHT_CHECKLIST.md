@@ -80,10 +80,11 @@
 - [x] Xcode Cloud Build 12 成功；run `1a5339f2-fc82-46da-879e-175812548668`，ASC `VALID`／`APP_STORE_ELIGIBLE`
 - [x] 聊天室初版 Cloud run `c980a28d-5fcd-4077-8c04-8e93f7f1bcf7` 找出並修正 Swift style type mismatch
 - [x] 修正版 Cloud run `8a456702-9631-4f74-9c4f-165c5a28f2d5` 已成功 compile、archive 及產生三種 export；App Store preparation 因 Apple session proxy authentication 失敗，不能當作 ASC upload 成功
-- [x] Xcode Cloud run 39 已成功 compile/archive，Cloud development artifact 為 `VetMap 1.0 (39)`，並已安裝到實體 iPhone「是條小狗」
+- [x] Xcode Cloud run 39 的 Archive／exports 成功，但整體 run 因 `ITMS-90382` delivery 失敗而為 `FAILED`；Cloud development artifact `VetMap 1.0 (39)` 已安裝到實體 iPhone「是條小狗」
 - [x] Xcode Cloud Run 41 screenshot test plan 在 iPhone 17 Pro Max 及 iPad Pro 13-inch 完成 `SUCCEEDED`；12 張 release evidence 附件已匯出及逐張驗收
 - [x] Xcode Cloud workflow 已還原為 `Default` Archive／`APP_STORE_ELIGIBLE`，並在 upload limit 重置前保持 disabled
 - [x] 聊天室來源加固已推送至 GitHub `main`：code commit `70918e8`；Actions run `30762479857` 全綠，Firestore／Storage rules 16/16
+- [x] 2026-08-03 ASC API live read-back：workflow `DBB6C988-A379-476E-9E99-3235B11BAD2E` 仍為 disabled，最新 run 仍是 41，沒有因後續 push 自動產生新 Cloud upload
 - [ ] 等待 Apple 24 小時 upload window 重置後再跑新 Cloud candidate；Run 39 delivery 被 `ITMS-90382 Upload limit reached` 拒絕，未進入 ASC processing
 - [ ] 在 TestFlight 真機完成登入、投稿、批核、公開、聊天室收發／刪除／舉報／封鎖及帳戶刪除 smoke test
 - [x] 將 build 11 掛接至 App Store Connect iOS 1.0 作暫時 release candidate
@@ -102,11 +103,12 @@
 - [x] 填寫 App Review Notes，說明待審投稿、舉報、封鎖、帳戶刪除及測試路徑
 - [x] 完成並 Publish App Privacy 問卷；2026-07-24 live UI 再確認為 Published
 - [ ] 在 ASC live UI 將新增私人聊天室涵蓋於「其他用戶內容」，並重新核對 Published 狀態
-- [x] 完成年齡分級問卷；結果 16+
+- [x] 完成年齡分級問卷；2026-08-03 live API 為 App Store `17+`（`SEVENTEEN_PLUS`），並已如實申報 messaging/chat、UGC 及 social media
 - [x] 完成 regulated medical device 聲明：No
 - [x] 以 Xcode Cloud 香港修正版取代全部舊 screenshots；ASC API read-back：`en-GB`／`zh-Hant` 各 5 張 iPhone、6 張 iPad，22 張均為 `COMPLETE`
 - [x] 把 App Store 描述及 keywords 改為 [AppStoreMetadata.md](AppStoreMetadata.md) 的香港＋community 版本，並從 live ASC 讀回確認
-- [ ] 完成 Content Rights。App 會顯示經批准的用戶內容，必須如實選擇 Yes；提交者須確認擁有或獲授權使用相關內容
+- [x] `What's New` 不適用於首個 App 版本；Apple API 對 1.0 回覆 `STATE_ERROR` 且官方文件說明首版不提供此欄，故舊 API 殘值不作 storefront／送審缺漏
+- [ ] 完成 Content Rights。2026-08-03 live API 仍錯誤顯示 `DOES_NOT_USE_THIRD_PARTY_CONTENT`；App 會顯示經批准的用戶內容，提交者確認完整權利範圍後必須改為使用／存取第三方內容
 - [x] 將 build 7 加入 iOS 1.0 review draft
 - [x] iOS 1.0 已掛 Build 12：`e1cd2911-c0c2-4cd7-94c4-985c2295794a`
 - [ ] 最後逐頁核對沒有紅色缺漏或矛盾
@@ -129,6 +131,8 @@
 不要為首版勾選精確位置、相片、購買紀錄、廣告資料或產品互動。
 
 ## 真機驗收流程
+
+2026-08-03 live device baseline：`是條小狗` 可連線，安裝 `VetMap 1.0 (39)`；App 成功啟動並從 production 顯示 180 間診所、162 個地圖標記、18 間待確認位置及訊息 tab。iPhone Mirroring 連接逾時，因此以下互動 smoke 尚未完成。
 
 1. 用 App Review 帳戶登入。
 2. 分別提交一項新診所、一項評價及一項報價，確認畫面顯示待審而不是假成功。

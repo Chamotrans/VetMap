@@ -110,12 +110,14 @@
 - production Firestore rules、indexes、`purgeUserData` 及示範聊天室已部署；示範對話已連結已批准評價，並以雙方帳戶 read-back 驗證 source、participant、sender 及 incoming message
 - 聊天室來源加固 code commit `70918e8` 已推送至 `main`；GitHub Actions run `30762479857` 對 semantic rules 16/16、catalog、Functions 及 patch hygiene 全部通過
 - production rules 於 2026-08-03 經 Firebase compile 後成功 release；匿名 conversation list 及 message read 均回 403，公開 catalog audit 仍為 clinics 180、reviews 1、quotes 1、services 124、insurances 3
-- Xcode Cloud Run 39 已成功 compile/archive 並產生 App Store、development 及 ad-hoc exports；Apple delivery 電郵明確回報 `ITMS-90382 Upload limit reached`
+- Xcode Cloud Run 39 的 Archive 及三種 exports 成功，但整體 run 因 Apple delivery 回報 `ITMS-90382 Upload limit reached` 而為 `FAILED`；Build 39 沒有進入 ASC processing
 - Run 39 development artifact `VetMap 1.0 (39)` 已安裝到實體 iPhone「是條小狗」，新訊息 tab 及未登入安全提示可達
 - Xcode Cloud Run 41（`fe0b7c5b-da2a-4199-8576-db3f6ff04153`）以專用 screenshot test plan 在 iPhone 17 Pro Max 及 iPad Pro 13-inch 模擬器完成 `SUCCEEDED`；12 張附件均不屬於 failure
 - ASC `en-GB` 及 `zh-Hant` 已同步香港修正版 screenshots：每個 locale 各 5 張 iPhone、6 張 iPad，22 張均由 API 讀回 `COMPLETE`；舊台北、199 間及未證明 verified／rating 畫面已移除
 - iPhone 地圖附件因被 Apple Intelligence 系統通知遮擋而明確排除；iPad 地圖附件未受遮擋並已上載
 - 臨時 screenshot-only workflow 已還原為 `Default` Archive／`APP_STORE_ELIGIBLE` 配置並保持 disabled，避免 24 小時 upload limit 期間自動再上載
+- 2026-08-03 ASC API live read-back 再確認 iOS 1.0 為 `READY_FOR_REVIEW`、仍掛 Build 12 `VALID`、ASC 最新 processed build 為 35、workflow disabled，最新 Cloud run 仍為 41
+- 同日實體 iPhone「是條小狗」live read-back 為 `VetMap 1.0 (39)`；App 成功啟動並顯示 production 香港目錄 180 間／162 個地圖標記及訊息 tab。iPhone Mirroring 逾時，故未把此證據當作完整聊天室互動 smoke test
 - 下一個 Cloud candidate 必須在 upload limit 重置後取得 ASC processing 及完整真機聊天室 smoke test，才可取代上面的 Build 12 baseline
 
 完整進度以 [PREFLIGHT_CHECKLIST.md](PREFLIGHT_CHECKLIST.md) 為準。

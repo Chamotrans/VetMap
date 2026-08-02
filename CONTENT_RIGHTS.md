@@ -1,7 +1,7 @@
 # VetMap 1.0 — Content Rights Packet
 
 > Release candidate: pending next Hong Kong Xcode Cloud build
-> Audited: 2026-07-29
+> Audited: 2026-08-03
 > Scope: App Store release bundle and production public content
 
 ## Release decision
@@ -89,6 +89,13 @@ service catalog, official insurance links and user-submitted content.
 VetMap contains or accesses third-party content because it displays business
 directory facts and can display approved user-generated content. The correct
 first answer is therefore **Yes**.
+
+The 2026-08-03 App Store Connect API read-back currently returns
+`DOES_NOT_USE_THIRD_PARTY_CONTENT`. This conflicts with the shipped feature
+scope and must not remain the final declaration. Apple states that an app that
+contains, shows or accesses third-party content must have the necessary rights
+or another lawful permission in every App Store country or region where it is
+available.
 
 Accepting the separate legal attestation that the account holder has all
 necessary rights remains an account-holder decision. Automation must stop
