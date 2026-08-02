@@ -86,6 +86,7 @@
 - [x] Xcode Cloud workflow 已還原為 `Default` Archive／`APP_STORE_ELIGIBLE`，並在 upload limit 重置前保持 disabled
 - [x] 聊天室來源加固已推送至 GitHub `main`：code commit `70918e8`；Actions run `30762479857` 全綠，Firestore／Storage rules 16/16
 - [x] 2026-08-03 ASC API live read-back：workflow `DBB6C988-A379-476E-9E99-3235B11BAD2E` 仍為 disabled，最新 run 仍是 41，沒有因後續 push 自動產生新 Cloud upload
+- [x] 聊天室 least-privilege candidate 已推送至 GitHub `main`：commit `00fa4a2`；Actions run `30763791472` 全綠，Firestore／Storage rules 17/17
 - [ ] 等待 Apple 24 小時 upload window 重置後再跑新 Cloud candidate；Run 39 delivery 被 `ITMS-90382 Upload limit reached` 拒絕，未進入 ASC processing
 - [ ] 在 TestFlight 真機完成登入、投稿、批核、公開、聊天室收發／刪除／舉報／封鎖及帳戶刪除 smoke test
 - [x] 將 build 11 掛接至 App Store Connect iOS 1.0 作暫時 release candidate

@@ -542,4 +542,8 @@
   - Firestore／Storage emulator: 17/17 passed, including report-only and marker-only rejection, atomic report success, pre-report admin denial, exact reported-message access, and denial for a second unreported message in the same conversation.
   - Firebase Functions ESLint/module load, JavaScript syntax, Swift frontend parse, project plist, and `git diff --check` passed.
   - No local `xcodebuild`, archive, Apple upload, Firebase production deployment, ASC mutation, review submission, public release, or device action was performed.
-- Next: Commit/push the exact source, wait for GitHub validation, then after Apple's one-day window run Xcode Cloud to terminal state, install the compatible candidate, deploy the least-privilege rules, and complete the report/admin device smoke test.
+- Git evidence:
+  - Exact source and documentation commit `00fa4a2` (`fix: scope admin access to reported chat messages`) was pushed to `origin/main`.
+  - GitHub `Backend and Config Validation` run `30763791472` completed successfully, including all 17 Firestore／Storage rules cases, Functions validation, catalog gates, and patch hygiene.
+  - Xcode Cloud remained disabled; no Cloud build or Apple upload was triggered during the quota window.
+- Next: After Apple's one-day window, run Xcode Cloud to terminal state, install the compatible candidate, deploy the least-privilege rules, and complete the report/admin device smoke test.
