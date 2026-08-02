@@ -477,6 +477,307 @@ final class VetMapModelTests: XCTestCase {
         XCTAssertNil(expiresAfterCandidate.nextOpening(at: expiresAfterCandidate.expiresAt))
     }
 
+    func testClinicDuplicateMatcherNormalizesHongKongIdentityFieldsAndDistance() throws {
+        XCTAssertEqual(
+            ClinicDuplicateMatcher.canonicalPhones("＋８５２　２１２３－４５６７"),
+            ["21234567"]
+        )
+        XCTAssertEqual(
+            ClinicDuplicateMatcher.canonicalPhones("00852 2123/4567"),
+            ["21234567"]
+        )
+        XCTAssertEqual(
+            ClinicDuplicateMatcher.canonicalPhones("2123/4567"),
+            ["21234567"]
+        )
+        XCTAssertEqual(
+            ClinicDuplicateMatcher.canonicalPhones("2698 2185 / 2687 0226"),
+            ["26982185", "26870226"]
+        )
+        XCTAssertEqual(
+            ClinicDuplicateMatcher.canonicalPhones("2653 3632 / 6168 6175"),
+            ["26533632", "61686175"]
+        )
+        XCTAssertEqual(
+            ClinicDuplicateMatcher.canonicalPhones("28828123/62158608"),
+            ["28828123", "62158608"]
+        )
+        XCTAssertTrue(ClinicDuplicateMatcher.canonicalPhones("123").isEmpty)
+        XCTAssertEqual(
+            ClinicDuplicateMatcher.normalizedText(" ＨＡＰＰＹ－Pet！診所 "),
+            "happypet診所"
+        )
+        XCTAssertEqual(
+            ClinicDuplicateMatcher.normalizedText("香港．中環，皇后大道中 １ 號"),
+            "香港中環皇后大道中1號"
+        )
+
+        let origin = ClinicCoordinate(latitude: 22.3000, longitude: 114.2000)
+        let nearby = ClinicCoordinate(latitude: 22.3005, longitude: 114.2000)
+        let far = ClinicCoordinate(latitude: 22.3030, longitude: 114.2000)
+        XCTAssertLessThan(
+            try XCTUnwrap(ClinicDuplicateMatcher.distanceMeters(from: origin, to: nearby)),
+            100
+        )
+        XCTAssertGreaterThan(
+            try XCTUnwrap(ClinicDuplicateMatcher.distanceMeters(from: origin, to: far)),
+            200
+        )
+        XCTAssertNil(ClinicDuplicateMatcher.distanceMeters(from: nil, to: nearby))
+    }
+
+    func testClinicDuplicateMatcherUsesOnlyStrongDirectBranches() {
+        let origin = ClinicCoordinate(latitude: 22.3000, longitude: 114.2000)
+        let within100 = ClinicCoordinate(latitude: 22.3005, longitude: 114.2000)
+        let within200 = ClinicCoordinate(latitude: 22.3015, longitude: 114.2000)
+        let far = ClinicCoordinate(latitude: 22.3030, longitude: 114.2000)
+        var draft = makeClinic(
+            id: "draft",
+            name: "Happy Pet 診所",
+            address: "香港中環皇后大道中1號",
+            coordinate: origin
+        )
+        draft.phone = "+852 2123 4567"
+
+        var phoneAndName = makeClinic(
+            id: "phone-name",
+            name: "ＨＡＰＰＹ－ＰＥＴ 診所！",
+            address: "九龍遠處",
+            coordinate: far
+        )
+        phoneAndName.phone = "２１２３－４５６７"
+        XCTAssertEqual(
+            ClinicDuplicateMatcher.strongMatchReason(between: draft, and: phoneAndName),
+            .samePhoneAndName
+        )
+
+        var phoneNearby = makeClinic(
+            id: "phone-nearby",
+            name: "另一間獸醫",
+            address: "另一地址",
+            coordinate: within200
+        )
+        phoneNearby.phone = "21234567"
+        guard case .samePhoneNearby = ClinicDuplicateMatcher.strongMatchReason(
+            between: draft,
+            and: phoneNearby
+        ) else {
+            return XCTFail("same phone within 200m must match")
+        }
+
+        var nameAndAddress = makeClinic(
+            id: "name-address",
+            name: "happy—pet 診所",
+            address: "香港中環；皇后大道中１號",
+            coordinate: far
+        )
+        nameAndAddress.phone = ""
+        XCTAssertEqual(
+            ClinicDuplicateMatcher.strongMatchReason(between: draft, and: nameAndAddress),
+            .sameNameAndAddress
+        )
+
+        var nameNearby = makeClinic(
+            id: "name-nearby",
+            name: "HAPPY PET 診所",
+            address: "不同地址",
+            coordinate: within100
+        )
+        nameNearby.phone = "87654321"
+        guard case .sameNameNearby = ClinicDuplicateMatcher.strongMatchReason(
+            between: draft,
+            and: nameNearby
+        ) else {
+            return XCTFail("same name within 100m must match")
+        }
+
+        var phoneFar = makeClinic(
+            id: "phone-far",
+            name: "不同名稱",
+            address: "不同地址",
+            coordinate: far
+        )
+        phoneFar.phone = "21234567"
+        var nameFar = makeClinic(
+            id: "name-far",
+            name: "Happy Pet 診所",
+            address: "不同地址",
+            coordinate: far
+        )
+        nameFar.phone = "87654321"
+        XCTAssertNil(ClinicDuplicateMatcher.strongMatchReason(between: draft, and: phoneFar))
+
+        var multiPhoneDraft = makeClinic(
+            id: "multi-phone-draft",
+            name: "多電話診所",
+            address: "香港中環測試地址",
+            coordinate: origin
+        )
+        multiPhoneDraft.phone = "2698 2185 / 2687 0226"
+        var firstPhoneNearby = makeClinic(
+            id: "first-phone",
+            name: "另一名稱一",
+            address: "另一地址一",
+            coordinate: within200
+        )
+        firstPhoneNearby.phone = "2698 2185"
+        var secondPhoneNearby = makeClinic(
+            id: "second-phone",
+            name: "另一名稱二",
+            address: "另一地址二",
+            coordinate: within200
+        )
+        secondPhoneNearby.phone = "2687 0226"
+        guard case .samePhoneNearby = ClinicDuplicateMatcher.strongMatchReason(
+            between: multiPhoneDraft,
+            and: firstPhoneNearby
+        ) else {
+            return XCTFail("first phone in a production multi-number field must match")
+        }
+        guard case .samePhoneNearby = ClinicDuplicateMatcher.strongMatchReason(
+            between: multiPhoneDraft,
+            and: secondPhoneNearby
+        ) else {
+            return XCTFail("second phone in a production multi-number field must match")
+        }
+
+        XCTAssertNil(ClinicDuplicateMatcher.strongMatchReason(between: draft, and: nameFar))
+        XCTAssertNil(ClinicDuplicateMatcher.firstStrongMatch(for: draft, in: [nameFar, phoneFar]))
+
+        var insufficientDraft = makeClinic(
+            id: "insufficient-draft",
+            name: "只得名稱",
+            address: "",
+            coordinate: nil
+        )
+        insufficientDraft.phone = ""
+        var insufficientExisting = makeClinic(
+            id: "insufficient-existing",
+            name: "只得名稱",
+            address: "",
+            coordinate: nil
+        )
+        insufficientExisting.phone = ""
+        XCTAssertNil(
+            ClinicDuplicateMatcher.firstStrongMatch(
+                for: insufficientDraft,
+                in: [insufficientExisting]
+            )
+        )
+
+        XCTAssertEqual(
+            ClinicDuplicateMatcher.duplicateCandidates(
+                from: [draft, phoneAndName, phoneNearby],
+                excludingRemovedClinicIDs: [phoneAndName.id]
+            ).map(\.id),
+            [draft.id, phoneNearby.id]
+        )
+    }
+
+    func testClinicDuplicateCandidatesIgnoreDisplayFiltersAndExcludeRemovedClinics() {
+        let searchHidden = makeClinic(
+            id: "search-hidden",
+            name: "安心動物醫院",
+            address: "香港中環測試地址"
+        )
+        let availabilityHidden = makeClinic(
+            id: "availability-hidden",
+            name: "夜診候選",
+            address: "香港九龍測試地址",
+            availability: nil
+        )
+        let mapHidden = makeClinic(
+            id: "map-hidden",
+            name: "座標待確認候選",
+            address: "香港新界測試地址",
+            coordinate: nil,
+            catalogRegion: "HK"
+        )
+        let moderationRemoved = makeClinic(
+            id: "moderation-removed",
+            name: "已移除診所",
+            address: "香港測試地址"
+        )
+        let rawClinics = [searchHidden, availabilityHidden, mapHidden, moderationRemoved]
+        var activeDisplayFilter = ClinicSearchFilter()
+        activeDisplayFilter.query = "完全不相符"
+        activeDisplayFilter.availability = .open24Hours
+
+        XCTAssertTrue(activeDisplayFilter.results(from: rawClinics).isEmpty)
+        XCTAssertNil(mapHidden.coordinate)
+        XCTAssertEqual(
+            ClinicDuplicateMatcher.duplicateCandidates(
+                from: rawClinics,
+                excludingRemovedClinicIDs: [moderationRemoved.id]
+            ).map(\.id),
+            [searchHidden.id, availabilityHidden.id, mapHidden.id]
+        )
+    }
+
+    func testClinicDuplicateSubmissionGateConfirmsAndSubmitsDraftOnlyOnce() {
+        let coordinate = ClinicCoordinate(latitude: 22.3000, longitude: 114.2000)
+        let draft = makeClinic(
+            id: "draft",
+            name: "安心動物醫院",
+            address: "香港旺角彌敦道1號",
+            coordinate: coordinate
+        )
+        let existing = makeClinic(
+            id: "existing",
+            name: "安心動物醫院",
+            address: "香港旺角彌敦道1號",
+            coordinate: coordinate
+        )
+        var gate = ClinicDuplicateSubmissionGate()
+
+        guard case let .requiresConfirmation(match) = gate.decision(
+            for: draft,
+            existingClinics: [existing]
+        ) else {
+            return XCTFail("first strong match must preserve draft for confirmation")
+        }
+        XCTAssertEqual(match.clinic.id, existing.id)
+        gate.confirmDifferentClinic(draft)
+        XCTAssertEqual(gate.decision(for: draft, existingClinics: [existing]), .submit)
+        XCTAssertTrue(gate.beginSubmission(draft))
+        XCTAssertFalse(gate.beginSubmission(draft))
+        XCTAssertEqual(
+            gate.decision(for: draft, existingClinics: [existing]),
+            .alreadySubmitted
+        )
+
+        gate.finishSubmission(draft, succeeded: false)
+        XCTAssertEqual(gate.decision(for: draft, existingClinics: [existing]), .submit)
+        XCTAssertTrue(gate.beginSubmission(draft))
+        gate.finishSubmission(draft, succeeded: true)
+        XCTAssertEqual(
+            gate.decision(for: draft, existingClinics: [existing]),
+            .alreadySubmitted
+        )
+
+        XCTAssertEqual(
+            ClinicDuplicateSubmissionGate().decision(
+                for: draft,
+                existingClinics: []
+            ),
+            .submit
+        )
+
+        var multiPhoneDraft = draft
+        multiPhoneDraft.phone = "2698 2185 / 2687 0226"
+        var reorderedPhoneDraft = multiPhoneDraft
+        reorderedPhoneDraft.phone = "2687 0226 / 2698 2185"
+        var sortedFingerprintGate = ClinicDuplicateSubmissionGate()
+        sortedFingerprintGate.confirmDifferentClinic(multiPhoneDraft)
+        XCTAssertEqual(
+            sortedFingerprintGate.decision(
+                for: reorderedPhoneDraft,
+                existingClinics: [existing]
+            ),
+            .submit
+        )
+    }
+
     func testOvernightHoursUsePreviousDaySchedule() {
         let thursdayOneAM = Date(timeIntervalSince1970: 1_775_062_800)
         let clinic = makeClinic(

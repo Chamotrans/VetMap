@@ -384,6 +384,7 @@
 - Final Sol source acceptance: **ACCEPT** — the leading-prefix, Unicode confusable, and IDN findings were resolved with no remaining actionable finding. Full SwiftUI compilation remains conditional on Xcode Cloud Archive completion.
 - GitHub validation: `Backend and Config Validation` run `30726644881` completed successfully for the Round 16 parser, admin workflow, and regression gates.
 - Xcode Cloud boundary: Build run `d692046e-2991-42e1-9241-db58f0569e20` and its `Archive - iOS` action (`1e3e830e-1fab-487e-87b5-df2b3a0199f8`) were pending. No Archive success, processed-build validity, ASC attachment, review submission, public release, or device installation is claimed.
+- Later Xcode Cloud validation: The same Round 16 build and Archive action completed successfully at `01:27:27`. This proves the archive gate ran successfully but does not establish processed-build validity, ASC attachment, review submission, public release, or device installation.
 - Production and release boundary: No report was resolved, no content was removed, no Firestore or availability data was written, no network request or deploy occurred, and no ASC, public-release, or device action was performed.
 - Preserved scope: General clinic, review, and quote moderation, registration, submissions, community interaction, and all user-owned dirty/untracked files were preserved.
 
@@ -408,5 +409,38 @@
 - First Sol review: **RETURNED** — one P2 found the forecast wording placed `預計` after the date/time, contrary to the required natural Hong Kong Chinese phrase.
 - Luna correction: Changed the only new closed-label form to exact `休息中 · 預計\(formattedNextOpening(...)) 再開` and pinned standalone/XCTest expectations for `預計今日 14:00`, `預計明日 08:00`, and `預計星期三 10:00`.
 - Final Sol source acceptance: **ACCEPT** — the copy finding was resolved, all time-boundary and actual-manifest probes remained green, and no further actionable finding remained. Full iOS compilation remains conditional on Xcode Cloud Archive completion.
+- GitHub validation: `Backend and Config Validation` run `30727102606` completed successfully for the Round 17 next-opening model and regression gates.
+- Xcode Cloud validation: Build run `a3aab9dc-fed9-4a04-8cd6-676e5aa8339f` and its `Archive - iOS` action (`49b59fdb-149c-489c-b08f-6eefed71083f`) completed successfully, from `01:28:39Z` to `01:34:39Z`. This proves the archive gate ran successfully but does not establish processed-build validity, ASC attachment, review submission, public release, or device installation.
 - Production and release boundary: No availability or manifest data, Firestore record, Firebase deployment, ASC workflow, public release, or device app was changed. No network request or production action was performed.
 - Preserved scope: Availability filters and sorting, registration, submissions, community interaction, moderation, and all user-owned dirty/untracked files were preserved.
+
+## Round 18 — Warn before submitting a strongly duplicated clinic
+
+- Started: 2026-08-02 (Asia/Taipei)
+- Fresh external evidence:
+  - Round 16 Xcode Cloud build run `d692046e-2991-42e1-9241-db58f0569e20` and `Archive - iOS` action `1e3e830e-1fab-487e-87b5-df2b3a0199f8` completed successfully at `01:27:27`.
+  - Round 17 GitHub `Backend and Config Validation` run `30727102606` completed successfully. Xcode Cloud build `a3aab9dc-fed9-4a04-8cd6-676e5aa8339f` and Archive action `49b59fdb-149c-489c-b08f-6eefed71083f` also completed successfully from `01:28:39Z` to `01:34:39Z`.
+- Sol plan: Add a conservative client-side duplicate warning before a clinic moderation submission, using only already-loaded public clinics and keeping the existing submission callback and backend contract unchanged.
+- Luna implementation:
+  - Added a Foundation-only matcher that compatibility-normalizes Unicode width, case, and punctuation in clinic names and addresses, and canonicalizes local, `+852`, `00852`, spaced, slashed, fullwidth, and production multi-number Hong Kong phone fields.
+  - A match is strong only for the four explicit direct branches: same phone plus same normalized name; same phone within 200 metres; same normalized name plus same normalized address; or same normalized name within 100 metres. Name alone, phone alone outside range, indirect chains, and insufficient fields fail open.
+  - Passed the full loaded public clinic array from both iPhone and iPad list flows into the add-clinic form; search filters do not narrow duplicate candidates.
+  - On the first strong match, the original draft is retained and a `可能已收錄` dialog names the existing clinic. `返回核對` leaves the form untouched; `確認是不同診所並提交` uses the unchanged async submission callback. The dialog directs corrections to the existing clinic-detail report flow.
+  - Added a pure one-shot gate: a confirmed fingerprint does not prompt again, an in-flight or successful draft cannot submit twice, and a failed attempt may retry without losing confirmation.
+  - Added XCTest plus a standalone production-model harness for normalization, distance boundaries, every strong/non-strong branch, direct-chain isolation, insufficient data, and confirmation/in-flight/success retry state. Added the harness to Xcode Cloud post-clone after the existing three fail-closed Swift gates.
+  - Added `ClinicDuplicateMatcher.swift` only to the VetMap app target; tests access it through `@testable import VetMap`.
+- Local evidence:
+  - Duplicate matcher production harness: `{"clinicDuplicateMatcher":true,"passed":34}`.
+  - Existing availability regressions remained green: semantic `{"count":52,"nextOpeningProbes":13,"passed":true}`; actual-manifest merged `15/11/4` with next-opening probes `35/35/7`; feedback `{"clinicAvailabilityFeedback":true,"passed":154}`.
+  - Node regressions passed 54/54. Catalog integrity remained `179/161/18/205/11`; the pending validator remained four additions and planned `15/11/4`.
+  - The production matcher, `ClinicsViewModel`, both SwiftUI entry points, XCTest source, and harness passed standalone Swift parsing. Xcode project membership, post-clone shell syntax, project `plutil`, and `git diff --check` passed.
+  - These are not a local iOS build; no XCTest execution or local `xcodebuild` is claimed.
+- First Sol review: **RETURNED** — two P2 findings identified production phone fields containing two complete numbers and hidden/moderation-removed clinics leaking into or disappearing from the duplicate candidate source.
+- Luna correction:
+  - Replaced the single normalized phone with a canonical phone set. Complete slash-separated numbers are compared by non-empty set intersection, while a four-plus-four value such as `2123/4567` remains one eight-digit number. The submission fingerprint sorts the set, so equivalent phone order cannot cause a second prompt or submission.
+  - Added production examples `2698 2185 / 2687 0226`, `2653 3632 / 6168 6175`, and `28828123/62158608`, and proved that either constituent number matches.
+  - Added `ClinicsViewModel.duplicateCandidateClinics`, derived from the full raw clinic collection rather than search, availability, or mappability results, and excluded the exact live `ModerationStore.shared.removedClinicIDs` set before both iPhone and iPad forms receive candidates.
+  - Added XCTest and standalone exclusion proof covering display-hidden candidates, missing-coordinate candidates, and moderation-removed IDs; the matcher harness increased to 34 passing assertions.
+- Final Sol source acceptance: **ACCEPT** — both multi-phone and moderation-removed candidate findings were resolved with no remaining actionable finding. Full iOS compilation remains conditional on Xcode Cloud Archive completion.
+- Production and release boundary: No clinic submission, Firestore write, Firebase deployment, network request, ASC workflow, public release, or device action was performed.
+- Preserved scope: The moderation submission contract, registration, clinic detail reporting, community interaction, filters, sorting, and all user-owned dirty/untracked files were preserved.

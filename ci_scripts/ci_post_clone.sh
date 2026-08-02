@@ -23,6 +23,7 @@ trap 'rm -rf "$semantic_directory"' EXIT HUP INT TERM
 semantic_binary="$semantic_directory/clinic-availability-semantics"
 compatibility_binary="$semantic_directory/clinic-availability-manifest-compatibility"
 feedback_binary="$semantic_directory/clinic-availability-feedback"
+duplicate_binary="$semantic_directory/clinic-duplicate-matcher"
 
 /usr/bin/xcrun swiftc \
   "$CI_PRIMARY_REPOSITORY_PATH/VetMap/Models/ClinicCoordinate.swift" \
@@ -52,3 +53,12 @@ feedback_binary="$semantic_directory/clinic-availability-feedback"
   -o "$feedback_binary"
 
 "$feedback_binary"
+
+/usr/bin/xcrun swiftc \
+  "$CI_PRIMARY_REPOSITORY_PATH/VetMap/Models/ClinicCoordinate.swift" \
+  "$CI_PRIMARY_REPOSITORY_PATH/VetMap/Models/VetClinic.swift" \
+  "$CI_PRIMARY_REPOSITORY_PATH/VetMap/Models/ClinicDuplicateMatcher.swift" \
+  "$CI_PRIMARY_REPOSITORY_PATH/scripts/clinic_duplicate_matcher_harness.swift" \
+  -o "$duplicate_binary"
+
+"$duplicate_binary"

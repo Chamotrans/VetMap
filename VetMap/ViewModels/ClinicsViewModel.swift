@@ -34,6 +34,13 @@ final class ClinicsViewModel {
         return pinned + rest
     }
 
+    var duplicateCandidateClinics: [VetClinic] {
+        ClinicDuplicateMatcher.duplicateCandidates(
+            from: clinics,
+            excludingRemovedClinicIDs: ModerationStore.shared.removedClinicIDs
+        )
+    }
+
     func isPinned(_ clinicID: String) -> Bool {
         pinnedIDs.contains(clinicID)
     }

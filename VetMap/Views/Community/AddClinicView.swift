@@ -2,6 +2,7 @@ import SwiftUI
 
 struct AddClinicView: View {
     var successMessage: LocalizedStringKey = "新增成功"
+    var existingClinics: [VetClinic] = []
     var onSubmit: (VetClinic) async throws -> Void
 
     @Environment(\.dismiss) private var dismiss
@@ -9,6 +10,10 @@ struct AddClinicView: View {
     @State private var viewModel = AddClinicViewModel()
     @State private var showSuccess = false
     @State private var isSubmitting = false
+    @State private var duplicateGate = ClinicDuplicateSubmissionGate()
+    @State private var duplicateMatch: ClinicDuplicateMatch?
+    @State private var pendingDuplicateDraft: VetClinic?
+    @State private var showDuplicateConfirmation = false
 
     private enum Field: Hashable {
         case name
@@ -183,6 +188,32 @@ struct AddClinicView: View {
                     successOverlay
                 }
             }
+            .confirmationDialog(
+                "可能已收錄",
+                isPresented: $showDuplicateConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button("返回核對", role: .cancel) {
+                    pendingDuplicateDraft = nil
+                    duplicateMatch = nil
+                }
+                Button("確認是不同診所並提交") {
+                    guard let draft = pendingDuplicateDraft else { return }
+                    duplicateGate.confirmDifferentClinic(draft)
+                    pendingDuplicateDraft = nil
+                    duplicateMatch = nil
+                    Task { await performSubmission(draft) }
+                }
+            } message: {
+                if let clinic = duplicateMatch?.clinic {
+                    Text(
+                        "目錄內已有「\(clinic.name)」（\(clinic.address)）。"
+                            + "如現有資料有誤，請到診所詳情使用回報功能。"
+                    )
+                } else {
+                    Text("請先返回核對；如現有資料有誤，請到診所詳情使用回報功能。")
+                }
+            }
         }
     }
 
@@ -208,12 +239,27 @@ struct AddClinicView: View {
     }
 
     private func submit() async {
-        guard let clinic = viewModel.makeClinic() else { return }
+        guard !isSubmitting, let clinic = viewModel.makeClinic() else { return }
+        switch duplicateGate.decision(for: clinic, existingClinics: existingClinics) {
+        case .submit:
+            await performSubmission(clinic)
+        case .requiresConfirmation(let match):
+            pendingDuplicateDraft = clinic
+            duplicateMatch = match
+            showDuplicateConfirmation = true
+        case .alreadySubmitted:
+            return
+        }
+    }
+
+    private func performSubmission(_ clinic: VetClinic) async {
+        guard duplicateGate.beginSubmission(clinic) else { return }
         isSubmitting = true
         defer { isSubmitting = false }
 
         do {
             try await onSubmit(clinic)
+            duplicateGate.finishSubmission(clinic, succeeded: true)
             Analytics.clinicAdded(clinic.name)
             Haptics.success()
             showSuccess = true
@@ -221,6 +267,7 @@ struct AddClinicView: View {
             showSuccess = false
             dismiss()
         } catch {
+            duplicateGate.finishSubmission(clinic, succeeded: false)
             viewModel.validationMessage = error.localizedDescription
         }
     }

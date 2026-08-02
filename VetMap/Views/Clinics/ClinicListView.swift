@@ -104,7 +104,8 @@ struct ClinicListView: View {
                 }
                 .sheet(isPresented: $isAddingClinic) {
                     AddClinicView(
-                        successMessage: "已送出，待審核"
+                        successMessage: "已送出，待審核",
+                        existingClinics: viewModel.duplicateCandidateClinics
                     ) { clinic in
                         guard await viewModel.submitClinicForModeration(clinic) else {
                             throw ClinicSubmissionError.failed(
@@ -156,7 +157,8 @@ struct ClinicListView: View {
                 }
                 .sheet(isPresented: $isAddingClinic) {
                     AddClinicView(
-                        successMessage: "已送出，待審核"
+                        successMessage: "已送出，待審核",
+                        existingClinics: viewModel.duplicateCandidateClinics
                     ) { clinic in
                         guard await viewModel.submitClinicForModeration(clinic) else {
                             throw ClinicSubmissionError.failed(
