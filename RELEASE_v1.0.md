@@ -89,6 +89,7 @@
 - Firebase Functions module load：通過
 - GitHub Actions runtime：`checkout@v7`、`setup-node@v7`、`setup-java@v5` 原生 Node 24；run `30764946922` 成功且 annotations 為空
 - plist、Xcode project 及共用 scheme XML：通過
+- App Review notes drift gate：1/1 通過，manual setup 與 ASC updater 均保留聊天室開啟、收發、訊息舉報／封鎖／刪除、帳戶刪除及 fixture 權利說明
 - `git diff --check`：通過
 
 ## Release proof

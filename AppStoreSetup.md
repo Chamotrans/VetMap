@@ -58,16 +58,23 @@ Test paths:
 3. In Clinics, open “VetMap 示範診所（非真實商戶）”
    → Add Review or Add Quote.
 4. Open its approved demo review/quote → Helpful / Report / Block Author.
-5. My → Account Settings → Delete Account.
+5. Open the demo review menu → Send Message. The Messages tab contains a
+   rights-cleared incoming demo message. Long-press it to Report, or use the
+   conversation menu to Block User.
+6. Long-press a message you sent to Delete Message.
+7. My → Account Settings → Delete Account.
 
 All new clinic, review, and quote submissions remain Pending until manually
-reviewed by an administrator. No IAP or subscription UI is exposed in v1.0.
-Location permission is optional and precise location is processed on device
-only to center the map and calculate distance.
+reviewed by an administrator. Private one-to-one messages are visible only to
+their two participants. Either participant can report a message or block the
+other user; reported messages are available to administrators for review and
+soft removal. No IAP or subscription UI is exposed in v1.0. Location permission
+is optional and precise location is processed on device only to center the map
+and calculate distance.
 
-The single demo clinic, review, and quote are VetMap-owned test fixtures. Each
-is prominently labelled as non-real and contains no third-party business name,
-medical experience, or real price claim.
+The single demo clinic, review, quote, and chat message are VetMap-owned test
+fixtures. Each is prominently labelled as non-real and contains no third-party
+business name, medical experience, or real price claim.
 
 The clinic directory contains 179 Hong Kong entries from a database created by
 VetMap or licensed for VetMap's use. All 179 entries remain searchable. 161
@@ -86,7 +93,7 @@ Password: <DELETE_TEST_PASSWORD>
 Support: https://vetmap-app.web.app/support
 ```
 
-Review 帳戶登入後必須已看得到由另一個 UID 發佈的 approved review／quote，讓 reviewer 實際測試 Helpful、Report 及 Block。
+Review 帳戶登入後必須已看得到由另一個 UID 發佈的 approved review／quote 及 rights-cleared incoming chat message，讓 reviewer 實際測試 Helpful、Report、Block、Send Message 及 Delete Message。
 
 ## App Privacy
 

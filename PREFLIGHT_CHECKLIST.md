@@ -107,7 +107,7 @@
 - [x] Privacy Policy URL：`https://vetmap-app.web.app`
 - [x] Copyright：`2026 Chamotrans`
 - [x] 「需要登入」保留勾選，填入 App Review 電郵及密碼
-- [x] 填寫 App Review Notes，說明待審投稿、舉報、封鎖、帳戶刪除及測試路徑
+- [x] 填寫 App Review Notes，說明待審投稿、Helpful、公開內容舉報／封鎖、私人聊天室收發／訊息舉報／封鎖／刪除訊息、帳戶刪除及測試路徑；manual setup 與 ASC updater 由 CI drift gate 對帳
 - [x] 完成並 Publish App Privacy 問卷；2026-07-24 live UI 再確認為 Published
 - [x] 2026-08-03 03:49 CST ASC live UI 再確認 App Privacy 已 Published；7 類資料包括「其他用戶內容」，其設定為 linked to identity、用於 App Functionality，已涵蓋私人聊天室
 - [x] 完成年齡分級問卷並如實申報 messaging/chat、UGC 及 social media；2026-08-03 live UI 顯示現行分級 `16+`（173 個國家或地區；南韓 `15+`），pre-OS 26／舊 global rating 為 `17+`，與 API `SEVENTEEN_PLUS` 對應
