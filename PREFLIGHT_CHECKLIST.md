@@ -3,7 +3,7 @@
 > App Store Connect ID: `6777361219`
 > Bundle ID: `com.vetmap.app`
 > Release candidate: GitHub `main` source candidate（待下一次 Cloud build）；ASC 暫掛 build `1.0 (12)`
-> 最後核對：2026-08-03
+> 最後核對：2026-08-09
 
 本表只記錄可驗證的目前狀態。正式按下 App Store Connect「提交以供審核」不在自動執行範圍內。
 
@@ -91,7 +91,8 @@
 - [x] 2026-08-03 03:49 CST ASC live UI 再確認 `Default` workflow 仍停用、最後修改時間為同日 02:42、最新 run 仍是 41、沒有 Run 42；Archive 使用 `VetMap` scheme，distribution preparation 選擇 App Store Connect
 - [x] 聊天室 least-privilege candidate 已推送至 GitHub `main`：commit `00fa4a2`；Actions run `30763791472` 全綠，Firestore／Storage rules 17/17
 - [x] 帳戶刪除 behavior gate 已推送至 GitHub `main`：commit `703aa12`；Actions run `30764734390` 全綠，Functions purge 2/2 及 Firestore／Storage rules 17/17
-- [ ] 等待 Apple 24 小時 upload window 重置後再跑新 Cloud candidate；Run 39 delivery 被 `ITMS-90382 Upload limit reached` 拒絕，未進入 ASC processing。連接的 Gmail 找不到該封通知，未能取得精確收件時間；以 Run 39 於 2026-08-03 01:55 CST 開始作保守基準，最早在 2026-08-04 03:00 CST 後才重試
+- [x] Apple 24 小時 upload window 已重置；Run 39 delivery 被 `ITMS-90382 Upload limit reached` 拒絕且未進入 ASC processing，以 2026-08-03 01:55 CST 為保守基準的等待期已於 2026-08-04 03:00 CST 後完成
+- [ ] 帳戶持有人明確確認 Content Rights 並指示繼續後，啟用／觸發新 Xcode Cloud candidate，守到 ASC processing 終態；2026-08-09 live read-back 顯示 workflow 仍 disabled、最新 run 仍為 41，沒有 Run 42
 - [ ] 在 TestFlight 真機完成登入、投稿、批核、公開、聊天室收發／刪除／舉報／封鎖及帳戶刪除 smoke test
 - [x] 將 build 11 掛接至 App Store Connect iOS 1.0 作暫時 release candidate
 - [x] 以 Build 12 取代 iOS 1.0 暫掛的 Build 11，API read-back 為 `READY_FOR_REVIEW`
@@ -118,6 +119,7 @@
 - [x] 將 build 7 加入 iOS 1.0 review draft
 - [x] iOS 1.0 已掛 Build 12：`e1cd2911-c0c2-4cd7-94c4-985c2295794a`
 - [x] 2026-08-03 03:49 CST live UI：iOS 1.0 為「準備審查」、Build 12 仍掛接；Review Submission draft 於 2026-07-14 06:07 建立，含 1 項，仍只顯示「提交項目草稿 (1)」，未正式送出
+- [x] 2026-08-09 ASC API read-only 核對：iOS 1.0 及 review submission 均為 `READY_FOR_REVIEW`、`submittedDate` 為空，仍掛 Build 12 `VALID`；最新 processed build 為 35，未見 Build 39 或新 candidate
 - [ ] 最後逐頁核對沒有紅色缺漏或矛盾
 - [ ] 停在「提交以供審核」按鈕前，交由帳戶持有人作最後確認
 

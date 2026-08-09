@@ -1,6 +1,6 @@
 # VetMap iOS 1.0 — Release Candidate Notes
 
-> 目前狀態：production 已恢復完整授權香港診所庫及部署聊天室 backend；ASC Build 12 暫掛 iOS 1.0；聊天室 Cloud Run 39 已成功 archive，但 delivery 被 `ITMS-90382 Upload limit reached` 拒絕，須等 Apple 24 小時 window 重置後再上載；App Privacy 已確認涵蓋聊天室，Content Rights 仍待帳戶持有人完整確認；香港修正版 iPhone／iPad screenshots 已同步到 ASC；尚未正式提交 App Review。
+> 目前狀態：production 已恢復完整授權香港診所庫及部署聊天室 backend；ASC Build 12 暫掛 iOS 1.0；聊天室 Cloud Run 39 已成功 archive，但 delivery 被 `ITMS-90382 Upload limit reached` 拒絕，Apple 24 小時 window 現已重置；須待帳戶持有人完整確認 Content Rights 並明確指示繼續後，才觸發新 Cloud candidate；App Privacy 已確認涵蓋聊天室，香港修正版 iPhone／iPad screenshots 已同步到 ASC；尚未正式提交 App Review。
 > 本文件不以舊本機 archive、舊 commit 數或未部署設定冒充 release proof。
 
 ## 首版範圍
@@ -132,5 +132,7 @@
 - 帳戶刪除 behavior gate commit `703aa12` 已推送至 GitHub `main`；Backend and Config Validation run `30764734390` 在 clean runner 完成 `SUCCESS`，同一 emulator process 內 Functions purge 2/2 及 rules 17/17 全部通過
 - 上述 candidate commit `00fa4a2` 已推送至 GitHub `main`；Backend and Config Validation run `30763791472` 全綠。Xcode Cloud workflow 仍保持 disabled，沒有在 upload quota 期間建立新 run
 - 下一個 Cloud candidate 必須在 upload limit 重置後取得 ASC processing 及完整真機聊天室 smoke test，才可取代上面的 Build 12 baseline
+- 2026-08-09 read-only refresh：GitHub `main`／`origin/main` 均為 `530313a`，run `30764998963` 成功；ASC iOS 1.0 及 review submission 均為 `READY_FOR_REVIEW`、`submittedDate` 為空，仍掛 Build 12 `VALID`；最新 processed build 仍為 35，workflow 仍 disabled，最新 Cloud run 仍為 41
+- 同日實體 iPhone「是條小狗」為 paired／available；未安裝、啟動或冒充新 runtime proof。ASC browser sessions 已逾期，故以 GET-only ASC API 作窄範圍 live read-back；沒有觸發 Cloud、Apple upload、ASC mutation、Firebase deployment、App Review submission 或公開發布
 
 完整進度以 [PREFLIGHT_CHECKLIST.md](PREFLIGHT_CHECKLIST.md) 為準。
