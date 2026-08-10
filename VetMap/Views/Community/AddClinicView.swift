@@ -3,8 +3,9 @@ import SwiftUI
 struct AddClinicView: View {
     var successMessage: LocalizedStringKey = "新增成功"
     var existingClinics: [VetClinic] = []
-    var onSubmit: (VetClinic) async throws -> Void
+    var onSubmit: (VetClinic) async -> CommunitySubmissionResult
 
+    @ObservedObject private var auth = AuthViewModel.shared
     @Environment(\.dismiss) private var dismiss
     @FocusState private var focusedField: Field?
     @State private var viewModel = AddClinicViewModel()
@@ -14,6 +15,10 @@ struct AddClinicView: View {
     @State private var duplicateMatch: ClinicDuplicateMatch?
     @State private var pendingDuplicateDraft: VetClinic?
     @State private var showDuplicateConfirmation = false
+    @State private var showLogin = false
+    @State private var didAuthenticateDuringLogin = false
+    @State private var submissionContinuation =
+        AuthenticatedActionContinuation<VetClinic>()
 
     private enum Field: Hashable {
         case name
@@ -215,6 +220,15 @@ struct AddClinicView: View {
                 }
             }
         }
+        .fullScreenCover(isPresented: $showLogin, onDismiss: loginDidDismiss) {
+            LoginView(authViewModel: auth)
+        }
+        .onChange(of: auth.authState) { _, _ in
+            authenticationDidChange()
+        }
+        .onChange(of: auth.user?.uid) { _, _ in
+            authenticationDidChange()
+        }
     }
 
     private var successOverlay: some View {
@@ -240,6 +254,26 @@ struct AddClinicView: View {
 
     private func submit() async {
         guard !isSubmitting, let clinic = viewModel.makeClinic() else { return }
+
+        switch submissionContinuation.request(
+            clinic,
+            authentication: authenticationPhase
+        ) {
+        case .perform(let authenticatedDraft):
+            await prepareSubmission(authenticatedDraft)
+        case .waitForAuthentication:
+            viewModel.validationMessage = String(
+                localized: "正在確認登入狀態，草稿已保留。"
+            )
+        case .presentLogin:
+            viewModel.validationMessage = String(
+                localized: "登入或註冊後會自動繼續提交，草稿不會遺失。"
+            )
+            presentLogin()
+        }
+    }
+
+    private func prepareSubmission(_ clinic: VetClinic) async {
         switch duplicateGate.decision(for: clinic, existingClinics: existingClinics) {
         case .submit:
             await performSubmission(clinic)
@@ -255,21 +289,96 @@ struct AddClinicView: View {
     private func performSubmission(_ clinic: VetClinic) async {
         guard duplicateGate.beginSubmission(clinic) else { return }
         isSubmitting = true
-        defer { isSubmitting = false }
+        let result = await onSubmit(clinic)
+        isSubmitting = false
+        guard !Task.isCancelled else {
+            duplicateGate.finishSubmission(clinic, succeeded: false)
+            return
+        }
 
-        do {
-            try await onSubmit(clinic)
+        switch result {
+        case .submitted:
             duplicateGate.finishSubmission(clinic, succeeded: true)
+            submissionContinuation.cancel()
             Analytics.clinicAdded(clinic.name)
             Haptics.success()
             showSuccess = true
             try? await Task.sleep(for: .milliseconds(800))
             showSuccess = false
             dismiss()
-        } catch {
+        case .authenticationRequired:
             duplicateGate.finishSubmission(clinic, succeeded: false)
-            viewModel.validationMessage = error.localizedDescription
+            submissionContinuation.deferUntilAuthenticated(clinic)
+            viewModel.validationMessage = String(
+                localized: "登入或註冊後會自動繼續提交，草稿不會遺失。"
+            )
+            presentLogin()
+        case .failed(let message):
+            duplicateGate.finishSubmission(clinic, succeeded: false)
+            submissionContinuation.cancel()
+            viewModel.validationMessage = message
         }
+    }
+
+    private var authenticationPhase: CommunityAuthenticationPhase {
+        switch auth.authState {
+        case .loading:
+            return .loading
+        case .signedOut:
+            return .signedOut
+        case .signedIn:
+            guard let userID = auth.user?.uid, !userID.isEmpty else { return .loading }
+            return .signedIn(userID: userID)
+        }
+    }
+
+    private func authenticationDidChange() {
+        guard submissionContinuation.hasPendingAction else { return }
+        switch authenticationPhase {
+        case .loading:
+            break
+        case .signedOut:
+            presentLogin()
+        case .signedIn:
+            if showLogin {
+                didAuthenticateDuringLogin = true
+                showLogin = false
+            } else {
+                resumeAfterLogin()
+            }
+        }
+    }
+
+    private func presentLogin() {
+        if !showLogin {
+            didAuthenticateDuringLogin = false
+        }
+        showLogin = true
+    }
+
+    private func loginDidDismiss() {
+        guard didAuthenticateDuringLogin else {
+            submissionContinuation.cancel()
+            viewModel.validationMessage = String(
+                localized: "草稿已保留；登入後可再次提交。"
+            )
+            return
+        }
+        didAuthenticateDuringLogin = false
+        resumeAfterLogin()
+    }
+
+    private func resumeAfterLogin() {
+        guard let clinic = submissionContinuation.takeIfAuthenticated(authenticationPhase) else {
+            if authenticationPhase == .signedOut {
+                submissionContinuation.cancel()
+                viewModel.validationMessage = String(
+                    localized: "草稿已保留；登入後可再次提交。"
+                )
+            }
+            return
+        }
+        Task { await prepareSubmission(clinic) }
     }
 
     @ViewBuilder
@@ -292,5 +401,5 @@ struct AddClinicView: View {
 }
 
 #Preview {
-    AddClinicView { _ in }
+    AddClinicView { _ in .submitted }
 }

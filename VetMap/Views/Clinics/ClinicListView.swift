@@ -25,16 +25,6 @@ private enum ClinicBrowseMode: String, CaseIterable {
     }
 }
 
-private enum ClinicSubmissionError: LocalizedError {
-    case failed(String)
-
-    var errorDescription: String? {
-        switch self {
-        case .failed(let message): message
-        }
-    }
-}
-
 struct ClinicListView: View {
     @ObservedObject private var authViewModel = AuthViewModel.shared
     @State private var viewModel = ClinicsViewModel()
@@ -42,6 +32,7 @@ struct ClinicListView: View {
     @State private var isAddingClinic = false
     @State private var showLogin = false
     @State private var addClinicAfterLogin = false
+    @State private var didAuthenticateForAddClinic = false
     @AppStorage("clinicViewMode") private var rawViewMode = ClinicBrowseMode.detail.rawValue
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
@@ -107,25 +98,20 @@ struct ClinicListView: View {
                         successMessage: "已送出，待審核",
                         existingClinics: viewModel.duplicateCandidateClinics
                     ) { clinic in
-                        guard await viewModel.submitClinicForModeration(clinic) else {
-                            throw ClinicSubmissionError.failed(
-                                viewModel.storageError ?? "暫時無法提交診所資料。"
-                            )
-                        }
+                        await viewModel.submitClinicForModeration(clinic)
                     }
                 }
-                .fullScreenCover(isPresented: $showLogin, onDismiss: {
-                    if authViewModel.authState != .signedIn {
-                        addClinicAfterLogin = false
-                    }
-                }) {
+                .fullScreenCover(
+                    isPresented: $showLogin,
+                    onDismiss: addClinicLoginDidDismiss
+                ) {
                     LoginView(authViewModel: authViewModel)
                 }
-                .onChange(of: authViewModel.authState) { _, newState in
-                    guard newState == .signedIn, addClinicAfterLogin else { return }
-                    addClinicAfterLogin = false
-                    showLogin = false
-                    isAddingClinic = true
+                .onChange(of: authViewModel.authState) { _, _ in
+                    addClinicAuthenticationDidChange()
+                }
+                .onChange(of: authViewModel.user?.uid) { _, _ in
+                    addClinicAuthenticationDidChange()
                 }
         }
     }
@@ -160,25 +146,20 @@ struct ClinicListView: View {
                         successMessage: "已送出，待審核",
                         existingClinics: viewModel.duplicateCandidateClinics
                     ) { clinic in
-                        guard await viewModel.submitClinicForModeration(clinic) else {
-                            throw ClinicSubmissionError.failed(
-                                viewModel.storageError ?? "暫時無法提交診所資料。"
-                            )
-                        }
+                        await viewModel.submitClinicForModeration(clinic)
                     }
                 }
-                .fullScreenCover(isPresented: $showLogin, onDismiss: {
-                    if authViewModel.authState != .signedIn {
-                        addClinicAfterLogin = false
-                    }
-                }) {
+                .fullScreenCover(
+                    isPresented: $showLogin,
+                    onDismiss: addClinicLoginDidDismiss
+                ) {
                     LoginView(authViewModel: authViewModel)
                 }
-                .onChange(of: authViewModel.authState) { _, newState in
-                    guard newState == .signedIn, addClinicAfterLogin else { return }
-                    addClinicAfterLogin = false
-                    showLogin = false
-                    isAddingClinic = true
+                .onChange(of: authViewModel.authState) { _, _ in
+                    addClinicAuthenticationDidChange()
+                }
+                .onChange(of: authViewModel.user?.uid) { _, _ in
+                    addClinicAuthenticationDidChange()
                 }
         } detail: {
             if let clinic = clinicForDetail {
@@ -372,9 +353,38 @@ struct ClinicListView: View {
     }
 
     private func requestAddClinic() {
-        guard authViewModel.authState == .signedIn else {
+        guard authViewModel.authState == .signedIn,
+              let userID = authViewModel.user?.uid,
+              !userID.isEmpty else {
             addClinicAfterLogin = true
+            didAuthenticateForAddClinic = false
             showLogin = true
+            return
+        }
+        isAddingClinic = true
+    }
+
+    private func addClinicAuthenticationDidChange() {
+        guard addClinicAfterLogin,
+              authViewModel.authState == .signedIn,
+              let userID = authViewModel.user?.uid,
+              !userID.isEmpty else {
+            return
+        }
+        didAuthenticateForAddClinic = true
+        showLogin = false
+    }
+
+    private func addClinicLoginDidDismiss() {
+        guard addClinicAfterLogin else { return }
+        defer {
+            addClinicAfterLogin = false
+            didAuthenticateForAddClinic = false
+        }
+        guard didAuthenticateForAddClinic,
+              authViewModel.authState == .signedIn,
+              let userID = authViewModel.user?.uid,
+              !userID.isEmpty else {
             return
         }
         isAddingClinic = true

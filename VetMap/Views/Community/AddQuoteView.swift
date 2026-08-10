@@ -3,6 +3,7 @@ import SwiftUI
 struct AddQuoteView: View {
     let viewModel: QuoteViewModel
 
+    @ObservedObject private var auth = AuthViewModel.shared
     @Environment(\.dismiss) private var dismiss
     @FocusState private var focusedField: Field?
     @State private var treatmentType = "疫苗接種"
@@ -13,6 +14,10 @@ struct AddQuoteView: View {
     @State private var validationMessage: String?
     @State private var isSubmitting = false
     @State private var showSubmittedNotice = false
+    @State private var showLogin = false
+    @State private var didAuthenticateDuringLogin = false
+    @State private var submissionContinuation =
+        AuthenticatedActionContinuation<QuoteDraft>()
 
     private let treatmentTypes = [
         "疫苗接種", "一般診療", "外科手術", "牙科", "腫瘤諮詢",
@@ -130,6 +135,15 @@ struct AddQuoteView: View {
                 }
             }
         }
+        .fullScreenCover(isPresented: $showLogin, onDismiss: loginDidDismiss) {
+            LoginView(authViewModel: auth)
+        }
+        .onChange(of: auth.authState) { _, _ in
+            authenticationDidChange()
+        }
+        .onChange(of: auth.user?.uid) { _, _ in
+            authenticationDidChange()
+        }
     }
 
     private var canSubmit: Bool {
@@ -156,23 +170,108 @@ struct AddQuoteView: View {
             return
         }
 
-        let actCost = isNotTreated ? nil : parsedActualCost
-
-        isSubmitting = true
-        let succeeded = await viewModel.addQuote(
+        let draft = QuoteDraft(
             treatmentType: treatmentType,
             estimatedCost: estCost,
-            actualCost: actCost,
+            actualCost: isNotTreated ? nil : parsedActualCost,
             currency: "HKD",
             notes: notes
         )
-        isSubmitting = false
 
-        if succeeded {
-            showSubmittedNotice = true
-        } else {
-            validationMessage = viewModel.storageError ?? "暫時無法提交報價。"
+        switch submissionContinuation.request(
+            draft,
+            authentication: authenticationPhase
+        ) {
+        case .perform(let authenticatedDraft):
+            await performSubmission(authenticatedDraft)
+        case .waitForAuthentication:
+            validationMessage = String(localized: "正在確認登入狀態，草稿已保留。")
+        case .presentLogin:
+            validationMessage = String(
+                localized: "登入或註冊後會自動繼續提交，草稿不會遺失。"
+            )
+            presentLogin()
         }
+    }
+
+    private func performSubmission(_ draft: QuoteDraft) async {
+        guard !isSubmitting else { return }
+        isSubmitting = true
+        let result = await viewModel.addQuote(draft)
+        isSubmitting = false
+        guard !Task.isCancelled else { return }
+
+        switch result {
+        case .submitted:
+            submissionContinuation.cancel()
+            showSubmittedNotice = true
+        case .authenticationRequired:
+            submissionContinuation.deferUntilAuthenticated(draft)
+            validationMessage = String(
+                localized: "登入或註冊後會自動繼續提交，草稿不會遺失。"
+            )
+            presentLogin()
+        case .failed(let message):
+            submissionContinuation.cancel()
+            validationMessage = message
+        }
+    }
+
+    private var authenticationPhase: CommunityAuthenticationPhase {
+        switch auth.authState {
+        case .loading:
+            return .loading
+        case .signedOut:
+            return .signedOut
+        case .signedIn:
+            guard let userID = auth.user?.uid, !userID.isEmpty else { return .loading }
+            return .signedIn(userID: userID)
+        }
+    }
+
+    private func authenticationDidChange() {
+        guard submissionContinuation.hasPendingAction else { return }
+        switch authenticationPhase {
+        case .loading:
+            break
+        case .signedOut:
+            presentLogin()
+        case .signedIn:
+            if showLogin {
+                didAuthenticateDuringLogin = true
+                showLogin = false
+            } else {
+                resumeAfterLogin()
+            }
+        }
+    }
+
+    private func presentLogin() {
+        if !showLogin {
+            didAuthenticateDuringLogin = false
+        }
+        showLogin = true
+    }
+
+    private func loginDidDismiss() {
+        guard didAuthenticateDuringLogin else {
+            submissionContinuation.cancel()
+            validationMessage = String(localized: "草稿已保留；登入後可再次提交。")
+            return
+        }
+        didAuthenticateDuringLogin = false
+        resumeAfterLogin()
+    }
+
+    private func resumeAfterLogin() {
+        guard let draft = submissionContinuation.takeIfAuthenticated(authenticationPhase) else {
+            if authenticationPhase == .signedOut {
+                submissionContinuation.cancel()
+                validationMessage = String(localized: "草稿已保留；登入後可再次提交。")
+            }
+            return
+        }
+        Task { await performSubmission(draft) }
     }
 
     private func trimmed(_ value: String) -> String {

@@ -8,6 +8,7 @@ struct LoginView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var isLoading = false
+    @State private var isShowingPasswordReset = false
 
     var body: some View {
         NavigationStack {
@@ -18,6 +19,7 @@ struct LoginView: View {
                     VStack(spacing: 16) {
                         emailField
                         passwordField
+                        forgotPasswordButton
                     }
                     .padding(.horizontal, 16)
 
@@ -36,6 +38,12 @@ struct LoginView: View {
             .background(AppTheme.screenBackground)
             .onAppear {
                 authViewModel.clearError()
+            }
+            .sheet(isPresented: $isShowingPasswordReset) {
+                PasswordResetView(
+                    authViewModel: authViewModel,
+                    initialEmail: email
+                )
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -109,6 +117,19 @@ struct LoginView: View {
             RoundedRectangle(cornerRadius: 10, style: .continuous)
                 .stroke(AppTheme.hairline, lineWidth: 1)
         )
+    }
+
+    private var forgotPasswordButton: some View {
+        Button("忘記密碼？") {
+            isShowingPasswordReset = true
+        }
+        .font(.subheadline.weight(.semibold))
+        .foregroundStyle(AppTheme.primary)
+        .frame(maxWidth: .infinity, minHeight: 44, alignment: .trailing)
+        .contentShape(Rectangle())
+        .disabled(isLoading || authViewModel.isAuthenticating)
+        .accessibilityIdentifier("login.forgotPassword")
+        .accessibilityHint("開啟重設密碼頁面")
     }
 
     // MARK: - Error
@@ -195,6 +216,179 @@ struct LoginView: View {
             .font(.subheadline)
         }
         .accessibilityLabel("註冊新帳戶")
+    }
+}
+
+private struct PasswordResetView: View {
+    private enum AccessibilityTarget: Hashable {
+        case fieldError
+        case requestError
+        case success
+    }
+
+    @ObservedObject var authViewModel: AuthViewModel
+    @Environment(\.dismiss) private var dismiss
+    @AccessibilityFocusState private var accessibilityFocus: AccessibilityTarget?
+
+    @State private var email: String
+    @State private var fieldError: String?
+    @State private var requestError: String?
+    @State private var isSending = false
+    @State private var isAccepted = false
+
+    init(authViewModel: AuthViewModel, initialEmail: String) {
+        self.authViewModel = authViewModel
+        _email = State(initialValue: initialEmail)
+    }
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    Text("輸入你的帳戶電子郵件，我們會傳送重設密碼連結。")
+                        .font(.body)
+                        .foregroundStyle(.secondary)
+
+                    emailSection
+
+                    if isAccepted {
+                        successMessage
+                    } else {
+                        requestErrorMessage
+                        sendButton
+                    }
+                }
+                .padding(20)
+            }
+            .background(AppTheme.screenBackground)
+            .navigationTitle("重設密碼")
+            .navigationBarTitleDisplayMode(.inline)
+            .interactiveDismissDisabled(isSending)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(isAccepted ? "完成" : "取消") {
+                        dismiss()
+                    }
+                    .disabled(isSending)
+                    .accessibilityIdentifier("passwordReset.dismiss")
+                }
+            }
+        }
+    }
+
+    private var emailSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            TextField("電子郵件", text: $email)
+                .textContentType(.emailAddress)
+                .keyboardType(.emailAddress)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .padding(14)
+                .background(
+                    Color(.systemBackground),
+                    in: RoundedRectangle(cornerRadius: 10, style: .continuous)
+                )
+                .overlay {
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .stroke(fieldError == nil ? AppTheme.hairline : Color.red, lineWidth: 1)
+                }
+                .disabled(isSending || isAccepted)
+                .accessibilityIdentifier("passwordReset.email")
+                .onChange(of: email) {
+                    fieldError = nil
+                    requestError = nil
+                }
+
+            if let fieldError {
+                Label(fieldError, systemImage: "exclamationmark.circle.fill")
+                    .font(.callout)
+                    .foregroundStyle(.red)
+                    .accessibilityIdentifier("passwordReset.emailError")
+                    .accessibilityFocused($accessibilityFocus, equals: .fieldError)
+            }
+        }
+    }
+
+    private var successMessage: some View {
+        Label {
+            Text("如果此電子郵件已註冊，你稍後會收到重設密碼電郵。請檢查收件箱及垃圾郵件。")
+        } icon: {
+            Image(systemName: "checkmark.circle.fill")
+                .foregroundStyle(.green)
+        }
+        .font(.callout)
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.green.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
+        .accessibilityIdentifier("passwordReset.success")
+        .accessibilityFocused($accessibilityFocus, equals: .success)
+    }
+
+    @ViewBuilder
+    private var requestErrorMessage: some View {
+        if let requestError {
+            Label(requestError, systemImage: "exclamationmark.triangle.fill")
+                .font(.callout)
+                .foregroundStyle(.orange)
+                .padding(14)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color.orange.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
+                .accessibilityIdentifier("passwordReset.requestError")
+                .accessibilityFocused($accessibilityFocus, equals: .requestError)
+        }
+    }
+
+    private var sendButton: some View {
+        Button {
+            sendResetEmail()
+        } label: {
+            HStack(spacing: 8) {
+                if isSending {
+                    ProgressView()
+                        .tint(.white)
+                }
+                Text(isSending ? "正在傳送重設密碼電郵" : "傳送重設密碼電郵")
+                    .fontWeight(.semibold)
+            }
+            .frame(maxWidth: .infinity, minHeight: 48)
+        }
+        .foregroundStyle(.white)
+        .background(AppTheme.primary, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .disabled(isSending)
+        .accessibilityIdentifier("passwordReset.send")
+        .accessibilityLabel(isSending ? "正在傳送重設密碼電郵" : "傳送重設密碼電郵")
+    }
+
+    private func sendResetEmail() {
+        guard !isSending else { return }
+
+        let trimmedEmail = email.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedEmail.isEmpty else {
+            fieldError = String(localized: "請輸入電子郵件。")
+            accessibilityFocus = .fieldError
+            return
+        }
+
+        isSending = true
+        fieldError = nil
+        requestError = nil
+
+        Task {
+            let outcome = await authViewModel.sendPasswordReset(email: trimmedEmail)
+            isSending = false
+
+            switch outcome {
+            case .accepted:
+                isAccepted = true
+                accessibilityFocus = .success
+            case .invalidEmail:
+                fieldError = String(localized: "電子郵件格式不正確。")
+                accessibilityFocus = .fieldError
+            case .failed(let message):
+                requestError = message
+                accessibilityFocus = .requestError
+            }
+        }
     }
 }
 

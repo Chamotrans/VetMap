@@ -24,6 +24,12 @@ enum AuthState: Equatable {
     case signedIn
 }
 
+enum PasswordResetOutcome: Equatable {
+    case accepted
+    case invalidEmail
+    case failed(String)
+}
+
 enum AccountAuthProvider {
     case email
     case apple
@@ -238,6 +244,37 @@ final class AuthViewModel: NSObject, ObservableObject {
         }
         #else
         errorMessage = AuthOperationError.firebaseUnavailable.localizedDescription
+        #endif
+    }
+
+    func sendPasswordReset(email: String) async -> PasswordResetOutcome {
+        let normalizedEmail = email
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+
+        guard Self.isValidEmail(normalizedEmail) else {
+            return .invalidEmail
+        }
+
+        #if canImport(FirebaseAuth)
+        guard isFirebaseConfigured else {
+            return .failed(String(localized: "重設密碼服務暫時未能使用，請稍後再試。"))
+        }
+
+        do {
+            let auth = Auth.auth()
+            let previousLanguageCode = auth.languageCode
+            auth.languageCode = Self.passwordResetLanguageCode(
+                for: Bundle.main.preferredLocalizations.first
+            )
+            defer { auth.languageCode = previousLanguageCode }
+            try await auth.sendPasswordReset(withEmail: normalizedEmail)
+            return .accepted
+        } catch {
+            return passwordResetOutcome(for: error)
+        }
+        #else
+        return .failed(String(localized: "重設密碼服務暫時未能使用，請稍後再試。"))
         #endif
     }
 
@@ -700,6 +737,26 @@ final class AuthViewModel: NSObject, ObservableObject {
     // MARK: - Error and crypto helpers
 
     #if canImport(FirebaseAuth)
+    private func passwordResetOutcome(for error: Error) -> PasswordResetOutcome {
+        let nsError = error as NSError
+        guard let code = AuthErrorCode(rawValue: nsError.code) else {
+            return .failed(String(localized: "暫時未能傳送重設密碼電郵，請稍後再試。"))
+        }
+
+        switch code {
+        case .userNotFound, .userDisabled:
+            return .accepted
+        case .invalidEmail:
+            return .invalidEmail
+        case .networkError:
+            return .failed(String(localized: "網絡錯誤，請檢查連線後再試。"))
+        case .tooManyRequests:
+            return .failed(String(localized: "請求過於頻繁，請稍後再試。"))
+        default:
+            return .failed(String(localized: "暫時未能傳送重設密碼電郵，請稍後再試。"))
+        }
+    }
+
     private func userFacingMessage(for error: Error) -> String {
         if let operationError = error as? AuthOperationError {
             return operationError.localizedDescription
@@ -738,6 +795,36 @@ final class AuthViewModel: NSObject, ObservableObject {
         (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
     }
     #endif
+
+    private static func isValidEmail(_ email: String) -> Bool {
+        email.range(
+            of: #"^[^\s@]+@[^\s@]+\.[^\s@]+$"#,
+            options: .regularExpression
+        ) != nil
+    }
+
+    private static func passwordResetLanguageCode(
+        for preferredLocalization: String?
+    ) -> String {
+        let identifier = (preferredLocalization ?? "en")
+            .replacingOccurrences(of: "_", with: "-")
+            .lowercased()
+
+        if identifier.contains("hant")
+            || identifier.hasPrefix("zh-tw")
+            || identifier.hasPrefix("zh-hk")
+            || identifier.hasPrefix("zh-mo") {
+            return "zh-TW"
+        }
+
+        if identifier.contains("hans")
+            || identifier.hasPrefix("zh-cn")
+            || identifier.hasPrefix("zh-sg") {
+            return "zh-CN"
+        }
+
+        return "en"
+    }
 
     private func formattedName(from components: PersonNameComponents?) -> String? {
         guard let components else { return nil }

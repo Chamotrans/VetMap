@@ -110,6 +110,13 @@ struct ProfileTab: View {
             .accessibilityHint("開啟登入頁面")
 
             NavigationLink {
+                SupportContactView()
+            } label: {
+                Label("支援與聯絡", systemImage: "questionmark.circle")
+                    .font(.subheadline.weight(.semibold))
+            }
+
+            NavigationLink {
                 AboutVetMapView()
             } label: {
                 Label("關於 VetMap", systemImage: "info.circle")
@@ -213,12 +220,6 @@ struct ProfileTab: View {
                 }
             }
 
-            Section("顯示") {
-                Toggle(isOn: .constant(false)) {
-                    Label("高對比模式", systemImage: "circle.lefthalf.filled")
-                }
-            }
-
             Section("設定") {
                 NavigationLink {
                     AccountSettingsView(authViewModel: authViewModel)
@@ -228,6 +229,12 @@ struct ProfileTab: View {
 
                 Link(destination: URL(string: "https://vetmap-app.web.app")!) {
                     Label("隱私政策", systemImage: "hand.raised.fill")
+                }
+
+                NavigationLink {
+                    SupportContactView()
+                } label: {
+                    Label("支援與聯絡", systemImage: "questionmark.circle.fill")
                 }
 
                 NavigationLink {
@@ -650,6 +657,40 @@ private struct CatalogFavoritesView: View {
                 await favorites.setSaved(itemID, isSaved: false)
             }
         }
+    }
+}
+
+private struct SupportContactView: View {
+    private let supportURL = URL(string: "https://vetmap-app.web.app/support")!
+    private let supportEmailURL = URL(string: "mailto:vetmap.app@gmail.com")!
+
+    var body: some View {
+        List {
+            Section("取得協助") {
+                Text("查看常見問題、帳戶支援及私隱資料要求的處理方法。")
+
+                Link(destination: supportURL) {
+                    Label("開啟 VetMap 支援網頁", systemImage: "safari")
+                }
+                .accessibilityHint("在瀏覽器開啟 VetMap 支援網頁")
+            }
+
+            Section("聯絡 VetMap") {
+                Text("vetmap.app@gmail.com")
+                    .textSelection(.enabled)
+
+                Link(destination: supportEmailURL) {
+                    Label("電郵支援", systemImage: "envelope.fill")
+                }
+                .accessibilityHint("建立寄給 VetMap 支援團隊的電郵")
+            }
+
+            Section("診所資料更正") {
+                Text("如發現診所地址、電話或營運狀態有誤，可在診所詳情頁舉報，或提交更新資料供審核。")
+            }
+        }
+        .navigationTitle("支援與聯絡")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

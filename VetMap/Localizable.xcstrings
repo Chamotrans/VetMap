@@ -1,6 +1,646 @@
 {
   "sourceLanguage": "zh-Hant",
   "strings": {
+    "忘記密碼？": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forgot password?"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "忘记密码？"
+          }
+        }
+      }
+    },
+    "開啟重設密碼頁面": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens the password reset screen"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开重设密码页面"
+          }
+        }
+      }
+    },
+    "輸入你的帳戶電子郵件，我們會傳送重設密碼連結。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter your account email and we'll send a password reset link."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "输入你的账户电子邮件，我们会发送重设密码链接。"
+          }
+        }
+      }
+    },
+    "重設密碼": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset Password"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重设密码"
+          }
+        }
+      }
+    },
+    "請輸入電子郵件。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Please enter your email."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请输入电子邮件。"
+          }
+        }
+      }
+    },
+    "如果此電子郵件已註冊，你稍後會收到重設密碼電郵。請檢查收件箱及垃圾郵件。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If this email is registered, you'll receive a password reset email shortly. Check your inbox and junk folder."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "如果此电子邮件已注册，你稍后会收到重设密码邮件。请检查收件箱和垃圾邮件。"
+          }
+        }
+      }
+    },
+    "傳送重設密碼電郵": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send Password Reset Email"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "发送重设密码邮件"
+          }
+        }
+      }
+    },
+    "電子郵件格式不正確。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The email address is invalid."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "电子邮件格式不正确。"
+          }
+        }
+      }
+    },
+    "重設密碼服務暫時未能使用，請稍後再試。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Password reset is temporarily unavailable. Please try again later."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重设密码服务暂时不可用，请稍后再试。"
+          }
+        }
+      }
+    },
+    "暫時未能傳送重設密碼電郵，請稍後再試。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unable to send the password reset email right now. Please try again later."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂时无法发送重设密码邮件，请稍后再试。"
+          }
+        }
+      }
+    },
+    "網絡錯誤，請檢查連線後再試。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Network error. Check your connection and try again."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "网络错误，请检查连接后重试。"
+          }
+        }
+      }
+    },
+    "請求過於頻繁，請稍後再試。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Too many requests. Please try again later."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请求过于频繁，请稍后再试。"
+          }
+        }
+      }
+    },
+    "正在傳送重設密碼電郵": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sending Password Reset Email"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在发送重设密码邮件"
+          }
+        }
+      }
+    },
+    "暫時無法提交報價。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unable to submit the quote right now."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂时无法提交报价。"
+          }
+        }
+      }
+    },
+    "暫時無法提交評價。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unable to submit the review right now."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂时无法提交评价。"
+          }
+        }
+      }
+    },
+    "正在確認登入狀態，草稿已保留。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Checking your sign-in status. Your draft is saved."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在确认登录状态，草稿已保留。"
+          }
+        }
+      }
+    },
+    "登入或註冊後會自動繼續提交，草稿不會遺失。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your draft is safe. Submission will continue automatically after you sign in or register."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "登录或注册后会自动继续提交，草稿不会丢失。"
+          }
+        }
+      }
+    },
+    "草稿已保留；登入後可再次提交。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your draft is saved. Sign in and submit it again when you are ready."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "草稿已保留；登录后可再次提交。"
+          }
+        }
+      }
+    },
+    "請先登入後再提交報價。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Please sign in before submitting a quote."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请先登录后再提交报价。"
+          }
+        }
+      }
+    },
+    "請先登入後再提交評價。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Please sign in before submitting a review."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请先登录后再提交评价。"
+          }
+        }
+      }
+    },
+    "請先登入後再提交診所資料。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Please sign in before submitting clinic information."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请先登录后再提交诊所数据。"
+          }
+        }
+      }
+    },
+    "確認操作": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm Action"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "确认操作"
+          }
+        }
+      }
+    },
+    "確認舉報": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm Report"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "确认举报"
+          }
+        }
+      }
+    },
+    "確認封鎖": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm Block"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "确认屏蔽"
+          }
+        }
+      }
+    },
+    "確認回報": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm Feedback"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "确认反馈"
+          }
+        }
+      }
+    },
+    "確認舉報此評價？": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Report this review?"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "举报此评价？"
+          }
+        }
+      }
+    },
+    "確認舉報此報價？": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Report this quote?"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "举报此报价？"
+          }
+        }
+      }
+    },
+    "確認舉報此診所？": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Report this clinic?"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "举报此诊所？"
+          }
+        }
+      }
+    },
+    "確認封鎖此作者？": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Block this author?"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "屏蔽此作者？"
+          }
+        }
+      }
+    },
+    "確認回報營業資料？": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Submit this opening-hours feedback?"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "提交此营业数据反馈？"
+          }
+        }
+      }
+    },
+    "支援與聯絡": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Support & Contact"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "支持与联系"
+          }
+        }
+      }
+    },
+    "取得協助": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get Help"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "获取帮助"
+          }
+        }
+      }
+    },
+    "查看常見問題、帳戶支援及私隱資料要求的處理方法。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "View answers to common questions and how account support and privacy data requests are handled."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "查看常见问题、账户支持及隐私数据请求的处理方法。"
+          }
+        }
+      }
+    },
+    "開啟 VetMap 支援網頁": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open VetMap Support Website"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开 VetMap 支持网站"
+          }
+        }
+      }
+    },
+    "在瀏覽器開啟 VetMap 支援網頁": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens the VetMap support website in your browser"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在浏览器打开 VetMap 支持网站"
+          }
+        }
+      }
+    },
+    "聯絡 VetMap": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contact VetMap"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "联系 VetMap"
+          }
+        }
+      }
+    },
+    "電郵支援": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Email Support"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "邮件支持"
+          }
+        }
+      }
+    },
+    "建立寄給 VetMap 支援團隊的電郵": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Composes an email to the VetMap support team"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "创建发给 VetMap 支持团队的邮件"
+          }
+        }
+      }
+    },
+    "診所資料更正": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clinic Data Corrections"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "诊所数据更正"
+          }
+        }
+      }
+    },
+    "如發現診所地址、電話或營運狀態有誤，可在診所詳情頁舉報，或提交更新資料供審核。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If a clinic's address, phone number, or operating status is incorrect, report it from the clinic details page or submit an update for review."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "如发现诊所地址、电话或营业状态有误，可在诊所详情页举报，或提交更新数据供审核。"
+          }
+        }
+      }
+    },
     "VetMap 社群": {
       "localizations": {
         "en": {

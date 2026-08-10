@@ -55,23 +55,19 @@ final class QuoteViewModel {
         }
     }
 
-    func addQuote(
-        treatmentType: String,
-        estimatedCost: Decimal,
-        actualCost: Decimal?,
-        currency: String,
-        notes: String
-    ) async -> Bool {
-        let type = trimmed(treatmentType)
-        let cleanNotes = trimmed(notes)
+    func addQuote(_ draft: QuoteDraft) async -> CommunitySubmissionResult {
+        let type = trimmed(draft.treatmentType)
+        let cleanNotes = trimmed(draft.notes)
 
-        guard !type.isEmpty, estimatedCost > 0 else {
+        guard !type.isEmpty, draft.estimatedCost > 0 else {
             storageError = "請填寫治療類型和預估費用。"
-            return false
+            return .failed(
+                message: storageError ?? String(localized: "暫時無法提交報價。")
+            )
         }
         guard let uid = AuthViewModel.shared.user?.uid, !uid.isEmpty else {
-            storageError = "請先登入後再提交報價。"
-            return false
+            storageError = String(localized: "請先登入後再提交報價。")
+            return .authenticationRequired
         }
 
         do {
@@ -81,9 +77,9 @@ final class QuoteViewModel {
                 clinicId: clinicId,
                 userId: uid,
                 treatmentType: type,
-                estimatedCost: estimatedCost,
-                actualCost: actualCost,
-                currency: currency,
+                estimatedCost: draft.estimatedCost,
+                actualCost: draft.actualCost,
+                currency: draft.currency,
                 notes: cleanNotes,
                 createdAt: Date()
             )
@@ -93,10 +89,13 @@ final class QuoteViewModel {
             )
             storageError = nil
             Haptics.success()
-            return true
+            return .submitted
+        } catch FirebaseError.authenticationRequired {
+            storageError = String(localized: "請先登入後再提交報價。")
+            return .authenticationRequired
         } catch {
             storageError = error.localizedDescription
-            return false
+            return .failed(message: error.localizedDescription)
         }
     }
 

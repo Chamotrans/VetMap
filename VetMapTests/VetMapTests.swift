@@ -4,6 +4,84 @@ import XCTest
 final class VetMapModelTests: XCTestCase {
     private let date = Date(timeIntervalSince1970: 1_718_000_000)
 
+    private enum TestCommunityAction: Equatable {
+        case addReview
+        case report(String)
+        case message(String)
+    }
+
+    func testAuthenticatedActionWaitsForRestoreAndResumesExactlyOnce() {
+        var continuation = AuthenticatedActionContinuation<TestCommunityAction>()
+
+        XCTAssertEqual(
+            continuation.request(.addReview, authentication: .loading),
+            .waitForAuthentication
+        )
+        XCTAssertTrue(continuation.hasPendingAction)
+        XCTAssertNil(continuation.takeIfAuthenticated(.loading))
+        XCTAssertEqual(
+            continuation.takeIfAuthenticated(.signedIn(userID: "alice")),
+            .addReview
+        )
+        XCTAssertNil(
+            continuation.takeIfAuthenticated(.signedIn(userID: "alice")),
+            "authState, user ID, and LoginView onDismiss callbacks must not replay intent"
+        )
+        XCTAssertFalse(continuation.hasPendingAction)
+    }
+
+    func testAuthenticatedActionCancelClearsSignedOutIntent() {
+        var continuation = AuthenticatedActionContinuation<TestCommunityAction>()
+
+        XCTAssertEqual(
+            continuation.request(.report("spam"), authentication: .signedOut),
+            .presentLogin
+        )
+        XCTAssertTrue(continuation.hasPendingAction)
+
+        continuation.cancel()
+
+        XCTAssertNil(
+            continuation.takeIfAuthenticated(.signedIn(userID: "alice"))
+        )
+    }
+
+    func testFreshAuthenticatedGestureSupersedesRestoredIntent() {
+        var continuation = AuthenticatedActionContinuation<TestCommunityAction>()
+        _ = continuation.request(.addReview, authentication: .loading)
+
+        XCTAssertEqual(
+            continuation.request(
+                .message("bob"),
+                authentication: .signedIn(userID: "alice")
+            ),
+            .perform(.message("bob"))
+        )
+        XCTAssertFalse(
+            continuation.hasPendingAction,
+            "a later auth callback must not replay the older loading-state action"
+        )
+    }
+
+    func testQuoteDraftSnapshotPreservesExactSubmissionValues() {
+        let draft = QuoteDraft(
+            treatmentType: "夜診",
+            estimatedCost: Decimal(string: "880.50")!,
+            actualCost: Decimal(string: "900.00"),
+            currency: "HKD",
+            notes: "登入前輸入的草稿"
+        )
+        var continuation = AuthenticatedActionContinuation<QuoteDraft>()
+
+        continuation.deferUntilAuthenticated(draft)
+
+        XCTAssertEqual(
+            continuation.takeIfAuthenticated(.signedIn(userID: "alice")),
+            draft
+        )
+        XCTAssertNil(continuation.takeIfAuthenticated(.signedIn(userID: "alice")))
+    }
+
     func testCoreModelsRoundTripThroughCodable() throws {
         try assertRoundTrip(makeClinic())
         try assertRoundTrip(makeReview())

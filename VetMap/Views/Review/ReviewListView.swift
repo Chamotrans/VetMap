@@ -3,8 +3,25 @@ import SwiftUI
 struct ReviewListView: View {
     let clinic: VetClinic
 
+    @ObservedObject private var auth = AuthViewModel.shared
     @State private var viewModel: ReviewViewModel
     @State private var chatTarget: ChatTarget?
+    @State private var showLogin = false
+    @State private var didAuthenticateDuringLogin = false
+    @State private var actionContinuation =
+        AuthenticatedActionContinuation<PendingAction>()
+    @State private var destructiveConfirmation: DestructiveAction?
+
+    private enum PendingAction: Equatable {
+        case markHelpful(reviewID: String)
+        case message(ChatTarget)
+        case confirm(DestructiveAction)
+    }
+
+    private enum DestructiveAction: Equatable {
+        case report(Review, reason: String)
+        case block(Review)
+    }
 
     init(clinic: VetClinic) {
         self.clinic = clinic
@@ -41,19 +58,27 @@ struct ReviewListView: View {
                                 review: review,
                                 currency: currency,
                                 onMarkHelpful: {
-                                    Task { await viewModel.markHelpful(review.id) }
+                                    requestAuthenticatedAction(
+                                        .markHelpful(reviewID: review.id)
+                                    )
                                 },
                                 onReport: { reason in
-                                    Task { _ = await viewModel.report(review, reason: reason) }
+                                    requestAuthenticatedAction(
+                                        .confirm(.report(review, reason: reason))
+                                    )
                                 },
                                 onBlockAuthor: {
-                                    Task { _ = await viewModel.blockAuthor(of: review) }
+                                    requestAuthenticatedAction(.confirm(.block(review)))
                                 },
-                                onMessageAuthor: canMessage(review) ? {
-                                    chatTarget = ChatTarget(
-                                        userID: review.userId,
-                                        displayName: review.userName,
-                                        sourceReviewID: review.id
+                                onMessageAuthor: canOfferMessage(review) ? {
+                                    requestAuthenticatedAction(
+                                        .message(
+                                            ChatTarget(
+                                                userID: review.userId,
+                                                displayName: review.userName,
+                                                sourceReviewID: review.id
+                                            )
+                                        )
                                     )
                                 } : nil
                             )
@@ -74,11 +99,39 @@ struct ReviewListView: View {
         .navigationDestination(item: $chatTarget) { target in
             ChatThreadView(target: target)
         }
+        .confirmationDialog(
+            destructiveConfirmationTitle,
+            isPresented: Binding(
+                get: { destructiveConfirmation != nil },
+                set: { if !$0 { destructiveConfirmation = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            if let action = destructiveConfirmation {
+                Button(destructiveConfirmationButtonTitle(for: action), role: .destructive) {
+                    destructiveConfirmation = nil
+                    executeConfirmed(action)
+                }
+            }
+            Button("取消", role: .cancel) {
+                destructiveConfirmation = nil
+            }
+        }
+        .fullScreenCover(isPresented: $showLogin, onDismiss: loginDidDismiss) {
+            LoginView(authViewModel: auth)
+        }
+        .onChange(of: auth.authState) { _, _ in
+            authenticationDidChange()
+        }
+        .onChange(of: auth.user?.uid) { _, _ in
+            authenticationDidChange()
+        }
     }
 
-    private func canMessage(_ review: Review) -> Bool {
-        guard let currentUserID = AuthViewModel.shared.user?.uid else { return false }
-        return review.userId != currentUserID
+    private func canOfferMessage(_ review: Review) -> Bool {
+        let userID = review.userId.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !userID.isEmpty else { return false }
+        return userID != auth.user?.uid
             && !ModerationStore.shared.blockedUserIDs.contains(review.userId)
     }
 
@@ -131,6 +184,128 @@ struct ReviewListView: View {
         .padding(24)
         .frame(maxWidth: .infinity)
         .appCard()
+    }
+
+    private var authenticationPhase: CommunityAuthenticationPhase {
+        switch auth.authState {
+        case .loading:
+            return .loading
+        case .signedOut:
+            return .signedOut
+        case .signedIn:
+            guard let userID = auth.user?.uid, !userID.isEmpty else { return .loading }
+            return .signedIn(userID: userID)
+        }
+    }
+
+    private func requestAuthenticatedAction(_ action: PendingAction) {
+        handle(actionContinuation.request(action, authentication: authenticationPhase))
+    }
+
+    private func handle(_ request: AuthenticatedActionRequest<PendingAction>) {
+        switch request {
+        case .perform(let action):
+            perform(action)
+        case .waitForAuthentication:
+            break
+        case .presentLogin:
+            presentLogin()
+        }
+    }
+
+    private func authenticationDidChange() {
+        guard actionContinuation.hasPendingAction else { return }
+        switch authenticationPhase {
+        case .loading:
+            break
+        case .signedOut:
+            presentLogin()
+        case .signedIn:
+            if showLogin {
+                didAuthenticateDuringLogin = true
+                showLogin = false
+            } else {
+                resumeAfterLogin()
+            }
+        }
+    }
+
+    private func presentLogin() {
+        if !showLogin {
+            didAuthenticateDuringLogin = false
+        }
+        showLogin = true
+    }
+
+    private func loginDidDismiss() {
+        guard didAuthenticateDuringLogin else {
+            actionContinuation.cancel()
+            return
+        }
+        didAuthenticateDuringLogin = false
+        resumeAfterLogin()
+    }
+
+    private func resumeAfterLogin() {
+        guard let action = actionContinuation.takeIfAuthenticated(authenticationPhase) else {
+            if authenticationPhase == .signedOut {
+                actionContinuation.cancel()
+            }
+            return
+        }
+        perform(action)
+    }
+
+    private func perform(_ action: PendingAction) {
+        switch action {
+        case .markHelpful(let reviewID):
+            Task { await viewModel.markHelpful(reviewID) }
+        case .message(let target):
+            guard let currentUserID = authenticationPhase.authenticatedUserID,
+                  target.userID != currentUserID,
+                  !ModerationStore.shared.blockedUserIDs.contains(target.userID) else {
+                return
+            }
+            chatTarget = target
+        case .confirm(let destructiveAction):
+            // Authentication only restores the pending confirmation. It never
+            // turns a report or block gesture into an immediate backend write.
+            destructiveConfirmation = destructiveAction
+        }
+    }
+
+    private var destructiveConfirmationTitle: String {
+        switch destructiveConfirmation {
+        case .report:
+            return String(localized: "確認舉報此評價？")
+        case .block:
+            return String(localized: "確認封鎖此作者？")
+        case nil:
+            return String(localized: "確認操作")
+        }
+    }
+
+    private func destructiveConfirmationButtonTitle(for action: DestructiveAction) -> String {
+        switch action {
+        case .report:
+            return String(localized: "確認舉報")
+        case .block:
+            return String(localized: "確認封鎖")
+        }
+    }
+
+    private func executeConfirmed(_ action: DestructiveAction) {
+        guard authenticationPhase.authenticatedUserID != nil else {
+            requestAuthenticatedAction(.confirm(action))
+            return
+        }
+
+        switch action {
+        case .report(let review, let reason):
+            Task { _ = await viewModel.report(review, reason: reason) }
+        case .block(let review):
+            Task { _ = await viewModel.blockAuthor(of: review) }
+        }
     }
 }
 

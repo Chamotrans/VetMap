@@ -5,6 +5,7 @@ import SwiftUI
 struct ClinicDetailView: View {
     let clinic: VetClinic
 
+    @ObservedObject private var auth = AuthViewModel.shared
     @State private var viewModel: ClinicDetailViewModel
     @State private var isAddingReview = false
     @State private var safariURL: URL?
@@ -15,8 +16,27 @@ struct ClinicDetailView: View {
     @State private var didSubmitClinicReport = false
     @State private var showAvailabilityReportSuccess = false
     @State private var chatTarget: ChatTarget?
+    @State private var showLogin = false
+    @State private var didAuthenticateDuringLogin = false
+    @State private var actionContinuation =
+        AuthenticatedActionContinuation<PendingAction>()
+    @State private var destructiveConfirmation: DestructiveAction?
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
+
+    private enum PendingAction: Equatable {
+        case addReview
+        case markHelpful(reviewID: String)
+        case message(ChatTarget)
+        case confirm(DestructiveAction)
+    }
+
+    private enum DestructiveAction: Equatable {
+        case reportReview(Review, reason: String)
+        case blockUser(userID: String)
+        case reportQuote(Quote, reason: String)
+        case reportClinic(reason: String, availabilityFeedback: Bool)
+    }
 
     static let reportReasons = ["資料不實", "重複條目", "已結業", "冒犯內容", "其他"]
 
@@ -170,12 +190,11 @@ struct ClinicDetailView: View {
             }
             .sheet(isPresented: $isAddingReview) {
                 AddReviewView(clinicName: clinic.name) { draft in
-                    let succeeded = await viewModel.submitReviewForModeration(draft)
-                    if succeeded {
+                    let result = await viewModel.submitReviewForModeration(draft)
+                    if result == .submitted {
                         showPendingNotice = true
-                        return nil
                     }
-                    return viewModel.storageError ?? "暫時無法提交評價。"
+                    return result
                 }
             }
             .alert("已送出", isPresented: $showPendingNotice) {
@@ -210,6 +229,27 @@ struct ClinicDetailView: View {
                 }
                 Button("取消", role: .cancel) {}
             }
+            .confirmationDialog(
+                destructiveConfirmationTitle,
+                isPresented: Binding(
+                    get: { destructiveConfirmation != nil },
+                    set: { if !$0 { destructiveConfirmation = nil } }
+                ),
+                titleVisibility: .visible
+            ) {
+                if let action = destructiveConfirmation {
+                    Button(
+                        destructiveConfirmationButtonTitle(for: action),
+                        role: .destructive
+                    ) {
+                        destructiveConfirmation = nil
+                        executeConfirmed(action)
+                    }
+                }
+                Button("取消", role: .cancel) {
+                    destructiveConfirmation = nil
+                }
+            }
             .alert(
                 "已收到營業資料回報",
                 isPresented: $showAvailabilityReportSuccess
@@ -224,6 +264,15 @@ struct ClinicDetailView: View {
                     SafariViewController(url: url)
                 }
             }
+        }
+        .fullScreenCover(isPresented: $showLogin, onDismiss: loginDidDismiss) {
+            LoginView(authViewModel: auth)
+        }
+        .onChange(of: auth.authState) { _, _ in
+            authenticationDidChange()
+        }
+        .onChange(of: auth.user?.uid) { _, _ in
+            authenticationDidChange()
         }
     }
 
@@ -367,7 +416,7 @@ struct ClinicDetailView: View {
                 Spacer()
 
                 Button {
-                    isAddingReview = true
+                    requestAuthenticatedAction(.addReview)
                 } label: {
                     Label("新增", systemImage: "plus")
                         .font(.subheadline.weight(.semibold))
@@ -386,19 +435,29 @@ struct ClinicDetailView: View {
                             review: review,
                             currency: defaultCurrency,
                             onMarkHelpful: {
-                                Task { await viewModel.markHelpful(review.id) }
+                                requestAuthenticatedAction(
+                                    .markHelpful(reviewID: review.id)
+                                )
                             },
                             onReport: { reason in
-                                Task { _ = await viewModel.reportReview(review, reason: reason) }
+                                requestAuthenticatedAction(
+                                    .confirm(.reportReview(review, reason: reason))
+                                )
                             },
                             onBlockAuthor: {
-                                Task { _ = await viewModel.blockUser(review.userId) }
+                                requestAuthenticatedAction(
+                                    .confirm(.blockUser(userID: review.userId))
+                                )
                             },
-                            onMessageAuthor: canMessage(review) ? {
-                                chatTarget = ChatTarget(
-                                    userID: review.userId,
-                                    displayName: review.userName,
-                                    sourceReviewID: review.id
+                            onMessageAuthor: canOfferMessage(review) ? {
+                                requestAuthenticatedAction(
+                                    .message(
+                                        ChatTarget(
+                                            userID: review.userId,
+                                            displayName: review.userName,
+                                            sourceReviewID: review.id
+                                        )
+                                    )
                                 )
                             } : nil
                         )
@@ -427,9 +486,10 @@ struct ClinicDetailView: View {
         .accessibilityLabel("查看評價")
     }
 
-    private func canMessage(_ review: Review) -> Bool {
-        guard let currentUserID = AuthViewModel.shared.user?.uid else { return false }
-        return review.userId != currentUserID
+    private func canOfferMessage(_ review: Review) -> Bool {
+        let userID = review.userId.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !userID.isEmpty else { return false }
+        return userID != auth.user?.uid
             && !ModerationStore.shared.blockedUserIDs.contains(review.userId)
     }
 
@@ -600,6 +660,21 @@ struct ClinicDetailView: View {
         availabilityFeedback: Bool
     ) {
         guard !isSubmittingClinicReport, !didSubmitClinicReport else { return }
+        requestAuthenticatedAction(
+            .confirm(
+                .reportClinic(
+                    reason: reason,
+                    availabilityFeedback: availabilityFeedback
+                )
+            )
+        )
+    }
+
+    private func performClinicReport(
+        reason: String,
+        availabilityFeedback: Bool
+    ) {
+        guard !isSubmittingClinicReport, !didSubmitClinicReport else { return }
         isSubmittingClinicReport = true
         Task {
             let succeeded = await viewModel.reportClinic(reason: reason)
@@ -609,6 +684,151 @@ struct ClinicDetailView: View {
             if availabilityFeedback {
                 showAvailabilityReportSuccess = true
             }
+        }
+    }
+
+    private var authenticationPhase: CommunityAuthenticationPhase {
+        switch auth.authState {
+        case .loading:
+            return .loading
+        case .signedOut:
+            return .signedOut
+        case .signedIn:
+            guard let userID = auth.user?.uid, !userID.isEmpty else { return .loading }
+            return .signedIn(userID: userID)
+        }
+    }
+
+    private func requestAuthenticatedAction(_ action: PendingAction) {
+        handle(actionContinuation.request(action, authentication: authenticationPhase))
+    }
+
+    private func handle(_ request: AuthenticatedActionRequest<PendingAction>) {
+        switch request {
+        case .perform(let action):
+            perform(action)
+        case .waitForAuthentication:
+            break
+        case .presentLogin:
+            presentLogin()
+        }
+    }
+
+    private func authenticationDidChange() {
+        guard actionContinuation.hasPendingAction else { return }
+        switch authenticationPhase {
+        case .loading:
+            break
+        case .signedOut:
+            presentLogin()
+        case .signedIn:
+            if showLogin {
+                didAuthenticateDuringLogin = true
+                showLogin = false
+            } else {
+                resumeAfterLogin()
+            }
+        }
+    }
+
+    private func presentLogin() {
+        if !showLogin {
+            didAuthenticateDuringLogin = false
+        }
+        showLogin = true
+    }
+
+    private func loginDidDismiss() {
+        guard didAuthenticateDuringLogin else {
+            actionContinuation.cancel()
+            return
+        }
+        didAuthenticateDuringLogin = false
+        resumeAfterLogin()
+    }
+
+    private func resumeAfterLogin() {
+        guard let action = actionContinuation.takeIfAuthenticated(authenticationPhase) else {
+            if authenticationPhase == .signedOut {
+                actionContinuation.cancel()
+            }
+            return
+        }
+        perform(action)
+    }
+
+    private func perform(_ action: PendingAction) {
+        switch action {
+        case .addReview:
+            isAddingReview = true
+        case .markHelpful(let reviewID):
+            Task { await viewModel.markHelpful(reviewID) }
+        case .message(let target):
+            guard let currentUserID = authenticationPhase.authenticatedUserID,
+                  target.userID != currentUserID,
+                  !ModerationStore.shared.blockedUserIDs.contains(target.userID) else {
+                return
+            }
+            chatTarget = target
+        case .confirm(let destructiveAction):
+            // Login success restores the user's decision point, never the
+            // backend write itself.
+            destructiveConfirmation = destructiveAction
+        }
+    }
+
+    private var destructiveConfirmationTitle: String {
+        switch destructiveConfirmation {
+        case .reportReview:
+            return String(localized: "確認舉報此評價？")
+        case .blockUser:
+            return String(localized: "確認封鎖此作者？")
+        case .reportQuote:
+            return String(localized: "確認舉報此報價？")
+        case .reportClinic(_, let availabilityFeedback):
+            return availabilityFeedback
+                ? String(localized: "確認回報營業資料？")
+                : String(localized: "確認舉報此診所？")
+        case nil:
+            return String(localized: "確認操作")
+        }
+    }
+
+    private func destructiveConfirmationButtonTitle(
+        for action: DestructiveAction
+    ) -> String {
+        switch action {
+        case .blockUser:
+            return String(localized: "確認封鎖")
+        case .reportClinic(_, let availabilityFeedback):
+            return availabilityFeedback
+                ? String(localized: "確認回報")
+                : String(localized: "確認舉報")
+        case .reportReview, .reportQuote:
+            return String(localized: "確認舉報")
+        }
+    }
+
+    private func executeConfirmed(_ action: DestructiveAction) {
+        guard authenticationPhase.authenticatedUserID != nil else {
+            // If the session expires while this dialog is visible, LoginView is
+            // followed by the same confirmation instead of an immediate write.
+            requestAuthenticatedAction(.confirm(action))
+            return
+        }
+
+        switch action {
+        case .reportReview(let review, let reason):
+            Task { _ = await viewModel.reportReview(review, reason: reason) }
+        case .blockUser(let userID):
+            Task { _ = await viewModel.blockUser(userID) }
+        case .reportQuote(let quote, let reason):
+            Task { _ = await viewModel.reportQuote(quote, reason: reason) }
+        case .reportClinic(let reason, let availabilityFeedback):
+            performClinicReport(
+                reason: reason,
+                availabilityFeedback: availabilityFeedback
+            )
         }
     }
 
@@ -669,14 +889,18 @@ struct ClinicDetailView: View {
 
                 Menu {
                     Button(role: .destructive) {
-                        Task {
-                            _ = await viewModel.reportQuote(quote, reason: "內容不實或不當")
-                        }
+                        requestAuthenticatedAction(
+                            .confirm(
+                                .reportQuote(quote, reason: "內容不實或不當")
+                            )
+                        )
                     } label: {
                         Label("舉報報價", systemImage: "flag")
                     }
                     Button(role: .destructive) {
-                        Task { _ = await viewModel.blockUser(quote.userId) }
+                        requestAuthenticatedAction(
+                            .confirm(.blockUser(userID: quote.userId))
+                        )
                     } label: {
                         Label("封鎖作者", systemImage: "person.crop.circle.badge.xmark")
                     }

@@ -263,3 +263,82 @@ enum SavedCatalogItems {
         }
     }
 }
+
+// MARK: - Authenticated community action continuation
+
+/// A Firebase-independent snapshot used by the UI to decide whether an action
+/// can run now, should wait for the initial auth restore, or needs LoginView.
+/// Keeping this independent from `AuthState` also makes the one-shot policy
+/// available to the pure Swift validation harness.
+enum CommunityAuthenticationPhase: Equatable {
+    case loading
+    case signedOut
+    case signedIn(userID: String)
+
+    var authenticatedUserID: String? {
+        guard case .signedIn(let userID) = self, !userID.isEmpty else { return nil }
+        return userID
+    }
+}
+
+enum AuthenticatedActionRequest<Action: Equatable>: Equatable {
+    case perform(Action)
+    case waitForAuthentication
+    case presentLogin
+}
+
+/// Stores at most one user-initiated action and consumes it exactly once after
+/// authentication. A cancelled login must call `cancel()`; repeated auth
+/// callbacks cannot replay an action after `takeIfAuthenticated` clears it.
+struct AuthenticatedActionContinuation<Action: Equatable>: Equatable {
+    private(set) var pendingAction: Action?
+
+    var hasPendingAction: Bool { pendingAction != nil }
+
+    mutating func request(
+        _ action: Action,
+        authentication: CommunityAuthenticationPhase
+    ) -> AuthenticatedActionRequest<Action> {
+        switch authentication {
+        case .signedIn(let userID) where !userID.isEmpty:
+            // A fresh authenticated gesture supersedes any action retained
+            // while auth was restoring. This prevents a later auth callback
+            // from replaying stale intent after the new action runs.
+            pendingAction = nil
+            return .perform(action)
+        case .loading:
+            pendingAction = action
+            return .waitForAuthentication
+        case .signedOut, .signedIn:
+            pendingAction = action
+            return .presentLogin
+        }
+    }
+
+    mutating func deferUntilAuthenticated(_ action: Action) {
+        pendingAction = action
+    }
+
+    mutating func takeIfAuthenticated(
+        _ authentication: CommunityAuthenticationPhase
+    ) -> Action? {
+        guard authentication.authenticatedUserID != nil,
+              let action = pendingAction else {
+            return nil
+        }
+        pendingAction = nil
+        return action
+    }
+
+    mutating func cancel() {
+        pendingAction = nil
+    }
+}
+
+/// Only `.authenticationRequired` is safe for automatic continuation: callers
+/// use it exclusively for failures known to occur before a cloud write starts.
+enum CommunitySubmissionResult: Equatable {
+    case submitted
+    case authenticationRequired
+    case failed(message: String)
+}

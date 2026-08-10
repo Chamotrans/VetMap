@@ -67,10 +67,12 @@ final class ClinicsViewModel {
         await loadClinics()
     }
 
-    func submitClinicForModeration(_ clinic: VetClinic) async -> Bool {
+    func submitClinicForModeration(
+        _ clinic: VetClinic
+    ) async -> CommunitySubmissionResult {
         guard let uid = AuthViewModel.shared.user?.uid, !uid.isEmpty else {
-            storageError = "請先登入後再提交診所資料。"
-            return false
+            storageError = String(localized: "請先登入後再提交診所資料。")
+            return .authenticationRequired
         }
 
         do {
@@ -85,10 +87,13 @@ final class ClinicsViewModel {
             storageError = nil
             filter = ClinicSearchFilter()
             Haptics.success()
-            return true
+            return .submitted
+        } catch FirebaseError.authenticationRequired {
+            storageError = String(localized: "請先登入後再提交診所資料。")
+            return .authenticationRequired
         } catch {
             storageError = error.localizedDescription
-            return false
+            return .failed(message: error.localizedDescription)
         }
     }
 

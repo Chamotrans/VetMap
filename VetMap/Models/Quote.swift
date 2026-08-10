@@ -11,3 +11,11 @@ struct Quote: Identifiable, Codable, Equatable {
     var notes: String
     var createdAt: Date
 }
+
+struct QuoteDraft: Equatable {
+    var treatmentType: String
+    var estimatedCost: Decimal
+    var actualCost: Decimal?
+    var currency: String
+    var notes: String
+}

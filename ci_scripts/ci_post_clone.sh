@@ -29,6 +29,7 @@ publication_binary="$semantic_directory/clinic-publication-policy"
 chat_origin_binary="$semantic_directory/chat-origin"
 clinic_favorites_binary="$semantic_directory/clinic-favorites"
 location_permission_binary="$semantic_directory/location-permission"
+community_auth_binary="$semantic_directory/community-auth-continuation"
 
 /usr/bin/xcrun swiftc \
   "$CI_PRIMARY_REPOSITORY_PATH/VetMap/Models/ClinicCoordinate.swift" \
@@ -105,3 +106,11 @@ location_permission_binary="$semantic_directory/location-permission"
   -o "$location_permission_binary"
 
 "$location_permission_binary"
+
+/usr/bin/xcrun swiftc \
+  "$CI_PRIMARY_REPOSITORY_PATH/VetMap/Models/UserProfile.swift" \
+  "$CI_PRIMARY_REPOSITORY_PATH/VetMap/Models/Quote.swift" \
+  "$CI_PRIMARY_REPOSITORY_PATH/scripts/community_auth_continuation_harness.swift" \
+  -o "$community_auth_binary"
+
+"$community_auth_binary"

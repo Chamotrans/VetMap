@@ -72,19 +72,23 @@ final class ClinicDetailViewModel {
         Analytics.clinicViewed(clinic.name)
     }
 
-    func submitReviewForModeration(_ draft: ReviewDraft) async -> Bool {
+    func submitReviewForModeration(
+        _ draft: ReviewDraft
+    ) async -> CommunitySubmissionResult {
         let title = trimmed(draft.title)
         let content = trimmed(draft.content)
         let treatmentType = trimmed(draft.treatmentType)
 
         guard (1...5).contains(draft.rating), !title.isEmpty, !content.isEmpty else {
             storageError = "請填寫評分、標題和內容。"
-            return false
+            return .failed(
+                message: storageError ?? String(localized: "暫時無法提交評價。")
+            )
         }
 
         guard let user = AuthViewModel.shared.user, let uid = user.uid, !uid.isEmpty else {
-            storageError = "請先登入後再提交評價。"
-            return false
+            storageError = String(localized: "請先登入後再提交評價。")
+            return .authenticationRequired
         }
 
         do {
@@ -108,10 +112,13 @@ final class ClinicDetailViewModel {
             try await ModerationStore.shared.submitReview(review, clinicName: clinic.name)
             storageError = nil
             Haptics.success()
-            return true
+            return .submitted
+        } catch FirebaseError.authenticationRequired {
+            storageError = String(localized: "請先登入後再提交評價。")
+            return .authenticationRequired
         } catch {
             storageError = error.localizedDescription
-            return false
+            return .failed(message: error.localizedDescription)
         }
     }
 
@@ -121,17 +128,19 @@ final class ClinicDetailViewModel {
         actualCost: Decimal?,
         currency: String,
         notes: String
-    ) async -> Bool {
+    ) async -> CommunitySubmissionResult {
         let type = trimmed(treatmentType)
         let cleanNotes = trimmed(notes)
 
         guard !type.isEmpty, estimatedCost > 0 else {
             storageError = "請填寫治療類型和預估費用。"
-            return false
+            return .failed(
+                message: storageError ?? String(localized: "暫時無法提交報價。")
+            )
         }
         guard let uid = AuthViewModel.shared.user?.uid, !uid.isEmpty else {
-            storageError = "請先登入後再提交報價。"
-            return false
+            storageError = String(localized: "請先登入後再提交報價。")
+            return .authenticationRequired
         }
 
         do {
@@ -150,10 +159,13 @@ final class ClinicDetailViewModel {
             try await ModerationStore.shared.submitQuote(quote, clinicName: clinic.name)
             storageError = nil
             Haptics.success()
-            return true
+            return .submitted
+        } catch FirebaseError.authenticationRequired {
+            storageError = String(localized: "請先登入後再提交報價。")
+            return .authenticationRequired
         } catch {
             storageError = error.localizedDescription
-            return false
+            return .failed(message: error.localizedDescription)
         }
     }
 
