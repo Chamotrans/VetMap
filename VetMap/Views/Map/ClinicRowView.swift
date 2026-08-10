@@ -1,9 +1,11 @@
 import CoreLocation
+import Foundation
 import SwiftUI
 
 struct ClinicRowView: View {
     let clinic: VetClinic
     let currentLocation: CLLocation?
+    let availabilityDate: Date
     let isSelected: Bool
     var onOpenDetails: (() -> Void)?
 
@@ -66,6 +68,16 @@ struct ClinicRowView: View {
             stroke: isSelected ? AppTheme.primary.opacity(0.45) : AppTheme.hairline
         )
         .contentShape(RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous))
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(accessibilityLabel)
+        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
+    }
+
+    private var accessibilityLabel: String {
+        let availability = clinic.availabilityLabel(at: availabilityDate)
+            ?? "營業狀態未提供"
+        let distance = clinic.distanceText(from: currentLocation)
+        return "\(clinic.name)，\(availability)，\(distance)"
     }
 }
 
@@ -73,6 +85,7 @@ struct ClinicRowView: View {
     ClinicRowView(
         clinic: MockClinicRepository.hkClinics[0],
         currentLocation: nil,
+        availabilityDate: Date(),
         isSelected: true,
         onOpenDetails: {}
     )

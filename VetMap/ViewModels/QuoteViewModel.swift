@@ -46,10 +46,10 @@ final class QuoteViewModel {
         do {
             let cloud = try await firebase.fetchQuotes(for: clinicId)
             let cloudIDs = Set(cloud.map(\.id))
-            quotes = cloud + seeds.filter { !cloudIDs.contains($0.id) }
+            let refreshedQuotes = cloud + seeds.filter { !cloudIDs.contains($0.id) }
+            quotes = refreshedQuotes
             storageError = nil
         } catch {
-            quotes = seeds
             storageError = "雲端報價暫時無法載入：\(error.localizedDescription)"
             CrashReporting.recordError(error, domain: "QuoteViewModel.loadQuotes")
         }

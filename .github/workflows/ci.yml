@@ -63,6 +63,14 @@ jobs:
           node --test scripts/validate_authenticated_community_actions.test.mjs
           node --test scripts/validate_support_contact.test.mjs
 
+      - name: Validate iOS first-run, discovery, chat, and refresh resilience
+        run: |
+          node --test scripts/validate_onboarding_localization.test.mjs
+          node --test scripts/validate_map_carousel_selection.test.mjs
+          node --test scripts/validate_latest_clinic_load.test.mjs
+          node --test scripts/validate_chat_draft_safety.test.mjs
+          node --test scripts/validate_community_refresh_resilience.test.mjs
+
       - name: Validate App Review notes
         run: node --test scripts/validate_app_review_notes.test.mjs
 

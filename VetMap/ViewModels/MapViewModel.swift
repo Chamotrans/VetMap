@@ -33,6 +33,7 @@ final class MapViewModel {
 
     private let firebase: FirebaseService
     @ObservationIgnored private var cancellables: Set<AnyCancellable> = []
+    @ObservationIgnored private var loadRequestGeneration = 0
 
     init(
         repository _: MockClinicRepository = MockClinicRepository(),
@@ -42,7 +43,6 @@ final class MapViewModel {
         self.cameraPosition = .region(Self.defaultRegion)
         observeRepositoryChanges()
         observeAvailabilityClock()
-        loadClinics()
     }
 
     var selectedClinic: VetClinic? {
@@ -74,25 +74,58 @@ final class MapViewModel {
     }
 
     func loadClinics() {
-        Task { await loadClinics(focusingOn: nil) }
+        let requestGeneration = beginClinicLoad()
+        Task {
+            await performClinicLoad(
+                focusingOn: nil,
+                requestGeneration: requestGeneration
+            )
+        }
     }
 
     func retryLoad() {
         loadClinics()
     }
 
-    private func loadClinics(focusingOn clinicID: String?) async {
+    private func reloadClinics(focusingOn clinicID: String?) async {
+        let requestGeneration = beginClinicLoad()
+        await performClinicLoad(
+            focusingOn: clinicID,
+            requestGeneration: requestGeneration
+        )
+    }
+
+    private func beginClinicLoad() -> Int {
+        loadRequestGeneration &+= 1
         isLoading = true
         networkError = nil
+        return loadRequestGeneration
+    }
+
+    private func performClinicLoad(
+        focusingOn clinicID: String?,
+        requestGeneration: Int
+    ) async {
+        guard requestGeneration == loadRequestGeneration else { return }
+        defer {
+            if requestGeneration == loadRequestGeneration {
+                isLoading = false
+            }
+        }
+
         let previousSelectedClinicID = selectedClinicID
         await ModerationStore.shared.refreshPublicState()
         do {
-            clinics = try await firebase.fetchClinics()
+            let fetchedClinics = try await firebase.fetchClinics()
+            guard requestGeneration == loadRequestGeneration else { return }
+            clinics = fetchedClinics
         } catch {
+            guard requestGeneration == loadRequestGeneration else { return }
             networkError = "雲端診所資料暫時無法載入：\(error.localizedDescription)"
             CrashReporting.recordError(error, domain: "MapViewModel.loadClinics")
         }
 
+        guard requestGeneration == loadRequestGeneration else { return }
         if let clinicID, let clinic = filteredClinics.first(where: { $0.id == clinicID }) {
             focus(on: clinic)
         } else if let previousSelectedClinicID, filteredClinics.contains(where: { $0.id == previousSelectedClinicID }) {
@@ -100,7 +133,6 @@ final class MapViewModel {
         } else {
             selectedClinicID = filteredClinics.first?.id
         }
-        isLoading = false
     }
 
     func focus(on clinic: VetClinic) {
@@ -140,7 +172,7 @@ final class MapViewModel {
             .sink { [weak self] notification in
                 let clinicID = notification.userInfo?[MockClinicRepository.changedClinicIDUserInfoKey] as? String
                 Task { @MainActor in
-                    await self?.loadClinics(focusingOn: clinicID)
+                    await self?.reloadClinics(focusingOn: clinicID)
                 }
             }
             .store(in: &cancellables)

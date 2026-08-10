@@ -1,6 +1,14 @@
 import SwiftUI
 
 struct OnboardingView: View {
+    private struct OnboardingPage {
+        let icon: String
+        let accentIcon: String
+        let title: LocalizedStringKey
+        let subtitle: LocalizedStringKey
+        let tint: Color
+    }
+
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
     @State private var currentPage = 0
     @State private var iconBounce = false
@@ -8,22 +16,22 @@ struct OnboardingView: View {
     @State private var subtitleVisible = false
     @State private var buttonVisible = false
 
-    private let pages: [(icon: String, accentIcon: String, title: String, subtitle: String, tint: Color)] = [
-        (
+    private let pages: [OnboardingPage] = [
+        OnboardingPage(
             icon: "heart.fill",
             accentIcon: "pawprint.fill",
             title: "歡迎來到 VetMap",
             subtitle: "搵到最可靠嘅獸醫診所\n為毛孩揀最好嘅照顧",
             tint: Color(red: 0.91, green: 0.66, blue: 0.22) // warm amber
         ),
-        (
+        OnboardingPage(
             icon: "mappin.and.ellipse",
             accentIcon: "magnifyingglass",
             title: "地圖搜尋",
             subtitle: "瀏覽附近診所、睇真實評價\n比較費用、一鍵導航",
             tint: Color(red: 0.24, green: 0.48, blue: 0.36) // sage green
         ),
-        (
+        OnboardingPage(
             icon: "star.fill",
             accentIcon: "bubble.left.fill",
             title: "社群分享",
@@ -130,7 +138,7 @@ struct OnboardingView: View {
 
     // MARK: - 單頁內容
 
-    private func pageView(_ page: (icon: String, accentIcon: String, title: String, subtitle: String, tint: Color)) -> some View {
+    private func pageView(_ page: OnboardingPage) -> some View {
         VStack(spacing: 0) {
             Spacer()
 

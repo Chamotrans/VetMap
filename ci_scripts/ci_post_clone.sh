@@ -27,6 +27,7 @@ duplicate_binary="$semantic_directory/clinic-duplicate-matcher"
 approval_operation_binary="$semantic_directory/clinic-approval-operation"
 publication_binary="$semantic_directory/clinic-publication-policy"
 chat_origin_binary="$semantic_directory/chat-origin"
+chat_draft_binary="$semantic_directory/chat-draft-recovery"
 clinic_favorites_binary="$semantic_directory/clinic-favorites"
 location_permission_binary="$semantic_directory/location-permission"
 community_auth_binary="$semantic_directory/community-auth-continuation"
@@ -92,6 +93,13 @@ community_auth_binary="$semantic_directory/community-auth-continuation"
   -o "$chat_origin_binary"
 
 "$chat_origin_binary"
+
+/usr/bin/xcrun swiftc \
+  "$CI_PRIMARY_REPOSITORY_PATH/VetMap/Models/Chat.swift" \
+  "$CI_PRIMARY_REPOSITORY_PATH/scripts/chat_draft_recovery_harness.swift" \
+  -o "$chat_draft_binary"
+
+"$chat_draft_binary"
 
 /usr/bin/xcrun swiftc \
   "$CI_PRIMARY_REPOSITORY_PATH/VetMap/Models/UserProfile.swift" \

@@ -7,6 +7,7 @@ struct ChatThreadView: View {
     let target: ChatTarget
     @State private var conversationID: String?
     @State private var draft = ""
+    @State private var failedMessageBody: String?
     @State private var selectedReportMessage: ChatMessage?
     @State private var showReportReasons = false
     @State private var showBlockConfirmation = false
@@ -221,28 +222,68 @@ struct ChatThreadView: View {
     }
 
     private var composer: some View {
-        HStack(alignment: .bottom, spacing: 10) {
-            TextField("輸入訊息", text: $draft, axis: .vertical)
-                .lineLimit(1...4)
-                .textFieldStyle(.roundedBorder)
-
-            Button {
-                send()
-            } label: {
-                Image(systemName: "arrow.up.circle.fill")
-                    .font(.title2)
-                    .frame(width: 44, height: 44)
-                    .contentShape(Rectangle())
+        VStack(spacing: 0) {
+            if failedMessageBody != nil {
+                failedMessageBanner
             }
-            .disabled(
-                draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-                    || draft.count > 1_000
-                    || chat.isSending
-            )
-            .accessibilityLabel("傳送訊息")
+
+            HStack(alignment: .bottom, spacing: 10) {
+                TextField("輸入訊息", text: $draft, axis: .vertical)
+                    .lineLimit(1...4)
+                    .textFieldStyle(.roundedBorder)
+
+                Button {
+                    send()
+                } label: {
+                    Image(systemName: "arrow.up.circle.fill")
+                        .font(.title2)
+                        .frame(width: 44, height: 44)
+                        .contentShape(Rectangle())
+                }
+                .disabled(
+                    draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                        || draft.count > 1_000
+                        || chat.isSending
+                        || failedMessageBody != nil
+                )
+                .accessibilityLabel("傳送訊息")
+            }
+            .padding(12)
         }
-        .padding(12)
         .background(.bar)
+    }
+
+    private var failedMessageBanner: some View {
+        HStack(alignment: .center, spacing: 10) {
+            Image(systemName: "exclamationmark.arrow.triangle.2.circlepath")
+                .foregroundStyle(AppTheme.warning)
+                .accessibilityHidden(true)
+
+            Text("上一則訊息未能送出")
+                .font(.footnote.weight(.semibold))
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            Button("放棄") {
+                failedMessageBody = nil
+            }
+            .font(.footnote.weight(.semibold))
+            .disabled(chat.isSending)
+            .accessibilityLabel("放棄上一則訊息")
+
+            Button("重試") {
+                retryFailedMessage()
+            }
+            .font(.footnote.weight(.semibold))
+            .buttonStyle(.borderedProminent)
+            .buttonBorderShape(.roundedRectangle(radius: AppTheme.compactRadius))
+            .tint(AppTheme.primary)
+            .disabled(chat.isSending)
+            .accessibilityLabel("重試上一則訊息")
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background(AppTheme.warning.opacity(0.10))
+        .accessibilityElement(children: .contain)
     }
 
     private func retryMessages() {
@@ -251,8 +292,21 @@ struct ChatThreadView: View {
     }
 
     private func send() {
+        guard failedMessageBody == nil else { return }
         let body = draft
         draft = ""
+        send(body: body, recoverIntoComposerOnFailure: true)
+    }
+
+    private func retryFailedMessage() {
+        guard let failedMessageBody else { return }
+        send(body: failedMessageBody, recoverIntoComposerOnFailure: false)
+    }
+
+    private func send(
+        body: String,
+        recoverIntoComposerOnFailure: Bool
+    ) {
         Task {
             do {
                 let id = try await chat.send(
@@ -264,9 +318,21 @@ struct ChatThreadView: View {
                     conversationID = id
                     chat.observeMessages(conversationID: id)
                 }
+                if failedMessageBody == body {
+                    failedMessageBody = nil
+                }
                 Haptics.success()
             } catch {
-                draft = body
+                if recoverIntoComposerOnFailure {
+                    let recovery = ChatDraftFailureRecovery.recover(
+                        failedBody: body,
+                        currentDraft: draft
+                    )
+                    draft = recovery.composerDraft
+                    failedMessageBody = recovery.retryBody
+                } else {
+                    failedMessageBody = body
+                }
                 notice = error.localizedDescription
             }
         }

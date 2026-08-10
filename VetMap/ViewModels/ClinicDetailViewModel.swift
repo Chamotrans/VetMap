@@ -55,17 +55,24 @@ final class ClinicDetailViewModel {
         do {
             let fetchedReviews = try await firebase.fetchReviews(for: clinic.id)
             let fetchedQuotes = try await firebase.fetchQuotes(for: clinic.id)
-            let helpfulCounts = (try? await firebase.fetchReviewHelpfulCounts()) ?? [:]
-            reviews = Self.merge(cloud: fetchedReviews, seeds: seedReviews).map { review in
+            let helpfulCounts = try? await firebase.fetchReviewHelpfulCounts()
+            let displayedHelpfulCounts = reviews.reduce(into: [String: Int]()) { counts, review in
+                counts[review.id] = review.helpfulCount
+            }
+            let refreshedReviews = Self.merge(cloud: fetchedReviews, seeds: seedReviews).map { review in
                 var review = review
-                review.helpfulCount += helpfulCounts[review.id, default: 0]
+                if let helpfulCounts {
+                    review.helpfulCount += helpfulCounts[review.id, default: 0]
+                } else if let displayedHelpfulCount = displayedHelpfulCounts[review.id] {
+                    review.helpfulCount = displayedHelpfulCount
+                }
                 return review
             }
-            quotes = Self.merge(cloud: fetchedQuotes, seeds: seedQuotes)
+            let refreshedQuotes = Self.merge(cloud: fetchedQuotes, seeds: seedQuotes)
+            reviews = refreshedReviews
+            quotes = refreshedQuotes
             storageError = nil
         } catch {
-            reviews = seedReviews
-            quotes = seedQuotes
             storageError = "雲端社群資料暫時無法載入：\(error.localizedDescription)"
             CrashReporting.recordError(error, domain: "ClinicDetail.loadCommunityData")
         }

@@ -1,6 +1,118 @@
 {
   "sourceLanguage": "zh-Hant",
   "strings": {
+    "上一則訊息未能送出": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your previous message was not sent"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上一条消息未能发送"
+          }
+        }
+      }
+    },
+    "放棄": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Discard"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "放弃"
+          }
+        }
+      }
+    },
+    "放棄上一則訊息": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Discard the previous message"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "放弃上一条消息"
+          }
+        }
+      }
+    },
+    "重試上一則訊息": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retry the previous message"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重试上一条消息"
+          }
+        }
+      }
+    },
+    "搵到最可靠嘅獸醫診所\n為毛孩揀最好嘅照顧": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Find trusted veterinary clinics\nChoose the best care for your pet"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "找到可靠的兽医诊所\n为毛孩选择最好的照顾"
+          }
+        }
+      }
+    },
+    "瀏覽附近診所、睇真實評價\n比較費用、一鍵導航": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Browse nearby clinics and real reviews\nCompare prices and navigate in one tap"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "浏览附近诊所和真实评价\n比较费用，一键导航"
+          }
+        }
+      }
+    },
+    "寫評價、分享報價\n幫其他毛孩家長做明智選擇": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Write reviews and share prices\nHelp other pet owners make informed choices"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "撰写评价、分享报价\n帮助其他毛孩家长作出明智选择"
+          }
+        }
+      }
+    },
     "忘記密碼？": {
       "localizations": {
         "en": {

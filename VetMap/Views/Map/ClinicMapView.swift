@@ -192,33 +192,70 @@ struct ClinicMapView: View {
         } else {
             GeometryReader { proxy in
                 let cardWidth = min(max(proxy.size.width - 40, 280), 360)
+                let carouselInset = max((proxy.size.width - cardWidth) / 2, 16)
 
-                ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHStack(spacing: 10) {
-                        ForEach(viewModel.filteredClinics) { clinic in
-                            ClinicRowView(
-                                clinic: clinic,
-                                currentLocation: locationService.currentLocation,
-                                isSelected: viewModel.selectedClinicID == clinic.id,
-                                onOpenDetails: {
-                                    clinicForDetail = clinic
+                ScrollViewReader { scrollProxy in
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        LazyHStack(spacing: 10) {
+                            ForEach(viewModel.filteredClinics) { clinic in
+                                ClinicRowView(
+                                    clinic: clinic,
+                                    currentLocation: locationService.currentLocation,
+                                    availabilityDate: viewModel.availabilityNow,
+                                    isSelected: viewModel.selectedClinicID == clinic.id,
+                                    onOpenDetails: {
+                                        clinicForDetail = clinic
+                                    }
+                                )
+                                .frame(width: cardWidth)
+                                .id(clinic.id)
+                                .onTapGesture {
+                                    focusOnClinic(clinic)
                                 }
-                            )
-                            .frame(width: cardWidth)
-                            .onTapGesture {
-                                withAnimation(.spring(response: 0.28, dampingFraction: 0.86)) {
-                                    viewModel.focus(on: clinic)
+                                .accessibilityAddTraits(.isButton)
+                                .accessibilityAction {
+                                    focusOnClinic(clinic)
                                 }
                             }
-                            .accessibilityAddTraits(.isButton)
                         }
+                        .padding(.horizontal, carouselInset)
+                        .scrollTargetLayout()
                     }
-                    .padding(.horizontal, 16)
-                    .scrollTargetLayout()
+                    .scrollTargetBehavior(.viewAligned)
+                    .onAppear {
+                        scrollToSelectedClinic(
+                            viewModel.selectedClinicID,
+                            using: scrollProxy
+                        )
+                    }
+                    .onChange(of: viewModel.selectedClinicID) { _, clinicID in
+                        scrollToSelectedClinic(clinicID, using: scrollProxy)
+                    }
                 }
-                .scrollTargetBehavior(.viewAligned)
             }
             .frame(height: 164)
+        }
+    }
+
+    private func scrollToSelectedClinic(
+        _ clinicID: String?,
+        using proxy: ScrollViewProxy
+    ) {
+        guard
+            let clinicID,
+            viewModel.filteredClinics.contains(where: { $0.id == clinicID })
+        else {
+            return
+        }
+
+        withAnimation(.spring(response: 0.28, dampingFraction: 0.86)) {
+            proxy.scrollTo(clinicID, anchor: .center)
+        }
+    }
+
+    private func focusOnClinic(_ clinic: VetClinic) {
+        withAnimation(.spring(response: 0.28, dampingFraction: 0.86)) {
+            viewModel.focus(on: clinic)
         }
     }
 

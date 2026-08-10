@@ -73,6 +73,33 @@ enum ChatMessageWindow {
     }
 }
 
+/// Preserves text typed while an earlier message is still being sent.
+///
+/// If the composer is still empty when a send fails, the failed body can be
+/// restored in place. If the user has already started a new message, that new
+/// draft remains untouched and the failed body is kept as a separate retry.
+struct ChatDraftFailureRecovery: Equatable {
+    let composerDraft: String
+    let retryBody: String?
+
+    static func recover(
+        failedBody: String,
+        currentDraft: String
+    ) -> ChatDraftFailureRecovery {
+        guard !currentDraft.isEmpty else {
+            return ChatDraftFailureRecovery(
+                composerDraft: failedBody,
+                retryBody: nil
+            )
+        }
+
+        return ChatDraftFailureRecovery(
+            composerDraft: currentDraft,
+            retryBody: failedBody
+        )
+    }
+}
+
 enum ChatConversationID {
     static func make(_ firstUserID: String, _ secondUserID: String) -> String? {
         let users = [firstUserID, secondUserID]

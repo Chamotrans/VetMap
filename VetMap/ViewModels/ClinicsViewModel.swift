@@ -15,6 +15,7 @@ final class ClinicsViewModel {
 
     private let firebase: FirebaseService
     @ObservationIgnored private var cancellables: Set<AnyCancellable> = []
+    @ObservationIgnored private var loadRequestGeneration = 0
 
     init(
         repository _: MockClinicRepository = MockClinicRepository(),
@@ -23,7 +24,6 @@ final class ClinicsViewModel {
         self.firebase = firebase
         observeModerationChanges()
         observeAvailabilityClock()
-        Task { await loadClinics() }
     }
 
     var filteredClinics: [VetClinic] {
@@ -46,17 +46,27 @@ final class ClinicsViewModel {
     }
 
     func loadClinics() async {
+        loadRequestGeneration &+= 1
+        let requestGeneration = loadRequestGeneration
         isLoading = true
         networkError = nil
-        defer { isLoading = false }
+        defer {
+            if requestGeneration == loadRequestGeneration {
+                isLoading = false
+            }
+        }
 
         await ModerationStore.shared.refreshPublicState()
+        guard requestGeneration == loadRequestGeneration else { return }
         refreshModerationState()
 
         do {
-            clinics = try await firebase.fetchClinics()
+            let fetchedClinics = try await firebase.fetchClinics()
+            guard requestGeneration == loadRequestGeneration else { return }
+            clinics = fetchedClinics
             storageError = nil
         } catch {
+            guard requestGeneration == loadRequestGeneration else { return }
             networkError = "雲端診所資料暫時無法載入：\(error.localizedDescription)"
             storageError = networkError
             CrashReporting.recordError(error, domain: "ClinicsViewModel.loadClinics")

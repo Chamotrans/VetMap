@@ -58,15 +58,22 @@ final class ReviewViewModel {
         do {
             let cloud = try await firebase.fetchReviews(for: clinicId)
             let cloudIDs = Set(cloud.map(\.id))
-            let helpfulCounts = (try? await firebase.fetchReviewHelpfulCounts()) ?? [:]
-            reviews = (cloud + seeds.filter { !cloudIDs.contains($0.id) }).map { review in
+            let helpfulCounts = try? await firebase.fetchReviewHelpfulCounts()
+            let displayedHelpfulCounts = reviews.reduce(into: [String: Int]()) { counts, review in
+                counts[review.id] = review.helpfulCount
+            }
+            let refreshedReviews = (cloud + seeds.filter { !cloudIDs.contains($0.id) }).map { review in
                 var review = review
-                review.helpfulCount += helpfulCounts[review.id, default: 0]
+                if let helpfulCounts {
+                    review.helpfulCount += helpfulCounts[review.id, default: 0]
+                } else if let displayedHelpfulCount = displayedHelpfulCounts[review.id] {
+                    review.helpfulCount = displayedHelpfulCount
+                }
                 return review
             }
+            reviews = refreshedReviews
             storageError = nil
         } catch {
-            reviews = seeds
             storageError = "雲端評價暫時無法載入：\(error.localizedDescription)"
             CrashReporting.recordError(error, domain: "ReviewViewModel.loadReviews")
         }
