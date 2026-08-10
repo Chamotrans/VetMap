@@ -951,6 +951,24 @@ test("用戶 profile 私隱及防止自行提升 admin / premium", async () => {
   await assertFails(bob.collection("users").doc("alice").get());
   await assertFails(alice.collection("users").doc("alice").update({ role: "admin" }));
   await assertFails(alice.collection("users").doc("alice").update({ isPremium: true }));
+
+  await assertSucceeds(alice.collection("users").doc("alice").update({
+    favoriteClinics: ["clinic-hk-1", "clinic-hk-2"],
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  }));
+  const updatedProfile = await alice.collection("users").doc("alice").get();
+  assert.deepEqual(updatedProfile.data().favoriteClinics, [
+    "clinic-hk-1",
+    "clinic-hk-2",
+  ]);
+  await assertFails(bob.collection("users").doc("alice").update({
+    favoriteClinics: ["clinic-hk-3"],
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  }));
+  await assertFails(alice.collection("users").doc("alice").update({
+    favoriteClinics: Array.from({length: 201}, (_, index) => `clinic-${index}`),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  }));
 });
 
 test("已整理的香港診所可公開查詢，舊台灣目錄維持封鎖", async () => {

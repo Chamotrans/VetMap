@@ -615,6 +615,9 @@ final class AuthViewModel: NSObject, ObservableObject {
 
     private func clearSessionState() {
         KeychainService.deleteAppleUserIdentifier()
+        let defaults = UserDefaults.standard
+        defaults.removeObject(forKey: ClinicFavorites.storageKey)
+        defaults.removeObject(forKey: ClinicFavorites.cacheOwnerKey)
         user = nil
         authState = .signedOut
         isAuthenticating = false
@@ -628,7 +631,13 @@ final class AuthViewModel: NSObject, ObservableObject {
         KeychainService.deleteAppleUserIdentifier()
 
         let defaults = UserDefaults.standard
-        defaults.removeObject(forKey: "favorites")
+        if let userID = user?.uid {
+            defaults.removeObject(
+                forKey: ClinicFavorites.cloudMigrationKey(for: userID)
+            )
+        }
+        defaults.removeObject(forKey: ClinicFavorites.storageKey)
+        defaults.removeObject(forKey: ClinicFavorites.cacheOwnerKey)
         defaults.removeObject(forKey: "debugAdminOverride")
 
         let fileManager = FileManager.default

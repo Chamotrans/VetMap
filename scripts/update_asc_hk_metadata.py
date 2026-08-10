@@ -32,6 +32,7 @@ ZH_DESCRIPTION = """VetMap 係一個專為香港毛孩家長而設嘅獸醫診�
 • 瀏覽經整理及審核後公開嘅香港獸醫診所
 • 用關鍵字、地區及服務項目搜尋
 • 查看地址、電話及地圖位置
+• 收藏常用診所並同步到 VetMap 帳戶
 • 營業時間、服務、評分及費用只會喺有可靠資料或經審核後顯示
 
 寵物服務
@@ -71,6 +72,7 @@ Find clinics
 • Browse Hong Kong veterinary clinics published after review
 • Search by keyword, area and service
 • View addresses, phone numbers and map locations
+• Save favourite clinics and sync them to your VetMap account
 • Hours, services, ratings and costs are shown only when reliable or approved
 
 Pet services
@@ -237,10 +239,11 @@ Test paths:
 1. My → Login / Sign Up.
 2. Clinics → + to submit a clinic.
 3. Open “VetMap 示範診所（非真實商戶）” → Add Review or Add Quote.
-4. Open its approved demo review/quote → Helpful / Report / Block Author.
-5. Open the demo review menu → Send Message. The Messages tab contains a rights-cleared incoming demo message. Long-press it to Report, or use the conversation menu to Block User.
-6. Long-press a message you sent to Delete Message.
-7. My → Account Settings → Delete Account.
+4. Tap the heart in the demo clinic header, then open My → Saved Clinics to confirm the favourite is account-synchronised.
+5. Open its approved demo review/quote → Helpful / Report / Block Author.
+6. Open the demo review menu → Send Message. The Messages tab contains a rights-cleared incoming demo message. Long-press it to Report, or use the conversation menu to Block User.
+7. Long-press a message you sent to Delete Message.
+8. My → Account Settings → Delete Account.
 
 All new clinic, review, and quote submissions remain Pending until manually reviewed by an administrator. Private one-to-one messages are visible only to their two participants. Either participant can report a message or block the other user; reported messages are available to administrators for review and soft removal. No IAP or subscription UI is exposed in v1.0. Location permission is optional and precise location is processed on device only to center the map and calculate distance.
 

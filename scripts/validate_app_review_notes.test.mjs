@@ -3,6 +3,7 @@ import {readFile} from "node:fs/promises";
 import test from "node:test";
 
 const setupPath = new URL("../AppStoreSetup.md", import.meta.url);
+const metadataPath = new URL("../AppStoreMetadata.md", import.meta.url);
 const updaterPath = new URL("./update_asc_hk_metadata.py", import.meta.url);
 
 function extractSetupNotes(source) {
@@ -19,6 +20,9 @@ function extractUpdaterNotes(source) {
 
 const requiredReviewFacts = [
   "Send Message",
+  "Tap the heart in the demo clinic header",
+  "My → Saved Clinics",
+  "account-synchronised",
   "Messages tab",
   "Long-press it to Report",
   "Block User",
@@ -42,5 +46,19 @@ test("manual and automated App Review notes retain every 1.0 review path", async
   for (const fact of requiredReviewFacts) {
     assert.ok(setupNotes.includes(fact), `manual Review Notes missing: ${fact}`);
     assert.ok(updaterNotes.includes(fact), `ASC updater Review Notes missing: ${fact}`);
+  }
+});
+
+test("manual and automated descriptions retain account-synchronised favourites", async () => {
+  const [metadataSource, updaterSource] = await Promise.all([
+    readFile(metadataPath, "utf8"),
+    readFile(updaterPath, "utf8"),
+  ]);
+  for (const fact of [
+    "收藏常用診所並同步到 VetMap 帳戶",
+    "Save favourite clinics and sync them to your VetMap account",
+  ]) {
+    assert.ok(metadataSource.includes(fact), `manual description missing: ${fact}`);
+    assert.ok(updaterSource.includes(fact), `ASC updater description missing: ${fact}`);
   }
 });

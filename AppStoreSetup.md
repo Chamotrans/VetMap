@@ -57,12 +57,14 @@ Test paths:
 2. Clinics → + to submit a clinic.
 3. In Clinics, open “VetMap 示範診所（非真實商戶）”
    → Add Review or Add Quote.
-4. Open its approved demo review/quote → Helpful / Report / Block Author.
-5. Open the demo review menu → Send Message. The Messages tab contains a
+4. Tap the heart in the demo clinic header, then open My → Saved Clinics to
+   confirm the favourite is account-synchronised.
+5. Open its approved demo review/quote → Helpful / Report / Block Author.
+6. Open the demo review menu → Send Message. The Messages tab contains a
    rights-cleared incoming demo message. Long-press it to Report, or use the
    conversation menu to Block User.
-6. Long-press a message you sent to Delete Message.
-7. My → Account Settings → Delete Account.
+7. Long-press a message you sent to Delete Message.
+8. My → Account Settings → Delete Account.
 
 All new clinic, review, and quote submissions remain Pending until manually
 reviewed by an administrator. Private one-to-one messages are visible only to

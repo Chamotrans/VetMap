@@ -37,6 +37,13 @@ service cloud.firestore {
         && value.matches('^[A-Za-z0-9][A-Za-z0-9._-]*$');
     }
 
+    function validUserSavedLists(data) {
+      return data.favoriteClinics is list
+        && data.favoriteClinics.size() <= 200
+        && data.savedProducts is list
+        && data.savedProducts.size() <= 200;
+    }
+
     function validConversation(data, conversationId) {
       return data.keys().hasAll([
           'id', 'participantIds', 'participantNames', 'lastMessageId',
@@ -803,7 +810,8 @@ service cloud.firestore {
           'updatedAt', 'isPremium', 'favoriteClinics', 'savedProducts'
         ])
         && request.resource.data.uid == userId
-        && request.resource.data.isPremium == false;
+        && request.resource.data.isPremium == false
+        && validUserSavedLists(request.resource.data);
       allow update: if admin()
         || (
           signedIn()
@@ -817,6 +825,7 @@ service cloud.firestore {
             'displayName', 'email', 'providerIDs', 'updatedAt',
             'favoriteClinics', 'savedProducts'
           ])
+          && validUserSavedLists(request.resource.data)
         );
       allow delete: if signedIn() && (request.auth.uid == userId || admin());
 

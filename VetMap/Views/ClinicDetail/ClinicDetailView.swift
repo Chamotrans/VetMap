@@ -245,6 +245,10 @@ struct ClinicDetailView: View {
 
                     ClinicAvailabilityBadge(clinic: clinic)
                 }
+
+                Spacer(minLength: 4)
+
+                FavoriteButton(clinicID: clinic.id)
             }
 
             HStack(spacing: 10) {

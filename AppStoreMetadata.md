@@ -18,6 +18,7 @@ VetMap 係一個專為香港毛孩家長而設嘅獸醫診所地圖同社群 App
 - 瀏覽經整理及審核後公開嘅香港獸醫診所
 - 用關鍵字、地區及服務項目搜尋
 - 查看地址、電話及地圖位置
+- 收藏常用診所並同步到 VetMap 帳戶
 - 營業時間、服務、評分及費用只會喺有可靠資料或經審核後顯示
 
 **寵物服務**
@@ -59,6 +60,7 @@ VetMap is a Hong Kong veterinary clinic map and moderated community for pet guar
 - Browse Hong Kong veterinary clinics published after review
 - Search by keyword, area and service
 - View addresses, phone numbers and map locations
+- Save favourite clinics and sync them to your VetMap account
 - Hours, services, ratings and costs are shown only when reliable or approved
 
 **Pet services**

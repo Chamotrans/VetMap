@@ -13,6 +13,7 @@ enum FeatureFlags {
 struct ProfileTab: View {
     @ObservedObject private var authViewModel = AuthViewModel.shared
     @ObservedObject private var admin = AdminViewModel.shared
+    @ObservedObject private var favorites = ClinicFavoritesStore.shared
     @State private var showLogin = false
     @State private var showSignOutAlert = false
 
@@ -37,11 +38,17 @@ struct ProfileTab: View {
         .onChange(of: authViewModel.authState) { _, newState in
             if newState == .signedIn {
                 showLogin = false
+                Task { await favorites.refresh(force: true) }
+            } else if newState == .signedOut {
+                favorites.clearLocalSession()
             }
             admin.refresh(uid: authViewModel.user?.uid)
         }
         .onAppear {
             admin.refresh(uid: authViewModel.user?.uid)
+            if authViewModel.authState == .signedIn {
+                Task { await favorites.refresh() }
+            }
         }
     }
 
@@ -116,13 +123,21 @@ struct ProfileTab: View {
 
             Section("我的收藏") {
                 NavigationLink {
-                    ComingSoonView(
-                        title: "我的收藏",
-                        subtitle: "收藏的診所將顯示在此。",
-                        systemImage: "heart.fill"
-                    )
+                    ClinicFavoritesView()
                 } label: {
-                    Label("收藏診所", systemImage: "building.2.fill")
+                    Label {
+                        HStack {
+                            Text("收藏診所")
+                            Spacer()
+                            if !favorites.clinicIDs.isEmpty {
+                                Text("\(favorites.clinicIDs.count)")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    } icon: {
+                        Image(systemName: "building.2.fill")
+                    }
                 }
 
                 if FeatureFlags.catalogEnabled {
@@ -262,6 +277,132 @@ struct ProfileTab: View {
         }
         .padding(.vertical, 8)
         .accessibilityLabel("用戶資料")
+    }
+}
+
+private struct ClinicFavoritesView: View {
+    @ObservedObject private var favorites = ClinicFavoritesStore.shared
+    @State private var clinicsViewModel = ClinicsViewModel()
+
+    private var favoriteClinics: [VetClinic] {
+        let clinicsByID = Dictionary(
+            uniqueKeysWithValues: clinicsViewModel.filteredClinics.map { ($0.id, $0) }
+        )
+        return favorites.clinicIDs.compactMap { clinicsByID[$0] }
+    }
+
+    private var unavailableFavoriteCount: Int {
+        max(0, favorites.clinicIDs.count - favoriteClinics.count)
+    }
+
+    var body: some View {
+        List {
+            if let errorMessage = favorites.errorMessage {
+                Section {
+                    Label(errorMessage, systemImage: "icloud.slash")
+                        .font(.footnote)
+                        .foregroundStyle(AppTheme.warning)
+
+                    Button("重新同步") {
+                        Task { await refresh() }
+                    }
+                }
+            }
+
+            if let networkError = clinicsViewModel.networkError {
+                Section {
+                    Label(networkError, systemImage: "wifi.slash")
+                        .font(.footnote)
+                        .foregroundStyle(AppTheme.warning)
+
+                    Button("重新載入診所") {
+                        Task { await clinicsViewModel.retryLoad() }
+                    }
+                }
+            }
+
+            if favoriteClinics.isEmpty {
+                Section {
+                    if favorites.isLoading || clinicsViewModel.isLoading {
+                        HStack(spacing: 10) {
+                            ProgressView()
+                            Text("正在同步收藏…")
+                                .foregroundStyle(.secondary)
+                        }
+                        .frame(maxWidth: .infinity, minHeight: 88)
+                    } else {
+                        ContentUnavailableView {
+                            Label("尚未收藏診所", systemImage: "heart")
+                        } description: {
+                            Text("在診所詳情按心形按鈕，收藏會同步到你的 VetMap 帳戶。")
+                        }
+                        .frame(maxWidth: .infinity, minHeight: 220)
+                    }
+                }
+            } else {
+                Section("\(favoriteClinics.count) 間診所") {
+                    ForEach(favoriteClinics) { clinic in
+                        NavigationLink {
+                            ClinicDetailView(clinic: clinic)
+                        } label: {
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text(clinic.name)
+                                    .font(.headline)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                Text(clinic.address)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                ClinicAvailabilityBadge(clinic: clinic, compact: true)
+                            }
+                            .padding(.vertical, 5)
+                        }
+                        .accessibilityHint("開啟收藏診所詳情")
+                    }
+                    .onDelete(perform: removeFavorites)
+                } footer: {
+                    Text("按右上角「編輯」可移除收藏；變更會同步到你的帳戶。")
+                }
+            }
+
+            if unavailableFavoriteCount > 0,
+               !clinicsViewModel.isLoading,
+               clinicsViewModel.networkError == nil {
+                Section {
+                    Label(
+                        "另有 \(unavailableFavoriteCount) 項收藏目前未在公開診所目錄顯示。",
+                        systemImage: "eye.slash"
+                    )
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .listStyle(.insetGrouped)
+        .navigationTitle("收藏診所")
+        .toolbar {
+            if !favoriteClinics.isEmpty {
+                EditButton()
+            }
+        }
+        .refreshable { await refresh() }
+        .task { await refresh() }
+    }
+
+    private func refresh() async {
+        await favorites.refresh(force: true)
+        await clinicsViewModel.retryLoad()
+    }
+
+    private func removeFavorites(at offsets: IndexSet) {
+        let clinicIDs = offsets.compactMap { index in
+            favoriteClinics.indices.contains(index) ? favoriteClinics[index].id : nil
+        }
+        Task {
+            for clinicID in clinicIDs {
+                await favorites.setFavorite(clinicID, isFavorite: false)
+            }
+        }
     }
 }
 

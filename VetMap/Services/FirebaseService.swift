@@ -86,6 +86,39 @@ final class FirebaseService {
         }
     }
 
+    // MARK: - Account favourites
+
+    func fetchFavoriteClinicIDs() async throws -> [String] {
+        let identity = try authenticatedIdentity()
+        let snapshot = try await resolveFirestore()
+            .collection("users")
+            .document(identity.uid)
+            .getDocument()
+        guard snapshot.exists else {
+            throw FirebaseError.documentNotFound(identity.uid)
+        }
+        return ClinicFavorites.normalized(
+            snapshot.data()?["favoriteClinics"] as? [String] ?? []
+        )
+    }
+
+    func setClinicFavorite(_ clinicID: String, isFavorite: Bool) async throws {
+        let normalizedID = clinicID.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard ClinicFavorites.isValidClinicID(normalizedID) else {
+            throw FirebaseError.invalidFavoriteClinicID
+        }
+        let identity = try authenticatedIdentity()
+        try await resolveFirestore()
+            .collection("users")
+            .document(identity.uid)
+            .updateData([
+                "favoriteClinics": isFavorite
+                    ? FieldValue.arrayUnion([normalizedID])
+                    : FieldValue.arrayRemove([normalizedID]),
+                "updatedAt": FieldValue.serverTimestamp()
+            ])
+    }
+
     func fetchReviews(for clinicId: String) async throws -> [Review] {
         let snapshot = try await resolveFirestore()
             .collection("reviews")
@@ -855,6 +888,7 @@ enum FirebaseError: Error {
     case publicDocumentConflict
     case invalidReportTarget
     case invalidReviewID
+    case invalidFavoriteClinicID
     case cannotBlockSelf
     case invalidCatalog
     case encodingFailed(Error)
@@ -884,6 +918,8 @@ extension FirebaseError: LocalizedError {
             "找不到舉報所指的原始內容，已停止下架以免誤刪資料。"
         case .invalidReviewID:
             "評價識別碼無效，未能標記為有用。"
+        case .invalidFavoriteClinicID:
+            "診所識別碼無效，未能更新收藏。"
         case .cannotBlockSelf:
             "不能封鎖自己的帳戶。"
         case .invalidCatalog:

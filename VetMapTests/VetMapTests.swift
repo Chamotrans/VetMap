@@ -13,6 +13,44 @@ final class VetMapModelTests: XCTestCase {
         try assertRoundTrip(makeInsurance())
     }
 
+    func testClinicFavoritesNormalizesPersistsAndCapsAccountList() {
+        let oversized = (0...ClinicFavorites.maximumCount).map { "clinic-\($0)" }
+        let normalized = ClinicFavorites.normalized(
+            [" clinic-a ", "clinic-a", "-unsafe", "unsafe/id"] + oversized
+        )
+
+        XCTAssertEqual(normalized.first, "clinic-a")
+        XCTAssertEqual(normalized.count, ClinicFavorites.maximumCount)
+        XCTAssertFalse(normalized.contains("-unsafe"))
+        XCTAssertFalse(normalized.contains("unsafe/id"))
+        XCTAssertFalse(ClinicFavorites.isValidClinicID("clinic-a\n"))
+        XCTAssertEqual(
+            ClinicFavorites.decode(ClinicFavorites.encode(normalized)),
+            normalized
+        )
+        XCTAssertEqual(ClinicFavorites.decode("not-json"), [])
+    }
+
+    func testClinicFavoritesSettingIsStableAndReversible() {
+        let original = ["clinic-a", "clinic-b"]
+        XCTAssertEqual(
+            ClinicFavorites.setting("clinic-c", isFavorite: true, in: original),
+            ["clinic-a", "clinic-b", "clinic-c"]
+        )
+        XCTAssertEqual(
+            ClinicFavorites.setting("clinic-a", isFavorite: true, in: original),
+            original
+        )
+        XCTAssertEqual(
+            ClinicFavorites.setting("clinic-a", isFavorite: false, in: original),
+            ["clinic-b"]
+        )
+        XCTAssertEqual(
+            ClinicFavorites.setting("bad/id", isFavorite: true, in: original),
+            original
+        )
+    }
+
     func testChatConversationIDIsDeterministicAndRejectsUnsafeParticipants() {
         XCTAssertEqual(
             ChatConversationID.make("bob", "alice"),
