@@ -648,3 +648,23 @@
 - Release boundary: Xcode Cloud remains disabled pending the account holder's complete Content Rights attestation. No Cloud activation, Apple upload, ASC mutation, production deployment, device install/smoke test, review submission or public release occurred; source/CI success is not represented as binary proof.
 - Preserved scope: All unrelated dirty and untracked files remain untouched. Registration, submissions, reviews, quotes, reporting, blocking and chat remain enabled.
 - Next candidate: Complete the remaining product/service favourites path or the next higher-severity release finding after a fresh acceptance audit.
+
+### Product improvement — Account-synchronised service and insurance favourites — 2026-08-10
+
+- Goal: Replace Profile's “收藏好物” placeholder with a complete account-synchronised path for the 124 authorised Hong Kong pet-service records and three official insurance links.
+- Implementation:
+  - Service and insurance detail screens now provide a 44-point accessible heart with sign-in continuation, optimistic progress, error recovery and account sync.
+  - Profile now shows saved services and official insurance entries with counts, loading／empty／error states, pull-to-refresh, retry, navigation, swipe removal and an explicit unavailable-item cleanup path.
+  - Catalog and clinic favourite sessions are UID-bound and generation-isolated. Repeated auth callbacks are idempotent; stale refresh or mutation completions cannot clear a newly signed-in account.
+  - Firebase reads／writes require the expected UID. Current additions use an exact 127-ID allowlist; legacy string values remain byte-for-byte removable but cannot be newly introduced.
+  - Firestore update rules permit unchanged or progressively cleaned legacy／mixed／duplicate data, reject new unknown values, and safely backfill missing fields without allowing field deletion or explicit-null substitution.
+  - App Privacy source, privacy policy source, descriptions and reviewer instructions now disclose account-linked Product Interaction for saved clinics, services and insurance links.
+- Verification:
+  - Local source regressions passed 61/61; Swift frontend parse, `UserProfile.swift` typecheck, the standalone favourites harness, localization JSON, privacy plist, Functions lint／module load, YAML and patch hygiene passed.
+  - Two independent read-only reviews ended with no P0–P3 findings. Targeted emulator coverage exercised real `arrayUnion`／`arrayRemove`, mixed values, duplicates and missing fields.
+  - Commit `25258d7` (`feat: sync service and insurance favourites`) was pushed to `origin/main`.
+  - GitHub `Backend and Config Validation` run `31408603722` completed successfully in 41 seconds. Java 21 Firestore／Storage emulator tests passed 18/18, including the new legacy migration regression.
+- Apple delivery context: The supplied Build 39 notice remains an `ITMS-90382 Upload limit reached` delivery failure, not an App Review rejection or processed ASC build. The previously recorded conservative waiting period elapsed on 2026-08-04; no Apple upload was attempted here.
+- Release boundary: No local `xcodebuild`, Xcode Cloud action, Apple upload, ASC mutation, Firebase production deploy, privacy-policy deploy, device action, App Review submission or public release occurred. ASC Product Interaction publication, Content Rights, a new Cloud candidate, device smoke tests and final ASC reconciliation remain pending external release work.
+- Preserved scope: Registration, clinic／review／quote submissions, reporting, blocking, Helpful and private chat remain open. User-owned dirty and untracked files were not staged, reverted, deleted or edited.
+- Next candidate: Fix the unauthenticated review／quote draft dead end or add password-reset recovery after a fresh release-risk audit.
