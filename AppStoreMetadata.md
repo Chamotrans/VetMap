@@ -25,6 +25,7 @@ VetMap 係一個專為香港毛孩家長而設嘅獸醫診所地圖同社群 App
 - 瀏覽香港寵物用品、美容及善終服務目錄
 - 查看商戶地址及聯絡資料
 - 直接前往香港寵物保險供應商官方產品頁
+- 收藏常用服務及保險官方入口並同步到 VetMap 帳戶
 
 **睇評價**
 - 已審核嘅社群評價同評分
@@ -67,6 +68,7 @@ VetMap is a Hong Kong veterinary clinic map and moderated community for pet guar
 - Browse Hong Kong pet supplies, grooming and aftercare directories
 - View business addresses and contact details
 - Open official Hong Kong pet-insurance provider pages
+- Save services and official insurance links and sync them to your VetMap account
 
 **Community reviews**
 - Read approved ratings and reviews

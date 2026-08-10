@@ -39,6 +39,7 @@ ZH_DESCRIPTION = """VetMap 係一個專為香港毛孩家長而設嘅獸醫診�
 • 瀏覽香港寵物用品、美容及善終服務目錄
 • 查看商戶地址及聯絡資料
 • 直接前往香港寵物保險供應商官方產品頁
+• 收藏常用服務及保險官方入口並同步到 VetMap 帳戶
 
 睇評價
 • 已審核嘅社群評價同評分
@@ -79,6 +80,7 @@ Pet services
 • Browse Hong Kong pet supplies, grooming and aftercare directories
 • View business addresses and contact details
 • Open official Hong Kong pet-insurance provider pages
+• Save services and official insurance links and sync them to your VetMap account
 
 Community reviews
 • Read approved ratings and reviews
@@ -240,10 +242,11 @@ Test paths:
 2. Clinics → + to submit a clinic.
 3. Open “VetMap 示範診所（非真實商戶）” → Add Review or Add Quote.
 4. Tap the heart in the demo clinic header, then open My → Saved Clinics to confirm the favourite is account-synchronised.
-5. Open its approved demo review/quote → Helpful / Report / Block Author.
-6. Open the demo review menu → Send Message. The Messages tab contains a rights-cleared incoming demo message. Long-press it to Report, or use the conversation menu to Block User.
-7. Long-press a message you sent to Delete Message.
-8. My → Account Settings → Delete Account.
+5. Open Services, choose a pet service or insurance entry, tap the heart, then open My → Saved Services to confirm the saved entry is account-synchronised.
+6. Open its approved demo review/quote → Helpful / Report / Block Author.
+7. Open the demo review menu → Send Message. The Messages tab contains a rights-cleared incoming demo message. Long-press it to Report, or use the conversation menu to Block User.
+8. Long-press a message you sent to Delete Message.
+9. My → Account Settings → Delete Account.
 
 All new clinic, review, and quote submissions remain Pending until manually reviewed by an administrator. Private one-to-one messages are visible only to their two participants. Either participant can report a message or block the other user; reported messages are available to administrators for review and soft removal. No IAP or subscription UI is exposed in v1.0. Location permission is optional and precise location is processed on device only to center the map and calculate distance.
 

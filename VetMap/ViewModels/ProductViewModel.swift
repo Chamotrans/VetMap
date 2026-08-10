@@ -30,7 +30,9 @@ final class ProductViewModel {
                     $0.name.localizedStandardCompare($1.name) == .orderedAscending
                 }
         } catch {
-            errorMessage = "暫時無法載入香港寵物服務目錄，請稍後再試。"
+            errorMessage = String(
+                localized: "暫時無法載入香港寵物服務目錄，請稍後再試。"
+            )
         }
     }
 }

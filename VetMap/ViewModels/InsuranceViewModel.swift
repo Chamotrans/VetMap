@@ -52,7 +52,9 @@ final class InsuranceViewModel {
         do {
             plans = try await FirebaseService.shared.fetchInsurances()
         } catch {
-            errorMessage = "暫時無法載入香港寵物保險目錄，請稍後再試。"
+            errorMessage = String(
+                localized: "暫時無法載入香港寵物保險目錄，請稍後再試。"
+            )
         }
     }
 }

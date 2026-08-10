@@ -35,6 +35,11 @@ struct InsuranceDetailView: View {
         .background(AppTheme.screenBackground)
         .navigationTitle("方案詳情")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                CatalogFavoriteButton(itemID: plan.id, kind: .insurance)
+            }
+        }
     }
 
     private var headerSection: some View {

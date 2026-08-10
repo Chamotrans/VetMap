@@ -39,6 +39,11 @@ struct ProductDetailView: View {
         .background(AppTheme.screenBackground)
         .navigationTitle("服務詳情")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                CatalogFavoriteButton(itemID: product.id, kind: .service)
+            }
+        }
     }
 
     private var imagePlaceholder: some View {

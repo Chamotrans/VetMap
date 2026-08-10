@@ -88,8 +88,11 @@ final class FirebaseService {
 
     // MARK: - Account favourites
 
-    func fetchFavoriteClinicIDs() async throws -> [String] {
+    func fetchFavoriteClinicIDs(expectedUserID: String) async throws -> [String] {
         let identity = try authenticatedIdentity()
+        guard identity.uid == expectedUserID else {
+            throw FirebaseError.authenticationStateChanged
+        }
         let snapshot = try await resolveFirestore()
             .collection("users")
             .document(identity.uid)
@@ -102,17 +105,69 @@ final class FirebaseService {
         )
     }
 
-    func setClinicFavorite(_ clinicID: String, isFavorite: Bool) async throws {
+    func setClinicFavorite(
+        _ clinicID: String,
+        isFavorite: Bool,
+        expectedUserID: String
+    ) async throws {
         let normalizedID = clinicID.trimmingCharacters(in: .whitespacesAndNewlines)
         guard ClinicFavorites.isValidClinicID(normalizedID) else {
             throw FirebaseError.invalidFavoriteClinicID
         }
         let identity = try authenticatedIdentity()
+        guard identity.uid == expectedUserID else {
+            throw FirebaseError.authenticationStateChanged
+        }
         try await resolveFirestore()
             .collection("users")
             .document(identity.uid)
             .updateData([
                 "favoriteClinics": isFavorite
+                    ? FieldValue.arrayUnion([normalizedID])
+                    : FieldValue.arrayRemove([normalizedID]),
+                "updatedAt": FieldValue.serverTimestamp()
+            ])
+    }
+
+    func fetchSavedCatalogItemIDs(expectedUserID: String) async throws -> [String] {
+        let identity = try authenticatedIdentity()
+        guard identity.uid == expectedUserID else {
+            throw FirebaseError.authenticationStateChanged
+        }
+        let snapshot = try await resolveFirestore()
+            .collection("users")
+            .document(identity.uid)
+            .getDocument()
+        guard snapshot.exists else {
+            throw FirebaseError.documentNotFound(identity.uid)
+        }
+        let rawValues = snapshot.data()?["savedProducts"] as? [Any] ?? []
+        return SavedCatalogItems.normalizedStored(rawValues.compactMap { $0 as? String })
+    }
+
+    func setCatalogItemSaved(
+        _ itemID: String,
+        isSaved: Bool,
+        expectedUserID: String
+    ) async throws {
+        let normalizedID = isSaved
+            ? itemID.trimmingCharacters(in: .whitespacesAndNewlines)
+            : itemID
+        let validOperation = isSaved
+            ? SavedCatalogItems.isValidItemID(normalizedID)
+            : SavedCatalogItems.isSafeStoredItemID(normalizedID)
+        guard validOperation else {
+            throw FirebaseError.invalidSavedCatalogItemID
+        }
+        let identity = try authenticatedIdentity()
+        guard identity.uid == expectedUserID else {
+            throw FirebaseError.authenticationStateChanged
+        }
+        try await resolveFirestore()
+            .collection("users")
+            .document(identity.uid)
+            .updateData([
+                "savedProducts": isSaved
                     ? FieldValue.arrayUnion([normalizedID])
                     : FieldValue.arrayRemove([normalizedID]),
                 "updatedAt": FieldValue.serverTimestamp()
@@ -692,7 +747,24 @@ final class FirebaseService {
             .whereField("region", isEqualTo: "HK")
             .whereField("expiresAt", isEqualTo: catalogExpiry)
         let snapshot = try await query.getDocuments()
-        let products = try snapshot.documents.map { try decodeDocument($0, as: PetProduct.self) }
+        let products = try decodeFirestoreDocuments(
+            snapshot.documents,
+            documentID: \.documentID,
+            decode: { document in
+                let product = try self.decodeDocument(document, as: PetProduct.self)
+                guard product.id == document.documentID,
+                      SavedCatalogItems.kind(for: product.id) == .service else {
+                    throw FirebaseError.catalogDocumentIdentityMismatch(document.documentID)
+                }
+                return product
+            },
+            onFailure: { documentID, error in
+                CrashReporting.recordError(
+                    error,
+                    domain: "FirebaseService.fetchProducts.\(documentID)"
+                )
+            }
+        )
 
         guard let category else { return products }
         return products.filter { $0.category == category }
@@ -708,7 +780,24 @@ final class FirebaseService {
             .whereField("region", isEqualTo: "HK")
             .whereField("expiresAt", isEqualTo: catalogExpiry)
             .getDocuments()
-        return try snapshot.documents.map { try decodeDocument($0, as: Insurance.self) }
+        return try decodeFirestoreDocuments(
+            snapshot.documents,
+            documentID: \.documentID,
+            decode: { document in
+                let plan = try self.decodeDocument(document, as: Insurance.self)
+                guard plan.id == document.documentID,
+                      SavedCatalogItems.kind(for: plan.id) == .insurance else {
+                    throw FirebaseError.catalogDocumentIdentityMismatch(document.documentID)
+                }
+                return plan
+            },
+            onFailure: { documentID, error in
+                CrashReporting.recordError(
+                    error,
+                    domain: "FirebaseService.fetchInsurances.\(documentID)"
+                )
+            }
+        )
     }
 
     private func currentHKCatalogExpiry(in db: Firestore) async throws -> Timestamp {
@@ -889,6 +978,9 @@ enum FirebaseError: Error {
     case invalidReportTarget
     case invalidReviewID
     case invalidFavoriteClinicID
+    case invalidSavedCatalogItemID
+    case authenticationStateChanged
+    case catalogDocumentIdentityMismatch(String)
     case cannotBlockSelf
     case invalidCatalog
     case encodingFailed(Error)
@@ -920,6 +1012,12 @@ extension FirebaseError: LocalizedError {
             "評價識別碼無效，未能標記為有用。"
         case .invalidFavoriteClinicID:
             "診所識別碼無效，未能更新收藏。"
+        case .invalidSavedCatalogItemID:
+            String(localized: "服務或保險識別碼無效，未能更新收藏。")
+        case .authenticationStateChanged:
+            String(localized: "登入帳戶已變更，請重新操作。")
+        case .catalogDocumentIdentityMismatch(let id):
+            String(localized: "目錄文件識別碼不一致：\(id)")
         case .cannotBlockSelf:
             "不能封鎖自己的帳戶。"
         case .invalidCatalog:

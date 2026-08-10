@@ -51,6 +51,162 @@ final class VetMapModelTests: XCTestCase {
         )
     }
 
+    func testSavedCatalogItemsClassifiesAndNormalizesCanonicalIDs() {
+        let normalized = SavedCatalogItems.normalized(
+            [
+                " hk-service-grm-001 ",
+                "hk-service-grm-001",
+                "insurance-hk-fwd",
+                "product-fish-oil",
+                "insurance-hk-bad/value"
+            ] + SavedCatalogItems.allowedItemIDs
+        )
+
+        XCTAssertEqual(normalized.first, "hk-service-grm-001")
+        XCTAssertEqual(normalized[1], "insurance-hk-fwd")
+        let catalogIDs: (String, [Int]) -> [String] = { prefix, numbers in
+            numbers.map { "hk-service-\(prefix)-\(String(format: "%03d", $0))" }
+        }
+        let expectedCatalogIDs = catalogIDs(
+            "sup",
+            Array(1...12) + [17] + Array(19...33) + Array(41...62)
+        ) + catalogIDs(
+            "grm",
+            Array(1...28) + Array(35...56)
+        ) + catalogIDs(
+            "fun",
+            Array(1...24)
+        ) + [
+            "insurance-hk-fwd",
+            "insurance-hk-onedegree",
+            "insurance-hk-bluecross"
+        ]
+        XCTAssertEqual(SavedCatalogItems.allowedItemIDs, expectedCatalogIDs)
+        XCTAssertEqual(normalized.count, SavedCatalogItems.allowedItemIDs.count)
+        XCTAssertLessThanOrEqual(normalized.count, SavedCatalogItems.maximumCount)
+        XCTAssertEqual(SavedCatalogItems.kind(for: normalized[0]), .service)
+        XCTAssertEqual(SavedCatalogItems.kind(for: normalized[1]), .insurance)
+        XCTAssertNil(SavedCatalogItems.kind(for: "hk-service-grm-001\n"))
+        XCTAssertNil(SavedCatalogItems.kind(for: "hk-service-sup-013"))
+        XCTAssertNil(SavedCatalogItems.kind(for: "product-fish-oil"))
+        XCTAssertEqual(
+            SavedCatalogItems.decode(SavedCatalogItems.encode(normalized)),
+            normalized
+        )
+        XCTAssertEqual(SavedCatalogItems.decode("not-json"), [])
+        XCTAssertEqual(
+            SavedCatalogItems.normalizedStored([
+                " product-fish-oil ",
+                " product-fish-oil ",
+                "hk-service-sup-001"
+            ]),
+            [" product-fish-oil ", "hk-service-sup-001"]
+        )
+        XCTAssertEqual(
+            SavedCatalogItems.setting(
+                " product-fish-oil ",
+                isSaved: false,
+                in: [" product-fish-oil ", "hk-service-sup-001"]
+            ),
+            ["hk-service-sup-001"]
+        )
+        XCTAssertEqual(
+            SavedCatalogItems.rollingBack(
+                " legacy-product ",
+                attemptedSave: false,
+                previousItemIDs: [" legacy-product ", "hk-service-sup-001"],
+                currentItemIDs: ["hk-service-sup-001", "hk-service-grm-001"]
+            ),
+            [" legacy-product ", "hk-service-sup-001", "hk-service-grm-001"]
+        )
+    }
+
+    func testSavedCatalogItemsSettingIsStableAndReversible() {
+        let original = ["hk-service-sup-001", "insurance-hk-fwd"]
+        XCTAssertEqual(
+            SavedCatalogItems.setting(
+                "hk-service-grm-002",
+                isSaved: true,
+                in: original
+            ),
+            original + ["hk-service-grm-002"]
+        )
+        XCTAssertEqual(
+            SavedCatalogItems.setting(
+                "insurance-hk-fwd",
+                isSaved: true,
+                in: original
+            ),
+            original
+        )
+        XCTAssertEqual(
+            SavedCatalogItems.setting(
+                "hk-service-sup-001",
+                isSaved: false,
+                in: original
+            ),
+            ["insurance-hk-fwd"]
+        )
+        XCTAssertEqual(
+            SavedCatalogItems.setting("unsafe/id", isSaved: true, in: original),
+            original
+        )
+
+        let twoConcurrentAdds = SavedCatalogItems.setting(
+            "hk-service-grm-002",
+            isSaved: true,
+            in: SavedCatalogItems.setting(
+                "hk-service-grm-001",
+                isSaved: true,
+                in: []
+            )
+        )
+        XCTAssertEqual(
+            SavedCatalogItems.setting(
+                "hk-service-grm-001",
+                isSaved: false,
+                in: twoConcurrentAdds
+            ),
+            ["hk-service-grm-002"],
+            "rolling back one failed item must preserve another successful item"
+        )
+    }
+
+    func testSavedCatalogItemsRejectsStaleAccountSnapshots() {
+        XCTAssertTrue(
+            SavedCatalogItems.isCurrentSession(
+                expectedUserID: "alice",
+                activeUserID: "alice",
+                expectedGeneration: 4,
+                currentGeneration: 4
+            )
+        )
+        XCTAssertFalse(
+            SavedCatalogItems.isCurrentSession(
+                expectedUserID: "alice",
+                activeUserID: "bob",
+                expectedGeneration: 4,
+                currentGeneration: 4
+            )
+        )
+        XCTAssertFalse(
+            SavedCatalogItems.isCurrentSession(
+                expectedUserID: "alice",
+                activeUserID: "alice",
+                expectedGeneration: 3,
+                currentGeneration: 4
+            )
+        )
+        XCTAssertFalse(
+            SavedCatalogItems.isCurrentSession(
+                expectedUserID: "alice",
+                activeUserID: nil,
+                expectedGeneration: 4,
+                currentGeneration: 4
+            )
+        )
+    }
+
     func testChatConversationIDIsDeterministicAndRejectsUnsafeParticipants() {
         XCTAssertEqual(
             ChatConversationID.make("bob", "alice"),

@@ -962,12 +962,137 @@ test("用戶 profile 私隱及防止自行提升 admin / premium", async () => {
     "clinic-hk-1",
     "clinic-hk-2",
   ]);
+  await assertSucceeds(alice.collection("users").doc("alice").update({
+    savedProducts: ["hk-service-sup-001", "insurance-hk-fwd"],
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  }));
+  const savedProfile = await alice.collection("users").doc("alice").get();
+  assert.deepEqual(savedProfile.data().savedProducts, [
+    "hk-service-sup-001",
+    "insurance-hk-fwd",
+  ]);
   await assertFails(bob.collection("users").doc("alice").update({
     favoriteClinics: ["clinic-hk-3"],
     updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
   }));
+  await assertFails(bob.collection("users").doc("alice").update({
+    savedProducts: ["hk-service-grm-001"],
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  }));
   await assertFails(alice.collection("users").doc("alice").update({
     favoriteClinics: Array.from({length: 201}, (_, index) => `clinic-${index}`),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  }));
+  await assertFails(alice.collection("users").doc("alice").update({
+    savedProducts: Array.from(
+      {length: 201},
+      (_, index) => `hk-service-sup-${String(index).padStart(3, "0")}`,
+    ),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  }));
+  await assertFails(alice.collection("users").doc("alice").update({
+    savedProducts: ["hk-service-sup-013"],
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  }));
+  await assertFails(alice.collection("users").doc("alice").update({
+    savedProducts: ["hk-service-sup-001", 7],
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  }));
+  await assertFails(alice.collection("users").doc("alice").update({
+    savedProducts: ["insurance-hk-fwd", "insurance-hk-fwd"],
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  }));
+});
+
+test("舊版服務收藏不會鎖死 profile，亦不能引入新未知 ID", async () => {
+  await testEnv.withSecurityRulesDisabled(async (context) => {
+    const firestore = context.firestore();
+    const baseProfile = {
+      uid: "legacy-user",
+      displayName: "Legacy User",
+      email: "legacy@example.com",
+      providerIDs: ["password"],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      isPremium: false,
+      favoriteClinics: [],
+      savedProducts: ["product-fish-oil", "product-fish-oil"],
+    };
+    await firestore.collection("users").doc("legacy-user").set(baseProfile);
+    await firestore.collection("users").doc("mixed-user").set({
+      ...baseProfile,
+      uid: "mixed-user",
+      email: "mixed@example.com",
+      savedProducts: ["product-fish-oil", 7],
+    });
+    const missingProfile = {...baseProfile};
+    delete missingProfile.savedProducts;
+    await firestore.collection("users").doc("missing-user").set({
+      ...missingProfile,
+      uid: "missing-user",
+      email: "missing@example.com",
+    });
+  });
+
+  const legacy = testEnv.authenticatedContext("legacy-user").firestore();
+  const legacyProfile = legacy.collection("users").doc("legacy-user");
+  await assertSucceeds(legacyProfile.update({
+    displayName: "Legacy User Updated",
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  }));
+  await assertSucceeds(legacyProfile.update({
+    savedProducts: firebase.firestore.FieldValue.arrayUnion("hk-service-sup-001"),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  }));
+  await assertSucceeds(legacyProfile.update({
+    savedProducts: firebase.firestore.FieldValue.arrayRemove("product-fish-oil"),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  }));
+  await assertFails(legacyProfile.update({
+    savedProducts: ["hk-service-sup-001", "new-unknown-product"],
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  }));
+
+  const mixed = testEnv.authenticatedContext("mixed-user").firestore();
+  const mixedProfile = mixed.collection("users").doc("mixed-user");
+  await assertSucceeds(mixedProfile.update({
+    displayName: "Mixed User Updated",
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  }));
+  await assertSucceeds(mixedProfile.update({
+    savedProducts: firebase.firestore.FieldValue.arrayUnion("hk-service-grm-001"),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  }));
+  await assertFails(mixedProfile.update({
+    savedProducts: firebase.firestore.FieldValue.arrayUnion(8),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  }));
+  await assertFails(mixedProfile.update({
+    savedProducts: [
+      "product-fish-oil",
+      "product-fish-oil",
+      7,
+      "hk-service-grm-001",
+    ],
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  }));
+
+  const missing = testEnv.authenticatedContext("missing-user").firestore();
+  const missingDocument = missing.collection("users").doc("missing-user");
+  await assertSucceeds(missingDocument.update({
+    displayName: "Missing Field Updated",
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  }));
+  await assertFails(missingDocument.update({
+    savedProducts: null,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  }));
+  await assertSucceeds(missingDocument.update({
+    savedProducts: [],
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  }));
+  await assertFails(missingDocument.update({
+    savedProducts: firebase.firestore.FieldValue.delete(),
     updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
   }));
 });

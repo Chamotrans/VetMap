@@ -14,6 +14,7 @@ struct ProfileTab: View {
     @ObservedObject private var authViewModel = AuthViewModel.shared
     @ObservedObject private var admin = AdminViewModel.shared
     @ObservedObject private var favorites = ClinicFavoritesStore.shared
+    @ObservedObject private var catalogFavorites = CatalogFavoritesStore.shared
     @State private var showLogin = false
     @State private var showSignOutAlert = false
 
@@ -38,16 +39,23 @@ struct ProfileTab: View {
         .onChange(of: authViewModel.authState) { _, newState in
             if newState == .signedIn {
                 showLogin = false
-                Task { await favorites.refresh(force: true) }
+                Task {
+                    await favorites.refresh(force: true)
+                    await catalogFavorites.refresh(force: true)
+                }
             } else if newState == .signedOut {
                 favorites.clearLocalSession()
+                catalogFavorites.clearLocalSession()
             }
             admin.refresh(uid: authViewModel.user?.uid)
         }
         .onAppear {
             admin.refresh(uid: authViewModel.user?.uid)
             if authViewModel.authState == .signedIn {
-                Task { await favorites.refresh() }
+                Task {
+                    await favorites.refresh()
+                    await catalogFavorites.refresh()
+                }
             }
         }
     }
@@ -79,7 +87,7 @@ struct ProfileTab: View {
                 Text("登入以解鎖完整功能")
                     .font(.title3.weight(.semibold))
 
-                Text("收藏診所、投稿評論、分享報價")
+                Text("收藏診所同服務、投稿評論、分享報價")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -142,13 +150,21 @@ struct ProfileTab: View {
 
                 if FeatureFlags.catalogEnabled {
                     NavigationLink {
-                        ComingSoonView(
-                            title: "我的收藏",
-                            subtitle: "收藏的好物將顯示在此。",
-                            systemImage: "heart.fill"
-                        )
+                        CatalogFavoritesView()
                     } label: {
-                        Label("收藏好物", systemImage: "shippingbox.fill")
+                        Label {
+                            HStack {
+                                Text("收藏服務")
+                                Spacer()
+                                if !catalogFavorites.itemIDs.isEmpty {
+                                    Text("\(catalogFavorites.itemIDs.count)")
+                                        .font(.caption.weight(.semibold))
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                        } icon: {
+                            Image(systemName: "shippingbox.fill")
+                        }
                     }
                 }
             }
@@ -401,6 +417,237 @@ private struct ClinicFavoritesView: View {
         Task {
             for clinicID in clinicIDs {
                 await favorites.setFavorite(clinicID, isFavorite: false)
+            }
+        }
+    }
+}
+
+private struct CatalogFavoritesView: View {
+    @ObservedObject private var favorites = CatalogFavoritesStore.shared
+    @State private var productViewModel = ProductViewModel()
+    @State private var insuranceViewModel = InsuranceViewModel()
+
+    private var savedServices: [PetProduct] {
+        let productsByID = Dictionary(
+            uniqueKeysWithValues: productViewModel.products.map { ($0.id, $0) }
+        )
+        return favorites.itemIDs.compactMap { productsByID[$0] }
+    }
+
+    private var savedInsurancePlans: [Insurance] {
+        let plansByID = Dictionary(
+            uniqueKeysWithValues: insuranceViewModel.plans.map { ($0.id, $0) }
+        )
+        return favorites.itemIDs.compactMap { plansByID[$0] }
+    }
+
+    private var visibleItemIDs: Set<String> {
+        Set(savedServices.map(\.id) + savedInsurancePlans.map(\.id))
+    }
+
+    private var unavailableItemIDs: [String] {
+        favorites.itemIDs.filter { !visibleItemIDs.contains($0) }
+    }
+
+    private var isLoading: Bool {
+        favorites.isLoading
+            || productViewModel.isLoading
+            || insuranceViewModel.isLoading
+    }
+
+    private var catalogLoadFailed: Bool {
+        productViewModel.errorMessage != nil || insuranceViewModel.errorMessage != nil
+    }
+
+    private var hasVisibleItems: Bool {
+        !savedServices.isEmpty || !savedInsurancePlans.isEmpty
+    }
+
+    var body: some View {
+        List {
+            synchronizationErrors
+
+            if savedServices.isEmpty && savedInsurancePlans.isEmpty {
+                Section {
+                    emptyOrLoadingState
+                }
+            }
+
+            if !savedServices.isEmpty {
+                Section("寵物服務（\(savedServices.count)）") {
+                    ForEach(savedServices) { product in
+                        NavigationLink {
+                            ProductDetailView(product: product)
+                        } label: {
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text(product.name)
+                                    .font(.headline)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                Text(product.category)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .padding(.vertical, 5)
+                        }
+                        .accessibilityHint("開啟收藏服務詳情")
+                    }
+                    .onDelete(perform: removeServices)
+                }
+            }
+
+            if !savedInsurancePlans.isEmpty {
+                Section("保險官方入口（\(savedInsurancePlans.count)）") {
+                    ForEach(savedInsurancePlans) { plan in
+                        NavigationLink {
+                            InsuranceDetailView(
+                                plan: plan,
+                                viewModel: insuranceViewModel
+                            )
+                        } label: {
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text(plan.providerName)
+                                    .font(.headline)
+                                Text(plan.planName)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                            .padding(.vertical, 5)
+                        }
+                        .accessibilityHint("開啟收藏保險入口詳情")
+                    }
+                    .onDelete(perform: removeInsurancePlans)
+                }
+            }
+
+            if !unavailableItemIDs.isEmpty,
+               !isLoading,
+               !catalogLoadFailed {
+                Section {
+                    Label(
+                        "另有 \(unavailableItemIDs.count) 項收藏目前未在公開目錄顯示。",
+                        systemImage: "eye.slash"
+                    )
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+
+                    Button("移除無法顯示的收藏", role: .destructive) {
+                        removeUnavailableItems()
+                    }
+                } footer: {
+                    Text("目錄項目可能因資料到期、下架或識別碼更新而暫時不可用。")
+                }
+            }
+        }
+        .listStyle(.insetGrouped)
+        .navigationTitle("收藏服務")
+        .toolbar {
+            if hasVisibleItems {
+                EditButton()
+            }
+        }
+        .refreshable { await refresh() }
+        .task { await refresh() }
+    }
+
+    @ViewBuilder
+    private var synchronizationErrors: some View {
+        if let errorMessage = favorites.errorMessage {
+            Section {
+                Label(errorMessage, systemImage: "icloud.slash")
+                    .font(.footnote)
+                    .foregroundStyle(AppTheme.warning)
+
+                Button("重新同步") {
+                    Task { await favorites.refresh(force: true) }
+                }
+            }
+        }
+
+        if let errorMessage = productViewModel.errorMessage {
+            Section {
+                Label(errorMessage, systemImage: "wifi.slash")
+                    .font(.footnote)
+                    .foregroundStyle(AppTheme.warning)
+
+                Button("重新載入服務") {
+                    Task { await productViewModel.loadProducts() }
+                }
+            }
+        }
+
+        if let errorMessage = insuranceViewModel.errorMessage {
+            Section {
+                Label(errorMessage, systemImage: "wifi.slash")
+                    .font(.footnote)
+                    .foregroundStyle(AppTheme.warning)
+
+                Button("重新載入保險入口") {
+                    Task { await insuranceViewModel.loadPlans() }
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var emptyOrLoadingState: some View {
+        if isLoading {
+            HStack(spacing: 10) {
+                ProgressView()
+                Text("正在同步收藏服務…")
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, minHeight: 88)
+        } else if favorites.itemIDs.isEmpty {
+            ContentUnavailableView {
+                Label("尚未收藏服務", systemImage: "heart")
+            } description: {
+                Text("在服務或保險詳情按心形按鈕，收藏會同步到你的 VetMap 帳戶。")
+            }
+            .frame(maxWidth: .infinity, minHeight: 220)
+        } else if catalogLoadFailed {
+            ContentUnavailableView {
+                Label("未能顯示收藏", systemImage: "wifi.exclamationmark")
+            } description: {
+                Text("請使用上方重試按鈕重新載入香港服務及保險目錄。")
+            }
+            .frame(maxWidth: .infinity, minHeight: 180)
+        }
+    }
+
+    private func refresh() async {
+        await favorites.refresh(force: true)
+        await productViewModel.loadProducts()
+        await insuranceViewModel.loadPlans()
+    }
+
+    private func removeServices(at offsets: IndexSet) {
+        remove(offsets: offsets, from: savedServices)
+    }
+
+    private func removeInsurancePlans(at offsets: IndexSet) {
+        remove(offsets: offsets, from: savedInsurancePlans)
+    }
+
+    private func remove<Item: Identifiable>(
+        offsets: IndexSet,
+        from items: [Item]
+    ) where Item.ID == String {
+        let itemIDs = offsets.compactMap { index in
+            items.indices.contains(index) ? items[index].id : nil
+        }
+        Task {
+            for itemID in itemIDs {
+                await favorites.setSaved(itemID, isSaved: false)
+            }
+        }
+    }
+
+    private func removeUnavailableItems() {
+        let itemIDs = unavailableItemIDs
+        Task {
+            for itemID in itemIDs {
+                await favorites.setSaved(itemID, isSaved: false)
             }
         }
     }

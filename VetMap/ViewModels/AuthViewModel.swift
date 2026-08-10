@@ -140,16 +140,17 @@ final class AuthViewModel: NSObject, ObservableObject {
                 guard let self else { return }
                 guard let firebaseUser else {
                     ChatStore.shared.resetSession()
+                    ClinicFavoritesStore.shared.clearLocalSession()
+                    CatalogFavoritesStore.shared.clearLocalSession()
                     user = nil
                     authState = .signedOut
                     return
                 }
 
-                user = AppUser(from: firebaseUser)
-                verifyStoredAppleCredentialState()
                 await ensureUserProfile(for: firebaseUser)
                 guard Auth.auth().currentUser?.uid == firebaseUser.uid else { return }
-                authState = .signedIn
+                commitSignedInUser(firebaseUser)
+                verifyStoredAppleCredentialState()
             }
         }
         #else
@@ -196,13 +197,11 @@ final class AuthViewModel: NSObject, ObservableObject {
             try await changeRequest.commitChanges()
             try await writeUserProfile(
                 for: result.user,
-                fallbackDisplayName: normalizedName,
-                isNewUser: true
+                fallbackDisplayName: normalizedName
             )
             guard Auth.auth().currentUser?.uid == result.user.uid else { return }
 
-            user = AppUser(from: result.user)
-            authState = .signedIn
+            commitSignedInUser(result.user)
             Haptics.success()
         } catch {
             errorMessage = userFacingMessage(for: error)
@@ -232,8 +231,7 @@ final class AuthViewModel: NSObject, ObservableObject {
             )
             await ensureUserProfile(for: result.user)
             guard Auth.auth().currentUser?.uid == result.user.uid else { return }
-            user = AppUser(from: result.user)
-            authState = .signedIn
+            commitSignedInUser(result.user)
             Haptics.success()
         } catch {
             errorMessage = userFacingMessage(for: error)
@@ -417,14 +415,12 @@ final class AuthViewModel: NSObject, ObservableObject {
             do {
                 let result = try await Auth.auth().signIn(with: firebaseCredential)
                 _ = KeychainService.saveAppleUserIdentifier(appleCredential.user)
-                user = AppUser(from: result.user)
                 try await writeUserProfile(
                     for: result.user,
-                    fallbackDisplayName: formattedName(from: appleCredential.fullName),
-                    isNewUser: result.additionalUserInfo?.isNewUser == true
+                    fallbackDisplayName: formattedName(from: appleCredential.fullName)
                 )
                 guard Auth.auth().currentUser?.uid == result.user.uid else { return }
-                authState = .signedIn
+                commitSignedInUser(result.user)
                 Haptics.success()
             } catch {
                 errorMessage = userFacingMessage(for: error)
@@ -537,14 +533,20 @@ final class AuthViewModel: NSObject, ObservableObject {
     // MARK: - User profile
 
     #if canImport(FirebaseAuth)
+    private func commitSignedInUser(_ firebaseUser: User) {
+        ClinicFavoritesStore.shared.prepareLocalSession(for: firebaseUser.uid)
+        CatalogFavoritesStore.shared.prepareLocalSession(for: firebaseUser.uid)
+        user = AppUser(from: firebaseUser)
+        authState = .signedIn
+    }
+
     private func ensureUserProfile(for firebaseUser: User) async {
         guard !syncedProfileUIDs.contains(firebaseUser.uid) else { return }
 
         do {
             try await writeUserProfile(
                 for: firebaseUser,
-                fallbackDisplayName: nil,
-                isNewUser: false
+                fallbackDisplayName: nil
             )
             syncedProfileUIDs.insert(firebaseUser.uid)
         } catch {
@@ -554,40 +556,67 @@ final class AuthViewModel: NSObject, ObservableObject {
 
     private func writeUserProfile(
         for firebaseUser: User,
-        fallbackDisplayName: String?,
-        isNewUser: Bool
+        fallbackDisplayName: String?
     ) async throws {
         #if canImport(FirebaseFirestore)
-        let reference = Firestore.firestore()
+        let userID = firebaseUser.uid
+        let profileDisplayName = firebaseUser.displayName
+            ?? fallbackDisplayName
+            ?? "VetMap 用戶"
+        let profileEmail = firebaseUser.email ?? ""
+        let profileProviderIDs = firebaseUser.providerData.map(\.providerID)
+        let database = Firestore.firestore()
+        let reference = database
             .collection("users")
-            .document(firebaseUser.uid)
-        let shouldInitialize: Bool
-        if isNewUser {
-            shouldInitialize = true
-        } else {
-            let existingProfile = try await reference.getDocument()
-            shouldInitialize = !existingProfile.exists
+            .document(userID)
+
+        // Read and merge in one retryable transaction. This prevents a second
+        // device from adding a favourite between a legacy-field check and an
+        // empty-array backfill that would otherwise overwrite that write.
+        _ = try await database.runTransaction { transaction, errorPointer in
+            do {
+                let existingProfile = try transaction.getDocument(reference)
+                let existingProfileData = existingProfile.data()
+                var profile: [String: Any] = [
+                    "uid": userID,
+                    "displayName": profileDisplayName,
+                    "email": profileEmail,
+                    "providerIDs": profileProviderIDs,
+                    "updatedAt": FieldValue.serverTimestamp()
+                ]
+
+                if !existingProfile.exists {
+                    profile["createdAt"] = FieldValue.serverTimestamp()
+                    profile["isPremium"] = false
+                    profile["favoriteClinics"] = [String]()
+                    profile["savedProducts"] = [String]()
+                } else {
+                    if existingProfileData?["favoriteClinics"] == nil {
+                        profile["favoriteClinics"] = [String]()
+                    }
+                    if existingProfileData?["savedProducts"] == nil {
+                        profile["savedProducts"] = [String]()
+                    } else if let rawSavedValues = existingProfileData?["savedProducts"] as? [Any] {
+                        let stringValues = rawSavedValues.compactMap { $0 as? String }
+                        // Keep safe legacy strings visible so the owner can
+                        // remove them. Mixed-type legacy arrays are left
+                        // untouched rather than silently deleting values.
+                        if stringValues.count == rawSavedValues.count {
+                            profile["savedProducts"] = SavedCatalogItems.normalizedStored(
+                                stringValues
+                            )
+                        }
+                    }
+                }
+
+                transaction.setData(profile, forDocument: reference, merge: true)
+                return nil
+            } catch {
+                errorPointer?.pointee = error as NSError
+                return nil
+            }
         }
-
-        var profile: [String: Any] = [
-            "uid": firebaseUser.uid,
-            "displayName": firebaseUser.displayName
-                ?? fallbackDisplayName
-                ?? "VetMap 用戶",
-            "email": firebaseUser.email ?? "",
-            "providerIDs": firebaseUser.providerData.map(\.providerID),
-            "updatedAt": FieldValue.serverTimestamp()
-        ]
-
-        if shouldInitialize {
-            profile["createdAt"] = FieldValue.serverTimestamp()
-            profile["isPremium"] = false
-            profile["favoriteClinics"] = [String]()
-            profile["savedProducts"] = [String]()
-        }
-
-        try await reference.setData(profile, merge: true)
-        syncedProfileUIDs.insert(firebaseUser.uid)
+        syncedProfileUIDs.insert(userID)
         #else
         throw AuthOperationError.firestoreUnavailable
         #endif
@@ -617,9 +646,13 @@ final class AuthViewModel: NSObject, ObservableObject {
     private func clearSessionState() {
         KeychainService.deleteAppleUserIdentifier()
         ChatStore.shared.resetSession()
+        ClinicFavoritesStore.shared.clearLocalSession()
+        CatalogFavoritesStore.shared.clearLocalSession()
         let defaults = UserDefaults.standard
         defaults.removeObject(forKey: ClinicFavorites.storageKey)
         defaults.removeObject(forKey: ClinicFavorites.cacheOwnerKey)
+        defaults.removeObject(forKey: SavedCatalogItems.storageKey)
+        defaults.removeObject(forKey: SavedCatalogItems.cacheOwnerKey)
         user = nil
         authState = .signedOut
         isAuthenticating = false
@@ -632,6 +665,8 @@ final class AuthViewModel: NSObject, ObservableObject {
     private func clearLocalAccountData() {
         KeychainService.deleteAppleUserIdentifier()
         ChatStore.shared.resetSession()
+        ClinicFavoritesStore.shared.clearLocalSession()
+        CatalogFavoritesStore.shared.clearLocalSession()
 
         let defaults = UserDefaults.standard
         if let userID = user?.uid {
@@ -641,6 +676,8 @@ final class AuthViewModel: NSObject, ObservableObject {
         }
         defaults.removeObject(forKey: ClinicFavorites.storageKey)
         defaults.removeObject(forKey: ClinicFavorites.cacheOwnerKey)
+        defaults.removeObject(forKey: SavedCatalogItems.storageKey)
+        defaults.removeObject(forKey: SavedCatalogItems.cacheOwnerKey)
         defaults.removeObject(forKey: "debugAdminOverride")
 
         let fileManager = FileManager.default

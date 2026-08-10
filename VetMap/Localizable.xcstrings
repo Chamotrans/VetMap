@@ -4707,6 +4707,534 @@
         }
       }
     },
+    "收藏診所同服務、投稿評論、分享報價": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save clinics and services, post reviews, and share quotes"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "收藏诊所和服务、发布评价、分享报价"
+          }
+        }
+      }
+    },
+    "收藏服務": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved Services"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已收藏服务"
+          }
+        }
+      }
+    },
+    "寵物服務（%lld）": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pet Services (%lld)"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "宠物服务（%lld）"
+          }
+        }
+      }
+    },
+    "開啟收藏服務詳情": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open saved service details"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开已收藏服务详情"
+          }
+        }
+      }
+    },
+    "保險官方入口（%lld）": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Official Insurance Links (%lld)"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保险官方入口（%lld）"
+          }
+        }
+      }
+    },
+    "開啟收藏保險入口詳情": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open saved insurance link details"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开已收藏保险入口详情"
+          }
+        }
+      }
+    },
+    "另有 %lld 項收藏目前未在公開目錄顯示。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld saved items are currently unavailable in the public directory."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "另有 %lld 项收藏目前未在公开目录显示。"
+          }
+        }
+      }
+    },
+    "移除無法顯示的收藏": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove Unavailable Saved Items"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "移除无法显示的收藏"
+          }
+        }
+      }
+    },
+    "目錄項目可能因資料到期、下架或識別碼更新而暫時不可用。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Directory items may be temporarily unavailable because their data expired, they were removed, or their identifiers changed."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目录项目可能因资料到期、下架或识别码更新而暂时不可用。"
+          }
+        }
+      }
+    },
+    "重新同步": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sync Again"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新同步"
+          }
+        }
+      }
+    },
+    "重新載入服務": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reload Services"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新加载服务"
+          }
+        }
+      }
+    },
+    "重新載入保險入口": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reload Insurance Links"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新加载保险入口"
+          }
+        }
+      }
+    },
+    "正在同步收藏服務…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Syncing saved services…"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在同步已收藏服务…"
+          }
+        }
+      }
+    },
+    "尚未收藏服務": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Saved Services Yet"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尚未收藏服务"
+          }
+        }
+      }
+    },
+    "在服務或保險詳情按心形按鈕，收藏會同步到你的 VetMap 帳戶。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap the heart on a service or insurance detail page. It will sync to your VetMap account."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在服务或保险详情页轻点心形按钮，收藏会同步到你的 VetMap 帐户。"
+          }
+        }
+      }
+    },
+    "未能顯示收藏": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unable to Show Saved Items"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法显示收藏"
+          }
+        }
+      }
+    },
+    "請使用上方重試按鈕重新載入香港服務及保險目錄。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use the retry buttons above to reload the Hong Kong services and insurance directories."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请使用上方重试按钮重新加载香港服务及保险目录。"
+          }
+        }
+      }
+    },
+    "服務收藏": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Service Favourite"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "服务收藏"
+          }
+        }
+      }
+    },
+    "保險入口收藏": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Insurance Link Favourite"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保险入口收藏"
+          }
+        }
+      }
+    },
+    "將服務加入收藏": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save Service"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "将服务加入收藏"
+          }
+        }
+      }
+    },
+    "從收藏移除服務": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove Saved Service"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "从收藏移除服务"
+          }
+        }
+      }
+    },
+    "將保險入口加入收藏": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save Insurance Link"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "将保险入口加入收藏"
+          }
+        }
+      }
+    },
+    "從收藏移除保險入口": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove Saved Insurance Link"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "从收藏移除保险入口"
+          }
+        }
+      }
+    },
+    "同步到你的 VetMap 帳戶": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sync to your VetMap account"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "同步到你的 VetMap 帐户"
+          }
+        }
+      }
+    },
+    "登入後同步到你的 VetMap 帳戶": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in to sync with your VetMap account"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "登录后同步到你的 VetMap 帐户"
+          }
+        }
+      }
+    },
+    "無法同步服務收藏：%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unable to sync saved services: %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法同步服务收藏：%@"
+          }
+        }
+      }
+    },
+    "最多可收藏 %lld 項服務或保險。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save up to %lld services or insurance links."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最多可收藏 %lld 项服务或保险。"
+          }
+        }
+      }
+    },
+    "無法更新服務收藏：%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unable to update saved services: %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法更新服务收藏：%@"
+          }
+        }
+      }
+    },
+    "服務或保險識別碼無效，未能更新收藏。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invalid service or insurance identifier. The saved item could not be updated."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "服务或保险识别码无效，未能更新收藏。"
+          }
+        }
+      }
+    },
+    "登入帳戶已變更，請重新操作。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your signed-in account changed. Please try again."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "登录帐户已变更，请重新操作。"
+          }
+        }
+      }
+    },
+    "目錄文件識別碼不一致：%@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Catalog document identifier mismatch: %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目录文件识别码不一致：%@"
+          }
+        }
+      }
+    },
+    "暫時無法載入香港寵物服務目錄，請稍後再試。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unable to load the Hong Kong pet services directory right now. Please try again later."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂时无法加载香港宠物服务目录，请稍后再试。"
+          }
+        }
+      }
+    },
+    "暫時無法載入香港寵物保險目錄，請稍後再試。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unable to load the Hong Kong pet insurance directory right now. Please try again later."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂时无法加载香港宠物保险目录，请稍后再试。"
+          }
+        }
+      }
+    },
     "💉": {
       "comment": "A symbol for a medical treatment.",
       "isCommentAutoGenerated": true,

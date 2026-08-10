@@ -37,11 +37,195 @@ service cloud.firestore {
         && value.matches('^[A-Za-z0-9][A-Za-z0-9._-]*$');
     }
 
+    function allowedSavedCatalogItemIDs() {
+      // Canonical IDs from the current HK service catalog and the three
+      // official insurance-directory links. Updating the catalog
+      // requires updating this allowlist and its CI drift gate together.
+      return [
+        'hk-service-sup-001',
+        'hk-service-sup-002',
+        'hk-service-sup-003',
+        'hk-service-sup-004',
+        'hk-service-sup-005',
+        'hk-service-sup-006',
+        'hk-service-sup-007',
+        'hk-service-sup-008',
+        'hk-service-sup-009',
+        'hk-service-sup-010',
+        'hk-service-sup-011',
+        'hk-service-sup-012',
+        'hk-service-sup-017',
+        'hk-service-sup-019',
+        'hk-service-sup-020',
+        'hk-service-sup-021',
+        'hk-service-sup-022',
+        'hk-service-sup-023',
+        'hk-service-sup-024',
+        'hk-service-sup-025',
+        'hk-service-sup-026',
+        'hk-service-sup-027',
+        'hk-service-sup-028',
+        'hk-service-sup-029',
+        'hk-service-sup-030',
+        'hk-service-sup-031',
+        'hk-service-sup-032',
+        'hk-service-sup-033',
+        'hk-service-sup-041',
+        'hk-service-sup-042',
+        'hk-service-sup-043',
+        'hk-service-sup-044',
+        'hk-service-sup-045',
+        'hk-service-sup-046',
+        'hk-service-sup-047',
+        'hk-service-sup-048',
+        'hk-service-sup-049',
+        'hk-service-sup-050',
+        'hk-service-sup-051',
+        'hk-service-sup-052',
+        'hk-service-sup-053',
+        'hk-service-sup-054',
+        'hk-service-sup-055',
+        'hk-service-sup-056',
+        'hk-service-sup-057',
+        'hk-service-sup-058',
+        'hk-service-sup-059',
+        'hk-service-sup-060',
+        'hk-service-sup-061',
+        'hk-service-sup-062',
+        'hk-service-grm-001',
+        'hk-service-grm-002',
+        'hk-service-grm-003',
+        'hk-service-grm-004',
+        'hk-service-grm-005',
+        'hk-service-grm-006',
+        'hk-service-grm-007',
+        'hk-service-grm-008',
+        'hk-service-grm-009',
+        'hk-service-grm-010',
+        'hk-service-grm-011',
+        'hk-service-grm-012',
+        'hk-service-grm-013',
+        'hk-service-grm-014',
+        'hk-service-grm-015',
+        'hk-service-grm-016',
+        'hk-service-grm-017',
+        'hk-service-grm-018',
+        'hk-service-grm-019',
+        'hk-service-grm-020',
+        'hk-service-grm-021',
+        'hk-service-grm-022',
+        'hk-service-grm-023',
+        'hk-service-grm-024',
+        'hk-service-grm-025',
+        'hk-service-grm-026',
+        'hk-service-grm-027',
+        'hk-service-grm-028',
+        'hk-service-grm-035',
+        'hk-service-grm-036',
+        'hk-service-grm-037',
+        'hk-service-grm-038',
+        'hk-service-grm-039',
+        'hk-service-grm-040',
+        'hk-service-grm-041',
+        'hk-service-grm-042',
+        'hk-service-grm-043',
+        'hk-service-grm-044',
+        'hk-service-grm-045',
+        'hk-service-grm-046',
+        'hk-service-grm-047',
+        'hk-service-grm-048',
+        'hk-service-grm-049',
+        'hk-service-grm-050',
+        'hk-service-grm-051',
+        'hk-service-grm-052',
+        'hk-service-grm-053',
+        'hk-service-grm-054',
+        'hk-service-grm-055',
+        'hk-service-grm-056',
+        'hk-service-fun-001',
+        'hk-service-fun-002',
+        'hk-service-fun-003',
+        'hk-service-fun-004',
+        'hk-service-fun-005',
+        'hk-service-fun-006',
+        'hk-service-fun-007',
+        'hk-service-fun-008',
+        'hk-service-fun-009',
+        'hk-service-fun-010',
+        'hk-service-fun-011',
+        'hk-service-fun-012',
+        'hk-service-fun-013',
+        'hk-service-fun-014',
+        'hk-service-fun-015',
+        'hk-service-fun-016',
+        'hk-service-fun-017',
+        'hk-service-fun-018',
+        'hk-service-fun-019',
+        'hk-service-fun-020',
+        'hk-service-fun-021',
+        'hk-service-fun-022',
+        'hk-service-fun-023',
+        'hk-service-fun-024',
+        'insurance-hk-fwd',
+        'insurance-hk-onedegree',
+        'insurance-hk-bluecross'
+      ];
+    }
+
     function validUserSavedLists(data) {
       return data.favoriteClinics is list
         && data.favoriteClinics.size() <= 200
         && data.savedProducts is list
-        && data.savedProducts.size() <= 200;
+        && data.savedProducts.size() <= 200
+        && data.savedProducts.hasOnly(allowedSavedCatalogItemIDs())
+        && data.savedProducts.toSet().size() == data.savedProducts.size();
+    }
+
+    function validUserSavedListsUpdate(after, before) {
+      let afterFavorites = after.get('favoriteClinics', null);
+      let beforeFavorites = before.get('favoriteClinics', null);
+      let afterSaved = after.get('savedProducts', null);
+      let beforeSaved = before.get('savedProducts', null);
+      let afterHasFavorites = 'favoriteClinics' in after;
+      let beforeHasFavorites = 'favoriteClinics' in before;
+      let afterHasSaved = 'savedProducts' in after;
+      let beforeHasSaved = 'savedProducts' in before;
+      return (
+          (
+            afterHasFavorites == beforeHasFavorites
+            && afterFavorites == beforeFavorites
+          )
+          || (
+            afterHasFavorites
+            && afterFavorites is list
+            && afterFavorites.size() <= 200
+          )
+        )
+        && (
+          (
+            afterHasSaved == beforeHasSaved
+            && afterSaved == beforeSaved
+          )
+          || (
+            afterHasSaved
+            && afterSaved is list
+            && afterSaved.size() <= 200
+            && (
+              (
+                afterSaved.hasOnly(allowedSavedCatalogItemIDs())
+                && afterSaved.toSet().size() == afterSaved.size()
+              )
+              || (
+                beforeSaved is list
+                && afterSaved.size() - afterSaved.toSet().size()
+                  <= beforeSaved.size() - beforeSaved.toSet().size()
+                && afterSaved.toSet()
+                  .difference(beforeSaved.toSet())
+                  .hasOnly(allowedSavedCatalogItemIDs())
+              )
+            )
+          )
+        );
     }
 
     function validConversation(data, conversationId) {
@@ -825,7 +1009,7 @@ service cloud.firestore {
             'displayName', 'email', 'providerIDs', 'updatedAt',
             'favoriteClinics', 'savedProducts'
           ])
-          && validUserSavedLists(request.resource.data)
+          && validUserSavedListsUpdate(request.resource.data, resource.data)
         );
       allow delete: if signedIn() && (request.auth.uid == userId || admin());
 

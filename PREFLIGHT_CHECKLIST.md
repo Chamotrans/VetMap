@@ -115,6 +115,7 @@
 - [x] 填寫 App Review Notes，說明待審投稿、Helpful、公開內容舉報／封鎖、私人聊天室收發／訊息舉報／封鎖／刪除訊息、帳戶刪除及測試路徑；manual setup 與 ASC updater 由 CI drift gate 對帳
 - [x] 完成並 Publish App Privacy 問卷；2026-07-24 live UI 再確認為 Published
 - [x] 2026-08-03 03:49 CST ASC live UI 再確認 App Privacy 已 Published；7 類資料包括「其他用戶內容」，其設定為 linked to identity、用於 App Functionality，已涵蓋私人聊天室
+- [ ] 在 ASC App Privacy 加入並 Publish Product Interaction：linked to identity、not used for tracking、App Functionality；現有 7 類 live snapshot 未涵蓋帳戶收藏
 - [x] 完成年齡分級問卷並如實申報 messaging/chat、UGC 及 social media；2026-08-03 live UI 顯示現行分級 `16+`（173 個國家或地區；南韓 `15+`），pre-OS 26／舊 global rating 為 `17+`，與 API `SEVENTEEN_PLUS` 對應
 - [x] 完成 regulated medical device 聲明：No
 - [x] 以 Xcode Cloud 香港修正版取代全部舊 screenshots；ASC API read-back：`en-GB`／`zh-Hant` 各 5 張 iPhone、6 張 iPad，22 張均為 `COMPLETE`
@@ -138,11 +139,12 @@
 | 電郵地址 | 是 | 否 | App 功能 |
 | User ID | 是 | 否 | App 功能 |
 | 其他用戶內容 | 是 | 否 | App 功能 |
+| Product Interaction | 是 | 否 | App 功能 |
 | Crash Data | 否 | 否 | App 功能 |
 | Other Diagnostic Data | 否 | 否 | App 功能／Analytics（SDK 運作與穩定性） |
 | Other Data Types（雲端功能請求中繼資料，包括 IP） | 否 | 否 | App 功能 |
 
-不要為首版勾選精確位置、相片、購買紀錄、廣告資料或產品互動。
+不要為首版勾選精確位置、相片、購買紀錄或廣告資料。帳戶收藏屬 Product Interaction，必須如實披露。
 
 ## 真機驗收流程
 

@@ -54,6 +54,9 @@ jobs:
       - name: Validate iOS privacy and chat reliability source gates
         run: node --test scripts/validate_ios_privacy_reliability.test.mjs
 
+      - name: Validate account-synchronised catalog favourites
+        run: node --test scripts/validate_catalog_favorites.test.mjs
+
       - name: Validate App Review notes
         run: node --test scripts/validate_app_review_notes.test.mjs
 

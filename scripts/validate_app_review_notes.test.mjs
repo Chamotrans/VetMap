@@ -22,6 +22,7 @@ const requiredReviewFacts = [
   "Send Message",
   "Tap the heart in the demo clinic header",
   "My → Saved Clinics",
+  "My → Saved Services",
   "account-synchronised",
   "Messages tab",
   "Long-press it to Report",
@@ -57,6 +58,8 @@ test("manual and automated descriptions retain account-synchronised favourites",
   for (const fact of [
     "收藏常用診所並同步到 VetMap 帳戶",
     "Save favourite clinics and sync them to your VetMap account",
+    "收藏常用服務及保險官方入口並同步到 VetMap 帳戶",
+    "Save services and official insurance links and sync them to your VetMap account",
   ]) {
     assert.ok(metadataSource.includes(fact), `manual description missing: ${fact}`);
     assert.ok(updaterSource.includes(fact), `ASC updater description missing: ${fact}`);

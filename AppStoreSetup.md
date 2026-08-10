@@ -59,12 +59,14 @@ Test paths:
    → Add Review or Add Quote.
 4. Tap the heart in the demo clinic header, then open My → Saved Clinics to
    confirm the favourite is account-synchronised.
-5. Open its approved demo review/quote → Helpful / Report / Block Author.
-6. Open the demo review menu → Send Message. The Messages tab contains a
+5. Open Services, choose a pet service or insurance entry, tap the heart, then
+   open My → Saved Services to confirm the saved entry is account-synchronised.
+6. Open its approved demo review/quote → Helpful / Report / Block Author.
+7. Open the demo review menu → Send Message. The Messages tab contains a
    rights-cleared incoming demo message. Long-press it to Report, or use the
    conversation menu to Block User.
-7. Long-press a message you sent to Delete Message.
-8. My → Account Settings → Delete Account.
+8. Long-press a message you sent to Delete Message.
+9. My → Account Settings → Delete Account.
 
 All new clinic, review, and quote submissions remain Pending until manually
 reviewed by an administrator. Private one-to-one messages are visible only to
@@ -107,6 +109,7 @@ Tracking：No。
 | Email Address | Yes | No | App Functionality |
 | User ID | Yes | No | App Functionality |
 | Other User Content | Yes | No | App Functionality |
+| Product Interaction | Yes | No | App Functionality |
 | Crash Data | No | No | App Functionality |
 | Other Diagnostic Data | No | No | App Functionality, Analytics |
 | Other Data Types | No | No | App Functionality |
@@ -116,7 +119,7 @@ Tracking：No。
 - Precise Location：目前位置只在裝置處理；
 - Photos or Videos：1.0 沒有相片投稿；
 - Purchase History：1.0 沒有公開 IAP；
-- Product Interaction／Search History：Firebase Analytics 已移除；
+- Search History：搜尋字詞只在裝置記憶體用於即時篩選，不會上傳或儲存；
 - Advertising Data：沒有廣告；
 - Data Used to Track You：沒有跨 App／網站追蹤。
 
