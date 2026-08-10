@@ -2,8 +2,8 @@
 
 > App Store Connect ID: `6777361219`
 > Bundle ID: `com.vetmap.app`
-> Release candidate: GitHub `main` source candidate（待下一次 Cloud build）；ASC 暫掛 build `1.0 (12)`
-> 最後核對：2026-08-09
+> Release candidate: GitHub `main` source candidate `5d8c9b0`（待下一次 Cloud build）；ASC 暫掛 build `1.0 (12)`
+> 最後核對：2026-08-10
 
 本表只記錄可驗證的目前狀態。正式按下 App Store Connect「提交以供審核」不在自動執行範圍內。
 
@@ -19,6 +19,7 @@
 - [x] Firestore rules 同時檢查雙方封鎖清單；任一方封鎖後不可再寫入新訊息
 - [x] 聊天室首個訊息及 conversation preview 以 atomic batch 建立／更新，sender、participant 及 preview 內容受 rules 一致性檢查
 - [x] 「有用」標記改為每個 Firebase UID 對每項評價一次
+- [x] 診所詳情可收藏／取消收藏；「我的收藏」提供登入提示、Cloud 同步、跨帳戶隔離、離線 cache、刪除及失效診所提示，並以 Firestore rules 限制每戶最多 200 個診所 ID
 - [x] App 內提供帳戶刪除、重新驗證、Apple token 撤銷及伺服器資料清除
 - [x] `purgeUserData` Firestore emulator 行為測試 2/2：五分鐘 recent-auth 邊界、投稿／評價／報價／聊天室／舉報／moderation marker／封鎖引用／Helpful vote／4 個 Storage prefix、他人資料保留及重試冪等均通過
 - [x] Firestore／Storage 規則 emulator 測試：17/17 通過（包括聊天室 participant query、批准評價來源、反向重複 ID、已下架來源、message report atomic marker 及 admin least-privilege regression）
@@ -92,6 +93,7 @@
 - [x] 聊天室 least-privilege candidate 已推送至 GitHub `main`：commit `00fa4a2`；Actions run `30763791472` 全綠，Firestore／Storage rules 17/17
 - [x] 帳戶刪除 behavior gate 已推送至 GitHub `main`：commit `703aa12`；Actions run `30764734390` 全綠，Functions purge 2/2 及 Firestore／Storage rules 17/17
 - [x] Apple 24 小時 upload window 已重置；Run 39 delivery 被 `ITMS-90382 Upload limit reached` 拒絕且未進入 ASC processing，以 2026-08-03 01:55 CST 為保守基準的等待期已於 2026-08-04 03:00 CST 後完成
+- [x] 帳戶同步「收藏診所」source candidate 已推送至 GitHub `main`：feature commit `adeb7d8`、CI fix `5d8c9b0`；Actions run `31402624859` 全綠，包含收藏模型 harness、App Review metadata drift、Functions 及 Firestore／Storage rules 17/17
 - [ ] 帳戶持有人明確確認 Content Rights 並指示繼續後，啟用／觸發新 Xcode Cloud candidate，守到 ASC processing 終態；2026-08-09 live read-back 顯示 workflow 仍 disabled、最新 run 仍為 41，沒有 Run 42
 - [ ] 在 TestFlight 真機完成登入、投稿、批核、公開、聊天室收發／刪除／舉報／封鎖及帳戶刪除 smoke test
 - [x] 將 build 11 掛接至 App Store Connect iOS 1.0 作暫時 release candidate

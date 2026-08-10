@@ -609,3 +609,21 @@
 - Blocking condition: The account holder has not yet provided the complete attestation covering the clinic database, Hong Kong service directory, official insurance links and user-submitted content under the app terms, nor the explicit post-quota instruction to continue. This is the same external condition encountered on three consecutive resumed goal turns. Triggering Cloud or changing ASC without it would exceed authorisation; deploying the candidate rules/function before installing a compatible app would break the required open reporting path.
 - Resume contract: Resume only after the account holder states: `我確認 VetMap 對診所庫、香港服務目錄、官方保險連結，以及按使用條款提交的用戶內容，均擁有必要權利或依法獲准使用；同意將 ASC Content Rights 改為使用／存取第三方內容。Go on.` Then trigger exactly one Cloud candidate, wait for processing, install it, deploy the compatible backend, execute the full smoke test, reconcile ASC, and stop before formal App Review submission.
 - Action boundary: This audit used repository, GitHub, public production, ASC GET-only and device-list evidence only. No local `xcodebuild`, Cloud activation, Apple upload, ASC mutation, Firebase deployment, production write, App Review submission, public release, install, launch or other device action occurred. All user-owned dirty and untracked files remained untouched.
+
+### Product improvement — Account-synchronised clinic favourites — 2026-08-10
+
+- Goal: Replace the Profile tab's clinic-favourites placeholder with a usable, account-synchronised experience while preserving registration, submissions, reports, blocks, chat and every existing community interaction.
+- Implementation:
+  - Clinic detail now exposes a 44-point accessible favourite button with sign-in gating, optimistic state, Cloud progress, rollback and retryable errors.
+  - `ClinicFavoritesStore` keeps a per-account local cache, prevents cross-account leakage, migrates pre-login local favourites once per Firebase UID and serialises refreshes.
+  - Profile now opens a native “我的收藏” list with count, loading/empty/error states, retry, swipe deletion, unavailable-clinic disclosure and navigation back to clinic detail.
+  - Firebase writes use `arrayUnion`／`arrayRemove`; IDs are trimmed, deduplicated and validated before write. Firestore rules cap `favoriteClinics` and `savedProducts` at 200 entries and retain owner-only profile access.
+  - Manual and automated App Store descriptions／Review Notes now expose the reviewer path for account-synchronised favourites, protected by a drift regression test.
+- Verification:
+  - Standalone production-model harness passed: `clinicFavorites: true; normalized: 2; maximum: 200`.
+  - Changed Swift sources passed frontend parsing; App Review metadata tests passed 2/2; Node regression, Functions lint/module load, catalog integrity, pending-hours and patch-hygiene gates passed.
+  - First GitHub run `31402404268` proved the new Firestore owner write/read and limit rules but failed because the test file omitted Node's `assert` import. The one-line test-only repair was committed separately.
+  - GitHub `Backend and Config Validation` run `31402624859` completed successfully for `5d8c9b0`, including Firestore／Storage rules 17/17.
+- Git evidence: Feature commit `adeb7d8` (`feat: add account-synced clinic favourites`) and CI repair `5d8c9b0` (`fix: import strict assertions in rules tests`) were pushed to `origin/main`.
+- Release boundary: This is source and GitHub CI evidence only. Xcode Cloud remains disabled pending the account holder's complete Content Rights attestation, so no Archive, ASC processed build, TestFlight install or device interaction is claimed. No production Firebase deployment, ASC mutation, review submission or public release occurred.
+- Preserved scope: All user-owned dirty/untracked files and unrelated release tooling were left untouched.
