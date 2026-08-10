@@ -627,3 +627,24 @@
 - Git evidence: Feature commit `adeb7d8` (`feat: add account-synced clinic favourites`) and CI repair `5d8c9b0` (`fix: import strict assertions in rules tests`) were pushed to `origin/main`.
 - Release boundary: This is source and GitHub CI evidence only. Xcode Cloud remains disabled pending the account holder's complete Content Rights attestation, so no Archive, ASC processed build, TestFlight install or device interaction is claimed. No production Firebase deployment, ASC mutation, review submission or public release occurred.
 - Preserved scope: All user-owned dirty/untracked files and unrelated release tooling were left untouched.
+
+### Product improvement — Chat session isolation and contextual permissions — 2026-08-10
+
+- Goal: Remove two release-risk behaviours found during acceptance review: stale private chat data surviving account changes, and notification/location permission prompts appearing without a direct user action.
+- Implementation:
+  - Chat listeners now bind callbacks to a user ID, conversation ID and observation generation. Sign-out, account deletion and account switching remove listeners and clear conversations, messages, errors and loading state.
+  - Conversation membership fails closed for malformed or non-participant data. Firestore reads the newest 200 messages and presents that bounded window chronologically; fixed-size windows still scroll when the final message ID changes.
+  - Conversation and message loading/errors are independent, with visible retry paths. The send control has a 44-point target.
+  - Launch/onboarding notification requests and automatic map-location requests were removed. Location permission can now start only from the visible map button; denied/restricted states provide Settings recovery, and revocation clears cached location immediately.
+  - Added pure Swift chat/location harnesses, XCTest coverage, a GitHub source gate and an Xcode Cloud post-clone location-policy gate.
+- Verification:
+  - All changed Swift sources passed `swiftc -parse`; `LocationService.swift` passed standalone typecheck.
+  - Harnesses passed with `participantIsolation: true; newestWindow: 200` and `locationPermission: contextual; launchPrompt: false; settingsRecovery: true`.
+  - Script regressions passed 58/58; Functions lint/module load, catalog validation, pending-hours validation, plist/project/shell/YAML checks and patch hygiene passed locally.
+  - GitHub `Backend and Config Validation` run `31404496717` completed successfully for `824c78a`, including the privacy/chat gate and Java 21 Firestore/Storage emulator tests.
+  - Independent Swift review found no remaining P0-P3 actionable finding.
+- Git evidence: Commit `824c78a` (`fix: harden chat sessions and permission prompts`) was pushed to `origin/main`.
+- Apple delivery context: The user-supplied Build 39 email is the already-recorded `ITMS-90382 Upload limit reached` delivery failure, not an App Review rejection or a processed ASC build. The recorded conservative 24-hour window elapsed on 2026-08-04; no new upload was attempted in this turn.
+- Release boundary: Xcode Cloud remains disabled pending the account holder's complete Content Rights attestation. No Cloud activation, Apple upload, ASC mutation, production deployment, device install/smoke test, review submission or public release occurred; source/CI success is not represented as binary proof.
+- Preserved scope: All unrelated dirty and untracked files remain untouched. Registration, submissions, reviews, quotes, reporting, blocking and chat remain enabled.
+- Next candidate: Complete the remaining product/service favourites path or the next higher-severity release finding after a fresh acceptance audit.

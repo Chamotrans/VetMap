@@ -2,7 +2,7 @@
 
 > App Store Connect ID: `6777361219`
 > Bundle ID: `com.vetmap.app`
-> Release candidate: GitHub `main` source candidate `5d8c9b0`（待下一次 Cloud build）；ASC 暫掛 build `1.0 (12)`
+> Release candidate: GitHub `main` source candidate `824c78a`（待下一次 Cloud build）；ASC 暫掛 build `1.0 (12)`
 > 最後核對：2026-08-10
 
 本表只記錄可驗證的目前狀態。正式按下 App Store Connect「提交以供審核」不在自動執行範圍內。
@@ -15,6 +15,7 @@
 - [x] 公開內容只容許管理員由待審佇列批准建立
 - [x] 評價、報價及診所均可舉報；評價及報價作者可被封鎖
 - [x] 一對一聊天室只限參與者讀取；只有訊息被舉報後，管理員才可讀取／處理該一則訊息；支援刪除自己訊息、舉報訊息及封鎖對方
+- [x] 聊天室 listener 以帳戶／對話 generation 隔離；登出、刪戶或切換帳戶會清除舊資料；最近 200 則訊息以時間順序顯示，載入失敗可重試
 - [x] 新聊天室只可由已批准、未下架的評價發起；`sourceReviewId`、評價作者、兩名參與者及 canonical conversation ID 均由 Firestore rules 驗證
 - [x] Firestore rules 同時檢查雙方封鎖清單；任一方封鎖後不可再寫入新訊息
 - [x] 聊天室首個訊息及 conversation preview 以 atomic batch 建立／更新，sender、participant 及 preview 內容受 rules 一致性檢查
@@ -30,6 +31,7 @@
 - [x] 共用 `VetMap` scheme 已提交準備供 Xcode Cloud 使用
 - [x] Xcode Cloud `ci_post_clone.sh` 已準備以 secret 注入 Firebase plist
 - [x] Release target 已移除 Firebase Analytics；首版不收集產品行為分析資料
+- [x] 啟動／onboarding 不再主動請求通知或定位；定位只可由地圖上可見按鈕觸發，拒絕／撤銷後提供 Settings recovery 並清除舊位置
 - [x] 相片投稿未完成的介面及相機／相簿權限聲明已移除
 - [x] Premium／IAP 首版 feature flag 關閉，不列入 1.0 送審功能
 - [x] 香港服務／保險 catalog 已恢復；只公開 approved、HK、未過期資料，舊台灣項目仍被 rules 隔離
@@ -94,6 +96,7 @@
 - [x] 帳戶刪除 behavior gate 已推送至 GitHub `main`：commit `703aa12`；Actions run `30764734390` 全綠，Functions purge 2/2 及 Firestore／Storage rules 17/17
 - [x] Apple 24 小時 upload window 已重置；Run 39 delivery 被 `ITMS-90382 Upload limit reached` 拒絕且未進入 ASC processing，以 2026-08-03 01:55 CST 為保守基準的等待期已於 2026-08-04 03:00 CST 後完成
 - [x] 帳戶同步「收藏診所」source candidate 已推送至 GitHub `main`：feature commit `adeb7d8`、CI fix `5d8c9b0`；Actions run `31402624859` 全綠，包含收藏模型 harness、App Review metadata drift、Functions 及 Firestore／Storage rules 17/17
+- [x] 聊天 session／定位權限 source hardening 已推送至 GitHub `main`：commit `824c78a`；Actions run `31404496717` 全綠，包含新 privacy/chat source gate、Functions、catalog validators 及 Firestore／Storage emulator rules
 - [ ] 帳戶持有人明確確認 Content Rights 並指示繼續後，啟用／觸發新 Xcode Cloud candidate，守到 ASC processing 終態；2026-08-09 live read-back 顯示 workflow 仍 disabled、最新 run 仍為 41，沒有 Run 42
 - [ ] 在 TestFlight 真機完成登入、投稿、批核、公開、聊天室收發／刪除／舉報／封鎖及帳戶刪除 smoke test
 - [x] 將 build 11 掛接至 App Store Connect iOS 1.0 作暫時 release candidate
