@@ -668,3 +668,29 @@
 - Release boundary: No local `xcodebuild`, Xcode Cloud action, Apple upload, ASC mutation, Firebase production deploy, privacy-policy deploy, device action, App Review submission or public release occurred. ASC Product Interaction publication, Content Rights, a new Cloud candidate, device smoke tests and final ASC reconciliation remain pending external release work.
 - Preserved scope: Registration, clinic／review／quote submissions, reporting, blocking, Helpful and private chat remain open. User-owned dirty and untracked files were not staged, reverted, deleted or edited.
 - Next candidate: Fix the unauthenticated review／quote draft dead end or add password-reset recovery after a fresh release-risk audit.
+
+### Product improvement — Account recovery and authenticated community continuity — 2026-08-11
+
+- Goal: Remove the remaining signed-out／session-expiry dead ends without closing registration, clinic／review／quote submissions, Helpful, reporting, blocking, private chat or any other community interaction.
+- Implementation:
+  - Added a Firebase-independent, one-shot `AuthenticatedActionContinuation` shared by clinic, review and quote flows. Auth loading retains intent; Login cancellation clears it; repeated auth／UID／dismiss callbacks cannot replay it.
+  - Clinic, review and quote forms snapshot the reviewed draft. Only typed pre-write `authenticationRequired` results may resume automatically; generic backend failures stay visible and never auto-retry.
+  - Helpful and Send Message now sign in before acting. Report and block actions sign in only back to a localized confirmation; the confirmation rechecks the session before the backend write.
+  - Fixed both iPhone and iPad Add Clinic handoffs so the Login full-screen cover completes dismissal before the form sheet opens. Session expiry after duplicate confirmation preserves the exact clinic draft and retains the duplicate-decision gate.
+  - Added Firebase password reset with trimmed／lowercased email, generic unknown／disabled-account acceptance, safe local errors, app-language mapping, restoration of Firebase's global language setting, VoiceOver result focus and one-shot loading state.
+  - Added signed-in and signed-out Profile access to the live Support URL and `mailto:vetmap.app@gmail.com`; removed the non-functional constant high-contrast toggle.
+  - Added English and Simplified Chinese translations plus fail-closed CI gates for password reset, support identity, every community auth entry, runtime localization, backend mutation call counts and both Add Clinic layouts.
+- Review:
+  - Independent Swift review first returned runtime `String` localization bypasses and a Login-cover／Add-Clinic-sheet presentation race. Both were corrected and source gates were strengthened.
+  - Final Swift verdict: ship, with no remaining modal, one-shot, draft, session-expiry, duplicate-write, actor-isolation or localization finding.
+  - Independent production callsite audit found no ungated canonical review／quote／Helpful／report／block／message path after the Add Clinic correction.
+- Local evidence:
+  - Every repository Swift file passed standalone `swiftc -parse`; the pure Swift auth-continuation harness passed.
+  - All script regressions passed: 75 tests, 0 failures. Localization JSON, privacy manifest, project plist, Xcode Cloud post-clone shell, GitHub workflow YAML, Functions lint／module load and `git diff --check` passed.
+  - The Java-backed emulator suite could not run locally because this macOS Beta host has no Java runtime; it was therefore validated only by the matching GitHub Java 21 job, not claimed locally.
+  - Production public-only audit remained canonical: 180 visible clinics（179 authorised + one demo）, 161 mappable, 18 list-only, availability `11/10/1`, one demo review, one demo quote, 124 HK services and three official insurance links; legacy anonymous reads remained denied. This mode cannot prove hidden inventory.
+  - Live `https://vetmap-app.web.app/support` returned HTTP 200 and contained the same actionable support email as the app and ASC metadata source.
+- Git／CI evidence: Commit `a1eca9f` (`feat: complete account recovery and auth continuity`) was pushed to `origin/main`. GitHub `Backend and Config Validation` run `31411453992` completed successfully in 37 seconds, including Java 21 Functions purge, Firestore／Storage rules 18/18 and the three new release gates.
+- Release boundary: No local `xcodebuild`, Xcode Cloud activation, Apple upload, ASC mutation, Firebase production deployment, device install／launch, reset-email delivery, App Review submission or public release occurred. Source／GitHub CI does not prove a Cloud binary or TestFlight behavior.
+- Preserved scope: User-owned scheme, ProductList, UITests, archive/export scripts, duplicate `* 2.*` files, logs and other unrelated dirty/untracked files were not staged, reverted, deleted or edited; the ProductList file and diff hashes remained unchanged.
+- Next candidate: After the account holder completes Content Rights and Product Interaction disclosure, create one new Xcode Cloud candidate, verify password-reset delivery and the full interaction smoke test on `是條小狗`, deploy the compatible chat rules/function, reconcile ASC and stop before formal submission.

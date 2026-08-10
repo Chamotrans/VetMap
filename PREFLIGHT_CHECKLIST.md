@@ -2,8 +2,8 @@
 
 > App Store Connect ID: `6777361219`
 > Bundle ID: `com.vetmap.app`
-> Release candidate: GitHub `main` source candidate `25258d7`（待下一次 Cloud build）；ASC 暫掛 build `1.0 (12)`
-> 最後核對：2026-08-10
+> Release candidate: GitHub `main` source candidate `a1eca9f`（待下一次 Cloud build）；ASC 暫掛 build `1.0 (12)`
+> 最後核對：2026-08-11
 
 本表只記錄可驗證的目前狀態。正式按下 App Store Connect「提交以供審核」不在自動執行範圍內。
 
@@ -22,6 +22,10 @@
 - [x] 「有用」標記改為每個 Firebase UID 對每項評價一次
 - [x] 診所詳情可收藏／取消收藏；「我的收藏」提供登入提示、Cloud 同步、跨帳戶隔離、離線 cache、刪除及失效診所提示，並以 Firestore rules 限制每戶最多 200 個診所 ID
 - [x] 香港寵物服務及官方保險入口可收藏到帳戶；Profile 提供同步、重試、跨帳戶隔離、舊值移除及失效目錄提示，Swift／Rules 共用精確 127-ID allowlist
+- [x] 診所、評價及報價表單在 session 過期時保留 immutable 草稿；只會在明確 `authenticationRequired` 後登入續交，一般網絡／backend 錯誤不會自動重試
+- [x] Helpful、訊息、診所／評價／報價舉報及封鎖全部先驗證登入；登入成功只恢復一次原意圖，舉報／封鎖仍須再次確認，取消登入不寫資料
+- [x] 電郵登入提供忘記密碼：正規化地址、防止帳戶枚舉、跟隨 App 語言、還原 Firebase 全域語言設定、VoiceOver 結果聚焦及重複請求保護
+- [x] Profile 在登入及未登入狀態均提供支援／聯絡入口，與 ASC Support URL 及 `vetmap.app@gmail.com` 一致；無效的假「高對比模式」設定已移除
 - [x] App 內提供帳戶刪除、重新驗證、Apple token 撤銷及伺服器資料清除
 - [x] `purgeUserData` Firestore emulator 行為測試 2/2：五分鐘 recent-auth 邊界、投稿／評價／報價／聊天室／舉報／moderation marker／封鎖引用／Helpful vote／4 個 Storage prefix、他人資料保留及重試冪等均通過
 - [x] Firestore／Storage 規則 emulator 測試：18/18 通過（包括聊天室 participant query、批准評價來源、反向重複 ID、已下架來源、message report atomic marker、admin least-privilege 及舊 `savedProducts` migration regression）
@@ -99,8 +103,10 @@
 - [x] 帳戶同步「收藏診所」source candidate 已推送至 GitHub `main`：feature commit `adeb7d8`、CI fix `5d8c9b0`；Actions run `31402624859` 全綠，包含收藏模型 harness、App Review metadata drift、Functions 及 Firestore／Storage rules 17/17
 - [x] 聊天 session／定位權限 source hardening 已推送至 GitHub `main`：commit `824c78a`；Actions run `31404496717` 全綠，包含新 privacy/chat source gate、Functions、catalog validators 及 Firestore／Storage emulator rules
 - [x] 帳戶同步「收藏服務／保險」source candidate 已推送至 GitHub `main`：commit `25258d7`；Actions run `31408603722` 全綠，包含精確 127-ID drift gate、legacy migration、Functions 及 Firestore／Storage rules 18/18
+- [x] 帳戶復原及社群登入續接 source candidate 已推送至 GitHub `main`：commit `a1eca9f`；Actions run `31411453992` 全綠，包含診所／評價／報價草稿續接、UGC action gate、忘記密碼、支援入口、Functions 及 Firestore／Storage rules 18/18
 - [ ] 帳戶持有人明確確認 Content Rights 並指示繼續後，啟用／觸發新 Xcode Cloud candidate，守到 ASC processing 終態；2026-08-09 live read-back 顯示 workflow 仍 disabled、最新 run 仍為 41，沒有 Run 42
 - [ ] 在 TestFlight 真機完成登入、投稿、批核、公開、聊天室收發／刪除／舉報／封鎖及帳戶刪除 smoke test
+- [ ] 在新 TestFlight candidate 以 fixture 信箱驗證忘記密碼電郵送達、App 語言、連結可用及不存在帳戶的 generic success；source／CI 不可代替 Firebase 郵件實測
 - [x] 將 build 11 掛接至 App Store Connect iOS 1.0 作暫時 release candidate
 - [x] 以 Build 12 取代 iOS 1.0 暫掛的 Build 11，API read-back 為 `READY_FOR_REVIEW`
 
@@ -153,11 +159,12 @@
 2026-08-03 live device baseline：`是條小狗` 可連線，安裝 `VetMap 1.0 (39)`；App 成功啟動並從 production 顯示 180 間診所、162 個地圖標記、18 間待確認位置及訊息 tab。iPhone Mirroring 連接逾時，因此以下互動 smoke 尚未完成。
 
 1. 用 App Review 帳戶登入。
-2. 分別提交一項新診所、一項評價及一項報價，確認畫面顯示待審而不是假成功。
-3. 用管理員帳戶批准三項投稿。
-4. 用第二個普通帳戶確認批准內容可見。
-5. 由示範評價開啟聊天室，驗證雙向收發、作者軟刪除、另一方舉報及封鎖後不可再傳送。
-6. 對評價及報價執行舉報與封鎖，確認內容即時從該用戶畫面消失。
-7. 管理員處理舉報及下架，確認所有普通帳戶不再看見。
-8. 測試每個帳戶對同一評價只能標記一次「有用」。
-9. 測試電郵帳戶刪除；另以 Apple 登入帳戶測試重新驗證、token 撤銷及刪除。
+2. 在繁中及英文 App 語言各要求一次忘記密碼，驗證電郵送達、語言及重設連結；以不存在地址確認畫面不洩露帳戶狀態。
+3. 分別提交一項新診所、一項評價及一項報價，並在各表單模擬 session 過期，確認登入後草稿只續交一次。
+4. 用管理員帳戶批准三項投稿。
+5. 用第二個普通帳戶確認批准內容可見。
+6. 由示範評價開啟聊天室，驗證雙向收發、作者軟刪除、另一方舉報及封鎖後不可再傳送。
+7. 對評價及報價執行舉報與封鎖，確認登入續接只返回確認步驟，完成後內容才從該用戶畫面消失。
+8. 管理員處理舉報及下架，確認所有普通帳戶不再看見。
+9. 測試每個帳戶對同一評價只能標記一次「有用」。
+10. 測試電郵帳戶刪除；另以 Apple 登入帳戶測試重新驗證、token 撤銷及刪除。
