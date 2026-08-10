@@ -49,6 +49,16 @@ struct ChatThreadView: View {
         .onDisappear {
             chat.stopObservingMessages()
         }
+        .onChange(of: auth.authState) { _, state in
+            guard state != .signedIn else { return }
+            chat.resetSession()
+            dismiss()
+        }
+        .onChange(of: auth.user?.uid) { oldUserID, newUserID in
+            guard oldUserID != nil, oldUserID != newUserID else { return }
+            chat.resetSession()
+            dismiss()
+        }
         .confirmationDialog(
             "舉報此訊息",
             isPresented: $showReportReasons,
@@ -102,24 +112,59 @@ struct ChatThreadView: View {
                 Text("向 \(target.displayName) 傳送第一則訊息。")
             }
             .frame(maxHeight: .infinity)
-        } else if chat.isLoading && chat.messages.isEmpty {
+        } else if chat.messagesAreLoading && chat.messages.isEmpty {
             ProgressView("載入訊息…")
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else if let error = chat.messageLoadError,
+                  chat.messages.isEmpty {
+            ContentUnavailableView {
+                Label("未能載入訊息", systemImage: "wifi.exclamationmark")
+            } description: {
+                Text(error)
+            } actions: {
+                Button("重新載入") {
+                    retryMessages()
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(AppTheme.primary)
+            }
+            .frame(maxHeight: .infinity)
         } else {
-            ScrollViewReader { proxy in
-                ScrollView {
-                    LazyVStack(spacing: 10) {
-                        ForEach(chat.messages) { message in
-                            messageRow(message)
-                                .id(message.id)
+            VStack(spacing: 0) {
+                if let error = chat.messageLoadError {
+                    HStack(spacing: 10) {
+                        Label(error, systemImage: "wifi.exclamationmark")
+                            .font(.footnote)
+                            .foregroundStyle(AppTheme.warning)
+                        Spacer(minLength: 8)
+                        Button("重試") { retryMessages() }
+                            .font(.footnote.weight(.semibold))
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .background(AppTheme.warning.opacity(0.10))
+                }
+
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        LazyVStack(spacing: 10) {
+                            ForEach(chat.messages) { message in
+                                messageRow(message)
+                                    .id(message.id)
+                            }
+                        }
+                        .padding(14)
+                    }
+                    .background(AppTheme.screenBackground)
+                    .onAppear {
+                        if let lastID = chat.messages.last?.id {
+                            proxy.scrollTo(lastID, anchor: .bottom)
                         }
                     }
-                    .padding(14)
-                }
-                .background(AppTheme.screenBackground)
-                .onChange(of: chat.messages.count) { _, _ in
-                    if let lastID = chat.messages.last?.id {
-                        withAnimation { proxy.scrollTo(lastID, anchor: .bottom) }
+                    .onChange(of: chat.messages.last?.id) { _, lastID in
+                        if let lastID {
+                            withAnimation { proxy.scrollTo(lastID, anchor: .bottom) }
+                        }
                     }
                 }
             }
@@ -186,6 +231,8 @@ struct ChatThreadView: View {
             } label: {
                 Image(systemName: "arrow.up.circle.fill")
                     .font(.title2)
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
             }
             .disabled(
                 draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -196,6 +243,11 @@ struct ChatThreadView: View {
         }
         .padding(12)
         .background(.bar)
+    }
+
+    private func retryMessages() {
+        guard let conversationID else { return }
+        chat.observeMessages(conversationID: conversationID, force: true)
     }
 
     private func send() {

@@ -139,6 +139,7 @@ final class AuthViewModel: NSObject, ObservableObject {
             Task { @MainActor [weak self] in
                 guard let self else { return }
                 guard let firebaseUser else {
+                    ChatStore.shared.resetSession()
                     user = nil
                     authState = .signedOut
                     return
@@ -615,6 +616,7 @@ final class AuthViewModel: NSObject, ObservableObject {
 
     private func clearSessionState() {
         KeychainService.deleteAppleUserIdentifier()
+        ChatStore.shared.resetSession()
         let defaults = UserDefaults.standard
         defaults.removeObject(forKey: ClinicFavorites.storageKey)
         defaults.removeObject(forKey: ClinicFavorites.cacheOwnerKey)
@@ -629,6 +631,7 @@ final class AuthViewModel: NSObject, ObservableObject {
     /// intentionally remain device settings.
     private func clearLocalAccountData() {
         KeychainService.deleteAppleUserIdentifier()
+        ChatStore.shared.resetSession()
 
         let defaults = UserDefaults.standard
         if let userID = user?.uid {

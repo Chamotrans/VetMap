@@ -12,13 +12,21 @@ final class ChatStore: ObservableObject {
 
     @Published private(set) var conversations: [ChatConversation] = []
     @Published private(set) var messages: [ChatMessage] = []
-    @Published private(set) var isLoading = false
+    @Published private(set) var conversationsAreLoading = false
+    @Published private(set) var messagesAreLoading = false
     @Published private(set) var isSending = false
     @Published private(set) var errorMessage: String?
+    @Published private(set) var conversationLoadError: String?
+    @Published private(set) var messageLoadError: String?
 
     private var conversationsListener: ListenerRegistration?
     private var messagesListener: ListenerRegistration?
+    private var conversationsOwnerUserID: String?
+    private var observedConversationsUserID: String?
     private var observedConversationID: String?
+    private var observedMessagesUserID: String?
+    private var conversationsObservationGeneration = 0
+    private var messagesObservationGeneration = 0
 
     private var firestore: Firestore? {
         guard FirebaseApp.app() != nil else { return nil }
@@ -33,12 +41,19 @@ final class ChatStore: ObservableObject {
     func observeConversations() {
         stopObservingConversations()
         guard let db = firestore, let uid = currentUser?.uid else {
-            conversations = []
-            errorMessage = nil
+            resetSession()
             return
         }
 
-        isLoading = true
+        if conversationsOwnerUserID != uid {
+            conversations = []
+            stopObservingMessages()
+        }
+        conversationsOwnerUserID = uid
+        observedConversationsUserID = uid
+        conversationLoadError = nil
+        conversationsAreLoading = true
+        let observationGeneration = conversationsObservationGeneration
         conversationsListener = db.collection("conversations")
             .whereField("participantIds", arrayContains: uid)
             .order(by: "updatedAt", descending: true)
@@ -46,68 +61,110 @@ final class ChatStore: ObservableObject {
             .addSnapshotListener { [weak self] snapshot, error in
                 Task { @MainActor [weak self] in
                     guard let self else { return }
-                    isLoading = false
+                    guard conversationsObservationGeneration == observationGeneration,
+                          observedConversationsUserID == uid,
+                          currentUser?.uid == uid else { return }
+                    conversationsAreLoading = false
                     if let error {
-                        record(error, domain: "ChatStore.observeConversations")
+                        conversationLoadError = "未能載入對話，請檢查網絡後重試。"
+                        recordForDiagnostics(error, domain: "ChatStore.observeConversations")
                         return
                     }
                     do {
                         conversations = try snapshot?.documents.compactMap {
                             try $0.data(as: ChatConversation.self)
+                        }.filter {
+                            $0.otherUserID(for: uid) != nil
                         } ?? []
-                        errorMessage = nil
+                        conversationLoadError = nil
                     } catch {
-                        record(error, domain: "ChatStore.decodeConversations")
+                        conversationLoadError = "部分對話資料未能讀取，請重新載入。"
+                        recordForDiagnostics(error, domain: "ChatStore.decodeConversations")
                     }
                 }
             }
     }
 
     func stopObservingConversations() {
+        conversationsObservationGeneration &+= 1
         conversationsListener?.remove()
         conversationsListener = nil
+        observedConversationsUserID = nil
+        conversationsAreLoading = false
     }
 
-    func observeMessages(conversationID: String) {
-        guard observedConversationID != conversationID || messagesListener == nil else { return }
+    func observeMessages(conversationID: String, force: Bool = false) {
+        guard force || observedConversationID != conversationID || messagesListener == nil else {
+            return
+        }
         stopObservingMessages()
-        guard let db = firestore, currentUser != nil else {
-            messages = []
+        guard ChatConversationID.isSafeDocumentID(conversationID),
+              let db = firestore,
+              let uid = currentUser?.uid else {
+            messageLoadError = "未能開啟此對話，請返回訊息列表再試。"
             return
         }
 
         observedConversationID = conversationID
-        isLoading = true
+        observedMessagesUserID = uid
+        messageLoadError = nil
+        messagesAreLoading = true
+        let observationGeneration = messagesObservationGeneration
         messagesListener = db.collection("conversations")
             .document(conversationID)
             .collection("messages")
-            .order(by: "sentAt")
-            .limit(to: 200)
+            .order(by: "sentAt", descending: ChatMessageWindow.fetchesNewestFirst)
+            .limit(to: ChatMessageWindow.maximumCount)
             .addSnapshotListener { [weak self] snapshot, error in
                 Task { @MainActor [weak self] in
                     guard let self else { return }
-                    isLoading = false
+                    guard messagesObservationGeneration == observationGeneration,
+                          observedConversationID == conversationID,
+                          observedMessagesUserID == uid,
+                          currentUser?.uid == uid else { return }
+                    messagesAreLoading = false
                     if let error {
-                        record(error, domain: "ChatStore.observeMessages")
+                        messageLoadError = "未能載入訊息，請檢查網絡後重試。"
+                        recordForDiagnostics(error, domain: "ChatStore.observeMessages")
                         return
                     }
                     do {
-                        messages = try snapshot?.documents.compactMap {
+                        let decoded = try snapshot?.documents.compactMap {
                             try $0.data(as: ChatMessage.self)
                         } ?? []
-                        errorMessage = nil
+                        messages = ChatMessageWindow.chronological(decoded)
+                        messageLoadError = nil
                     } catch {
-                        record(error, domain: "ChatStore.decodeMessages")
+                        messageLoadError = "部分訊息資料未能讀取，請重新載入。"
+                        recordForDiagnostics(error, domain: "ChatStore.decodeMessages")
                     }
                 }
             }
     }
 
     func stopObservingMessages() {
+        messagesObservationGeneration &+= 1
         messagesListener?.remove()
         messagesListener = nil
         observedConversationID = nil
+        observedMessagesUserID = nil
         messages = []
+        messageLoadError = nil
+        messagesAreLoading = false
+    }
+
+    func resetSession() {
+        stopObservingConversations()
+        stopObservingMessages()
+        conversations = []
+        messages = []
+        conversationsOwnerUserID = nil
+        conversationLoadError = nil
+        messageLoadError = nil
+        errorMessage = nil
+        conversationsAreLoading = false
+        messagesAreLoading = false
+        isSending = false
     }
 
     func send(
@@ -253,6 +310,10 @@ final class ChatStore: ObservableObject {
         errorMessage = error.localizedDescription
         CrashReporting.recordError(error, domain: domain)
     }
+
+    private func recordForDiagnostics(_ error: Error, domain: String) {
+        CrashReporting.recordError(error, domain: domain)
+    }
 }
 
 #else
@@ -261,14 +322,26 @@ final class ChatStore: ObservableObject {
     static let shared = ChatStore()
     @Published private(set) var conversations: [ChatConversation] = []
     @Published private(set) var messages: [ChatMessage] = []
-    @Published private(set) var isLoading = false
+    @Published private(set) var conversationsAreLoading = false
+    @Published private(set) var messagesAreLoading = false
     @Published private(set) var isSending = false
     @Published private(set) var errorMessage: String?
+    @Published private(set) var conversationLoadError: String?
+    @Published private(set) var messageLoadError: String?
 
     func observeConversations() {}
     func stopObservingConversations() {}
-    func observeMessages(conversationID: String) {}
+    func observeMessages(conversationID: String, force: Bool = false) {}
     func stopObservingMessages() {}
+    func resetSession() {
+        conversations = []
+        messages = []
+        conversationLoadError = nil
+        messageLoadError = nil
+        errorMessage = nil
+        conversationsAreLoading = false
+        messagesAreLoading = false
+    }
     func send(body: String, conversationID: String?, recipient: ChatTarget) async throws -> String {
         throw FirebaseError.notConfigured
     }

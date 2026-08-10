@@ -52,6 +52,47 @@ enum ChatOriginHarness {
             "legacy conversations without sourceReviewId must remain decodable"
         )
 
-        print("chatOrigin: true; legacyConversationCompatible: true")
+        precondition(
+            conversation.otherUserID(for: "mallory") == nil,
+            "a non-participant must never resolve another user's identity"
+        )
+        var malformedConversation = conversation
+        malformedConversation.participantIds = ["alice", "alice"]
+        precondition(
+            malformedConversation.otherUserID(for: "alice") == nil,
+            "duplicate participant IDs must fail closed"
+        )
+
+        let olderMessage = ChatMessage(
+            id: "message-old",
+            conversationId: conversation.id,
+            senderId: "alice",
+            body: "舊訊息",
+            sentAt: timestamp.addingTimeInterval(-60),
+            isDeleted: false
+        )
+        let newerMessage = ChatMessage(
+            id: "message-new",
+            conversationId: conversation.id,
+            senderId: "bob",
+            body: "新訊息",
+            sentAt: timestamp,
+            isDeleted: false
+        )
+        precondition(
+            ChatMessageWindow.fetchesNewestFirst
+                && ChatMessageWindow.maximumCount == 200,
+            "the Firestore window must fetch the newest 200 messages"
+        )
+        precondition(
+            ChatMessageWindow.chronological([newerMessage, olderMessage])
+                .map(\.id) == ["message-old", "message-new"],
+            "the newest window must be presented chronologically"
+        )
+
+        print(
+            "chatOrigin: true; legacyConversationCompatible: true; "
+                + "participantIsolation: true; newestWindow: 200"
+        )
     }
 }

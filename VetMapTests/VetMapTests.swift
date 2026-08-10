@@ -97,6 +97,83 @@ final class VetMapModelTests: XCTestCase {
         XCTAssertEqual(conversation.sourceReviewId, "review-1")
     }
 
+    func testChatConversationRejectsNonParticipantsAndMalformedMembership() {
+        let conversation = ChatConversation(
+            id: "alice--bob",
+            participantIds: ["alice", "bob"],
+            participantNames: ["alice": "Alice", "bob": "Bob"],
+            lastMessageId: "message-1",
+            lastMessage: "你好",
+            lastMessageAt: date,
+            lastSenderId: "alice",
+            createdAt: date,
+            updatedAt: date
+        )
+
+        XCTAssertNil(conversation.otherUserID(for: "mallory"))
+
+        var duplicate = conversation
+        duplicate.participantIds = ["alice", "alice"]
+        XCTAssertNil(duplicate.otherUserID(for: "alice"))
+
+        var oversized = conversation
+        oversized.participantIds = ["alice", "bob", "mallory"]
+        XCTAssertNil(oversized.otherUserID(for: "alice"))
+    }
+
+    func testChatMessageWindowPresentsNewestWindowChronologically() {
+        let old = ChatMessage(
+            id: "message-old",
+            conversationId: "alice--bob",
+            senderId: "alice",
+            body: "舊訊息",
+            sentAt: date.addingTimeInterval(-60),
+            isDeleted: false
+        )
+        let sameTimeB = ChatMessage(
+            id: "message-b",
+            conversationId: "alice--bob",
+            senderId: "bob",
+            body: "同一時間 B",
+            sentAt: date,
+            isDeleted: false
+        )
+        let sameTimeA = ChatMessage(
+            id: "message-a",
+            conversationId: "alice--bob",
+            senderId: "alice",
+            body: "同一時間 A",
+            sentAt: date,
+            isDeleted: false
+        )
+
+        XCTAssertTrue(ChatMessageWindow.fetchesNewestFirst)
+        XCTAssertEqual(ChatMessageWindow.maximumCount, 200)
+        XCTAssertEqual(
+            ChatMessageWindow.chronological([sameTimeB, old, sameTimeA]).map(\.id),
+            ["message-old", "message-a", "message-b"]
+        )
+    }
+
+    func testLocationButtonPolicyOnlyPromptsFromUndeterminedState() {
+        XCTAssertEqual(
+            LocationButtonPolicy.outcome(for: .notDetermined),
+            .requestedPermission
+        )
+        XCTAssertEqual(
+            LocationButtonPolicy.outcome(for: .authorized),
+            .requestedLocation
+        )
+        XCTAssertEqual(
+            LocationButtonPolicy.outcome(for: .denied),
+            .requiresSettings
+        )
+        XCTAssertEqual(
+            LocationButtonPolicy.outcome(for: .restricted),
+            .requiresSettings
+        )
+    }
+
     func testClinicWithoutCoordinateRoundTripsAndHasNoMapLocation() throws {
         let clinic = makeClinic(id: "directory-only-clinic", coordinate: nil)
 

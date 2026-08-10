@@ -1,13 +1,15 @@
 import SwiftUI
 import MapKit
+import UIKit
 
 struct ClinicMapView: View {
+    @Environment(\.openURL) private var openURL
+    @Environment(\.scenePhase) private var scenePhase
     @State private var viewModel = MapViewModel()
     @State private var locationService = LocationService()
     @State private var clinicForDetail: VetClinic?
     @State private var shouldFocusOnUserLocation = false
-    @State private var initialLocationApplied = false
-    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
+    @State private var isShowingLocationSettingsAlert = false
 
     var body: some View {
         ZStack {
@@ -54,27 +56,38 @@ struct ClinicMapView: View {
         }
         .onAppear {
             viewModel.loadClinics()
-            // 只在過咗 onboarding 先請求定位，避免權限對話框蓋住 onboarding
-            // 截圖模式唔請求定位，避免權限彈窗蓋住自動截圖
-            if hasSeenOnboarding && !AppLaunchFlags.isScreenshotMode {
-                applyInitialLocation()
-            }
+            // Reading the current status does not show a system prompt.
+            locationService.refreshAuthorizationStatus()
         }
-        .onChange(of: hasSeenOnboarding) { _, seen in
-            if seen { applyInitialLocation() }
+        .onChange(of: scenePhase) { _, phase in
+            guard phase == .active else { return }
+            locationService.refreshAuthorizationStatus()
         }
         .onChange(of: locationService.currentLocation) { _, location in
-            if !initialLocationApplied, let location {
-                initialLocationApplied = true
-                viewModel.focusOnUserLocation(location)
-                return
-            }
-            guard shouldFocusOnUserLocation else { return }
+            guard shouldFocusOnUserLocation, let location else { return }
             shouldFocusOnUserLocation = false
             viewModel.focusOnUserLocation(location)
         }
+        .onChange(of: locationService.locationRequestFailed) { _, failed in
+            if failed {
+                shouldFocusOnUserLocation = false
+            }
+        }
+        .onChange(of: locationService.authorizationStatus) { _, _ in
+            if locationService.requiresSettingsRecovery {
+                shouldFocusOnUserLocation = false
+            }
+        }
         .sheet(item: $clinicForDetail) { clinic in
             ClinicDetailView(clinic: clinic)
+        }
+        .alert("需要定位權限", isPresented: $isShowingLocationSettingsAlert) {
+            Button("取消", role: .cancel) {}
+            Button("開啟設定") {
+                openLocationSettings()
+            }
+        } message: {
+            Text(locationSettingsRecoveryMessage)
         }
     }
 
@@ -104,6 +117,32 @@ struct ClinicMapView: View {
                 .buttonBorderShape(.roundedRectangle(radius: AppTheme.cardRadius))
                 .tint(AppTheme.primary)
                 .accessibilityLabel("定位到目前位置")
+                .accessibilityHint(locationButtonAccessibilityHint)
+            }
+
+            if locationService.requiresSettingsRecovery {
+                HStack(alignment: .firstTextBaseline, spacing: 10) {
+                    Label(locationSettingsRecoveryMessage, systemImage: "location.slash.fill")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Spacer(minLength: 4)
+
+                    Button("開啟設定") {
+                        openLocationSettings()
+                    }
+                    .font(.caption.weight(.semibold))
+                    .buttonStyle(.bordered)
+                    .buttonBorderShape(.roundedRectangle(radius: AppTheme.compactRadius))
+                    .tint(AppTheme.primary)
+                    .accessibilityHint("前往系統設定更改 VetMap 定位權限")
+                }
+            } else if locationService.locationRequestFailed {
+                Label("暫時無法取得位置，請稍後再試", systemImage: "location.slash")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
 
             if let pendingLocationMessage {
@@ -249,27 +288,47 @@ struct ClinicMapView: View {
     private func focusOnUserLocation() {
         shouldFocusOnUserLocation = true
 
-        if locationService.canUseLocation, locationService.currentLocation != nil {
+        switch locationService.requestLocationFromButton() {
+        case .requestedPermission:
+            break
+        case .requestedLocation:
+            // Recenter immediately when a cached fix exists, then apply the
+            // fresh one-shot result when CLLocationManager returns it.
+            if let location = locationService.currentLocation {
+                viewModel.focusOnUserLocation(location)
+            }
+        case .requiresSettings:
             shouldFocusOnUserLocation = false
-            viewModel.focusOnUserLocation(locationService.currentLocation)
+            isShowingLocationSettingsAlert = true
+        }
+    }
+
+    private var locationSettingsRecoveryMessage: String {
+        if locationService.authorizationStatus == .restricted {
+            return "此裝置限制了定位服務，請在「設定」檢查定位服務或裝置限制。"
+        }
+
+        return "定位權限已關閉，請在「設定」允許 VetMap 於使用 App 期間取用位置。"
+    }
+
+    private var locationButtonAccessibilityHint: String {
+        if locationService.requiresSettingsRecovery {
+            return "顯示前往系統設定的選項"
+        }
+
+        if locationService.canUseLocation {
+            return "取得最新位置並將地圖移到附近"
+        }
+
+        return "請求使用位置，以顯示附近診所"
+    }
+
+    private func openLocationSettings() {
+        guard let url = URL(string: UIApplication.openSettingsURLString) else {
             return
         }
 
-        locationService.refreshLocation()
-    }
-
-    /// 開 App 自動移到當前位置（未授權則請求權限）
-    private func applyInitialLocation() {
-        guard !initialLocationApplied else { return }
-
-        if locationService.canUseLocation, let location = locationService.currentLocation {
-            initialLocationApplied = true
-            viewModel.focusOnUserLocation(location)
-        } else {
-            // notDetermined → 請求權限；已授權但未有快取 → 請求一次定位
-            // 授權/定位更新後由 onChange(currentLocation) 完成 focus
-            locationService.requestPermission()
-        }
+        openURL(url)
     }
 }
 

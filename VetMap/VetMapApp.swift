@@ -1,5 +1,4 @@
 import SwiftUI
-import UserNotifications
 #if canImport(Kingfisher)
 import Kingfisher
 #endif

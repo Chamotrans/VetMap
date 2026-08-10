@@ -1,5 +1,4 @@
 import SwiftUI
-import UserNotifications
 
 struct ContentView: View {
     @StateObject private var authViewModel = AuthViewModel.shared
@@ -59,37 +58,26 @@ struct ContentView: View {
             OnboardingView()
         }
         .onAppear {
-            // 只在已過 onboarding 時觸發系統彈窗，避免蓋住 onboarding 進場動畫
+            // 只在已過 onboarding 時評估顯示評分提示。
             if hasSeenOnboarding {
-                triggerLaunchPrompts()
+                triggerRatingPromptIfNeeded()
             }
         }
         .onChange(of: hasSeenOnboarding) { _, seen in
-            // Onboarding 完成後才請求通知權限 / 評分
+            // Onboarding 完成後才評估顯示評分提示。
             if seen {
-                triggerLaunchPrompts()
+                triggerRatingPromptIfNeeded()
             }
         }
     }
 
-    @State private var didTriggerLaunchPrompts = false
+    @State private var didTriggerRatingPrompt = false
 
-    private func triggerLaunchPrompts() {
-        guard !didTriggerLaunchPrompts else { return }
+    private func triggerRatingPromptIfNeeded() {
+        guard !didTriggerRatingPrompt else { return }
         guard !AppLaunchFlags.isScreenshotMode else { return }
-        didTriggerLaunchPrompts = true
+        didTriggerRatingPrompt = true
         RatingPrompt.requestReviewIfAppropriate()
-        requestNotificationPermission()
-    }
-
-    private func requestNotificationPermission() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, _ in
-            if granted {
-                DispatchQueue.main.async {
-                    UIApplication.shared.registerForRemoteNotifications()
-                }
-            }
-        }
     }
 
     private var iphoneLayout: some View {

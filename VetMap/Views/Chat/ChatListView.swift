@@ -43,6 +43,9 @@ struct ChatListView: View {
         .onChange(of: auth.authState) { _, _ in
             startIfSignedIn()
         }
+        .onChange(of: auth.user?.uid) { _, _ in
+            startIfSignedIn()
+        }
     }
 
     private var signedOutView: some View {
@@ -61,8 +64,21 @@ struct ChatListView: View {
 
     @ViewBuilder
     private var signedInView: some View {
-        if chat.isLoading && chat.conversations.isEmpty {
+        if chat.conversationsAreLoading && chat.conversations.isEmpty {
             ProgressView("載入對話…")
+        } else if let error = chat.conversationLoadError,
+                  visibleConversations.isEmpty {
+            ContentUnavailableView {
+                Label("未能載入對話", systemImage: "wifi.exclamationmark")
+            } description: {
+                Text(error)
+            } actions: {
+                Button("重新載入") {
+                    chat.observeConversations()
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(AppTheme.primary)
+            }
         } else if visibleConversations.isEmpty {
             ContentUnavailableView {
                 Label("未有對話", systemImage: "bubble.left.and.bubble.right")
@@ -70,12 +86,28 @@ struct ChatListView: View {
                 Text("你可在診所評價的操作選單選擇「傳送訊息」開始對話。")
             }
         } else {
-            List(visibleConversations) { conversation in
-                if let target = target(for: conversation) {
-                    NavigationLink {
-                        ChatThreadView(conversation: conversation, target: target)
-                    } label: {
-                        conversationRow(conversation, target: target)
+            List {
+                if let error = chat.conversationLoadError {
+                    Section {
+                        Label(error, systemImage: "wifi.exclamationmark")
+                            .font(.footnote)
+                            .foregroundStyle(AppTheme.warning)
+
+                        Button("重新載入") {
+                            chat.observeConversations()
+                        }
+                    }
+                }
+
+                Section {
+                    ForEach(visibleConversations) { conversation in
+                        if let target = target(for: conversation) {
+                            NavigationLink {
+                                ChatThreadView(conversation: conversation, target: target)
+                            } label: {
+                                conversationRow(conversation, target: target)
+                            }
+                        }
                     }
                 }
             }
@@ -129,7 +161,7 @@ struct ChatListView: View {
             chat.observeConversations()
             Task { await moderation.refreshPublicState() }
         } else {
-            chat.stopObservingConversations()
+            chat.resetSession()
         }
     }
 }

@@ -27,7 +27,14 @@ struct ChatConversation: Identifiable, Codable, Equatable {
     var updatedAt: Date
 
     func otherUserID(for currentUserID: String) -> String? {
-        participantIds.first { $0 != currentUserID }
+        let currentID = currentUserID.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !currentID.isEmpty,
+              participantIds.count == 2,
+              Set(participantIds).count == 2,
+              participantIds.contains(currentID) else {
+            return nil
+        }
+        return participantIds.first { $0 != currentID }
     }
 
     func otherDisplayName(for currentUserID: String) -> String {
@@ -47,6 +54,23 @@ struct ChatMessage: Identifiable, Codable, Equatable {
     var isDeleted: Bool
     var deletedAt: Date?
     var deletedBy: String?
+}
+
+/// Firestore reads the newest message window in descending order so long
+/// conversations do not lose recent replies. Presentation remains oldest to
+/// newest within that bounded window.
+enum ChatMessageWindow {
+    static let maximumCount = 200
+    static let fetchesNewestFirst = true
+
+    static func chronological(_ messages: [ChatMessage]) -> [ChatMessage] {
+        messages.sorted {
+            if $0.sentAt == $1.sentAt {
+                return $0.id < $1.id
+            }
+            return $0.sentAt < $1.sentAt
+        }
+    }
 }
 
 enum ChatConversationID {
