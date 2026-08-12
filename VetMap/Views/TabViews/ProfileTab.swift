@@ -363,7 +363,7 @@ private struct ClinicFavoritesView: View {
                     }
                 }
             } else {
-                Section("\(favoriteClinics.count) 間診所") {
+                Section {
                     ForEach(favoriteClinics) { clinic in
                         NavigationLink {
                             ClinicDetailView(clinic: clinic)
@@ -383,6 +383,8 @@ private struct ClinicFavoritesView: View {
                         .accessibilityHint("開啟收藏診所詳情")
                     }
                     .onDelete(perform: removeFavorites)
+                } header: {
+                    Text("\(favoriteClinics.count) 間診所")
                 } footer: {
                     Text("按右上角「編輯」可移除收藏；變更會同步到你的帳戶。")
                 }
