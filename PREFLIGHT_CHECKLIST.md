@@ -2,10 +2,10 @@
 
 > App Store Connect ID: `6777361219`
 > Bundle ID: `com.vetmap.app`
-> Release candidate: GitHub `main` source candidate `a1eca9f`（待下一次 Cloud build）；ASC 暫掛 build `1.0 (12)`
-> 最後核對：2026-08-11
+> Release candidate: source fix commit `bb9f484`；Xcode Cloud Run 43 的 ASC Build `1.0 (43)`（`3afbaa31-05a8-4c86-b89f-2e8549fcd73f`）已掛接 iOS 1.0
+> 最後核對：2026-08-12
 
-本表只記錄可驗證的目前狀態。正式按下 App Store Connect「提交以供審核」不在自動執行範圍內。
+本表只記錄可驗證的目前狀態。帳戶持有人已授權 send-for-review workflow，但只可在所有列出的 release gates 完成、App Privacy 已 Publish，並取得完整 Content Rights 法律 attest 後才可正式按下 App Store Connect「提交以供審核」。
 
 ## 已完成：程式及安全基線
 
@@ -27,8 +27,8 @@
 - [x] 電郵登入提供忘記密碼：正規化地址、防止帳戶枚舉、跟隨 App 語言、還原 Firebase 全域語言設定、VoiceOver 結果聚焦及重複請求保護
 - [x] Profile 在登入及未登入狀態均提供支援／聯絡入口，與 ASC Support URL 及 `vetmap.app@gmail.com` 一致；無效的假「高對比模式」設定已移除
 - [x] App 內提供帳戶刪除、重新驗證、Apple token 撤銷及伺服器資料清除
-- [x] `purgeUserData` Firestore emulator 行為測試 2/2：五分鐘 recent-auth 邊界、投稿／評價／報價／聊天室／舉報／moderation marker／封鎖引用／Helpful vote／4 個 Storage prefix、他人資料保留及重試冪等均通過
-- [x] Firestore／Storage 規則 emulator 測試：18/18 通過（包括聊天室 participant query、批准評價來源、反向重複 ID、已下架來源、message report atomic marker、admin least-privilege 及舊 `savedProducts` migration regression）
+- [x] `purgeUserData` 行為 coverage 已由 GitHub Java 21 成功 test gate 驗證：五分鐘 recent-auth 邊界、投稿／評價／報價／聊天室／舉報／moderation marker／封鎖引用／Helpful vote／4 個 Storage prefix、他人資料保留及重試冪等
+- [x] Firestore／Storage rules coverage 已由 GitHub Java 21 成功 test gate 驗證（包括聊天室 participant query、批准評價來源、反向重複 ID、已下架來源、message report atomic marker、admin least-privilege 及舊 `savedProducts` migration regression）；本機最新 emulator attempt 為 inconclusive，並非本項成功依據
 - [x] Firebase Functions lint 及載入檢查通過
 - [x] GitHub validation actions 已升級至原生 Node 24 runtime：`checkout@v7`、`setup-node@v7`、`setup-java@v5`；run `30764946922` 全綠且沒有 Node 20 deprecation annotation
 - [x] 全部 Swift 檔案 `swiftc -parse` 通過
@@ -50,13 +50,14 @@
 
 - [x] 部署 `FirestoreRules.rules`
 - [x] 2026-08-03 部署聊天室來源加固 rules；Firebase compile／release 成功，匿名 conversation／message REST read 均回 403
-- [ ] 部署聊天室舉報 least-privilege rules 及相容 `purgeUserData`：程式、Functions purge emulator 2/2 及 rules emulator 18/18 已通過；為免令現有 Build 39 的舊 report writer 失效，必須先由 Xcode Cloud 產生及安裝含 atomic moderation marker 的新 candidate，再部署並做真機舉報／管理員處理／刪戶 smoke test
+- [x] 已部署相容聊天室舉報 least-privilege `FirestoreRules.rules` 及 `purgeUserData`；rules compile／release 成功，`purgeUserData` 已在 `asia-east1` 更新為 Node.js 22 v2 callable。GitHub Java 21 是成功的測試 gate；本機 emulator 曾在第一個 TAP case 超過五分鐘後停止，結果 inconclusive，不視為 pass 或 fail。
 - [x] 部署 `StorageRules.rules`
 - [x] 部署 `firestore.indexes.json`，包括刪戶所需 collection-group indexes
-- [x] production baseline `purgeUserData` 已部署；Node.js 22、`asia-east1`、ACTIVE。含 `chatModeration` recursive cleanup 及新 emulator gate 的相容 source 尚待新 candidate 安裝後部署
+- [x] production `purgeUserData`（包括相容 `chatModeration` recursive cleanup source）已部署；Node.js 22、`asia-east1`、v2 callable。
 - [x] 部署 `public/` 的私隱政策、使用條款及支援頁，三個 production URL 均回應 HTTP 200
-- [x] 未登入直接呼叫 `purgeUserData` 會回應 `UNAUTHENTICATED`
+- [x] 未登入直接 POST `purgeUserData` 實際回應 HTTP `401`、status `UNAUTHENTICATED`，message 為 `You must sign in again before deleting your account.`
 - [x] production 公開 approved 查詢為 clinics 180、reviews 1、quotes 1；clinics 包括 179 間授權香港診所及 1 間 VetMap 示範診所
+- [x] 2026-08-12 post-deploy public-only audit：180 間診所（179 authorised + 1 demo）、161 mappable、18 list-only、availability `11/10/1`、1 review、1 quote、124 HK services、3 official insurance links；legacy anonymous reads denied。此 public-only audit 不可證明 hidden inventory。
 - [x] 驗證 Firebase Authentication 的 Email/Password provider 已啟用
 - [x] 驗證 Firebase Authentication 的 Apple provider OAuth code flow 已正確設定
 - [x] 建立獨立管理員帳戶，並在 `users/{uid}` 設定 `role: admin`
@@ -104,11 +105,16 @@
 - [x] 聊天 session／定位權限 source hardening 已推送至 GitHub `main`：commit `824c78a`；Actions run `31404496717` 全綠，包含新 privacy/chat source gate、Functions、catalog validators 及 Firestore／Storage emulator rules
 - [x] 帳戶同步「收藏服務／保險」source candidate 已推送至 GitHub `main`：commit `25258d7`；Actions run `31408603722` 全綠，包含精確 127-ID drift gate、legacy migration、Functions 及 Firestore／Storage rules 18/18
 - [x] 帳戶復原及社群登入續接 source candidate 已推送至 GitHub `main`：commit `a1eca9f`；Actions run `31411453992` 全綠，包含診所／評價／報價草稿續接、UGC action gate、忘記密碼、支援入口、Functions 及 Firestore／Storage rules 18/18
-- [ ] 帳戶持有人明確確認 Content Rights 並指示繼續後，啟用／觸發新 Xcode Cloud candidate，守到 ASC processing 終態；2026-08-09 live read-back 顯示 workflow 仍 disabled、最新 run 仍為 41，沒有 Run 42
-- [ ] 在 TestFlight 真機完成登入、投稿、批核、公開、聊天室收發／刪除／舉報／封鎖及帳戶刪除 smoke test
-- [ ] 在新 TestFlight candidate 以 fixture 信箱驗證忘記密碼電郵送達、App 語言、連結可用及不存在帳戶的 generic success；source／CI 不可代替 Firebase 郵件實測
+- [x] Feature commit `98809ad` 的 GitHub run `31413231064` 成功；其 Xcode Cloud Run 42 `b5c3bdf5-bd8d-4063-a29e-89e5c4a05a06` 由同一 source 觸發，但 Archive 因 `ProfileTab.swift:366` 的 `Section` overload 失敗，沒有 build resource，不能重用或作 release 證據
+- [x] Fix commit `bb9f484`（`fix: disambiguate favourites section header`）的 GitHub run `31576278579` 成功；local Node `91/91`、Swift parse 均通過，fresh Sol verdict 為 ship
+- [x] Xcode Cloud Run 43 `3fabe55c-63fe-4eca-991d-b342da404b73` 由 exact `bb9f484` 成功產生；唯一 action `d055b536-aa03-46fb-9dbe-bc255573db55` 成功。exactly-one trigger 後 workflow 已停用
+- [x] ASC Build 43 `3afbaa31-05a8-4c86-b89f-2e8549fcd73f` 為 `VALID`、`APP_STORE_ELIGIBLE`、未過期，並已掛接 iOS 1.0 `READY_FOR_REVIEW`
+- [x] 2026-08-12 review submission draft live read-back：`6e901867-779d-454f-8258-bf434993744c` 為 `READY_FOR_REVIEW`、`submittedDate: null`，含一個 item（`appStoreVersion` `583c6199-bf1e-42d9-8bd4-69c2e51f4d2c`）；這是獨立於 version／build 的 draft evidence，尚未正式提交
+- [x] Cloud development artifact SHA-256 `46628b8ea4febc9b35d1f4fcdfad7ada5a0fd8c2b4d5ab6fd9c284beb469fc37` 已驗證 bundle `com.vetmap.app`、`1.0 (43)`、Team `637V678N3Q`，並已安裝／read-back 至實體 iPhone「是條小狗」
+- [ ] 在實體 iPhone「是條小狗」完成登入、投稿、批核、公開、聊天室收發／刪除／舉報／封鎖及帳戶刪除 smoke test；development artifact 的 launch 兩次都只因裝置 locked 被拒，未取得 launch 或 UI smoke evidence
+- [ ] 在已安裝的 candidate 以 fixture 信箱驗證忘記密碼電郵送達、App 語言、連結可用及不存在帳戶的 generic success；source／CI 不可代替 Firebase 郵件實測
 - [x] 將 build 11 掛接至 App Store Connect iOS 1.0 作暫時 release candidate
-- [x] 以 Build 12 取代 iOS 1.0 暫掛的 Build 11，API read-back 為 `READY_FOR_REVIEW`
+- [x] Build 43 已取代早前暫掛 build，ASC read-back 為 iOS 1.0 `READY_FOR_REVIEW`
 
 本機舊 archive 及 Build 5 不能作為今次 release proof；本機是 macOS Beta，正式 build 只以 Xcode Cloud 結果為準。
 
@@ -123,19 +129,19 @@
 - [x] 填寫 App Review Notes，說明待審投稿、Helpful、公開內容舉報／封鎖、私人聊天室收發／訊息舉報／封鎖／刪除訊息、帳戶刪除及測試路徑；manual setup 與 ASC updater 由 CI drift gate 對帳
 - [x] 完成並 Publish App Privacy 問卷；2026-07-24 live UI 再確認為 Published
 - [x] 2026-08-03 03:49 CST ASC live UI 再確認 App Privacy 已 Published；7 類資料包括「其他用戶內容」，其設定為 linked to identity、用於 App Functionality，已涵蓋私人聊天室
-- [ ] 在 ASC App Privacy 加入並 Publish Product Interaction：linked to identity、not used for tracking、App Functionality；現有 7 類 live snapshot 未涵蓋帳戶收藏
+- [ ] 在 ASC App Privacy 加入並 Publish Product Interaction：linked to identity、not used for tracking、App Functionality；目前仍 unpublished，因兩個可用 browser session 均要求 ASC login，未作 UI mutation
 - [x] 完成年齡分級問卷並如實申報 messaging/chat、UGC 及 social media；2026-08-03 live UI 顯示現行分級 `16+`（173 個國家或地區；南韓 `15+`），pre-OS 26／舊 global rating 為 `17+`，與 API `SEVENTEEN_PLUS` 對應
 - [x] 完成 regulated medical device 聲明：No
 - [x] 以 Xcode Cloud 香港修正版取代全部舊 screenshots；ASC API read-back：`en-GB`／`zh-Hant` 各 5 張 iPhone、6 張 iPad，22 張均為 `COMPLETE`
 - [x] 把 App Store 描述及 keywords 改為 [AppStoreMetadata.md](AppStoreMetadata.md) 的香港＋community 版本，並從 live ASC 讀回確認
 - [x] `What's New` 不適用於首個 App 版本；Apple API 對 1.0 回覆 `STATE_ERROR` 且官方文件說明首版不提供此欄，故舊 API 殘值不作 storefront／送審缺漏
-- [ ] 完成 Content Rights。2026-08-03 03:49 CST live UI 仍顯示「否，此 App 不包含、顯示或存取第三方內容」；App 會顯示經批准的用戶內容，提交者確認完整權利範圍後必須改為使用／存取第三方內容
+- [ ] 完成 Content Rights。現時仍為 `DOES_NOT_USE_THIRD_PARTY_CONTENT`；正式提交前須由帳戶持有人作完整 legal attestation，涵蓋診所資料庫、香港服務目錄、官方保險連結及按使用條款提交的用戶內容，然後才可改為使用／存取第三方內容
 - [x] 將 build 7 加入 iOS 1.0 review draft
-- [x] iOS 1.0 已掛 Build 12：`e1cd2911-c0c2-4cd7-94c4-985c2295794a`
+- [x] iOS 1.0 已掛 Build 43：`3afbaa31-05a8-4c86-b89f-2e8549fcd73f`
 - [x] 2026-08-03 03:49 CST live UI：iOS 1.0 為「準備審查」、Build 12 仍掛接；Review Submission draft 於 2026-07-14 06:07 建立，含 1 項，仍只顯示「提交項目草稿 (1)」，未正式送出
-- [x] 2026-08-09 ASC API read-only 核對：iOS 1.0 及 review submission 均為 `READY_FOR_REVIEW`、`submittedDate` 為空，仍掛 Build 12 `VALID`；最新 processed build 為 35，未見 Build 39 或新 candidate
+- [x] 2026-08-12 ASC read-back：iOS 1.0 為 `READY_FOR_REVIEW`，Build 43 為 `VALID`、`APP_STORE_ELIGIBLE`、未過期並已掛接；此狀態不代表 `WAITING_FOR_REVIEW`、TestFlight distribution 或 public release
 - [ ] 最後逐頁核對沒有紅色缺漏或矛盾
-- [ ] 停在「提交以供審核」按鈕前，交由帳戶持有人作最後確認
+- [ ] submit 已獲帳戶持有人授權，但只可在 App Privacy Product Interaction Publish、完整 Content Rights legal attestation，及本表所有其餘 release gates 完成後才可按「提交以供審核」；Release type 保持 `MANUAL`，不得 public release
 
 ## App Privacy 答案基線
 
@@ -156,7 +162,7 @@
 
 ## 真機驗收流程
 
-2026-08-03 live device baseline：`是條小狗` 可連線，安裝 `VetMap 1.0 (39)`；App 成功啟動並從 production 顯示 180 間診所、162 個地圖標記、18 間待確認位置及訊息 tab。iPhone Mirroring 連接逾時，因此以下互動 smoke 尚未完成。
+2026-08-12 device read-back：Cloud development artifact `VetMap 1.0 (43)` 已安裝至實體 iPhone「是條小狗」。嘗試 launch 兩次均只因裝置 locked 被拒；這不構成 launch、UI 或完整 smoke evidence，因此以下互動 smoke 仍未完成。
 
 1. 用 App Review 帳戶登入。
 2. 在繁中及英文 App 語言各要求一次忘記密碼，驗證電郵送達、語言及重設連結；以不存在地址確認畫面不洩露帳戶狀態。
