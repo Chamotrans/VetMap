@@ -11,6 +11,8 @@ const DATABASE_ID = "(default)";
 const FIRESTORE_ROOT =
   `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}`
   + `/databases/${DATABASE_ID}/documents`;
+const FIRESTORE_DOCUMENT_ROOT =
+  `projects/${PROJECT_ID}/databases/${DATABASE_ID}/documents`;
 const V1_MIGRATION_ID = "hk-clinic-hours-v1-2026-07-30";
 const DEFAULT_PATHS = {
   catalog: "catalog/hk_clinics_v1.json",
@@ -277,7 +279,7 @@ export function buildCommitWrites(targets, expected) {
   }
   return targets.map((target, index) => ({
     update: {
-      name: `${FIRESTORE_ROOT}/clinics/${target.id}`,
+      name: `${FIRESTORE_DOCUMENT_ROOT}/clinics/${target.id}`,
       fields: {availability: encodeFirestoreValue(expected[index])},
     },
     updateMask: {fieldPaths: ["availability"]},

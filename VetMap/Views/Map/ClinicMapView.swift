@@ -64,6 +64,7 @@ struct ClinicMapView: View {
             locationService.refreshAuthorizationStatus()
         }
         .onChange(of: locationService.currentLocation) { _, location in
+            viewModel.updateContextualLocation(location)
             guard shouldFocusOnUserLocation, let location else { return }
             shouldFocusOnUserLocation = false
             viewModel.focusOnUserLocation(location)
@@ -154,6 +155,7 @@ struct ClinicMapView: View {
             }
 
             ClinicSearchField(text: $viewModel.filter.query, placeholder: "搜尋診所、地址、服務")
+            urgentCareControl
             ClinicFilterControls(filter: $viewModel.filter)
         }
         .padding(.leading, 14)
@@ -163,6 +165,10 @@ struct ClinicMapView: View {
     }
 
     private var resultCountText: String {
+        if viewModel.isUrgentMode {
+            return "急需排序 \(viewModel.filteredClinics.count) / \(viewModel.directoryClinics.count) 間・地圖 \(viewModel.mappableClinics.count) 個標記"
+        }
+
         if viewModel.filter.isActive {
             return "目錄 \(viewModel.filteredClinics.count) / \(viewModel.directoryClinics.count) 間・地圖 \(viewModel.mappableClinics.count) 個標記"
         }
@@ -174,6 +180,24 @@ struct ClinicMapView: View {
         let count = viewModel.pendingLocationCount
         guard count > 0 else { return nil }
         return "\(count) 間診所位置待確認，仍可在下方目錄查看詳情"
+    }
+
+    private var urgentCareControl: some View {
+        Button {
+            viewModel.activateUrgentMode()
+            focusOnUserLocation()
+        } label: {
+            Label(
+                viewModel.isUrgentMode ? "急需模式已啟用" : "急需睇獸醫",
+                systemImage: "cross.case.fill"
+            )
+            .font(.subheadline.weight(.bold))
+            .frame(maxWidth: .infinity, minHeight: 46)
+        }
+        .buttonStyle(.borderedProminent)
+        .buttonBorderShape(.roundedRectangle(radius: AppTheme.cardRadius))
+        .tint(AppTheme.primary)
+        .accessibilityHint("優先顯示 24 小時、營業中及夜診診所；未提供工時的診所仍會保留")
     }
 
     @ViewBuilder
@@ -203,6 +227,13 @@ struct ClinicMapView: View {
                                     currentLocation: locationService.currentLocation,
                                     availabilityDate: viewModel.availabilityNow,
                                     isSelected: viewModel.selectedClinicID == clinic.id,
+                                    isUrgentMode: viewModel.isUrgentMode,
+                                    onCall: {
+                                        call(clinic)
+                                    },
+                                    onNavigate: {
+                                        navigate(to: clinic)
+                                    },
                                     onOpenDetails: {
                                         clinicForDetail = clinic
                                     }
@@ -233,7 +264,7 @@ struct ClinicMapView: View {
                     }
                 }
             }
-            .frame(height: 164)
+            .frame(height: viewModel.isUrgentMode ? 208 : 164)
         }
     }
 
@@ -332,6 +363,7 @@ struct ClinicMapView: View {
             // Recenter immediately when a cached fix exists, then apply the
             // fresh one-shot result when CLLocationManager returns it.
             if let location = locationService.currentLocation {
+                viewModel.updateContextualLocation(location)
                 viewModel.focusOnUserLocation(location)
             }
         case .requiresSettings:
@@ -366,6 +398,35 @@ struct ClinicMapView: View {
         }
 
         openURL(url)
+    }
+
+    private func call(_ clinic: VetClinic) {
+        guard let phone = callablePhone(for: clinic), let url = URL(string: "tel:\(phone)") else {
+            return
+        }
+        openURL(url)
+    }
+
+    private func navigate(to clinic: VetClinic) {
+        guard let coordinate = clinic.mapCoordinate else { return }
+        let item = MKMapItem(placemark: MKPlacemark(coordinate: coordinate))
+        item.name = clinic.name
+        item.openInMaps(launchOptions: [
+            MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
+        ])
+    }
+
+    private func callablePhone(for clinic: VetClinic) -> String? {
+        guard let firstNumber = clinic.phone
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .split(whereSeparator: { "/,;|".contains($0) })
+            .first
+        else {
+            return nil
+        }
+
+        let normalized = firstNumber.filter { $0.isNumber || $0 == "+" }
+        return normalized.isEmpty ? nil : normalized
     }
 }
 

@@ -369,6 +369,11 @@ test("apply sends one atomic four-write payload with masks and preconditions", a
   assert.equal(commits.length, 1);
   assert.equal(commits[0].writes.length, 4);
   commits[0].writes.forEach((write, index) => {
+    assert.equal(
+      write.update.name,
+      `projects/vetmap-app/databases/(default)/documents/clinics/${values.pending.clinics[index].clinicID}`,
+    );
+    assert.doesNotMatch(write.update.name, /^https?:/);
     assert.deepEqual(write.updateMask, {fieldPaths: ["availability"]});
     assert.deepEqual(write.currentDocument, {
       updateTime: before.at(values.v1Hours.count + index).updateTime,

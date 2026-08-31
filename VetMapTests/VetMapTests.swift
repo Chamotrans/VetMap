@@ -1,3 +1,4 @@
+import CoreLocation
 import XCTest
 @testable import VetMap
 
@@ -609,6 +610,99 @@ final class VetMapModelTests: XCTestCase {
             filter.results(from: [unknown, alwaysOpen], at: now).map(\.id),
             ["always-open"]
         )
+    }
+
+    func testUrgentClinicOrderingPrioritizesAvailabilityThenKnownDistance() {
+        let now = Date(timeIntervalSince1970: 1_775_102_400) // 2026-04-02 12:00 HKT
+        let guardianLocation = CLLocation(latitude: 22.3193, longitude: 114.1694)
+        let alwaysOpen = makeClinic(
+            id: "always-open",
+            name: "24 小時診所",
+            coordinate: ClinicCoordinate(latitude: 22.50, longitude: 114.30),
+            availability: makeAvailability(is24Hours: true)
+        )
+        let nearUnknown = makeClinic(
+            id: "near-unknown",
+            name: "附近診所",
+            coordinate: ClinicCoordinate(latitude: 22.3194, longitude: 114.1694)
+        )
+        let farUnknown = makeClinic(
+            id: "far-unknown",
+            name: "較遠診所",
+            coordinate: ClinicCoordinate(latitude: 22.40, longitude: 114.25)
+        )
+        let listOnlyAlpha = makeClinic(
+            id: "list-only-alpha",
+            name: "A 列表診所",
+            coordinate: nil
+        )
+        let listOnlyZulu = makeClinic(
+            id: "list-only-zulu",
+            name: "Z 列表診所",
+            coordinate: nil
+        )
+
+        let ordered = urgentClinicOrdering(
+            [listOnlyZulu, farUnknown, listOnlyAlpha, alwaysOpen, nearUnknown],
+            from: guardianLocation,
+            at: now
+        )
+
+        XCTAssertEqual(
+            ordered.map(\.id),
+            ["always-open", "near-unknown", "far-unknown", "list-only-alpha", "list-only-zulu"]
+        )
+    }
+
+    @MainActor
+    func testUrgentActivationSelectsFirstRankedClinicInsteadOfOldSelection() {
+        let now = Date(timeIntervalSince1970: 1_775_102_400)
+        let alwaysOpen = makeClinic(
+            id: "always-open",
+            availability: makeAvailability(is24Hours: true)
+        )
+        let unknownHours = makeClinic(id: "unknown-hours", name: "未知時間診所")
+        let viewModel = MapViewModel(
+            testingClinics: [unknownHours, alwaysOpen],
+            at: now
+        )
+        viewModel.selectedClinicID = unknownHours.id
+
+        viewModel.activateUrgentMode()
+
+        XCTAssertEqual(viewModel.selectedClinicID, alwaysOpen.id)
+    }
+
+    @MainActor
+    func testUrgentLocationRerankingSelectsFirstClinicOnlyWhenItChanges() {
+        let now = Date(timeIntervalSince1970: 1_775_102_400)
+        let farAlphabetical = makeClinic(
+            id: "far-alphabetical",
+            name: "A 較遠診所",
+            coordinate: ClinicCoordinate(latitude: 22.50, longitude: 114.30)
+        )
+        let nearLaterName = makeClinic(
+            id: "near-later-name",
+            name: "Z 附近診所",
+            coordinate: ClinicCoordinate(latitude: 22.3194, longitude: 114.1694)
+        )
+        let viewModel = MapViewModel(
+            testingClinics: [nearLaterName, farAlphabetical],
+            at: now
+        )
+
+        viewModel.activateUrgentMode()
+        XCTAssertEqual(viewModel.selectedClinicID, farAlphabetical.id)
+
+        viewModel.updateContextualLocation(
+            CLLocation(latitude: 22.3193, longitude: 114.1694)
+        )
+        XCTAssertEqual(viewModel.selectedClinicID, nearLaterName.id)
+
+        viewModel.updateContextualLocation(
+            CLLocation(latitude: 22.3193, longitude: 114.1694)
+        )
+        XCTAssertEqual(viewModel.selectedClinicID, nearLaterName.id)
     }
 
     func testAvailabilityFilterLimitationMessageAppearsOnlyForActiveFilters() {

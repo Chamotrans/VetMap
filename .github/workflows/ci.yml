@@ -67,6 +67,7 @@ jobs:
         run: |
           node --test scripts/validate_onboarding_localization.test.mjs
           node --test scripts/validate_map_carousel_selection.test.mjs
+          node --test scripts/validate_urgent_clinic_mode.test.mjs
           node --test scripts/validate_latest_clinic_load.test.mjs
           node --test scripts/validate_chat_draft_safety.test.mjs
           node --test scripts/validate_community_refresh_resilience.test.mjs

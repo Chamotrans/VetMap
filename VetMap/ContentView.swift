@@ -190,9 +190,11 @@ enum AppLaunchFlags {
 }
 
 enum AppTheme {
-    static let primary = Color.teal
-    static let accent = Color.indigo
-    static let warning = Color.orange
+    // Dark amber maintains readable white text for prominent controls while
+    // retaining green exclusively for semantic open-status indicators.
+    static let primary = Color(red: 0.64, green: 0.31, blue: 0.02)
+    static let accent = Color(red: 0.29, green: 0.43, blue: 0.48)
+    static let warning = Color(red: 0.74, green: 0.33, blue: 0.04)
     static let screenBackground = Color(.systemGroupedBackground)
     static let surface = Color(.secondarySystemGroupedBackground)
     static let cardRadius: CGFloat = 8

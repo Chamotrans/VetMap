@@ -16,6 +16,53 @@ func pendingMapLocationCount(directoryCount: Int, markerCount: Int) -> Int {
     max(directoryCount - markerCount, 0)
 }
 
+/// Urgent care deliberately keeps clinics with unavailable or expired hours in
+/// the directory. Availability can prioritise a result, but its absence must
+/// never be turned into a claim that the clinic is closed.
+func urgentClinicOrdering(
+    _ clinics: [VetClinic],
+    from location: CLLocation?,
+    at date: Date
+) -> [VetClinic] {
+    clinics.sorted { lhs, rhs in
+        let lhsRank = lhs.availabilitySortRank(at: date)
+        let rhsRank = rhs.availabilitySortRank(at: date)
+        if lhsRank != rhsRank {
+            return lhsRank < rhsRank
+        }
+
+        if let location {
+            let lhsDistance = lhs.mapCoordinate.map {
+                CLLocation(latitude: $0.latitude, longitude: $0.longitude)
+                    .distance(from: location)
+            }
+            let rhsDistance = rhs.mapCoordinate.map {
+                CLLocation(latitude: $0.latitude, longitude: $0.longitude)
+                    .distance(from: location)
+            }
+
+            switch (lhsDistance, rhsDistance) {
+            case let (.some(lhsDistance), .some(rhsDistance)):
+                if lhsDistance != rhsDistance {
+                    return lhsDistance < rhsDistance
+                }
+            case (.some, .none):
+                return true
+            case (.none, .some):
+                return false
+            case (.none, .none):
+                break
+            }
+        }
+
+        let nameComparison = lhs.name.localizedStandardCompare(rhs.name)
+        if nameComparison != .orderedSame {
+            return nameComparison == .orderedAscending
+        }
+        return lhs.id.localizedStandardCompare(rhs.id) == .orderedAscending
+    }
+}
+
 @MainActor
 @Observable
 final class MapViewModel {
@@ -24,9 +71,14 @@ final class MapViewModel {
     var cameraPosition: MapCameraPosition
     var filter = ClinicSearchFilter() {
         didSet {
+            if filter != oldValue {
+                isUrgentMode = false
+            }
             syncSelectionWithFilteredClinics(shouldFocus: true)
         }
     }
+    private(set) var isUrgentMode = false
+    private(set) var contextualLocation: CLLocation?
     var isLoading = false
     var networkError: String?
     private(set) var availabilityNow = Date()
@@ -34,6 +86,7 @@ final class MapViewModel {
     private let firebase: FirebaseService
     @ObservationIgnored private var cancellables: Set<AnyCancellable> = []
     @ObservationIgnored private var loadRequestGeneration = 0
+    @ObservationIgnored private var testingDirectoryClinics: [VetClinic]?
 
     init(
         repository _: MockClinicRepository = MockClinicRepository(),
@@ -45,18 +98,38 @@ final class MapViewModel {
         observeAvailabilityClock()
     }
 
+    /// A non-observing seam for deterministic model tests. Production loading
+    /// still enters exclusively through `loadClinics()`.
+    init(testingClinics: [VetClinic], at availabilityNow: Date) {
+        self.firebase = .shared
+        self.clinics = testingClinics
+        self.testingDirectoryClinics = testingClinics
+        self.availabilityNow = availabilityNow
+        self.cameraPosition = .region(Self.defaultRegion)
+    }
+
     var selectedClinic: VetClinic? {
         guard let selectedClinicID else { return filteredClinics.first }
         return filteredClinics.first { $0.id == selectedClinicID }
     }
 
     var directoryClinics: [VetClinic] {
+        if let testingDirectoryClinics {
+            return testingDirectoryClinics
+        }
         clinics.filter {
             !ModerationStore.shared.removedClinicIDs.contains($0.id)
         }
     }
 
     var filteredClinics: [VetClinic] {
+        if isUrgentMode {
+            return urgentClinicOrdering(
+                directoryClinics,
+                from: contextualLocation,
+                at: availabilityNow
+            )
+        }
         filter.results(from: directoryClinics, at: availabilityNow)
     }
 
@@ -158,7 +231,23 @@ final class MapViewModel {
     }
 
     func clearFilters() {
+        isUrgentMode = false
         filter = ClinicSearchFilter()
+    }
+
+    /// Called only from the guardian's explicit urgent-care action. Ordinary
+    /// filters are cleared because urgent mode has a distinct, transparent
+    /// ranking contract rather than silently combining incompatible filters.
+    func activateUrgentMode() {
+        filter = ClinicSearchFilter()
+        isUrgentMode = true
+        syncSelectionWithFilteredClinics(shouldFocus: true)
+    }
+
+    func updateContextualLocation(_ location: CLLocation?) {
+        contextualLocation = location
+        guard isUrgentMode else { return }
+        syncSelectionWithFilteredClinics(shouldFocus: false)
     }
 
     static let defaultRegion = MKCoordinateRegion(
@@ -192,10 +281,15 @@ final class MapViewModel {
 
     private func syncSelectionWithFilteredClinics(shouldFocus: Bool) {
         let visibleClinics = filteredClinics
-        let reconciledID = reconciledClinicSelection(
-            currentID: selectedClinicID,
-            visibleIDs: visibleClinics.map(\.id)
-        )
+        let reconciledID: String?
+        if isUrgentMode {
+            reconciledID = visibleClinics.first?.id
+        } else {
+            reconciledID = reconciledClinicSelection(
+                currentID: selectedClinicID,
+                visibleIDs: visibleClinics.map(\.id)
+            )
+        }
         guard reconciledID != selectedClinicID else {
             return
         }
