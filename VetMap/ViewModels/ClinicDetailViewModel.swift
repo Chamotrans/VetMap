@@ -20,12 +20,12 @@ final class ClinicDetailViewModel {
         clinic: VetClinic,
         repository: MockCommunityRepository = MockCommunityRepository(),
         firebase: FirebaseService = .shared,
-        authenticatedUserProvider: @escaping () -> AppUser? = { AuthViewModel.shared.user }
+        authenticatedUserProvider: (() -> AppUser?)? = nil
     ) {
         self.clinic = clinic
         self.seedRepository = repository
         self.firebase = firebase
-        self.authenticatedUserProvider = authenticatedUserProvider
+        self.authenticatedUserProvider = authenticatedUserProvider ?? { AuthViewModel.shared.user }
         self.reviews = []
         self.quotes = []
         observeCommunityChanges()

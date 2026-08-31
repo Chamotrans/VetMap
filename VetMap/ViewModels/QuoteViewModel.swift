@@ -22,13 +22,13 @@ final class QuoteViewModel {
         clinicName: String = "",
         repository: MockCommunityRepository = MockCommunityRepository(),
         firebase: FirebaseService = .shared,
-        authenticatedUIDProvider: @escaping () -> String? = { AuthViewModel.shared.user?.uid }
+        authenticatedUIDProvider: (() -> String?)? = nil
     ) {
         self.clinicId = clinicId
         self.clinicName = clinicName
         self.seedRepository = repository
         self.firebase = firebase
-        self.authenticatedUIDProvider = authenticatedUIDProvider
+        self.authenticatedUIDProvider = authenticatedUIDProvider ?? { AuthViewModel.shared.user?.uid }
         self.quotes = []
         observeCommunityChanges()
         Task { await loadQuotes() }
