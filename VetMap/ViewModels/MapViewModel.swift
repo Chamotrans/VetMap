@@ -117,7 +117,7 @@ final class MapViewModel {
         if let testingDirectoryClinics {
             return testingDirectoryClinics
         }
-        clinics.filter {
+        return clinics.filter {
             !ModerationStore.shared.removedClinicIDs.contains($0.id)
         }
     }
@@ -130,7 +130,7 @@ final class MapViewModel {
                 at: availabilityNow
             )
         }
-        filter.results(from: directoryClinics, at: availabilityNow)
+        return filter.results(from: directoryClinics, at: availabilityNow)
     }
 
     /// The directory can contain approved clinics whose addresses have not yet
