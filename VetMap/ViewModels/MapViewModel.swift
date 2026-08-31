@@ -98,8 +98,8 @@ final class MapViewModel {
         observeAvailabilityClock()
     }
 
-    /// A non-observing seam for deterministic model tests. Production loading
-    /// still enters exclusively through `loadClinics()`.
+    /// A non-observing seam for deterministic model tests. Production data
+    /// still enters exclusively through the normal asynchronous entry point.
     init(testingClinics: [VetClinic], at availabilityNow: Date) {
         self.firebase = .shared
         self.clinics = testingClinics
