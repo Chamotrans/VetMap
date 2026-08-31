@@ -11,25 +11,55 @@ final class QuoteViewModel {
     private let clinicId: String
     private let clinicName: String
     private let seedRepository: MockCommunityRepository
-    private let firebase: FirebaseService
+    private let firebase: FirebaseService?
+    @ObservationIgnored private let authenticatedUIDProvider: () -> String?
     @ObservationIgnored private var cancellables: Set<AnyCancellable> = []
+    @ObservationIgnored private var usesTestingFixtures = false
+    @ObservationIgnored private var testingChangeHandler: (() -> Void)?
 
     init(
         clinicId: String,
         clinicName: String = "",
         repository: MockCommunityRepository = MockCommunityRepository(),
-        firebase: FirebaseService = .shared
+        firebase: FirebaseService = .shared,
+        authenticatedUIDProvider: @escaping () -> String? = { AuthViewModel.shared.user?.uid }
     ) {
         self.clinicId = clinicId
         self.clinicName = clinicName
         self.seedRepository = repository
         self.firebase = firebase
+        self.authenticatedUIDProvider = authenticatedUIDProvider
         self.quotes = []
         observeCommunityChanges()
         Task { await loadQuotes() }
     }
 
+    /// Non-observing fixture initializer for deterministic unit tests.
+    init(
+        testingQuotes: [Quote],
+        clinicId: String,
+        clinicName: String = "",
+        observesChanges: Bool = false,
+        testingChangeHandler: (() -> Void)? = nil,
+        authenticatedUIDProvider: @escaping () -> String? = { nil }
+    ) {
+        self.clinicId = clinicId
+        self.clinicName = clinicName
+        self.seedRepository = MockCommunityRepository()
+        self.firebase = nil
+        self.authenticatedUIDProvider = authenticatedUIDProvider
+        self.quotes = testingQuotes
+        self.usesTestingFixtures = true
+        self.testingChangeHandler = testingChangeHandler
+        if observesChanges {
+            observeCommunityChanges()
+        }
+    }
+
     var visibleQuotes: [Quote] {
+        if usesTestingFixtures {
+            return quotes
+        }
         let moderation = ModerationStore.shared
         return quotes.filter {
             !moderation.removedQuoteIDs.contains($0.id)
@@ -40,6 +70,7 @@ final class QuoteViewModel {
     func loadQuotes() async {
         isLoading = true
         defer { isLoading = false }
+        guard let firebase else { return }
 
         let seeds: [Quote] = []
         await ModerationStore.shared.refreshPublicState()
@@ -65,7 +96,7 @@ final class QuoteViewModel {
                 message: storageError ?? String(localized: "暫時無法提交報價。")
             )
         }
-        guard let uid = AuthViewModel.shared.user?.uid, !uid.isEmpty else {
+        guard let uid = authenticatedUIDProvider(), !uid.isEmpty else {
             storageError = String(localized: "請先登入後再提交報價。")
             return .authenticationRequired
         }
@@ -140,6 +171,10 @@ final class QuoteViewModel {
                 let clinicID = notification.userInfo?[MockCommunityRepository.changedClinicIDUserInfoKey] as? String
                 Task { @MainActor in
                     guard let self, clinicID == nil || clinicID == self.clinicId else { return }
+                    if let testingChangeHandler = self.testingChangeHandler {
+                        testingChangeHandler()
+                        return
+                    }
                     await self.loadQuotes()
                 }
             }

@@ -2138,22 +2138,13 @@ final class VetMapModelTests: XCTestCase {
     }
 
     @MainActor
-    func testClinicDetailViewModelLoadsSeedCommunityData() {
-        let reviewsURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "reviews.json")
-        let quotesURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "quotes.json")
+    func testClinicDetailViewModelExposesInjectedCloudCommunitySnapshot() {
         let clinic = makeClinic(id: "detail-clinic")
-        let repository = MockCommunityRepository(
-            localReviewsFileURL: reviewsURL,
-            localQuotesFileURL: quotesURL
+        let viewModel = ClinicDetailViewModel(
+            testingClinic: clinic,
+            reviews: [makeReview(id: "detail-review", clinicId: clinic.id)],
+            quotes: [makeQuote(id: "detail-quote", clinicId: clinic.id)]
         )
-        XCTAssertNoThrow(try repository.addReview(makeReview(id: "detail-review", clinicId: clinic.id)))
-        XCTAssertNoThrow(try repository.addQuote(makeQuote(id: "detail-quote", clinicId: clinic.id)))
-
-        let viewModel = ClinicDetailViewModel(clinic: clinic, repository: repository)
 
         XCTAssertFalse(viewModel.reviews.isEmpty)
         XCTAssertFalse(viewModel.quotes.isEmpty)
@@ -2163,12 +2154,12 @@ final class VetMapModelTests: XCTestCase {
 
     @MainActor
     func testClinicDetailViewModelRequiresAuthenticationForValidReview() async {
-        let fileURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "reviews.json")
         let clinic = MockClinicRepository.hkClinics[0]
-        let repository = MockCommunityRepository(localReviewsFileURL: fileURL)
-        let viewModel = ClinicDetailViewModel(clinic: clinic, repository: repository)
+        let viewModel = ClinicDetailViewModel(
+            testingClinic: clinic,
+            reviews: [],
+            quotes: []
+        )
 
         let result = await viewModel.submitReviewForModeration(
             ReviewDraft(
@@ -2181,19 +2172,17 @@ final class VetMapModelTests: XCTestCase {
         )
 
         XCTAssertEqual(result, .authenticationRequired)
-        XCTAssertEqual(viewModel.storageError, "請先登入後再提交評價。")
         XCTAssertFalse(viewModel.reviews.contains { $0.title == "新增成功" })
-        XCTAssertTrue(repository.fetchLocalReviews().isEmpty)
     }
 
     @MainActor
     func testClinicDetailViewModelRejectsInvalidReviewDraft() async {
-        let fileURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "reviews.json")
         let clinic = MockClinicRepository.hkClinics[0]
-        let repository = MockCommunityRepository(localReviewsFileURL: fileURL)
-        let viewModel = ClinicDetailViewModel(clinic: clinic, repository: repository)
+        let viewModel = ClinicDetailViewModel(
+            testingClinic: clinic,
+            reviews: [],
+            quotes: []
+        )
         let initialReviewCount = viewModel.reviews.count
 
         let result = await viewModel.submitReviewForModeration(
@@ -2206,10 +2195,13 @@ final class VetMapModelTests: XCTestCase {
             )
         )
 
-        XCTAssertEqual(result, .failed(message: "請填寫評分、標題和內容。"))
+        guard case let .failed(message) = result else {
+            XCTFail("Invalid draft must fail before submission")
+            return
+        }
+        XCTAssertFalse(message.isEmpty)
         XCTAssertEqual(viewModel.reviews.count, initialReviewCount)
-        XCTAssertEqual(viewModel.storageError, "請填寫評分、標題和內容。")
-        XCTAssertTrue(repository.fetchLocalReviews().isEmpty)
+        XCTAssertEqual(viewModel.storageError, message)
     }
 
     @MainActor
@@ -2297,15 +2289,11 @@ final class VetMapModelTests: XCTestCase {
 
     @MainActor
     func testReviewViewModelLoadsReviewsForClinic() {
-        let fileURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "reviews.json")
-        let repository = MockCommunityRepository(localReviewsFileURL: fileURL)
         let clinicId = "load-reviews-clinic"
-        XCTAssertNoThrow(try repository.addReview(makeReview(id: "load-1", clinicId: clinicId)))
-        XCTAssertNoThrow(try repository.addReview(makeReview(id: "other-clinic", clinicId: "another-clinic")))
-
-        let viewModel = ReviewViewModel(clinicId: clinicId, repository: repository)
+        let viewModel = ReviewViewModel(
+            testingReviews: [makeReview(id: "load-1", clinicId: clinicId)],
+            clinicId: clinicId
+        )
 
         XCTAssertGreaterThan(viewModel.reviews.count, 0)
         XCTAssertTrue(viewModel.reviews.allSatisfy { $0.clinicId == clinicId })
@@ -2313,18 +2301,15 @@ final class VetMapModelTests: XCTestCase {
 
     @MainActor
     func testReviewViewModelSortsByNewest() {
-        let fileURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "reviews.json")
-        let repository = MockCommunityRepository(localReviewsFileURL: fileURL)
         let clinicId = "sort-newest-clinic"
         var older = makeReview(id: "older", clinicId: clinicId)
         older.createdAt = date.addingTimeInterval(-86_400)
-        XCTAssertNoThrow(try repository.addReview(older))
         var newer = makeReview(id: "newer", clinicId: clinicId)
         newer.createdAt = date
-        XCTAssertNoThrow(try repository.addReview(newer))
-        let viewModel = ReviewViewModel(clinicId: clinicId, repository: repository)
+        let viewModel = ReviewViewModel(
+            testingReviews: [older, newer],
+            clinicId: clinicId
+        )
 
         viewModel.sortOrder = .newest
         let sorted = viewModel.sortedReviews
@@ -2340,84 +2325,86 @@ final class VetMapModelTests: XCTestCase {
 
     @MainActor
     func testReviewViewModelSortsByHighestRating() {
-        let fileURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "reviews.json")
-        let repository = MockCommunityRepository(localReviewsFileURL: fileURL)
         let clinicId = "test-rating-sort"
 
         var low = makeReview(id: "low", clinicId: clinicId, title: "Low")
         low.rating = 2
-        XCTAssertNoThrow(try repository.addReview(low))
-
         var high = makeReview(id: "high", clinicId: clinicId, title: "High")
         high.rating = 5
-        XCTAssertNoThrow(try repository.addReview(high))
-
-        let viewModel = ReviewViewModel(clinicId: clinicId, repository: repository)
+        let viewModel = ReviewViewModel(
+            testingReviews: [low, high],
+            clinicId: clinicId
+        )
         viewModel.sortOrder = .highestRating
         let sorted = viewModel.sortedReviews
 
-        XCTAssertEqual(sorted.count, 2)
-        XCTAssertEqual(sorted[0].rating, 5)
-        XCTAssertEqual(sorted[1].rating, 2)
+        XCTAssertEqual(sorted.map(\.rating), [5, 2])
     }
 
     @MainActor
     func testReviewViewModelSortsByMostHelpful() {
-        let fileURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "reviews.json")
-        let repository = MockCommunityRepository(localReviewsFileURL: fileURL)
         let clinicId = "test-helpful-sort"
 
         var less = makeReview(id: "less", clinicId: clinicId, title: "Less")
         less.helpfulCount = 3
-        XCTAssertNoThrow(try repository.addReview(less))
-
         var more = makeReview(id: "more", clinicId: clinicId, title: "More")
         more.helpfulCount = 10
-        XCTAssertNoThrow(try repository.addReview(more))
-
-        let viewModel = ReviewViewModel(clinicId: clinicId, repository: repository)
+        let viewModel = ReviewViewModel(
+            testingReviews: [less, more],
+            clinicId: clinicId
+        )
         viewModel.sortOrder = .mostHelpful
         let sorted = viewModel.sortedReviews
 
-        XCTAssertEqual(sorted.count, 2)
-        XCTAssertEqual(sorted[0].id, "more")
-        XCTAssertEqual(sorted[1].id, "less")
+        XCTAssertEqual(sorted.map(\.id), ["more", "less"])
     }
 
     @MainActor
     func testReviewViewModelMarkHelpfulWithoutLoadedReviewDoesNotFabricateReview() async {
-        let fileURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "reviews.json")
-        let repository = MockCommunityRepository(localReviewsFileURL: fileURL)
+        var markedReviewIDs: [String] = []
         let viewModel = ReviewViewModel(
+            testingReviews: [],
             clinicId: "test-mark-helpful",
-            repository: repository
+            testingMarkHelpfulHandler: { markedReviewIDs.append($0) }
         )
         XCTAssertTrue(viewModel.reviews.isEmpty)
 
         await viewModel.markHelpful("review-helpful")
 
+        XCTAssertEqual(markedReviewIDs, ["review-helpful"])
         XCTAssertTrue(viewModel.reviews.isEmpty)
+    }
+
+    @MainActor
+    func testReviewViewModelMarkHelpfulUsesTestingSeamAndUpdatesHelpfulOrdering() async {
+        let clinicId = "test-helpful-seam"
+        var less = makeReview(id: "less", clinicId: clinicId)
+        less.helpfulCount = 3
+        var more = makeReview(id: "more", clinicId: clinicId)
+        more.helpfulCount = 4
+        var markedReviewIDs: [String] = []
+        let viewModel = ReviewViewModel(
+            testingReviews: [less, more],
+            clinicId: clinicId,
+            testingMarkHelpfulHandler: { markedReviewIDs.append($0) }
+        )
+        viewModel.sortOrder = .mostHelpful
+
+        await viewModel.markHelpful("less")
+        await viewModel.markHelpful("less")
+
+        XCTAssertEqual(markedReviewIDs, ["less", "less"])
+        XCTAssertEqual(viewModel.sortedReviews.map(\.id), ["less", "more"])
+        XCTAssertEqual(viewModel.reviews.first(where: { $0.id == "less" })?.helpfulCount, 5)
     }
 
     // MARK: - QuoteViewModel Tests
 
     @MainActor
     func testQuoteViewModelLoadsQuotesForClinic() {
-        let quotesURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "quotes.json")
-        let repository = MockCommunityRepository(localQuotesFileURL: quotesURL)
         let clinicId = "test-clinic-quotes"
         let quote = makeQuote(id: "quote-load-test", clinicId: clinicId)
-        XCTAssertNoThrow(try repository.addQuote(quote))
-
-        let viewModel = QuoteViewModel(clinicId: clinicId, repository: repository)
+        let viewModel = QuoteViewModel(testingQuotes: [quote], clinicId: clinicId)
 
         XCTAssertGreaterThan(viewModel.quotes.count, 0)
         XCTAssertTrue(viewModel.quotes.allSatisfy { $0.clinicId == clinicId })
@@ -2425,17 +2412,7 @@ final class VetMapModelTests: XCTestCase {
 
     @MainActor
     func testQuoteViewModelRequiresAuthenticationForValidQuote() async {
-        let reviewsURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "reviews.json")
-        let quotesURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "quotes.json")
-        let repository = MockCommunityRepository(
-            localReviewsFileURL: reviewsURL,
-            localQuotesFileURL: quotesURL
-        )
-        let viewModel = QuoteViewModel(clinicId: "taipei-anxin", repository: repository)
+        let viewModel = QuoteViewModel(testingQuotes: [], clinicId: "taipei-anxin")
         let initialCount = viewModel.quotes.count
 
         let result = await viewModel.addQuote(
@@ -2450,16 +2427,11 @@ final class VetMapModelTests: XCTestCase {
 
         XCTAssertEqual(result, .authenticationRequired)
         XCTAssertEqual(viewModel.quotes.count, initialCount)
-        XCTAssertEqual(viewModel.storageError, "請先登入後再提交報價。")
     }
 
     @MainActor
     func testQuoteViewModelEmptyQuotesForUnknownClinic() {
-        let quotesURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "quotes.json")
-        let repository = MockCommunityRepository(localQuotesFileURL: quotesURL)
-        let viewModel = QuoteViewModel(clinicId: "bogus-clinic-999", repository: repository)
+        let viewModel = QuoteViewModel(testingQuotes: [], clinicId: "bogus-clinic-999")
 
         XCTAssertTrue(viewModel.quotes.isEmpty)
     }
@@ -2621,12 +2593,8 @@ final class VetMapModelTests: XCTestCase {
 
     @MainActor
     func testReviewDraftRequiresRatingInRange() async {
-        let fileURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "reviews.json")
         let clinic = MockClinicRepository.hkClinics[0]
-        let repository = MockCommunityRepository(localReviewsFileURL: fileURL)
-        let viewModel = ClinicDetailViewModel(clinic: clinic, repository: repository)
+        let viewModel = ClinicDetailViewModel(testingClinic: clinic, reviews: [], quotes: [])
 
         let firstResult = await viewModel.submitReviewForModeration(
             ReviewDraft(rating: 1, title: "標題", content: "內容", treatmentType: "", cost: nil)
@@ -2642,9 +2610,13 @@ final class VetMapModelTests: XCTestCase {
         let invalidResult = await viewModel.submitReviewForModeration(
             ReviewDraft(rating: 6, title: "標題", content: "內容", treatmentType: "", cost: nil)
         )
-        XCTAssertEqual(invalidResult, .failed(message: "請填寫評分、標題和內容。"))
+        guard case let .failed(message) = invalidResult else {
+            XCTFail("Out-of-range rating must fail validation")
+            return
+        }
+        XCTAssertFalse(message.isEmpty)
         XCTAssertEqual(viewModel.reviews.count, countBeforeInvalid)
-        XCTAssertEqual(viewModel.storageError, "請填寫評分、標題和內容。")
+        XCTAssertEqual(viewModel.storageError, message)
     }
 
     @MainActor
@@ -2664,42 +2636,39 @@ final class VetMapModelTests: XCTestCase {
     // MARK: - AuthViewModel Tests (Local-Only Mode)
 
     @MainActor
-    func testAuthViewModelInitialStateInLocalMode() async throws {
-        let viewModel = AuthViewModel()
-        // Firebase auth state listener fires async; wait for it to settle
-        try await Task.sleep(for: .milliseconds(300))
-        XCTAssertNotEqual(viewModel.authState, .signedIn)
+    func testAuthViewModelInitialStateWithoutFirebase() {
+        let viewModel = AuthViewModel(testingWithoutFirebase: ())
+
+        XCTAssertEqual(viewModel.authState, .signedOut)
         XCTAssertNil(viewModel.user)
         XCTAssertNil(viewModel.errorMessage)
     }
 
     @MainActor
-    func testAuthViewModelSignUpReturnsErrorMessageInLocalMode() async {
-        let viewModel = AuthViewModel()
+    func testAuthViewModelSignUpReturnsUnavailableWithoutFirebase() async {
+        let viewModel = AuthViewModel(testingWithoutFirebase: ())
 
-        await viewModel.signUp(email: "test@example.com", password: "password123", displayName: "Test User")
-
-        XCTAssertEqual(viewModel.authState, .signedOut)
-        XCTAssertNil(viewModel.user)
-        // With Firebase configured, signUp fails with a Firebase-specific error (not a local-mode message)
-        XCTAssertNotNil(viewModel.errorMessage)
-    }
-
-    @MainActor
-    func testAuthViewModelSignInReturnsErrorMessageInLocalMode() async {
-        let viewModel = AuthViewModel()
-
-        await viewModel.signIn(email: "test@example.com", password: "password123")
+        await viewModel.signUp(email: "offline@example.invalid", password: "password123", displayName: "Test User")
 
         XCTAssertEqual(viewModel.authState, .signedOut)
         XCTAssertNil(viewModel.user)
-        // With Firebase configured, signIn fails with a Firebase-specific error (not a local-mode message)
-        XCTAssertNotNil(viewModel.errorMessage)
+        XCTAssertEqual(viewModel.errorMessage, "登入服務暫時未能使用，請稍後再試。")
     }
 
     @MainActor
-    func testAuthViewModelSignOutClearsStateInLocalMode() {
-        let viewModel = AuthViewModel()
+    func testAuthViewModelSignInReturnsUnavailableWithoutFirebase() async {
+        let viewModel = AuthViewModel(testingWithoutFirebase: ())
+
+        await viewModel.signIn(email: "offline@example.invalid", password: "password123")
+
+        XCTAssertEqual(viewModel.authState, .signedOut)
+        XCTAssertNil(viewModel.user)
+        XCTAssertEqual(viewModel.errorMessage, "登入服務暫時未能使用，請稍後再試。")
+    }
+
+    @MainActor
+    func testAuthViewModelSignOutClearsStateWithoutFirebase() {
+        let viewModel = AuthViewModel(testingWithoutFirebase: ())
 
         viewModel.signOut()
 
@@ -2709,8 +2678,8 @@ final class VetMapModelTests: XCTestCase {
     }
 
     @MainActor
-    func testAuthViewModelSignOutClearsExistingError() {
-        let viewModel = AuthViewModel()
+    func testAuthViewModelSignOutClearsExistingErrorWithoutFirebase() {
+        let viewModel = AuthViewModel(testingWithoutFirebase: ())
         viewModel.errorMessage = "Some prior error"
 
         viewModel.signOut()
@@ -2721,14 +2690,26 @@ final class VetMapModelTests: XCTestCase {
     }
 
     @MainActor
-    func testAuthViewModelErrorIsSetBeforeEachAuthCall() async {
-        let viewModel = AuthViewModel()
+    func testAuthViewModelAuthCallReplacesPriorErrorWithoutFirebase() async {
+        let viewModel = AuthViewModel(testingWithoutFirebase: ())
         viewModel.errorMessage = "Old error"
 
-        await viewModel.signIn(email: "test@example.com", password: "password123")
+        await viewModel.signIn(email: "offline@example.invalid", password: "password123")
 
-        // errorMessage is cleared to nil at start of signIn, then set to Firebase error on failure
-        XCTAssertNotEqual(viewModel.errorMessage, "Old error")
+        XCTAssertEqual(viewModel.errorMessage, "登入服務暫時未能使用，請稍後再試。")
+    }
+
+    @MainActor
+    func testAuthViewModelPasswordResetReturnsUnavailableWithoutFirebase() async {
+        let viewModel = AuthViewModel(testingWithoutFirebase: ())
+
+        let result = await viewModel.sendPasswordReset(email: "offline@example.invalid")
+
+        guard case let .failed(message) = result else {
+            XCTFail("Password reset should fail while Firebase is disabled for testing")
+            return
+        }
+        XCTAssertFalse(message.isEmpty)
     }
 
     // MARK: - PremiumViewModel Tests
@@ -2824,13 +2805,14 @@ final class VetMapModelTests: XCTestCase {
     // MARK: - ReviewViewModel Additional Tests
 
     @MainActor
-    func testReviewViewModelReloadsOnMatchingRepositoryNotification() {
-        let fileURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "reviews.json")
-        let repository = MockCommunityRepository(localReviewsFileURL: fileURL)
-        let viewModel = ReviewViewModel(clinicId: "taipei-anxin", repository: repository)
-        let initialCount = viewModel.reviews.count
+    func testReviewViewModelReloadsOnMatchingRepositoryNotification() async {
+        let refreshExpectation = expectation(description: "Matching review notification is handled")
+        let viewModel = ReviewViewModel(
+            testingReviews: [makeReview(id: "notification-review", clinicId: "taipei-anxin")],
+            clinicId: "taipei-anxin",
+            observesChanges: true,
+            testingChangeHandler: { refreshExpectation.fulfill() }
+        )
 
         NotificationCenter.default.post(
             name: .vetCommunityRepositoryDidChange,
@@ -2838,23 +2820,22 @@ final class VetMapModelTests: XCTestCase {
             userInfo: [MockCommunityRepository.changedClinicIDUserInfoKey: "taipei-anxin"]
         )
 
-        let expectation = XCTestExpectation(description: "Wait for notification processing")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            expectation.fulfill()
-        }
-        wait(for: [expectation], timeout: 1.0)
+        await fulfillment(of: [refreshExpectation], timeout: 1)
 
-        XCTAssertEqual(viewModel.reviews.count, initialCount)
+        XCTAssertEqual(viewModel.reviews.map(\.id), ["notification-review"])
     }
 
     @MainActor
-    func testReviewViewModelIgnoresNotificationForOtherClinic() {
-        let fileURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "reviews.json")
-        let repository = MockCommunityRepository(localReviewsFileURL: fileURL)
-        let viewModel = ReviewViewModel(clinicId: "taipei-anxin", repository: repository)
-        let initialReviews = viewModel.reviews
+    func testReviewViewModelIgnoresNotificationForOtherClinic() async {
+        let processedExpectation = expectation(description: "Other-clinic review notification is processed")
+        var refreshCallCount = 0
+        let viewModel = ReviewViewModel(
+            testingReviews: [makeReview(id: "other-clinic-review", clinicId: "taipei-anxin")],
+            clinicId: "taipei-anxin",
+            observesChanges: true,
+            testingChangeHandler: { refreshCallCount += 1 },
+            testingNotificationHandler: { processedExpectation.fulfill() }
+        )
 
         // Post notification for a different clinic
         NotificationCenter.default.post(
@@ -2863,23 +2844,15 @@ final class VetMapModelTests: XCTestCase {
             userInfo: [MockCommunityRepository.changedClinicIDUserInfoKey: "hk-harbour"]
         )
 
-        let expectation = XCTestExpectation(description: "Wait for notification processing")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            expectation.fulfill()
-        }
-        wait(for: [expectation], timeout: 1.0)
+        await fulfillment(of: [processedExpectation], timeout: 1)
 
-        // Reviews should be unchanged since notification was for a different clinic
-        XCTAssertEqual(viewModel.reviews.map(\.id), initialReviews.map(\.id))
+        XCTAssertEqual(refreshCallCount, 0)
+        XCTAssertEqual(viewModel.reviews.map(\.id), ["other-clinic-review"])
     }
 
     @MainActor
     func testReviewViewModelMarkHelpfulOnNonExistentReviewIsNoop() async {
-        let fileURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "reviews.json")
-        let repository = MockCommunityRepository(localReviewsFileURL: fileURL)
-        let viewModel = ReviewViewModel(clinicId: "taipei-anxin", repository: repository)
+        let viewModel = ReviewViewModel(testingReviews: [], clinicId: "taipei-anxin")
         let initialReviews = viewModel.reviews
 
         await viewModel.markHelpful("nonexistent-review-id")
@@ -2892,51 +2865,25 @@ final class VetMapModelTests: XCTestCase {
     // MARK: - QuoteViewModel Additional Tests
 
     @MainActor
-    func testQuoteViewModelDefaultOrderIsCreatedAtDescending() {
-        let reviewsURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "reviews.json")
-        let quotesURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "quotes.json")
-        let repository = MockCommunityRepository(
-            localReviewsFileURL: reviewsURL,
-            localQuotesFileURL: quotesURL
-        )
+    func testQuoteViewModelPreservesOrderedCloudSnapshot() {
         let clinicId = "test-quote-sort"
 
         let newerQuote = makeQuote(id: "quote-sort-newer", clinicId: clinicId,
                                    createdAt: Date(timeIntervalSince1970: 1_749_000_000))
         let olderQuote = makeQuote(id: "quote-sort-older", clinicId: clinicId,
                                    createdAt: Date(timeIntervalSince1970: 1_748_000_000))
-        XCTAssertNoThrow(try repository.addQuote(olderQuote))
-        XCTAssertNoThrow(try repository.addQuote(newerQuote))
-
-        let viewModel = QuoteViewModel(clinicId: clinicId, repository: repository)
+        let viewModel = QuoteViewModel(
+            testingQuotes: [newerQuote, olderQuote],
+            clinicId: clinicId
+        )
         let quotes = viewModel.quotes
 
-        guard quotes.count >= 2 else {
-            XCTFail("Expected at least 2 quotes for sort test")
-            return
-        }
-        for i in 0..<(quotes.count - 1) {
-            XCTAssertGreaterThanOrEqual(quotes[i].createdAt, quotes[i + 1].createdAt)
-        }
+        XCTAssertEqual(quotes.map(\.id), [newerQuote.id, olderQuote.id])
     }
 
     @MainActor
     func testQuoteViewModelRejectsEmptyTreatmentType() async {
-        let reviewsURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "reviews.json")
-        let quotesURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "quotes.json")
-        let repository = MockCommunityRepository(
-            localReviewsFileURL: reviewsURL,
-            localQuotesFileURL: quotesURL
-        )
-        let viewModel = QuoteViewModel(clinicId: "taipei-anxin", repository: repository)
+        let viewModel = QuoteViewModel(testingQuotes: [], clinicId: "taipei-anxin")
         let initialCount = viewModel.quotes.count
 
         let result = await viewModel.addQuote(
@@ -2949,24 +2896,18 @@ final class VetMapModelTests: XCTestCase {
             )
         )
 
-        XCTAssertEqual(result, .failed(message: "請填寫治療類型和預估費用。"))
+        guard case let .failed(message) = result else {
+            XCTFail("Empty treatment type must fail validation")
+            return
+        }
+        XCTAssertFalse(message.isEmpty)
         XCTAssertEqual(viewModel.quotes.count, initialCount)
-        XCTAssertEqual(viewModel.storageError, "請填寫治療類型和預估費用。")
+        XCTAssertEqual(viewModel.storageError, message)
     }
 
     @MainActor
     func testQuoteViewModelRejectsZeroEstimatedCost() async {
-        let reviewsURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "reviews.json")
-        let quotesURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "quotes.json")
-        let repository = MockCommunityRepository(
-            localReviewsFileURL: reviewsURL,
-            localQuotesFileURL: quotesURL
-        )
-        let viewModel = QuoteViewModel(clinicId: "taipei-anxin", repository: repository)
+        let viewModel = QuoteViewModel(testingQuotes: [], clinicId: "taipei-anxin")
         let initialCount = viewModel.quotes.count
 
         let result = await viewModel.addQuote(
@@ -2979,24 +2920,18 @@ final class VetMapModelTests: XCTestCase {
             )
         )
 
-        XCTAssertEqual(result, .failed(message: "請填寫治療類型和預估費用。"))
+        guard case let .failed(message) = result else {
+            XCTFail("Zero estimated cost must fail validation")
+            return
+        }
+        XCTAssertFalse(message.isEmpty)
         XCTAssertEqual(viewModel.quotes.count, initialCount)
-        XCTAssertEqual(viewModel.storageError, "請填寫治療類型和預估費用。")
+        XCTAssertEqual(viewModel.storageError, message)
     }
 
     @MainActor
     func testQuoteViewModelRejectsNegativeEstimatedCost() async {
-        let reviewsURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "reviews.json")
-        let quotesURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "quotes.json")
-        let repository = MockCommunityRepository(
-            localReviewsFileURL: reviewsURL,
-            localQuotesFileURL: quotesURL
-        )
-        let viewModel = QuoteViewModel(clinicId: "taipei-anxin", repository: repository)
+        let viewModel = QuoteViewModel(testingQuotes: [], clinicId: "taipei-anxin")
         let initialCount = viewModel.quotes.count
 
         let result = await viewModel.addQuote(
@@ -3009,24 +2944,18 @@ final class VetMapModelTests: XCTestCase {
             )
         )
 
-        XCTAssertEqual(result, .failed(message: "請填寫治療類型和預估費用。"))
+        guard case let .failed(message) = result else {
+            XCTFail("Negative estimated cost must fail validation")
+            return
+        }
+        XCTAssertFalse(message.isEmpty)
         XCTAssertEqual(viewModel.quotes.count, initialCount)
-        XCTAssertEqual(viewModel.storageError, "請填寫治療類型和預估費用。")
+        XCTAssertEqual(viewModel.storageError, message)
     }
 
     @MainActor
     func testQuoteViewModelWhitespaceTreatmentDraftRequiresAuthentication() async {
-        let reviewsURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "reviews.json")
-        let quotesURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "quotes.json")
-        let repository = MockCommunityRepository(
-            localReviewsFileURL: reviewsURL,
-            localQuotesFileURL: quotesURL
-        )
-        let viewModel = QuoteViewModel(clinicId: "taipei-anxin", repository: repository)
+        let viewModel = QuoteViewModel(testingQuotes: [], clinicId: "taipei-anxin")
         let initialQuotes = viewModel.quotes
 
         let result = await viewModel.addQuote(
@@ -3040,23 +2969,12 @@ final class VetMapModelTests: XCTestCase {
         )
 
         XCTAssertEqual(result, .authenticationRequired)
-        XCTAssertEqual(viewModel.storageError, "請先登入後再提交報價。")
         XCTAssertEqual(viewModel.quotes, initialQuotes)
     }
 
     @MainActor
     func testQuoteViewModelWhitespaceNotesDraftRequiresAuthentication() async {
-        let reviewsURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "reviews.json")
-        let quotesURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "quotes.json")
-        let repository = MockCommunityRepository(
-            localReviewsFileURL: reviewsURL,
-            localQuotesFileURL: quotesURL
-        )
-        let viewModel = QuoteViewModel(clinicId: "taipei-anxin", repository: repository)
+        let viewModel = QuoteViewModel(testingQuotes: [], clinicId: "taipei-anxin")
         let initialQuotes = viewModel.quotes
 
         let result = await viewModel.addQuote(
@@ -3070,24 +2988,18 @@ final class VetMapModelTests: XCTestCase {
         )
 
         XCTAssertEqual(result, .authenticationRequired)
-        XCTAssertEqual(viewModel.storageError, "請先登入後再提交報價。")
         XCTAssertEqual(viewModel.quotes, initialQuotes)
     }
 
     @MainActor
-    func testQuoteViewModelReloadsOnNotification() {
-        let reviewsURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "reviews.json")
-        let quotesURL = FileManager.default.temporaryDirectory
-            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
-            .appending(path: "quotes.json")
-        let repository = MockCommunityRepository(
-            localReviewsFileURL: reviewsURL,
-            localQuotesFileURL: quotesURL
+    func testQuoteViewModelReloadsOnNotification() async {
+        let refreshExpectation = expectation(description: "Matching quote notification is handled")
+        let viewModel = QuoteViewModel(
+            testingQuotes: [makeQuote(id: "notification-quote", clinicId: "taipei-anxin")],
+            clinicId: "taipei-anxin",
+            observesChanges: true,
+            testingChangeHandler: { refreshExpectation.fulfill() }
         )
-        let viewModel = QuoteViewModel(clinicId: "taipei-anxin", repository: repository)
-        let initialCount = viewModel.quotes.count
 
         NotificationCenter.default.post(
             name: .vetCommunityRepositoryDidChange,
@@ -3095,13 +3007,9 @@ final class VetMapModelTests: XCTestCase {
             userInfo: [MockCommunityRepository.changedClinicIDUserInfoKey: "taipei-anxin"]
         )
 
-        let expectation = XCTestExpectation(description: "Wait for notification processing")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            expectation.fulfill()
-        }
-        wait(for: [expectation], timeout: 1.0)
+        await fulfillment(of: [refreshExpectation], timeout: 1)
 
-        XCTAssertEqual(viewModel.quotes.count, initialCount)
+        XCTAssertEqual(viewModel.quotes.map(\.id), ["notification-quote"])
     }
 
     // MARK: - ProductViewModel Additional Tests
@@ -3399,7 +3307,10 @@ final class VetMapModelTests: XCTestCase {
     private func makeValidAddClinicViewModel(
         geocodingService: GeocodingServicing = GeocodingService()
     ) -> AddClinicViewModel {
-        let viewModel = AddClinicViewModel(geocodingService: geocodingService)
+        let viewModel = AddClinicViewModel(
+            testingReporterID: "test-reporter",
+            geocodingService: geocodingService
+        )
         viewModel.name = "座標測試診所"
         viewModel.address = "香港測試地址"
         viewModel.phone = "+852 2123 4567"

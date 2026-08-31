@@ -17,8 +17,12 @@ final class ReviewViewModel {
 
     private let clinicId: String
     private let seedRepository: MockCommunityRepository
-    private let firebase: FirebaseService
+    private let firebase: FirebaseService?
     @ObservationIgnored private var cancellables: Set<AnyCancellable> = []
+    @ObservationIgnored private var usesTestingFixtures = false
+    @ObservationIgnored private var testingChangeHandler: (() -> Void)?
+    @ObservationIgnored private var testingNotificationHandler: (() -> Void)?
+    @ObservationIgnored private var testingMarkHelpfulHandler: ((String) -> Void)?
 
     init(
         clinicId: String,
@@ -33,11 +37,38 @@ final class ReviewViewModel {
         Task { await loadReviews() }
     }
 
+    /// Non-observing fixture initializer for deterministic unit tests.
+    init(
+        testingReviews: [Review],
+        clinicId: String,
+        observesChanges: Bool = false,
+        testingChangeHandler: (() -> Void)? = nil,
+        testingNotificationHandler: (() -> Void)? = nil,
+        testingMarkHelpfulHandler: @escaping (String) -> Void = { _ in }
+    ) {
+        self.clinicId = clinicId
+        self.seedRepository = MockCommunityRepository()
+        self.firebase = nil
+        self.reviews = testingReviews
+        self.usesTestingFixtures = true
+        self.testingChangeHandler = testingChangeHandler
+        self.testingNotificationHandler = testingNotificationHandler
+        self.testingMarkHelpfulHandler = testingMarkHelpfulHandler
+        if observesChanges {
+            observeRepositoryChanges()
+        }
+    }
+
     var sortedReviews: [Review] {
-        let moderation = ModerationStore.shared
-        let visible = reviews.filter {
-            !moderation.removedReviewIDs.contains($0.id)
-                && !moderation.blockedUserIDs.contains($0.userId)
+        let visible: [Review]
+        if usesTestingFixtures {
+            visible = reviews
+        } else {
+            let moderation = ModerationStore.shared
+            visible = reviews.filter {
+                !moderation.removedReviewIDs.contains($0.id)
+                    && !moderation.blockedUserIDs.contains($0.userId)
+            }
         }
         return switch sortOrder {
         case .newest:
@@ -52,6 +83,7 @@ final class ReviewViewModel {
     func loadReviews() async {
         isLoading = true
         defer { isLoading = false }
+        guard let firebase else { return }
         let seeds: [Review] = []
         await ModerationStore.shared.refreshPublicState()
 
@@ -80,6 +112,16 @@ final class ReviewViewModel {
     }
 
     func markHelpful(_ reviewId: String) async {
+        if let testingMarkHelpfulHandler {
+            testingMarkHelpfulHandler(reviewId)
+            if let index = reviews.firstIndex(where: { $0.id == reviewId }) {
+                reviews[index].helpfulCount += 1
+            }
+            storageError = nil
+            return
+        }
+
+        guard let firebase else { return }
         do {
             try await firebase.markReviewHelpful(reviewId: reviewId)
             if let index = reviews.firstIndex(where: { $0.id == reviewId }) {
@@ -128,7 +170,13 @@ final class ReviewViewModel {
             .sink { [weak self] notification in
                 let changedID = notification.userInfo?[MockCommunityRepository.changedClinicIDUserInfoKey] as? String
                 Task { @MainActor in
-                    guard let self, changedID == nil || changedID == self.clinicId else { return }
+                    guard let self else { return }
+                    self.testingNotificationHandler?()
+                    guard changedID == nil || changedID == self.clinicId else { return }
+                    if let testingChangeHandler = self.testingChangeHandler {
+                        testingChangeHandler()
+                        return
+                    }
                     await self.loadReviews()
                 }
             }

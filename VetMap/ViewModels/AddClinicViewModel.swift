@@ -44,9 +44,18 @@ final class AddClinicViewModel {
     private(set) var locationLookupState: LocationLookupState = .idle
 
     private let geocodingService: GeocodingServicing
+    @ObservationIgnored private let testingReporterID: String?
 
     init(geocodingService: GeocodingServicing = GeocodingService()) {
         self.geocodingService = geocodingService
+        self.testingReporterID = nil
+    }
+
+    /// Fixture-only initializer that supplies a reporter identity without
+    /// changing the production Firebase Auth requirement.
+    init(testingReporterID: String, geocodingService: GeocodingServicing = GeocodingService()) {
+        self.geocodingService = geocodingService
+        self.testingReporterID = testingReporterID
     }
 
     var canSubmit: Bool {
@@ -104,7 +113,8 @@ final class AddClinicViewModel {
             return nil
         }
 
-        guard let uid = AuthViewModel.shared.user?.uid, !uid.isEmpty else {
+        let reporterID = testingReporterID ?? AuthViewModel.shared.user?.uid
+        guard let uid = reporterID, !uid.isEmpty else {
             validationMessage = "請先登入後再提交診所資料。"
             return nil
         }

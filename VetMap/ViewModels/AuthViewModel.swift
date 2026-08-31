@@ -84,8 +84,7 @@ struct AppUser {
 @MainActor
 final class AuthViewModel: NSObject, ObservableObject {
     /// Production UI must use this instance so every tab and submission shares
-    /// the same Firebase Auth session. The internal initializer remains usable
-    /// by isolated unit tests.
+    /// the same Firebase Auth session.
     static let shared = AuthViewModel()
 
     @Published private(set) var user: AppUser?
@@ -97,6 +96,7 @@ final class AuthViewModel: NSObject, ObservableObject {
     private var currentNonce: String?
     private var pendingApplePurpose: AppleAuthorizationPurpose?
     private var appleCredentialRevokedObserver: NSObjectProtocol?
+    private let disablesFirebaseForTesting: Bool
 
     #if canImport(FirebaseAuth)
     private var authStateHandle: AuthStateDidChangeListenerHandle?
@@ -104,6 +104,7 @@ final class AuthViewModel: NSObject, ObservableObject {
     #endif
 
     private var isFirebaseConfigured: Bool {
+        guard !disablesFirebaseForTesting else { return false }
         #if canImport(FirebaseCore)
         FirebaseApp.app() != nil
         #else
@@ -123,6 +124,7 @@ final class AuthViewModel: NSObject, ObservableObject {
     }
 
     override init() {
+        disablesFirebaseForTesting = false
         super.init()
 
         appleCredentialRevokedObserver = NotificationCenter.default.addObserver(
@@ -162,6 +164,14 @@ final class AuthViewModel: NSObject, ObservableObject {
         #else
         authState = .signedOut
         #endif
+    }
+
+    /// Unit-test-only initializer that never installs a Firebase Auth listener
+    /// or accesses the configured Firebase session.
+    init(testingWithoutFirebase: Void) {
+        disablesFirebaseForTesting = true
+        super.init()
+        authState = .signedOut
     }
 
     deinit {

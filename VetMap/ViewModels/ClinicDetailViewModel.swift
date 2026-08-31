@@ -11,24 +11,48 @@ final class ClinicDetailViewModel {
 
     private let clinic: VetClinic
     private let seedRepository: MockCommunityRepository
-    private let firebase: FirebaseService
+    private let firebase: FirebaseService?
+    @ObservationIgnored private let authenticatedUserProvider: () -> AppUser?
     @ObservationIgnored private var cancellables: Set<AnyCancellable> = []
+    @ObservationIgnored private var usesTestingFixtures = false
 
     init(
         clinic: VetClinic,
         repository: MockCommunityRepository = MockCommunityRepository(),
-        firebase: FirebaseService = .shared
+        firebase: FirebaseService = .shared,
+        authenticatedUserProvider: @escaping () -> AppUser? = { AuthViewModel.shared.user }
     ) {
         self.clinic = clinic
         self.seedRepository = repository
         self.firebase = firebase
+        self.authenticatedUserProvider = authenticatedUserProvider
         self.reviews = []
         self.quotes = []
         observeCommunityChanges()
         Task { await loadCommunityData() }
     }
 
+    /// Non-observing fixture initializer for deterministic unit tests.
+    init(
+        testingClinic clinic: VetClinic,
+        reviews: [Review],
+        quotes: [Quote],
+        authenticatedUserProvider: @escaping () -> AppUser? = { nil }
+    ) {
+        self.clinic = clinic
+        self.seedRepository = MockCommunityRepository()
+        self.firebase = nil
+        self.authenticatedUserProvider = authenticatedUserProvider
+        self.reviews = reviews
+        self.quotes = quotes
+        self.isLoading = false
+        self.usesTestingFixtures = true
+    }
+
     var visibleReviews: [Review] {
+        if usesTestingFixtures {
+            return reviews
+        }
         let moderation = ModerationStore.shared
         return reviews.filter {
             !moderation.removedReviewIDs.contains($0.id)
@@ -37,6 +61,9 @@ final class ClinicDetailViewModel {
     }
 
     var visibleQuotes: [Quote] {
+        if usesTestingFixtures {
+            return quotes
+        }
         let moderation = ModerationStore.shared
         return quotes.filter {
             !moderation.removedQuoteIDs.contains($0.id)
@@ -47,6 +74,7 @@ final class ClinicDetailViewModel {
     func loadCommunityData() async {
         isLoading = true
         defer { isLoading = false }
+        guard let firebase else { return }
 
         await ModerationStore.shared.refreshPublicState()
         let seedReviews: [Review] = []
@@ -93,7 +121,7 @@ final class ClinicDetailViewModel {
             )
         }
 
-        guard let user = AuthViewModel.shared.user, let uid = user.uid, !uid.isEmpty else {
+        guard let user = authenticatedUserProvider(), let uid = user.uid, !uid.isEmpty else {
             storageError = String(localized: "請先登入後再提交評價。")
             return .authenticationRequired
         }
@@ -145,7 +173,7 @@ final class ClinicDetailViewModel {
                 message: storageError ?? String(localized: "暫時無法提交報價。")
             )
         }
-        guard let uid = AuthViewModel.shared.user?.uid, !uid.isEmpty else {
+        guard let uid = authenticatedUserProvider()?.uid, !uid.isEmpty else {
             storageError = String(localized: "請先登入後再提交報價。")
             return .authenticationRequired
         }
