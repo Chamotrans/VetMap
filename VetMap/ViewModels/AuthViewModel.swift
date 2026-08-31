@@ -106,9 +106,9 @@ final class AuthViewModel: NSObject, ObservableObject {
     private var isFirebaseConfigured: Bool {
         guard !disablesFirebaseForTesting else { return false }
         #if canImport(FirebaseCore)
-        FirebaseApp.app() != nil
+        return FirebaseApp.app() != nil
         #else
-        false
+        return false
         #endif
     }
 

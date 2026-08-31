@@ -244,6 +244,7 @@ final class ClinicDetailViewModel {
     }
 
     func markHelpful(_ reviewId: String) async {
+        guard let firebase else { return }
         do {
             try await firebase.markReviewHelpful(reviewId: reviewId)
             if let index = reviews.firstIndex(where: { $0.id == reviewId }) {
