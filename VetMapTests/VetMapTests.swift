@@ -2162,7 +2162,7 @@ final class VetMapModelTests: XCTestCase {
     }
 
     @MainActor
-    func testClinicDetailViewModelAddsReview() {
+    func testClinicDetailViewModelRequiresAuthenticationForValidReview() async {
         let fileURL = FileManager.default.temporaryDirectory
             .appending(path: UUID().uuidString, directoryHint: .isDirectory)
             .appending(path: "reviews.json")
@@ -2170,7 +2170,7 @@ final class VetMapModelTests: XCTestCase {
         let repository = MockCommunityRepository(localReviewsFileURL: fileURL)
         let viewModel = ClinicDetailViewModel(clinic: clinic, repository: repository)
 
-        let didAddReview = viewModel.addReview(
+        let result = await viewModel.submitReviewForModeration(
             ReviewDraft(
                 rating: 5,
                 title: "  新增成功  ",
@@ -2180,14 +2180,14 @@ final class VetMapModelTests: XCTestCase {
             )
         )
 
-        XCTAssertTrue(didAddReview)
-        XCTAssertNil(viewModel.storageError)
-        XCTAssertTrue(viewModel.reviews.contains { $0.title == "新增成功" })
-        XCTAssertTrue(repository.fetchLocalReviews().contains { $0.title == "新增成功" })
+        XCTAssertEqual(result, .authenticationRequired)
+        XCTAssertEqual(viewModel.storageError, "請先登入後再提交評價。")
+        XCTAssertFalse(viewModel.reviews.contains { $0.title == "新增成功" })
+        XCTAssertTrue(repository.fetchLocalReviews().isEmpty)
     }
 
     @MainActor
-    func testClinicDetailViewModelRejectsInvalidReviewDraft() {
+    func testClinicDetailViewModelRejectsInvalidReviewDraft() async {
         let fileURL = FileManager.default.temporaryDirectory
             .appending(path: UUID().uuidString, directoryHint: .isDirectory)
             .appending(path: "reviews.json")
@@ -2196,7 +2196,7 @@ final class VetMapModelTests: XCTestCase {
         let viewModel = ClinicDetailViewModel(clinic: clinic, repository: repository)
         let initialReviewCount = viewModel.reviews.count
 
-        let didAddReview = viewModel.addReview(
+        let result = await viewModel.submitReviewForModeration(
             ReviewDraft(
                 rating: 0,
                 title: " ",
@@ -2206,7 +2206,7 @@ final class VetMapModelTests: XCTestCase {
             )
         )
 
-        XCTAssertFalse(didAddReview)
+        XCTAssertEqual(result, .failed(message: "請填寫評分、標題和內容。"))
         XCTAssertEqual(viewModel.reviews.count, initialReviewCount)
         XCTAssertEqual(viewModel.storageError, "請填寫評分、標題和內容。")
         XCTAssertTrue(repository.fetchLocalReviews().isEmpty)
@@ -2389,30 +2389,20 @@ final class VetMapModelTests: XCTestCase {
     }
 
     @MainActor
-    func testReviewViewModelMarksHelpful() {
+    func testReviewViewModelMarkHelpfulWithoutLoadedReviewDoesNotFabricateReview() async {
         let fileURL = FileManager.default.temporaryDirectory
             .appending(path: UUID().uuidString, directoryHint: .isDirectory)
             .appending(path: "reviews.json")
         let repository = MockCommunityRepository(localReviewsFileURL: fileURL)
-        let clinicId = "test-mark-helpful"
-        let review = makeReview(id: "review-helpful", clinicId: clinicId)
-        XCTAssertNoThrow(try repository.addReview(review))
+        let viewModel = ReviewViewModel(
+            clinicId: "test-mark-helpful",
+            repository: repository
+        )
+        XCTAssertTrue(viewModel.reviews.isEmpty)
 
-        let viewModel = ReviewViewModel(clinicId: clinicId, repository: repository)
+        await viewModel.markHelpful("review-helpful")
 
-        guard let firstReview = viewModel.reviews.first else {
-            XCTFail("No reviews loaded")
-            return
-        }
-        let originalCount = firstReview.helpfulCount
-
-        viewModel.markHelpful(firstReview.id)
-
-        guard let updatedReview = viewModel.reviews.first(where: { $0.id == firstReview.id }) else {
-            XCTFail("Review not found after marking helpful")
-            return
-        }
-        XCTAssertEqual(updatedReview.helpfulCount, originalCount + 1)
+        XCTAssertTrue(viewModel.reviews.isEmpty)
     }
 
     // MARK: - QuoteViewModel Tests
@@ -2434,7 +2424,7 @@ final class VetMapModelTests: XCTestCase {
     }
 
     @MainActor
-    func testQuoteViewModelAddsQuote() {
+    func testQuoteViewModelRequiresAuthenticationForValidQuote() async {
         let reviewsURL = FileManager.default.temporaryDirectory
             .appending(path: UUID().uuidString, directoryHint: .isDirectory)
             .appending(path: "reviews.json")
@@ -2448,18 +2438,19 @@ final class VetMapModelTests: XCTestCase {
         let viewModel = QuoteViewModel(clinicId: "taipei-anxin", repository: repository)
         let initialCount = viewModel.quotes.count
 
-        let success = viewModel.addQuote(
-            treatmentType: "洗牙",
-            estimatedCost: Decimal(3000),
-            actualCost: nil,
-            currency: "TWD",
-            notes: "測試報價"
+        let result = await viewModel.addQuote(
+            QuoteDraft(
+                treatmentType: "洗牙",
+                estimatedCost: Decimal(3000),
+                actualCost: nil,
+                currency: "TWD",
+                notes: "測試報價"
+            )
         )
 
-        XCTAssertTrue(success)
-        XCTAssertEqual(viewModel.quotes.count, initialCount + 1)
-        XCTAssertTrue(viewModel.quotes.contains { $0.treatmentType == "洗牙" })
-        XCTAssertNil(viewModel.storageError)
+        XCTAssertEqual(result, .authenticationRequired)
+        XCTAssertEqual(viewModel.quotes.count, initialCount)
+        XCTAssertEqual(viewModel.storageError, "請先登入後再提交報價。")
     }
 
     @MainActor
@@ -2629,7 +2620,7 @@ final class VetMapModelTests: XCTestCase {
     // MARK: - ReviewDraft Validation Tests
 
     @MainActor
-    func testReviewDraftRequiresRatingInRange() {
+    func testReviewDraftRequiresRatingInRange() async {
         let fileURL = FileManager.default.temporaryDirectory
             .appending(path: UUID().uuidString, directoryHint: .isDirectory)
             .appending(path: "reviews.json")
@@ -2637,18 +2628,21 @@ final class VetMapModelTests: XCTestCase {
         let repository = MockCommunityRepository(localReviewsFileURL: fileURL)
         let viewModel = ClinicDetailViewModel(clinic: clinic, repository: repository)
 
-        XCTAssertTrue(viewModel.addReview(
+        let firstResult = await viewModel.submitReviewForModeration(
             ReviewDraft(rating: 1, title: "標題", content: "內容", treatmentType: "", cost: nil)
-        ))
+        )
+        XCTAssertEqual(firstResult, .authenticationRequired)
 
-        XCTAssertTrue(viewModel.addReview(
+        let secondResult = await viewModel.submitReviewForModeration(
             ReviewDraft(rating: 5, title: "標題2", content: "內容2", treatmentType: "", cost: nil)
-        ))
+        )
+        XCTAssertEqual(secondResult, .authenticationRequired)
 
         let countBeforeInvalid = viewModel.reviews.count
-        XCTAssertFalse(viewModel.addReview(
+        let invalidResult = await viewModel.submitReviewForModeration(
             ReviewDraft(rating: 6, title: "標題", content: "內容", treatmentType: "", cost: nil)
-        ))
+        )
+        XCTAssertEqual(invalidResult, .failed(message: "請填寫評分、標題和內容。"))
         XCTAssertEqual(viewModel.reviews.count, countBeforeInvalid)
         XCTAssertEqual(viewModel.storageError, "請填寫評分、標題和內容。")
     }
@@ -2880,7 +2874,7 @@ final class VetMapModelTests: XCTestCase {
     }
 
     @MainActor
-    func testReviewViewModelMarkHelpfulOnNonExistentReviewIsNoop() {
+    func testReviewViewModelMarkHelpfulOnNonExistentReviewIsNoop() async {
         let fileURL = FileManager.default.temporaryDirectory
             .appending(path: UUID().uuidString, directoryHint: .isDirectory)
             .appending(path: "reviews.json")
@@ -2888,7 +2882,7 @@ final class VetMapModelTests: XCTestCase {
         let viewModel = ReviewViewModel(clinicId: "taipei-anxin", repository: repository)
         let initialReviews = viewModel.reviews
 
-        viewModel.markHelpful("nonexistent-review-id")
+        await viewModel.markHelpful("nonexistent-review-id")
 
         // Reviews should be completely unchanged
         XCTAssertEqual(viewModel.reviews.map(\.id), initialReviews.map(\.id))
@@ -2931,7 +2925,7 @@ final class VetMapModelTests: XCTestCase {
     }
 
     @MainActor
-    func testQuoteViewModelRejectsEmptyTreatmentType() {
+    func testQuoteViewModelRejectsEmptyTreatmentType() async {
         let reviewsURL = FileManager.default.temporaryDirectory
             .appending(path: UUID().uuidString, directoryHint: .isDirectory)
             .appending(path: "reviews.json")
@@ -2945,21 +2939,23 @@ final class VetMapModelTests: XCTestCase {
         let viewModel = QuoteViewModel(clinicId: "taipei-anxin", repository: repository)
         let initialCount = viewModel.quotes.count
 
-        let success = viewModel.addQuote(
-            treatmentType: "   ",
-            estimatedCost: Decimal(1000),
-            actualCost: nil,
-            currency: "TWD",
-            notes: "test"
+        let result = await viewModel.addQuote(
+            QuoteDraft(
+                treatmentType: "   ",
+                estimatedCost: Decimal(1000),
+                actualCost: nil,
+                currency: "TWD",
+                notes: "test"
+            )
         )
 
-        XCTAssertFalse(success)
+        XCTAssertEqual(result, .failed(message: "請填寫治療類型和預估費用。"))
         XCTAssertEqual(viewModel.quotes.count, initialCount)
         XCTAssertEqual(viewModel.storageError, "請填寫治療類型和預估費用。")
     }
 
     @MainActor
-    func testQuoteViewModelRejectsZeroEstimatedCost() {
+    func testQuoteViewModelRejectsZeroEstimatedCost() async {
         let reviewsURL = FileManager.default.temporaryDirectory
             .appending(path: UUID().uuidString, directoryHint: .isDirectory)
             .appending(path: "reviews.json")
@@ -2973,21 +2969,23 @@ final class VetMapModelTests: XCTestCase {
         let viewModel = QuoteViewModel(clinicId: "taipei-anxin", repository: repository)
         let initialCount = viewModel.quotes.count
 
-        let success = viewModel.addQuote(
-            treatmentType: "洗牙",
-            estimatedCost: Decimal(0),
-            actualCost: nil,
-            currency: "TWD",
-            notes: "test"
+        let result = await viewModel.addQuote(
+            QuoteDraft(
+                treatmentType: "洗牙",
+                estimatedCost: Decimal(0),
+                actualCost: nil,
+                currency: "TWD",
+                notes: "test"
+            )
         )
 
-        XCTAssertFalse(success)
+        XCTAssertEqual(result, .failed(message: "請填寫治療類型和預估費用。"))
         XCTAssertEqual(viewModel.quotes.count, initialCount)
         XCTAssertEqual(viewModel.storageError, "請填寫治療類型和預估費用。")
     }
 
     @MainActor
-    func testQuoteViewModelRejectsNegativeEstimatedCost() {
+    func testQuoteViewModelRejectsNegativeEstimatedCost() async {
         let reviewsURL = FileManager.default.temporaryDirectory
             .appending(path: UUID().uuidString, directoryHint: .isDirectory)
             .appending(path: "reviews.json")
@@ -3001,21 +2999,23 @@ final class VetMapModelTests: XCTestCase {
         let viewModel = QuoteViewModel(clinicId: "taipei-anxin", repository: repository)
         let initialCount = viewModel.quotes.count
 
-        let success = viewModel.addQuote(
-            treatmentType: "洗牙",
-            estimatedCost: Decimal(-1),
-            actualCost: nil,
-            currency: "TWD",
-            notes: "test"
+        let result = await viewModel.addQuote(
+            QuoteDraft(
+                treatmentType: "洗牙",
+                estimatedCost: Decimal(-1),
+                actualCost: nil,
+                currency: "TWD",
+                notes: "test"
+            )
         )
 
-        XCTAssertFalse(success)
+        XCTAssertEqual(result, .failed(message: "請填寫治療類型和預估費用。"))
         XCTAssertEqual(viewModel.quotes.count, initialCount)
         XCTAssertEqual(viewModel.storageError, "請填寫治療類型和預估費用。")
     }
 
     @MainActor
-    func testQuoteViewModelTrimsWhitespaceFromTreatmentType() {
+    func testQuoteViewModelWhitespaceTreatmentDraftRequiresAuthentication() async {
         let reviewsURL = FileManager.default.temporaryDirectory
             .appending(path: UUID().uuidString, directoryHint: .isDirectory)
             .appending(path: "reviews.json")
@@ -3027,22 +3027,25 @@ final class VetMapModelTests: XCTestCase {
             localQuotesFileURL: quotesURL
         )
         let viewModel = QuoteViewModel(clinicId: "taipei-anxin", repository: repository)
+        let initialQuotes = viewModel.quotes
 
-        let success = viewModel.addQuote(
-            treatmentType: "  一般診療  ",
-            estimatedCost: Decimal(500),
-            actualCost: nil,
-            currency: "TWD",
-            notes: "test"
+        let result = await viewModel.addQuote(
+            QuoteDraft(
+                treatmentType: "  一般診療  ",
+                estimatedCost: Decimal(500),
+                actualCost: nil,
+                currency: "TWD",
+                notes: "test"
+            )
         )
 
-        XCTAssertTrue(success)
-        XCTAssertTrue(viewModel.quotes.contains { $0.treatmentType == "一般診療" })
-        XCTAssertFalse(viewModel.quotes.contains { $0.treatmentType.hasPrefix(" ") })
+        XCTAssertEqual(result, .authenticationRequired)
+        XCTAssertEqual(viewModel.storageError, "請先登入後再提交報價。")
+        XCTAssertEqual(viewModel.quotes, initialQuotes)
     }
 
     @MainActor
-    func testQuoteViewModelTrimsWhitespaceFromNotes() {
+    func testQuoteViewModelWhitespaceNotesDraftRequiresAuthentication() async {
         let reviewsURL = FileManager.default.temporaryDirectory
             .appending(path: UUID().uuidString, directoryHint: .isDirectory)
             .appending(path: "reviews.json")
@@ -3054,17 +3057,21 @@ final class VetMapModelTests: XCTestCase {
             localQuotesFileURL: quotesURL
         )
         let viewModel = QuoteViewModel(clinicId: "taipei-anxin", repository: repository)
+        let initialQuotes = viewModel.quotes
 
-        let success = viewModel.addQuote(
-            treatmentType: "健檢",
-            estimatedCost: Decimal(1500),
-            actualCost: nil,
-            currency: "TWD",
-            notes: "  含血檢  "
+        let result = await viewModel.addQuote(
+            QuoteDraft(
+                treatmentType: "健檢",
+                estimatedCost: Decimal(1500),
+                actualCost: nil,
+                currency: "TWD",
+                notes: "  含血檢  "
+            )
         )
 
-        XCTAssertTrue(success)
-        XCTAssertTrue(viewModel.quotes.contains { $0.notes == "含血檢" })
+        XCTAssertEqual(result, .authenticationRequired)
+        XCTAssertEqual(viewModel.storageError, "請先登入後再提交報價。")
+        XCTAssertEqual(viewModel.quotes, initialQuotes)
     }
 
     @MainActor
