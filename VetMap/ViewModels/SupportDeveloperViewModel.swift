@@ -13,7 +13,8 @@ final class SupportDeveloperViewModel {
     private(set) var purchaseSucceeded = false
     private(set) var errorMessage: String?
 
-    init(service: IAPService = IAPService()) {
+    init(service: IAPService? = nil) {
+        let service = service ?? IAPService()
         loadSupportPrice = {
             await service.loadSupportProduct()?.displayPrice
         }

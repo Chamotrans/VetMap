@@ -19,4 +19,7 @@ test("drink support is a single StoreKit consumable, not a premium entitlement",
   assert.equal((profile.match(/SupportDeveloperView\(\)/g) ?? []).length, 2);
   assert.match(view, /displayPrice/); assert.doesNotMatch(view, /HK\$|\$18|18\.00/);
   assert.match(view, /不是訂閱，沒有自動續期/); assert.match(viewModel, /testingDisplayPrice/);
+  assert.match(viewModel, /init\(service: IAPService\? = nil\)/);
+  assert.match(viewModel, /let service = service \?\? IAPService\(\)/);
+  assert.doesNotMatch(viewModel, /IAPService = IAPService\(\)/);
 });
