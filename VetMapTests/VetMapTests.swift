@@ -2856,6 +2856,7 @@ final class VetMapModelTests: XCTestCase {
 
     @MainActor
     func testUrgentModeCanDeactivateAndPreservesVisibleSelection() {
+        let now = Date(timeIntervalSince1970: 1_775_102_400)
         let first = makeClinic(
             id: "urgent-first",
             name: "A 診所",
@@ -2868,7 +2869,7 @@ final class VetMapModelTests: XCTestCase {
         )
         let viewModel = MapViewModel(
             testingClinics: [second, first],
-            at: date
+            at: now
         )
 
         viewModel.activateUrgentMode()
