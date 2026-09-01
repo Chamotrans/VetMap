@@ -612,7 +612,7 @@ final class VetMapModelTests: XCTestCase {
         )
     }
 
-    func testUrgentClinicOrderingPrioritizesAvailabilityThenKnownDistance() {
+    func testUrgentClinicOrderingExcludesClosedAndUnknownThenUsesKnownDistance() {
         let now = Date(timeIntervalSince1970: 1_775_102_400) // 2026-04-02 12:00 HKT
         let guardianLocation = CLLocation(latitude: 22.3193, longitude: 114.1694)
         let alwaysOpen = makeClinic(
@@ -621,37 +621,85 @@ final class VetMapModelTests: XCTestCase {
             coordinate: ClinicCoordinate(latitude: 22.50, longitude: 114.30),
             availability: makeAvailability(is24Hours: true)
         )
-        let nearUnknown = makeClinic(
-            id: "near-unknown",
-            name: "附近診所",
-            coordinate: ClinicCoordinate(latitude: 22.3194, longitude: 114.1694)
+        let nearOpen = makeClinic(
+            id: "near-open",
+            name: "附近營業中診所",
+            coordinate: ClinicCoordinate(latitude: 22.3194, longitude: 114.1694),
+            availability: makeAvailability(
+                weeklyHours: [
+                    "thu": [ClinicHoursInterval(opensAt: "08:00", closesAt: "20:00")]
+                ]
+            )
         )
-        let farUnknown = makeClinic(
-            id: "far-unknown",
-            name: "較遠診所",
-            coordinate: ClinicCoordinate(latitude: 22.40, longitude: 114.25)
+        let closed = makeClinic(
+            id: "closed",
+            name: "已關門診所",
+            coordinate: ClinicCoordinate(latitude: 22.40, longitude: 114.25),
+            availability: makeAvailability(
+                weeklyHours: [
+                    "thu": [ClinicHoursInterval(opensAt: "08:00", closesAt: "10:00")]
+                ]
+            )
         )
-        let listOnlyAlpha = makeClinic(
-            id: "list-only-alpha",
-            name: "A 列表診所",
-            coordinate: nil
-        )
-        let listOnlyZulu = makeClinic(
-            id: "list-only-zulu",
-            name: "Z 列表診所",
-            coordinate: nil
-        )
+        let unknown = makeClinic(id: "unknown", name: "未知時間診所")
 
         let ordered = urgentClinicOrdering(
-            [listOnlyZulu, farUnknown, listOnlyAlpha, alwaysOpen, nearUnknown],
+            [closed, unknown, nearOpen, alwaysOpen],
             from: guardianLocation,
             at: now
         )
 
-        XCTAssertEqual(
-            ordered.map(\.id),
-            ["always-open", "near-unknown", "far-unknown", "list-only-alpha", "list-only-zulu"]
+        XCTAssertEqual(ordered.map(\.id), ["always-open", "near-open"])
+    }
+
+    @MainActor
+    func testUrgentModeAtNightRemovesClosedUnknownAndExpiredClinicsFromMapPins() {
+        let oneAM = Date(timeIntervalSince1970: 1_775_062_800) // 2026-04-02 01:00 HKT
+        let alwaysOpen = makeClinic(
+            id: "always-open",
+            coordinate: ClinicCoordinate(latitude: 22.31, longitude: 114.17),
+            availability: makeAvailability(is24Hours: true)
         )
+        let overnightOpen = makeClinic(
+            id: "overnight-open",
+            coordinate: ClinicCoordinate(latitude: 22.32, longitude: 114.18),
+            availability: makeAvailability(
+                weeklyHours: [
+                    "wed": [ClinicHoursInterval(opensAt: "21:00", closesAt: "02:00")]
+                ],
+                offersNightService: true
+            )
+        )
+        let daytimeClosed = makeClinic(
+            id: "daytime-closed",
+            coordinate: ClinicCoordinate(latitude: 22.33, longitude: 114.19),
+            availability: makeAvailability(
+                weeklyHours: [
+                    "thu": [ClinicHoursInterval(opensAt: "09:00", closesAt: "18:00")]
+                ]
+            )
+        )
+        let unknown = makeClinic(
+            id: "unknown",
+            coordinate: ClinicCoordinate(latitude: 22.34, longitude: 114.20)
+        )
+        let expired = makeClinic(
+            id: "expired",
+            coordinate: ClinicCoordinate(latitude: 22.35, longitude: 114.21),
+            availability: makeAvailability(
+                is24Hours: true,
+                expiresAt: oneAM
+            )
+        )
+        let viewModel = MapViewModel(
+            testingClinics: [daytimeClosed, unknown, expired, overnightOpen, alwaysOpen],
+            at: oneAM
+        )
+
+        viewModel.activateUrgentMode()
+
+        XCTAssertEqual(Set(viewModel.filteredClinics.map(\.id)), ["always-open", "overnight-open"])
+        XCTAssertEqual(Set(viewModel.mappableClinics.map(\.id)), ["always-open", "overnight-open"])
     }
 
     @MainActor
@@ -679,12 +727,14 @@ final class VetMapModelTests: XCTestCase {
         let farAlphabetical = makeClinic(
             id: "far-alphabetical",
             name: "A 較遠診所",
-            coordinate: ClinicCoordinate(latitude: 22.50, longitude: 114.30)
+            coordinate: ClinicCoordinate(latitude: 22.50, longitude: 114.30),
+            availability: makeAvailability(is24Hours: true)
         )
         let nearLaterName = makeClinic(
             id: "near-later-name",
             name: "Z 附近診所",
-            coordinate: ClinicCoordinate(latitude: 22.3194, longitude: 114.1694)
+            coordinate: ClinicCoordinate(latitude: 22.3194, longitude: 114.1694),
+            availability: makeAvailability(is24Hours: true)
         )
         let viewModel = MapViewModel(
             testingClinics: [nearLaterName, farAlphabetical],
@@ -2806,8 +2856,16 @@ final class VetMapModelTests: XCTestCase {
 
     @MainActor
     func testUrgentModeCanDeactivateAndPreservesVisibleSelection() {
-        let first = makeClinic(id: "urgent-first", name: "A 診所")
-        let second = makeClinic(id: "urgent-second", name: "B 診所")
+        let first = makeClinic(
+            id: "urgent-first",
+            name: "A 診所",
+            availability: makeAvailability(is24Hours: true)
+        )
+        let second = makeClinic(
+            id: "urgent-second",
+            name: "B 診所",
+            availability: makeAvailability(is24Hours: true)
+        )
         let viewModel = MapViewModel(
             testingClinics: [second, first],
             at: date

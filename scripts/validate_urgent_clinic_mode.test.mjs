@@ -32,10 +32,14 @@ test("urgent CTA has an explicit, permission-safe activation path", async () => 
   assert.equal((map.match(/requestLocationFromButton\(\)/g) ?? []).length, 1);
 });
 
-test("urgent ordering uses trustworthy availability first, then contextual distance", async () => {
-  const model = await read("VetMap/ViewModels/MapViewModel.swift");
+test("urgent mode shows only clinics confirmed open now, then applies contextual ordering", async () => {
+  const [model, map] = await Promise.all([
+    read("VetMap/ViewModels/MapViewModel.swift"),
+    read("VetMap/Views/Map/ClinicMapView.swift"),
+  ]);
 
   assert.match(model, /func urgentClinicOrdering\(/);
+  assert.match(model, /clinics\.filter \{ \$0\.isOpen\(at: date\) \}\.sorted/);
   assert.match(model, /lhs\.availabilitySortRank\(at: date\)/);
   assert.match(model, /rhs\.availabilitySortRank\(at: date\)/);
   assert.match(model, /if lhsRank != rhsRank\s*\{\s*return lhsRank < rhsRank/);
@@ -50,6 +54,10 @@ test("urgent ordering uses trustworthy availability first, then contextual dista
   assert.match(model, /lhs\.id\.localizedStandardCompare\(rhs\.id\)/);
   assert.match(model, /return urgentClinicOrdering\(\s*directoryClinics,/);
   assert.doesNotMatch(model, /isUrgentMode \{\s*return filter\.results/);
+  assert.match(map, /"暫未找到營業中診所"/);
+  assert.match(map, /"顯示全部"/);
+  assert.match(map, /只顯示有現行官方營業資料並確認此刻營業中/);
+  assert.doesNotMatch(map, /未提供工時的診所仍會保留/);
 });
 
 test("urgent selected cards expose safe contact, routing, and details affordances", async () => {

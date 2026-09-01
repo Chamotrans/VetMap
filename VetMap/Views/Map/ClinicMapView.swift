@@ -166,7 +166,7 @@ struct ClinicMapView: View {
 
     private var resultCountText: String {
         if viewModel.isUrgentMode {
-            return "急需排序 \(viewModel.filteredClinics.count) / \(viewModel.directoryClinics.count) 間・地圖 \(viewModel.mappableClinics.count) 個標記"
+            return "急需模式：現正營業 \(viewModel.filteredClinics.count) / \(viewModel.directoryClinics.count) 間・地圖 \(viewModel.mappableClinics.count) 個標記"
         }
 
         if viewModel.filter.isActive {
@@ -207,7 +207,7 @@ struct ClinicMapView: View {
         .tint(viewModel.isUrgentMode ? AppTheme.warning : AppTheme.primary)
         .accessibilityLabel(viewModel.isUrgentMode ? "急需模式已啟用，按兩下結束" : "急需睇獸醫")
         .accessibilityValue(viewModel.isUrgentMode ? "已啟用" : "未啟用")
-        .accessibilityHint(viewModel.isUrgentMode ? "結束急需排序並回復一般目錄次序" : "優先排序 24 小時、營業中及夜診診所；未提供工時的診所仍會保留")
+        .accessibilityHint(viewModel.isUrgentMode ? "結束急需模式並回復一般診所目錄" : "只顯示有現行官方營業資料並確認此刻營業中的診所")
         .accessibilityAddTraits(viewModel.isUrgentMode ? .isSelected : [])
     }
 
@@ -316,6 +316,8 @@ struct ClinicMapView: View {
                         Text("無法載入診所資料")
                     } else if viewModel.clinics.isEmpty {
                         Text("暫未有已審核診所")
+                    } else if viewModel.isUrgentMode {
+                        Text("暫未找到營業中診所")
                     } else {
                         Text("沒有符合條件")
                     }
@@ -327,6 +329,8 @@ struct ClinicMapView: View {
                         Text("請檢查網絡連線後重試")
                     } else if viewModel.clinics.isEmpty {
                         Text("請到「診所」分頁提交資料")
+                    } else if viewModel.isUrgentMode {
+                        Text("只顯示有現行官方營業資料並確認此刻營業中；出發前請先致電")
                     } else {
                         Text(viewModel.filter.activeDescription)
                     }
@@ -343,6 +347,16 @@ struct ClinicMapView: View {
                     viewModel.retryLoad()
                 } label: {
                     Text("重試")
+                        .font(.subheadline.weight(.semibold))
+                }
+                .buttonStyle(.bordered)
+                .buttonBorderShape(.roundedRectangle(radius: AppTheme.cardRadius))
+                .tint(AppTheme.primary)
+            } else if viewModel.isUrgentMode {
+                Button {
+                    viewModel.deactivateUrgentMode()
+                } label: {
+                    Text("顯示全部")
                         .font(.subheadline.weight(.semibold))
                 }
                 .buttonStyle(.bordered)

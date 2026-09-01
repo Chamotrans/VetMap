@@ -16,15 +16,15 @@ func pendingMapLocationCount(directoryCount: Int, markerCount: Int) -> Int {
     max(directoryCount - markerCount, 0)
 }
 
-/// Urgent care deliberately keeps clinics with unavailable or expired hours in
-/// the directory. Availability can prioritise a result, but its absence must
-/// never be turned into a claim that the clinic is closed.
+/// Urgent care shows only clinics whose current, source-backed schedule confirms
+/// they are open now. Missing or expired availability is excluded rather than
+/// guessed; the ordinary directory remains available after urgent mode ends.
 func urgentClinicOrdering(
     _ clinics: [VetClinic],
     from location: CLLocation?,
     at date: Date
 ) -> [VetClinic] {
-    clinics.sorted { lhs, rhs in
+    clinics.filter { $0.isOpen(at: date) }.sorted { lhs, rhs in
         let lhsRank = lhs.availabilitySortRank(at: date)
         let rhsRank = rhs.availabilitySortRank(at: date)
         if lhsRank != rhsRank {
@@ -237,11 +237,11 @@ final class MapViewModel {
 
     /// Called only from the guardian's explicit urgent-care action. Ordinary
     /// filters are cleared because urgent mode has a distinct, transparent
-    /// ranking contract rather than silently combining incompatible filters.
+    /// open-now contract rather than silently combining incompatible filters.
     func activateUrgentMode() {
         filter = ClinicSearchFilter()
         isUrgentMode = true
-        // Urgent activation always selects the deterministic first-ranked
+        // Urgent activation always selects the deterministic first open
         // result. Deactivation intentionally does not clear selection.
         selectedClinicID = nil
         syncSelectionWithFilteredClinics(shouldFocus: true)
