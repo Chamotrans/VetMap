@@ -2831,30 +2831,41 @@ final class VetMapModelTests: XCTestCase {
 
     @MainActor
     func testSupportDeveloperViewModelUsesDeterministicPriceAndPurchaseSeam() async {
-        let viewModel = SupportDeveloperViewModel(testingDisplayPrice: "HK$18")
+        var purchasedProductID: String?
+        let prices = [
+            IAPService.supportDrinkProductID: "HK$18",
+            IAPService.supportHandcraftedDrinkProductID: "HK$28",
+            IAPService.supportMealProductID: "HK$58"
+        ]
+        let viewModel = SupportDeveloperViewModel(
+            testingDisplayPrices: prices,
+            testingPurchase: { purchasedProductID = $0 }
+        )
 
         await viewModel.load()
-        XCTAssertEqual(viewModel.displayPrice, "HK$18")
+        XCTAssertEqual(viewModel.supportOptions.map(\.displayPrice), ["HK$18", "HK$28", "HK$58"])
+        XCTAssertEqual(viewModel.supportOptions.map(\.title), ["轉凍飲", "手搖飲品", "肚餓都只食良"])
         XCTAssertNil(viewModel.errorMessage)
 
-        await viewModel.purchase()
+        await viewModel.purchase(productID: IAPService.supportHandcraftedDrinkProductID)
         XCTAssertTrue(viewModel.purchaseSucceeded)
         XCTAssertFalse(viewModel.isPurchasing)
+        XCTAssertEqual(purchasedProductID, IAPService.supportHandcraftedDrinkProductID)
     }
 
     @MainActor
     func testSupportDeveloperViewModelUnavailableAndCancellationStates() async {
-        let unavailable = SupportDeveloperViewModel(testingDisplayPrice: nil)
+        let unavailable = SupportDeveloperViewModel(testingDisplayPrices: [:])
         await unavailable.load()
-        XCTAssertNil(unavailable.displayPrice)
+        XCTAssertTrue(unavailable.displayPrices.isEmpty)
         XCTAssertNotNil(unavailable.errorMessage)
 
         let cancelled = SupportDeveloperViewModel(
-            testingDisplayPrice: "HK$18",
-            testingPurchase: { throw IAPError.userCancelled }
+            testingDisplayPrices: [IAPService.supportDrinkProductID: "HK$18"],
+            testingPurchase: { _ in throw IAPError.userCancelled }
         )
         await cancelled.load()
-        await cancelled.purchase()
+        await cancelled.purchase(productID: IAPService.supportDrinkProductID)
         XCTAssertFalse(cancelled.purchaseSucceeded)
         XCTAssertNil(cancelled.errorMessage)
         XCTAssertFalse(cancelled.isPurchasing)

@@ -5,7 +5,7 @@ import SwiftUI
 
 // MARK: - StoreKit 2 IAP Products
 // Legacy premium IDs retain their historical entitlement semantics. The drink
-// support item is deliberately a separate consumable, never an entitlement.
+// support items are deliberately separate consumables, never entitlements.
 
 @MainActor
 @Observable
@@ -15,6 +15,14 @@ final class IAPService {
     var isPremium: Bool = false
 
     static let supportDrinkProductID = "com.vetmap.app.support.drink"
+    static let supportHandcraftedDrinkProductID = "com.vetmap.app.support.handcrafted_drink"
+    static let supportMealProductID = "com.vetmap.app.support.meal"
+
+    static let supportProductIDs = [
+        supportDrinkProductID,
+        supportHandcraftedDrinkProductID,
+        supportMealProductID
+    ]
 
     @ObservationIgnored private let premiumProductIDs = [
         "com.vetmap.premium.monthly",
@@ -48,19 +56,25 @@ final class IAPService {
         }
     }
 
-    /// Loads only the optional, one-time drink-support product. Its StoreKit
-    /// display price is the sole price shown to guardians.
-    func loadSupportProduct() async -> Product? {
+    /// Loads only the optional, one-time support products. StoreKit display
+    /// prices are the sole prices shown to guardians.
+    func loadSupportProducts() async -> [Product] {
         do {
-            return try await Product.products(for: [Self.supportDrinkProductID]).first
+            let fetched = try await Product.products(for: Self.supportProductIDs)
+            let order = Dictionary(
+                uniqueKeysWithValues: Self.supportProductIDs.enumerated().map { ($1, $0) }
+            )
+            return fetched.sorted {
+                order[$0.id, default: .max] < order[$1.id, default: .max]
+            }
         } catch {
             print("載入支持產品失敗：\(error.localizedDescription)")
-            return nil
+            return []
         }
     }
 
     func purchaseSupport(_ product: Product) async throws {
-        guard product.id == Self.supportDrinkProductID else {
+        guard Self.supportProductIDs.contains(product.id) else {
             throw IAPError.unknown
         }
         try await purchase(product)

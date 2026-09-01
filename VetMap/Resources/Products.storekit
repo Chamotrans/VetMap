@@ -7,13 +7,43 @@
       "internalID" : "7E9B708A-668E-497D-AB7B-E05708A0E4A0",
       "localizations" : [
         {
-          "description" : "一次性支持 VetMap 核實香港診所資料及維護地圖。並非訂閱，沒有自動續期。",
-          "displayName" : "請開發團隊飲杯嘢",
+          "description" : "天口咁熱請我飲杯凍飲",
+          "displayName" : "轉凍飲",
           "locale" : "zh_Hant"
         }
       ],
       "productID" : "com.vetmap.app.support.drink",
       "referenceName" : "VetMap Drink Support",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "28.00",
+      "familyShareable" : false,
+      "internalID" : "FE38F493-8130-49DD-A0F5-4330EF3A7CC2",
+      "localizations" : [
+        {
+          "description" : "間中飲杯快樂肥仔水唔過分吧",
+          "displayName" : "手搖飲品",
+          "locale" : "zh_Hant"
+        }
+      ],
+      "productID" : "com.vetmap.app.support.handcrafted_drink",
+      "referenceName" : "VetMap Handcrafted Drink Support",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "58.00",
+      "familyShareable" : false,
+      "internalID" : "B055565E-7AA7-4B15-B637-95706E0E8E15",
+      "localizations" : [
+        {
+          "description" : "開發不易，支持IT狗也有選擇的能力",
+          "displayName" : "肚餓都只食良",
+          "locale" : "zh_Hant"
+        }
+      ],
+      "productID" : "com.vetmap.app.support.meal",
+      "referenceName" : "VetMap Meal Support",
       "type" : "Consumable"
     }
   ],

@@ -4,22 +4,68 @@ import StoreKit
 @MainActor
 @Observable
 final class SupportDeveloperViewModel {
-    private let loadSupportPrice: () async -> String?
-    private let purchaseSupport: () async throws -> Void
+    struct SupportOption: Identifiable, Equatable {
+        let id: String
+        let title: String
+        let description: String
+        let displayPrice: String?
+    }
 
-    private(set) var displayPrice: String?
+    private struct SupportCopy {
+        let id: String
+        let title: String
+        let description: String
+    }
+
+    private static let supportCopy = [
+        SupportCopy(
+            id: IAPService.supportDrinkProductID,
+            title: "轉凍飲",
+            description: "天口咁熱請我飲杯凍飲"
+        ),
+        SupportCopy(
+            id: IAPService.supportHandcraftedDrinkProductID,
+            title: "手搖飲品",
+            description: "間中飲杯快樂肥仔水唔過分吧"
+        ),
+        SupportCopy(
+            id: IAPService.supportMealProductID,
+            title: "肚餓都只食良",
+            description: "開發不易，支持IT狗也有選擇的能力"
+        )
+    ]
+
+    private let loadSupportPrices: () async -> [String: String]
+    private let purchaseSupport: (String) async throws -> Void
+
+    private(set) var displayPrices: [String: String] = [:]
     private(set) var isLoading = false
-    private(set) var isPurchasing = false
+    private(set) var purchasingProductID: String?
     private(set) var purchaseSucceeded = false
     private(set) var errorMessage: String?
 
+    var supportOptions: [SupportOption] {
+        Self.supportCopy.map {
+            SupportOption(
+                id: $0.id,
+                title: $0.title,
+                description: $0.description,
+                displayPrice: displayPrices[$0.id]
+            )
+        }
+    }
+
+    var isPurchasing: Bool { purchasingProductID != nil }
+
     init(service: IAPService? = nil) {
         let service = service ?? IAPService()
-        loadSupportPrice = {
-            await service.loadSupportProduct()?.displayPrice
+        loadSupportPrices = {
+            Dictionary(
+                uniqueKeysWithValues: await service.loadSupportProducts().map { ($0.id, $0.displayPrice) }
+            )
         }
-        purchaseSupport = {
-            guard let product = await service.loadSupportProduct() else {
+        purchaseSupport = { productID in
+            guard let product = await service.loadSupportProducts().first(where: { $0.id == productID }) else {
                 throw SupportDeveloperError.productUnavailable
             }
             try await service.purchaseSupport(product)
@@ -29,10 +75,10 @@ final class SupportDeveloperViewModel {
     /// Deterministic seam for model tests. Production continues to use
     /// StoreKit's product metadata and verified transaction path above.
     init(
-        testingDisplayPrice: String?,
-        testingPurchase: @escaping () async throws -> Void = {}
+        testingDisplayPrices: [String: String],
+        testingPurchase: @escaping (String) async throws -> Void = { _ in }
     ) {
-        loadSupportPrice = { testingDisplayPrice }
+        loadSupportPrices = { testingDisplayPrices }
         purchaseSupport = testingPurchase
     }
 
@@ -40,25 +86,25 @@ final class SupportDeveloperViewModel {
         isLoading = true
         errorMessage = nil
         purchaseSucceeded = false
-        displayPrice = await loadSupportPrice()
+        displayPrices = await loadSupportPrices()
         isLoading = false
-        if displayPrice == nil {
+        if displayPrices.isEmpty {
             errorMessage = "暫時未能載入支持選項，請稍後重試。"
         }
     }
 
-    func purchase() async {
-        guard displayPrice != nil else {
+    func purchase(productID: String) async {
+        guard displayPrices[productID] != nil else {
             errorMessage = "支持選項尚未準備好，請先重試載入。"
             return
         }
-        isPurchasing = true
+        purchasingProductID = productID
         errorMessage = nil
         purchaseSucceeded = false
-        defer { isPurchasing = false }
+        defer { purchasingProductID = nil }
 
         do {
-            try await purchaseSupport()
+            try await purchaseSupport(productID)
             purchaseSucceeded = true
         } catch IAPError.userCancelled {
             // Cancellation is not a failure message and should be quiet.

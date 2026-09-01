@@ -22,21 +22,44 @@ struct SupportDeveloperView: View {
             Section("一次性支持") {
                 if viewModel.isLoading {
                     HStack { ProgressView(); Text("正在載入支持選項…") }
-                } else if let price = viewModel.displayPrice {
-                    Button {
-                        Task { await viewModel.purchase() }
-                    } label: {
-                        HStack {
-                            Label("請開發團隊飲杯嘢", systemImage: "cup.and.saucer.fill")
-                            Spacer()
-                            Text(price).monospacedDigit()
-                        }
-                    }
-                    .disabled(viewModel.isPurchasing)
-                    .accessibilityHint("一次性支持，並非訂閱或自動續期")
                 } else {
-                    Button("重新載入") { Task { await viewModel.load() } }
-                        .accessibilityHint("重新向 App Store 載入一次性支持選項")
+                    ForEach(viewModel.supportOptions) { option in
+                        Button {
+                            Task { await viewModel.purchase(productID: option.id) }
+                        } label: {
+                            HStack(spacing: 14) {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(option.title)
+                                        .font(.headline)
+                                    Text(option.description)
+                                        .font(.footnote)
+                                        .foregroundStyle(.secondary)
+                                        .multilineTextAlignment(.leading)
+                                }
+                                Spacer(minLength: 12)
+                                if viewModel.purchasingProductID == option.id {
+                                    ProgressView()
+                                } else if let price = option.displayPrice {
+                                    Text(price)
+                                        .font(.headline)
+                                        .monospacedDigit()
+                                } else {
+                                    Text("未能載入")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                            .contentShape(Rectangle())
+                        }
+                        .disabled(viewModel.isPurchasing || option.displayPrice == nil)
+                        .accessibilityLabel("\(option.title)，\(option.displayPrice ?? "暫時未能載入")")
+                        .accessibilityHint("一次性支持，並非訂閱或自動續期")
+                    }
+
+                    if viewModel.displayPrices.isEmpty {
+                        Button("重新載入") { Task { await viewModel.load() } }
+                            .accessibilityHint("重新向 App Store 載入一次性支持選項")
+                    }
                 }
             }
 
