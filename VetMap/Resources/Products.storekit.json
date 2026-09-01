@@ -1,6 +1,14 @@
 {
   "products": [
     {
+      "id": "com.vetmap.app.support.drink",
+      "type": "consumable",
+      "displayName": "請開發團隊飲杯嘢",
+      "description": "一次性支持 VetMap 核實香港診所資料及維護地圖；並非訂閱，沒有自動續期。",
+      "price": 18,
+      "currency": "HKD"
+    },
+    {
       "id": "com.vetmap.premium.monthly",
       "type": "non-consumable",
       "displayName": "VetMap Premium 月費",

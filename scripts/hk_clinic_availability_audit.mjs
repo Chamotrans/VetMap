@@ -4,17 +4,21 @@ import {
 import {
   validateHKClinicHoursV2Pending,
 } from "./validate_hk_clinic_hours_v2_pending.mjs";
+import {
+  validateHKClinicHoursV3Pending,
+} from "./validate_hk_clinic_hours_v3_pending.mjs";
 
 export const AVAILABILITY_STATES = new Set([
   "deployed-v1",
   "post-apply-v2",
+  "post-apply-v3",
 ]);
 const V1_MIGRATION_ID = "hk-clinic-hours-v1-2026-07-30";
 
 function usageError() {
   return new Error(
     "Usage: node scripts/audit_firestore_public.mjs [--public-only] "
-    + "[--availability-state deployed-v1|post-apply-v2]",
+    + "[--availability-state deployed-v1|post-apply-v2|post-apply-v3]",
   );
 }
 
@@ -46,9 +50,9 @@ export function parseAuditOptions(args) {
     throw usageError();
   }
 
-  if (publicOnly && availabilityState === "post-apply-v2") {
+  if (publicOnly && availabilityState !== "deployed-v1") {
     throw new Error(
-      "post-apply-v2 requires a full authenticated authoritative audit.",
+      `${availabilityState} requires a full authenticated authoritative audit.`,
     );
   }
   return {
@@ -93,6 +97,7 @@ export function buildAvailabilityExpectation({
   catalog,
   v1Hours,
   pending,
+  v3Hours,
   report,
   availabilityState,
   now = new Date(),
@@ -107,10 +112,19 @@ export function buildAvailabilityExpectation({
   if (availabilityState === "post-apply-v2") {
     validateHKClinicHoursV2Pending({catalog, v1Hours, pending, report});
   }
+  if (availabilityState === "post-apply-v3") {
+    validateHKClinicHoursV2Pending({catalog, v1Hours, pending, report});
+    validateHKClinicHoursV3Pending({
+      catalog,
+      v1Hours,
+      v2Hours: pending,
+      pending: v3Hours,
+    });
+  }
   const selectedExpiry = new Date(
-    availabilityState === "post-apply-v2"
-      ? pending.expiresAt
-      : v1Hours.expiresAt,
+    availabilityState === "post-apply-v3" ? v3Hours.expiresAt
+      : availabilityState === "post-apply-v2" ? pending.expiresAt
+        : v1Hours.expiresAt,
   );
   if (!Number.isFinite(selectedExpiry.getTime()) || selectedExpiry <= now) {
     throw new Error(`${availabilityState}: selected availability plan is stale.`);
@@ -123,10 +137,18 @@ export function buildAvailabilityExpectation({
       migrationId: V1_MIGRATION_ID,
     })),
     ...(availabilityState === "post-apply-v2"
+      || availabilityState === "post-apply-v3"
       ? pending.clinics.map((clinic) => ({
         clinic,
         manifest: pending,
         migrationId: pending.migrationId,
+      }))
+      : []),
+    ...(availabilityState === "post-apply-v3"
+      ? v3Hours.clinics.map((clinic) => ({
+        clinic,
+        manifest: v3Hours,
+        migrationId: v3Hours.migrationId,
       }))
       : []),
   ];
@@ -140,8 +162,10 @@ export function buildAvailabilityExpectation({
   const twentyFourHours = entries.filter(
     ({clinic}) => clinic.is24Hours,
   ).length;
-  const expectedCount = availabilityState === "deployed-v1" ? 11 : 15;
-  const expectedTwentyFourHours = availabilityState === "deployed-v1" ? 10 : 11;
+  const expectedCount = availabilityState === "deployed-v1" ? 11
+    : availabilityState === "post-apply-v2" ? 15 : 33;
+  const expectedTwentyFourHours = availabilityState === "deployed-v1" ? 10
+    : availabilityState === "post-apply-v2" ? 11 : 14;
   if (
     availabilityByID.size !== expectedCount
     || twentyFourHours !== expectedTwentyFourHours

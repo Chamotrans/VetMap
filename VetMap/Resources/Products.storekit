@@ -1,6 +1,28 @@
 {
-  "info" : {
-    "author" : "xcode",
-    "version" : 1
+  "identifier" : "VetMapSupport",
+  "products" : [
+    {
+      "displayPrice" : "18.00",
+      "familyShareable" : false,
+      "internalID" : "7E9B708A-668E-497D-AB7B-E05708A0E4A0",
+      "localizations" : [
+        {
+          "description" : "一次性支持 VetMap 核實香港診所資料及維護地圖。並非訂閱，沒有自動續期。",
+          "displayName" : "請開發團隊飲杯嘢",
+          "locale" : "zh_Hant"
+        }
+      ],
+      "productID" : "com.vetmap.app.support.drink",
+      "referenceName" : "VetMap Drink Support",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_storefront" : "HK"
+  },
+  "version" : {
+    "major" : 3,
+    "minor" : 0
   }
 }

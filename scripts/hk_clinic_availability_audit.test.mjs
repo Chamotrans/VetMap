@@ -22,6 +22,7 @@ async function fixtures() {
     catalog: await readJSON("../catalog/hk_clinics_v1.json"),
     v1Hours: await readJSON("../catalog/hk_clinic_hours_v1.json"),
     pending: await readJSON("../catalog/hk_clinic_hours_v2.pending.json"),
+    v3Hours: await readJSON("../catalog/hk_clinic_hours_v3.pending.json"),
     report: await readJSON("../catalog/hk_clinics_v1.report.json"),
   };
 }
@@ -56,7 +57,7 @@ test("CLI defaults fail-closed to deployed-v1", () => {
   });
 });
 
-test("CLI accepts both states and order-independent flags", () => {
+test("CLI accepts all states and order-independent flags", () => {
   assert.deepEqual(
     parseAuditOptions(["--availability-state", "deployed-v1"]),
     {
@@ -74,9 +75,14 @@ test("CLI accepts both states and order-independent flags", () => {
       .availabilityState,
     "post-apply-v2",
   );
+  assert.equal(
+    parseAuditOptions(["--availability-state", "post-apply-v3"])
+      .availabilityState,
+    "post-apply-v3",
+  );
 });
 
-test("CLI rejects unknown, duplicate, missing, and public-only v2 options", () => {
+test("CLI rejects unknown, duplicate, missing, and public-only post-apply options", () => {
   for (const args of [
     ["--unknown"],
     ["--public-only", "--public-only"],
@@ -94,6 +100,14 @@ test("CLI rejects unknown, duplicate, missing, and public-only v2 options", () =
     ]),
     /requires a full authenticated authoritative audit/,
   );
+  assert.throws(
+    () => parseAuditOptions([
+      "--public-only",
+      "--availability-state",
+      "post-apply-v3",
+    ]),
+    /requires a full authenticated authoritative audit/,
+  );
 });
 
 test("selected manifests fail before a network seam can start", async () => {
@@ -108,6 +122,15 @@ test("selected manifests fail before a network seam can start", async () => {
   };
   await assert.rejects(validateThenNetwork(), /deploymentStatus/);
   assert.equal(networkCalled, false);
+});
+
+test("post-apply-v3 rejects an expired v3 verification window", async () => {
+  const values = clone(await fixtures());
+  values.v3Hours.expiresAt = "2026-08-31T23:59:59+08:00";
+  assert.throws(
+    () => expectation(values, "post-apply-v3"),
+    /verification window is stale or overlong/,
+  );
 });
 
 test("deployed-v1 exact overlay passes at 11/10/1", async () => {
@@ -146,6 +169,24 @@ test("post-apply-v2 exact merged overlay passes at 15/11/4", async () => {
   );
 });
 
+test("post-apply-v3 exact merged overlay passes at 33/14/19", async () => {
+  const values = await fixtures();
+  const expected = expectation(values, "post-apply-v3");
+  assert.deepEqual({
+    total: expected.total,
+    twentyFourHours: expected.twentyFourHours,
+    scheduled: expected.scheduled,
+  }, {total: 33, twentyFourHours: 14, scheduled: 19});
+  assert.deepEqual(
+    verifyHKClinicAvailability(
+      buildDocuments(values, expected),
+      expected,
+      "authenticated clinics",
+    ),
+    {total: 33, twentyFourHours: 14, scheduled: 19},
+  );
+});
+
 test("expectations pin v1 and v2 migration IDs", async () => {
   const values = await fixtures();
   const v1 = expectation(values, "deployed-v1");
@@ -159,6 +200,15 @@ test("expectations pin v1 and v2 migration IDs", async () => {
     new Set([
       "hk-clinic-hours-v1-2026-07-30",
       "hk-clinic-hours-v2-2026-08-02",
+    ]),
+  );
+  const v3 = expectation(values, "post-apply-v3");
+  assert.deepEqual(
+    new Set([...v3.availabilityByID.values()].map(({migrationId}) => migrationId)),
+    new Set([
+      "hk-clinic-hours-v1-2026-07-30",
+      "hk-clinic-hours-v2-2026-08-02",
+      "hk-clinic-hours-v3-2026-09-01",
     ]),
   );
 });

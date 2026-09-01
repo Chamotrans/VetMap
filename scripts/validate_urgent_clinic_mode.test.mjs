@@ -12,15 +12,22 @@ test("urgent CTA has an explicit, permission-safe activation path", async () => 
   ]);
 
   assert.match(map, /"急需睇獸醫"/);
-  assert.match(map, /viewModel\.activateUrgentMode\(\)\s+focusOnUserLocation\(\)/);
+  assert.match(map, /viewModel\.toggleUrgentMode\(\)/);
   assert.match(model, /private\(set\) var isUrgentMode = false/);
   assert.match(model, /func activateUrgentMode\(\)/);
   assert.match(model, /filter = ClinicSearchFilter\(\)\s+isUrgentMode = true/);
-  assert.match(model, /if isUrgentMode \{\s*reconciledID = visibleClinics\.first\?\.id/);
+  assert.match(model, /func deactivateUrgentMode\(\)/);
+  assert.match(model, /func toggleUrgentMode\(\)/);
+  assert.match(model, /reconciledClinicSelection\(\s*currentID: selectedClinicID/);
   assert.match(model, /guard reconciledID != selectedClinicID else \{\s*return/);
   assert.match(model, /func clearFilters\(\)\s*\{\s*isUrgentMode = false/);
   assert.match(model, /if filter != oldValue\s*\{\s*isUrgentMode = false/);
-  assert.match(map, /viewModel\.isUrgentMode \? "急需模式已啟用"/);
+  assert.match(map, /viewModel\.isUrgentMode \? "結束急需模式"/);
+  assert.match(map, /accessibilityValue\(viewModel\.isUrgentMode \? "已啟用" : "未啟用"\)/);
+  assert.match(map, /accessibilityAddTraits\(viewModel\.isUrgentMode \? \.isSelected : \[\]\)/);
+  assert.match(map, /\.buttonStyle\(\.bordered\)/);
+  assert.doesNotMatch(map, /\.buttonStyle\(viewModel\.isUrgentMode \?/);
+  assert.match(map, /\.background\(\s*viewModel\.isUrgentMode \? AppTheme\.warning/);
   assert.match(location, /func requestLocationFromButton\(\)/);
   assert.equal((map.match(/requestLocationFromButton\(\)/g) ?? []).length, 1);
 });
@@ -77,7 +84,7 @@ test("1.1 branding, tab naming, and community entry points remain intact", async
 
   const versions = project.match(/MARKETING_VERSION = ([^;]+);/g) ?? [];
   assert.ok(versions.length > 0);
-  assert.ok(versions.every((version) => version === "MARKETING_VERSION = 1.1;"));
+  assert.ok(versions.every((version) => version === "MARKETING_VERSION = 1.2;"));
   assert.match(content, /static let primary = Color\(red: 0\.64, green: 0\.31, blue: 0\.02\)/);
   assert.match(content, /static let accent = Color\(red: 0\.29, green: 0\.43, blue: 0\.48\)/);
   assert.match(content, /Label\("服務", systemImage: "storefront\.fill"\)/);

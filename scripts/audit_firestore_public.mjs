@@ -12,6 +12,8 @@ const auditMode = options.auditMode;
 const availabilityState = options.availabilityState;
 const authoritativeInventoryChecked = auditMode === "full";
 const projectId = "vetmap-app";
+const demoClinicID = "vetmap-demo-clinic";
+const demoClinicName = "VetMap 示範診所（非真實商戶）";
 const accessToken = process.env.FIREBASE_ACCESS_TOKEN;
 const plistURL = new URL("../VetMap/GoogleService-Info.plist", import.meta.url);
 const plist = await readFile(plistURL, "utf8");
@@ -31,6 +33,10 @@ const pendingHoursManifest = JSON.parse(await readFile(
   new URL("../catalog/hk_clinic_hours_v2.pending.json", import.meta.url),
   "utf8",
 ));
+const v3HoursManifest = JSON.parse(await readFile(
+  new URL("../catalog/hk_clinic_hours_v3.pending.json", import.meta.url),
+  "utf8",
+));
 const clinicReport = JSON.parse(await readFile(
   new URL("../catalog/hk_clinics_v1.report.json", import.meta.url),
   "utf8",
@@ -39,6 +45,7 @@ const availabilityExpectation = buildAvailabilityExpectation({
   catalog: clinicManifest,
   v1Hours: clinicHoursManifest,
   pending: pendingHoursManifest,
+  v3Hours: v3HoursManifest,
   report: clinicReport,
   availabilityState,
 });
@@ -279,6 +286,7 @@ const expectedApprovedCounts = {
 
 let publicAvailabilitySummary;
 let authenticatedAvailabilitySummary;
+let authenticatedInertClinicExtras = [];
 
 for (const [collection, expectedCount] of Object.entries(expectedApprovedCounts)) {
   const rawDocuments = await listApproved(collection);
@@ -309,12 +317,18 @@ for (const [collection, expectedCount] of Object.entries(expectedApprovedCounts)
         document.catalogRegion === "HK"
         && document.migrationId === "hk-clinics-v2-2026-07-28",
     );
+    const demoClinic = documents.find(({id}) => id === demoClinicID);
     const mappableClinics = hkClinics.filter(({coordinate}) => coordinate);
     if (
       hkClinics.length !== clinicManifest.count
       || mappableClinics.length
         !== clinicManifest.clinics.filter(({coordinate}) => coordinate).length
-      || !documents.some(({id}) => id === "vetmap-demo-clinic")
+      || !documents.some(({id}) => id === demoClinicID)
+      || demoClinic?.name !== demoClinicName
+      || demoClinic?.status !== "approved"
+      || Object.hasOwn(demoClinic ?? {}, "availability")
+      || (demoClinic?.catalogRegion !== undefined && demoClinic.catalogRegion !== "demo")
+      || (demoClinic?.region !== undefined && demoClinic.region !== "demo")
       || hkClinics.some(({id}) => !expectedClinicIDs.has(id))
       || hkClinics.some(
         (document) => {
@@ -375,6 +389,22 @@ for (const [collection, expectedCount] of Object.entries(expectedApprovedCounts)
       const authoritativeClinicInventory = (
         await listAuthoritativeCollection("clinics")
       ).map(decodeDocument);
+      authenticatedInertClinicExtras = authoritativeClinicInventory.filter(
+        (document) => !expectedClinicIDs.has(document.id)
+          && document.id !== demoClinicID,
+      );
+      for (const document of authenticatedInertClinicExtras) {
+        if (
+          Object.hasOwn(document, "availability")
+          || document.status === "approved"
+          || document.catalogRegion === "HK"
+          || document.region === "HK"
+        ) {
+          throw new Error(
+            `authenticated clinic inventory: inert extra is unsafe at ${document.id}.`,
+          );
+        }
+      }
       verifyNoAvailabilityOutsidePlan(
         authoritativeClinicInventory,
         availabilityExpectation,
@@ -400,6 +430,7 @@ for (const [collection, expectedCount] of Object.entries(expectedApprovedCounts)
       collection: "clinics",
       authorizedCatalogEntries: hkClinics.length,
       demoEntries: documents.length - hkClinics.length,
+      authenticatedInertNonPublicEntries: authenticatedInertClinicExtras.length,
       mappableEntries: mappableClinics.length,
       listOnlyEntries: hkClinics.length - mappableClinics.length,
       uniqueAuthorizedSourceRecords: uniqueSourceRecordIDs.size,

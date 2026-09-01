@@ -241,12 +241,32 @@ final class MapViewModel {
     func activateUrgentMode() {
         filter = ClinicSearchFilter()
         isUrgentMode = true
+        // Urgent activation always selects the deterministic first-ranked
+        // result. Deactivation intentionally does not clear selection.
+        selectedClinicID = nil
         syncSelectionWithFilteredClinics(shouldFocus: true)
+    }
+
+    /// Leaves urgent ranking and restores ordinary directory sorting. The
+    /// existing selection is retained whenever it remains visible.
+    func deactivateUrgentMode() {
+        isUrgentMode = false
+        syncSelectionWithFilteredClinics(shouldFocus: true)
+    }
+
+    func toggleUrgentMode() {
+        if isUrgentMode {
+            deactivateUrgentMode()
+        } else {
+            activateUrgentMode()
+        }
     }
 
     func updateContextualLocation(_ location: CLLocation?) {
         contextualLocation = location
         guard isUrgentMode else { return }
+        // A fresh location can change the explicit urgent ranking contract.
+        selectedClinicID = nil
         syncSelectionWithFilteredClinics(shouldFocus: false)
     }
 
@@ -282,14 +302,10 @@ final class MapViewModel {
     private func syncSelectionWithFilteredClinics(shouldFocus: Bool) {
         let visibleClinics = filteredClinics
         let reconciledID: String?
-        if isUrgentMode {
-            reconciledID = visibleClinics.first?.id
-        } else {
-            reconciledID = reconciledClinicSelection(
-                currentID: selectedClinicID,
-                visibleIDs: visibleClinics.map(\.id)
-            )
-        }
+        reconciledID = reconciledClinicSelection(
+            currentID: selectedClinicID,
+            visibleIDs: visibleClinics.map(\.id)
+        )
         guard reconciledID != selectedClinicID else {
             return
         }

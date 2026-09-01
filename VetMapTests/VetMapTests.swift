@@ -2802,6 +2802,64 @@ final class VetMapModelTests: XCTestCase {
         XCTAssertEqual(viewModel.purchaseError, "找不到對應產品，請稍後再試")
     }
 
+    // MARK: - VetMap 1.2 support and urgent mode
+
+    @MainActor
+    func testUrgentModeCanDeactivateAndPreservesVisibleSelection() {
+        let first = makeClinic(id: "urgent-first", name: "A 診所")
+        let second = makeClinic(id: "urgent-second", name: "B 診所")
+        let viewModel = MapViewModel(
+            testingClinics: [second, first],
+            at: date
+        )
+
+        viewModel.activateUrgentMode()
+        let urgentSelection = try? XCTUnwrap(viewModel.selectedClinicID)
+        XCTAssertTrue(viewModel.isUrgentMode)
+
+        viewModel.deactivateUrgentMode()
+
+        XCTAssertFalse(viewModel.isUrgentMode)
+        XCTAssertEqual(viewModel.selectedClinicID, urgentSelection)
+        XCTAssertTrue(viewModel.filteredClinics.contains { $0.id == urgentSelection })
+
+        viewModel.toggleUrgentMode()
+        XCTAssertTrue(viewModel.isUrgentMode)
+        viewModel.toggleUrgentMode()
+        XCTAssertFalse(viewModel.isUrgentMode)
+    }
+
+    @MainActor
+    func testSupportDeveloperViewModelUsesDeterministicPriceAndPurchaseSeam() async {
+        let viewModel = SupportDeveloperViewModel(testingDisplayPrice: "HK$18")
+
+        await viewModel.load()
+        XCTAssertEqual(viewModel.displayPrice, "HK$18")
+        XCTAssertNil(viewModel.errorMessage)
+
+        await viewModel.purchase()
+        XCTAssertTrue(viewModel.purchaseSucceeded)
+        XCTAssertFalse(viewModel.isPurchasing)
+    }
+
+    @MainActor
+    func testSupportDeveloperViewModelUnavailableAndCancellationStates() async {
+        let unavailable = SupportDeveloperViewModel(testingDisplayPrice: nil)
+        await unavailable.load()
+        XCTAssertNil(unavailable.displayPrice)
+        XCTAssertNotNil(unavailable.errorMessage)
+
+        let cancelled = SupportDeveloperViewModel(
+            testingDisplayPrice: "HK$18",
+            testingPurchase: { throw IAPError.userCancelled }
+        )
+        await cancelled.load()
+        await cancelled.purchase()
+        XCTAssertFalse(cancelled.purchaseSucceeded)
+        XCTAssertNil(cancelled.errorMessage)
+        XCTAssertFalse(cancelled.isPurchasing)
+    }
+
     // MARK: - ReviewViewModel Additional Tests
 
     @MainActor

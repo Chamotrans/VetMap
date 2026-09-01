@@ -184,20 +184,31 @@ struct ClinicMapView: View {
 
     private var urgentCareControl: some View {
         Button {
-            viewModel.activateUrgentMode()
-            focusOnUserLocation()
+            let wasUrgent = viewModel.isUrgentMode
+            viewModel.toggleUrgentMode()
+            if !wasUrgent {
+                focusOnUserLocation()
+            }
         } label: {
             Label(
-                viewModel.isUrgentMode ? "急需模式已啟用" : "急需睇獸醫",
-                systemImage: "cross.case.fill"
+                viewModel.isUrgentMode ? "結束急需模式" : "急需睇獸醫",
+                systemImage: viewModel.isUrgentMode ? "xmark.circle.fill" : "cross.case.fill"
             )
             .font(.subheadline.weight(.bold))
             .frame(maxWidth: .infinity, minHeight: 46)
+            .foregroundStyle(viewModel.isUrgentMode ? Color.white : AppTheme.primary)
+            .background(
+                viewModel.isUrgentMode ? AppTheme.warning : AppTheme.primary.opacity(0.10),
+                in: RoundedRectangle(cornerRadius: AppTheme.cardRadius, style: .continuous)
+            )
         }
-        .buttonStyle(.borderedProminent)
+        .buttonStyle(.bordered)
         .buttonBorderShape(.roundedRectangle(radius: AppTheme.cardRadius))
-        .tint(AppTheme.primary)
-        .accessibilityHint("優先顯示 24 小時、營業中及夜診診所；未提供工時的診所仍會保留")
+        .tint(viewModel.isUrgentMode ? AppTheme.warning : AppTheme.primary)
+        .accessibilityLabel(viewModel.isUrgentMode ? "急需模式已啟用，按兩下結束" : "急需睇獸醫")
+        .accessibilityValue(viewModel.isUrgentMode ? "已啟用" : "未啟用")
+        .accessibilityHint(viewModel.isUrgentMode ? "結束急需排序並回復一般目錄次序" : "優先排序 24 小時、營業中及夜診診所；未提供工時的診所仍會保留")
+        .accessibilityAddTraits(viewModel.isUrgentMode ? .isSelected : [])
     }
 
     @ViewBuilder

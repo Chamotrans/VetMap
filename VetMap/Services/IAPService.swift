@@ -4,8 +4,8 @@ import StoreKit
 import SwiftUI
 
 // MARK: - StoreKit 2 IAP Products
-// Product IDs: com.vetmap.premium.monthly / .yearly
-// Configure matching products in App Store Connect
+// Legacy premium IDs retain their historical entitlement semantics. The drink
+// support item is deliberately a separate consumable, never an entitlement.
 
 @MainActor
 @Observable
@@ -14,7 +14,9 @@ final class IAPService {
     var purchasedProductIDs: Set<String> = []
     var isPremium: Bool = false
 
-    @ObservationIgnored private let productIDs = [
+    static let supportDrinkProductID = "com.vetmap.app.support.drink"
+
+    @ObservationIgnored private let premiumProductIDs = [
         "com.vetmap.premium.monthly",
         "com.vetmap.premium.yearly"
     ]
@@ -39,11 +41,29 @@ final class IAPService {
 
     func loadProducts() async {
         do {
-            let fetched = try await Product.products(for: productIDs)
+            let fetched = try await Product.products(for: premiumProductIDs)
             products = fetched.sorted { $0.price < $1.price }
         } catch {
             print("載入產品失敗：\(error.localizedDescription)")
         }
+    }
+
+    /// Loads only the optional, one-time drink-support product. Its StoreKit
+    /// display price is the sole price shown to guardians.
+    func loadSupportProduct() async -> Product? {
+        do {
+            return try await Product.products(for: [Self.supportDrinkProductID]).first
+        } catch {
+            print("載入支持產品失敗：\(error.localizedDescription)")
+            return nil
+        }
+    }
+
+    func purchaseSupport(_ product: Product) async throws {
+        guard product.id == Self.supportDrinkProductID else {
+            throw IAPError.unknown
+        }
+        try await purchase(product)
     }
 
     func purchase(_ product: Product) async throws {
@@ -77,7 +97,7 @@ final class IAPService {
     func checkEntitlement() async {
         for await result in Transaction.currentEntitlements {
             if case .verified(let transaction) = result {
-                if productIDs.contains(transaction.productID) {
+                if premiumProductIDs.contains(transaction.productID) {
                     purchasedProductIDs.insert(transaction.productID)
                     isPremium = true
                 }
@@ -86,7 +106,7 @@ final class IAPService {
     }
 
     private func handle(_ transaction: StoreKit.Transaction) async {
-        if productIDs.contains(transaction.productID) {
+        if premiumProductIDs.contains(transaction.productID) {
             purchasedProductIDs.insert(transaction.productID)
             isPremium = true
         }

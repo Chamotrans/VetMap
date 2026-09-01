@@ -1,0 +1,933 @@
+{
+  "schemaVersion": 1,
+  "migrationId": "hk-clinic-hours-v3-2026-09-01",
+  "deploymentStatus": "pending",
+  "catalogRegion": "HK",
+  "timeZoneIdentifier": "Asia/Hong_Kong",
+  "verifiedAt": "2026-09-01T00:00:00+08:00",
+  "expiresAt": "2026-11-30T00:00:00+08:00",
+  "count": 18,
+  "clinics": [
+    {
+      "clinicID": "clinic-hk-vetmap-vet-038",
+      "expectedName": "康迪亞獸醫",
+      "expectedAddress": "香港跑馬地藍塘道5至7號低座地下及一樓",
+      "expectedPhone": "2679 1000",
+      "is24Hours": true,
+      "offersNightService": true,
+      "displayLabel": "24 小時急症",
+      "serviceNote": "公眾假期、預約及急症安排可能有變，出發前請先致電診所確認。",
+      "weeklyHours": {},
+      "sourceName": "Concordia Pet Care 官方網站",
+      "sourceURL": "https://www.concordiapetcare.com/aboutus"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-027",
+      "expectedName": "長康動物醫院",
+      "expectedAddress": "香港北角堡壘街38號地下",
+      "expectedPhone": "2530 0101",
+      "is24Hours": false,
+      "offersNightService": false,
+      "displayLabel": "",
+      "serviceNote": "公眾假期、預約及急症安排可能有變，出發前請先致電診所確認。",
+      "weeklyHours": {
+        "mon": [
+          {
+            "opensAt": "10:00",
+            "closesAt": "20:00"
+          }
+        ],
+        "tue": [
+          {
+            "opensAt": "10:00",
+            "closesAt": "20:00"
+          }
+        ],
+        "wed": [
+          {
+            "opensAt": "10:00",
+            "closesAt": "20:00"
+          }
+        ],
+        "thu": [
+          {
+            "opensAt": "10:00",
+            "closesAt": "20:00"
+          }
+        ],
+        "fri": [
+          {
+            "opensAt": "10:00",
+            "closesAt": "20:00"
+          }
+        ],
+        "sat": [
+          {
+            "opensAt": "10:00",
+            "closesAt": "20:00"
+          }
+        ],
+        "sun": [
+          {
+            "opensAt": "10:00",
+            "closesAt": "20:00"
+          }
+        ]
+      },
+      "sourceName": "Cosmo Pet 官方網站",
+      "sourceURL": "https://www.cosmopethk.com/"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-036",
+      "expectedName": "港島獸醫診所",
+      "expectedAddress": "香港跑馬地成和道67D至E號壹鑾地下1至2號舖",
+      "expectedPhone": "2982 0222",
+      "is24Hours": false,
+      "offersNightService": false,
+      "displayLabel": "",
+      "serviceNote": "公眾假期、預約及急症安排可能有變，出發前請先致電診所確認。",
+      "weeklyHours": {
+        "mon": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "tue": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "wed": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "thu": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "fri": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "sat": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "sun": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ]
+      },
+      "sourceName": "港島獸醫診所官方網站",
+      "sourceURL": "https://www.hkivc.com.hk/home"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-033",
+      "expectedName": "灣仔動物醫院",
+      "expectedAddress": "香港灣仔交加里7號永成大廈地下及地庫",
+      "expectedPhone": "2572 5422",
+      "is24Hours": false,
+      "offersNightService": false,
+      "displayLabel": "",
+      "serviceNote": "公眾假期、預約及急症安排可能有變，出發前請先致電診所確認。",
+      "weeklyHours": {
+        "mon": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "12:00"
+          },
+          {
+            "opensAt": "15:30",
+            "closesAt": "19:00"
+          }
+        ],
+        "tue": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "12:00"
+          },
+          {
+            "opensAt": "15:30",
+            "closesAt": "19:00"
+          }
+        ],
+        "wed": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "12:00"
+          },
+          {
+            "opensAt": "15:30",
+            "closesAt": "19:00"
+          }
+        ],
+        "thu": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "12:00"
+          },
+          {
+            "opensAt": "15:30",
+            "closesAt": "19:00"
+          }
+        ],
+        "fri": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "12:00"
+          },
+          {
+            "opensAt": "15:30",
+            "closesAt": "19:00"
+          }
+        ],
+        "sat": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "12:00"
+          },
+          {
+            "opensAt": "15:30",
+            "closesAt": "19:00"
+          }
+        ],
+        "sun": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "12:00"
+          },
+          {
+            "opensAt": "15:30",
+            "closesAt": "19:00"
+          }
+        ]
+      },
+      "sourceName": "灣仔動物醫院官方網站",
+      "sourceURL": "https://www.hongkongvet.com/zh-hant/contact/"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-099",
+      "expectedName": "沙田動物醫院",
+      "expectedAddress": "香港新界大圍積存街74-76號慶雲樓地下B號舖",
+      "expectedPhone": "2694 1452",
+      "is24Hours": false,
+      "offersNightService": false,
+      "displayLabel": "",
+      "serviceNote": "公眾假期、預約及急症安排可能有變，出發前請先致電診所確認。",
+      "weeklyHours": {
+        "mon": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "tue": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "wed": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "thu": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "fri": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "sat": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "sun": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "17:00"
+          }
+        ]
+      },
+      "sourceName": "沙田動物醫院官方網站",
+      "sourceURL": "https://www.hongkongvet.com/zh-hant/contact/"
+    },
+    {
+      "clinicID": "hk-npv-non-profit-vet-services-npv29",
+      "expectedName": "非牟利獸醫診所",
+      "expectedAddress": "香港九龍太子基隆街22-24號及77號",
+      "expectedPhone": "2393 2070",
+      "is24Hours": false,
+      "offersNightService": false,
+      "displayLabel": "",
+      "serviceNote": "公眾假期、預約及急症安排可能有變，出發前請先致電診所確認。",
+      "weeklyHours": {
+        "mon": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "tue": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "wed": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "thu": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "fri": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "sat": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "sun": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ]
+      },
+      "sourceName": "非牟利獸醫服務協會官方網站",
+      "sourceURL": "https://www.npv.org.hk/vet-service/clinic-info/clinic/"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-067",
+      "expectedName": "九龍動物醫院",
+      "expectedAddress": "香港九龍城聯合道2號裕聯大廈地下",
+      "expectedPhone": "2382 3300",
+      "is24Hours": false,
+      "offersNightService": false,
+      "displayLabel": "",
+      "serviceNote": "公眾假期、預約及急症安排可能有變，出發前請先致電診所確認。",
+      "weeklyHours": {
+        "mon": [
+          {
+            "opensAt": "10:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "tue": [
+          {
+            "opensAt": "10:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "wed": [
+          {
+            "opensAt": "10:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "thu": [
+          {
+            "opensAt": "10:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "fri": [
+          {
+            "opensAt": "10:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "sat": [
+          {
+            "opensAt": "10:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "sun": [
+          {
+            "opensAt": "10:00",
+            "closesAt": "19:00"
+          }
+        ]
+      },
+      "sourceName": "九龍動物醫院官方網站",
+      "sourceURL": "https://kowloon-vet-hospital.com/%E8%81%AF%E7%B5%A1%E6%88%91%E5%80%91/?lang=zh-hans"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-084",
+      "expectedName": "西九龍動物醫院",
+      "expectedAddress": "香港九龍佐敦文苑街2號地舖",
+      "expectedPhone": "3500 5800",
+      "is24Hours": false,
+      "offersNightService": false,
+      "displayLabel": "",
+      "serviceNote": "公眾假期、預約及急症安排可能有變，出發前請先致電診所確認。",
+      "weeklyHours": {
+        "mon": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "tue": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "wed": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "thu": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "fri": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "sat": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "sun": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ]
+      },
+      "sourceName": "Peticare 官方網站",
+      "sourceURL": "https://www.peticare.com.hk/health"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-163",
+      "expectedName": "珍寵東九龍動物醫院",
+      "expectedAddress": "香港九龍觀塘通明街9號觀塘戲院大廈A座地下",
+      "expectedPhone": "2345 6504",
+      "is24Hours": true,
+      "offersNightService": true,
+      "displayLabel": "24 小時急症",
+      "serviceNote": "公眾假期、預約及急症安排可能有變，出發前請先致電診所確認。",
+      "weeklyHours": {},
+      "sourceName": "Peticare 官方網站",
+      "sourceURL": "https://www.peticare.com.hk/health"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-055",
+      "expectedName": "港島西動物醫院",
+      "expectedAddress": "香港堅尼地城海旁27號城暉大廈3號舖",
+      "expectedPhone": "3500 5830",
+      "is24Hours": false,
+      "offersNightService": false,
+      "displayLabel": "",
+      "serviceNote": "公眾假期、預約及急症安排可能有變，出發前請先致電診所確認。",
+      "weeklyHours": {
+        "mon": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "tue": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "wed": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "thu": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "fri": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "sat": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "sun": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ]
+      },
+      "sourceName": "Peticare 官方網站",
+      "sourceURL": "https://www.peticare.com.hk/health"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-076",
+      "expectedName": "勝利動物醫院",
+      "expectedAddress": "香港九龍旺角窩打老道71B號松園大廈1樓B座",
+      "expectedPhone": "2711 0332",
+      "is24Hours": false,
+      "offersNightService": false,
+      "displayLabel": "",
+      "serviceNote": "公眾假期、預約及急症安排可能有變，出發前請先致電診所確認。",
+      "weeklyHours": {
+        "mon": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "tue": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "wed": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "thu": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "fri": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "sat": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "sun": []
+      },
+      "sourceName": "勝利動物醫院官方網站",
+      "sourceURL": "https://victoryanimalhospital.com/contact/"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-052",
+      "expectedName": "方舟動物醫院",
+      "expectedAddress": "香港西營盤水街25-35A號1號舖",
+      "expectedPhone": "2549 2330",
+      "is24Hours": true,
+      "offersNightService": true,
+      "displayLabel": "24 小時急症",
+      "serviceNote": "公眾假期、預約及急症安排可能有變，出發前請先致電診所確認。",
+      "weeklyHours": {},
+      "sourceName": "Pet Space 官方網站",
+      "sourceURL": "https://petspace.group/zh_hk/our-clinics/"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-040",
+      "expectedName": "銅鑼灣動物醫院",
+      "expectedAddress": "香港銅鑼灣威非路道29號地下",
+      "expectedPhone": "2510 0836",
+      "is24Hours": false,
+      "offersNightService": false,
+      "displayLabel": "",
+      "serviceNote": "公眾假期、預約及急症安排可能有變，出發前請先致電診所確認。",
+      "weeklyHours": {
+        "mon": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "tue": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "wed": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "thu": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "fri": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "sat": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "sun": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ]
+      },
+      "sourceName": "Pet Space 官方網站",
+      "sourceURL": "https://petspace.group/zh_hk/our-clinics/"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-026",
+      "expectedName": "西灣河獸醫診所",
+      "expectedAddress": "香港西灣河街94B號地舖",
+      "expectedPhone": "2967 4899",
+      "is24Hours": false,
+      "offersNightService": false,
+      "displayLabel": "",
+      "serviceNote": "公眾假期、預約及急症安排可能有變，出發前請先致電診所確認。",
+      "weeklyHours": {
+        "mon": [
+          {
+            "opensAt": "10:00",
+            "closesAt": "20:00"
+          }
+        ],
+        "tue": [
+          {
+            "opensAt": "10:00",
+            "closesAt": "20:00"
+          }
+        ],
+        "wed": [
+          {
+            "opensAt": "10:00",
+            "closesAt": "20:00"
+          }
+        ],
+        "thu": [
+          {
+            "opensAt": "10:00",
+            "closesAt": "20:00"
+          }
+        ],
+        "fri": [
+          {
+            "opensAt": "10:00",
+            "closesAt": "20:00"
+          }
+        ],
+        "sat": [
+          {
+            "opensAt": "10:00",
+            "closesAt": "20:00"
+          }
+        ],
+        "sun": [
+          {
+            "opensAt": "10:00",
+            "closesAt": "20:00"
+          }
+        ]
+      },
+      "sourceName": "Pet Space 官方網站",
+      "sourceURL": "https://petspace.group/zh_hk/our-clinics/"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-017",
+      "expectedName": "黃大仙區動物醫院",
+      "expectedAddress": "香港九龍新蒲崗彩虹道110號地下",
+      "expectedPhone": "2336 2682",
+      "is24Hours": false,
+      "offersNightService": false,
+      "displayLabel": "",
+      "serviceNote": "公眾假期、預約及急症安排可能有變，出發前請先致電診所確認。",
+      "weeklyHours": {
+        "mon": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "tue": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "wed": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "thu": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "fri": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "sat": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "sun": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ]
+      },
+      "sourceName": "Pet Space 官方網站",
+      "sourceURL": "https://petspace.group/zh_hk/our-clinics/"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-133",
+      "expectedName": "西貢獸醫醫院",
+      "expectedAddress": "香港新界西貢灰窰下208號地下",
+      "expectedPhone": "2792 8555",
+      "is24Hours": false,
+      "offersNightService": false,
+      "displayLabel": "",
+      "serviceNote": "公眾假期、預約及急症安排可能有變，出發前請先致電診所確認。",
+      "weeklyHours": {
+        "mon": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "tue": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "wed": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "thu": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "fri": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "sat": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "sun": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ]
+      },
+      "sourceName": "Pet Space 官方網站",
+      "sourceURL": "https://petspace.group/zh_hk/our-clinics/"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-104",
+      "expectedName": "西沙路動物醫院",
+      "expectedAddress": "香港新界馬鞍山鞍駿街1號馬鞍山中心地下A13號",
+      "expectedPhone": "2630 5980",
+      "is24Hours": false,
+      "offersNightService": false,
+      "displayLabel": "",
+      "serviceNote": "公眾假期、預約及急症安排可能有變，出發前請先致電診所確認。",
+      "weeklyHours": {
+        "mon": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "tue": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "wed": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "thu": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "fri": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "sat": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ],
+        "sun": [
+          {
+            "opensAt": "09:00",
+            "closesAt": "19:00"
+          }
+        ]
+      },
+      "sourceName": "Pet Space 官方網站",
+      "sourceURL": "https://petspace.group/zh_hk/our-clinics/"
+    },
+    {
+      "clinicID": "clinic-hk-vetmap-vet-146",
+      "expectedName": "東涌動物診所",
+      "expectedAddress": "香港新界東涌馬灣新村7號地下",
+      "expectedPhone": "2988 1534",
+      "is24Hours": false,
+      "offersNightService": false,
+      "displayLabel": "",
+      "serviceNote": "公眾假期、預約及急症安排可能有變，出發前請先致電診所確認。",
+      "weeklyHours": {
+        "mon": [
+          {
+            "opensAt": "09:30",
+            "closesAt": "14:00"
+          },
+          {
+            "opensAt": "15:00",
+            "closesAt": "18:30"
+          }
+        ],
+        "tue": [
+          {
+            "opensAt": "09:30",
+            "closesAt": "14:00"
+          },
+          {
+            "opensAt": "15:00",
+            "closesAt": "18:30"
+          }
+        ],
+        "wed": [
+          {
+            "opensAt": "09:30",
+            "closesAt": "14:00"
+          },
+          {
+            "opensAt": "15:00",
+            "closesAt": "18:30"
+          }
+        ],
+        "thu": [
+          {
+            "opensAt": "09:30",
+            "closesAt": "14:00"
+          },
+          {
+            "opensAt": "15:00",
+            "closesAt": "18:30"
+          }
+        ],
+        "fri": [
+          {
+            "opensAt": "09:30",
+            "closesAt": "14:00"
+          },
+          {
+            "opensAt": "15:00",
+            "closesAt": "18:30"
+          }
+        ],
+        "sat": [
+          {
+            "opensAt": "09:30",
+            "closesAt": "14:00"
+          },
+          {
+            "opensAt": "15:00",
+            "closesAt": "18:30"
+          }
+        ],
+        "sun": []
+      },
+      "sourceName": "Pet Space 官方網站",
+      "sourceURL": "https://petspace.group/zh_hk/our-clinics/"
+    }
+  ]
+}

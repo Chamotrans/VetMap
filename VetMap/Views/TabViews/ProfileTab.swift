@@ -117,6 +117,13 @@ struct ProfileTab: View {
             }
 
             NavigationLink {
+                SupportDeveloperView()
+            } label: {
+                Label("支持開發", systemImage: "cup.and.saucer.fill")
+                    .font(.subheadline.weight(.semibold))
+            }
+
+            NavigationLink {
                 AboutVetMapView()
             } label: {
                 Label("關於 VetMap", systemImage: "info.circle")
@@ -218,6 +225,15 @@ struct ProfileTab: View {
                         Label("訂閱管理", systemImage: "creditcard.fill")
                     }
                 }
+            }
+
+            Section("支持 VetMap") {
+                NavigationLink {
+                    SupportDeveloperView()
+                } label: {
+                    Label("請開發團隊飲杯嘢", systemImage: "cup.and.saucer.fill")
+                }
+                .accessibilityHint("一次性支持 VetMap 資料核實及維護，並非訂閱")
             }
 
             Section("設定") {

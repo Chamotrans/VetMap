@@ -45,6 +45,14 @@ jobs:
           node --test scripts/validate_hk_clinic_hours_v2_pending.test.mjs
           node scripts/validate_hk_clinic_hours_v2_pending.mjs
 
+      - name: Validate pending Hong Kong clinic hours v3 plan
+        run: |
+          node --test scripts/validate_hk_clinic_hours_v3_pending.test.mjs
+          node scripts/validate_hk_clinic_hours_v3_pending.mjs
+
+      - name: Test pending clinic hours v3 restore runner
+        run: node --test scripts/restore_hk_clinic_hours_v3_pending.test.mjs
+
       - name: Test pending clinic hours v2 restore runner
         run: node --test scripts/restore_hk_clinic_hours_v2_pending.test.mjs
 
@@ -62,6 +70,7 @@ jobs:
           node --test scripts/validate_password_reset.test.mjs
           node --test scripts/validate_authenticated_community_actions.test.mjs
           node --test scripts/validate_support_contact.test.mjs
+          node --test scripts/validate_support_purchase.test.mjs
 
       - name: Validate iOS first-run, discovery, chat, and refresh resilience
         run: |
